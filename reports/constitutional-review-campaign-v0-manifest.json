@@ -1,0 +1,17 @@
+{
+  "reportName": "Constitutional Review Campaign v0",
+  "provenanceFormat": "constitutional-review-report-v1",
+  "sourceTree": "tracked project artifact; inspect repository history for commit identity",
+  "javaRelease": "21",
+  "javaCommand": "courtsim.Main --campaign v0 --runs 120 --cases 80 --seed 20260501 --output-dir reports",
+  "runs": 120,
+  "casesPerRun": 80,
+  "seed": 20260501,
+  "campaignCaseCount": 5,
+  "scenarioCount": 12,
+  "inputDescription": "synthetic docket",
+  "artifacts": [
+    {"path": "reports/constitutional-review-campaign-v0.csv", "sha256": "9f4bfb0b1a173288c5a449057143fb1b20ec04bdf680a140969c38d69a9997f7"},
+    {"path": "reports/constitutional-review-campaign-v0.md", "sha256": "1b896b2749dfea413475ed2c4b469a8bcf909e50faecc2f637878083bf81e9f8"}
+  ]
+}
