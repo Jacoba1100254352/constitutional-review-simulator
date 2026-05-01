@@ -8,11 +8,12 @@ Use these commands from this directory:
 - `make test`
 - `make campaign`
 - `make paired-campaign`
+- `make sensitivity-check`
 - `make run ARGS="--legislative-input '/Users/jacobanderson/Documents/simulators/Congress Institutional Simulator/reports/simulation-campaign-v21-paper.csv'"`
 
 Project constraints:
 
 - Keep this simulator separate from the Congress Institutional Simulator, with legislative outputs imported as CSV stress signals.
 - Preserve named scenarios, randomized worlds, campaign sweeps, directional metrics, CSV/Markdown reports, and provenance manifests.
-- Keep doctrine areas, lower-court pipeline fields, emergency-relief/merits-invalidation split metrics, and review-period composition turnover visible in reports.
+- Keep doctrine areas, lower-court pipeline fields, emergency-relief/merits-invalidation split metrics, review-period composition turnover, reaction dynamics, compliance outcomes, and sensitivity diagnostics visible in reports.
 - Treat the sibling `Supreme Court Simulator Design` workspace as an earlier related artifact, not as an automatically authoritative source.

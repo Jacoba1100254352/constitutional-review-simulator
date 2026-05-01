@@ -1,0 +1,19 @@
+{
+  "reportName": "Constitutional Review Sensitivity Campaign v1",
+  "provenanceFormat": "constitutional-review-report-v1",
+  "sourceTree": "tracked project artifact; inspect repository history for commit identity",
+  "javaRelease": "21",
+  "javaCommand": "courtsim.Main --campaign sensitivity --runs 80 --cases 80 --seed 20260501 --output-dir reports",
+  "runs": 80,
+  "casesPerRun": 80,
+  "seed": 20260501,
+  "campaignCaseCount": 11,
+  "scenarioCount": 12,
+  "inputDescription": "synthetic docket",
+  "artifacts": [
+    {"path": "reports/constitutional-review-sensitivity-v1.csv", "sha256": "1286d8670a389fcf7eabca029ca37aec9e3dd1409d1a57d509db29f737093ba2"},
+    {"path": "reports/constitutional-review-sensitivity-v1-periods.csv", "sha256": "3b3d470ee6dc249871b7b0e49c47735de0895848dfc3c62b6b6f76753e53cbbd"},
+    {"path": "reports/constitutional-review-sensitivity-v1-doctrines.csv", "sha256": "57300579ccad550b3adbf231ba6c29338b261da88172d92af0ec7de86bd3d298"},
+    {"path": "reports/constitutional-review-sensitivity-v1.md", "sha256": "8dca4d112e9d683d90bd22e2647c1f787471d3348a927fb1d8fb27008780e88e"}
+  ]
+}

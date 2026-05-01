@@ -3,7 +3,7 @@ TEST_SOURCES := $(shell find src/test/java -name '*.java')
 JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 
-.PHONY: build run campaign paired-campaign paper paper-clean test ci clean
+.PHONY: build run campaign paired-campaign sensitivity-check paper paper-clean test ci clean
 
 build:
 	mkdir -p out/main
@@ -18,6 +18,9 @@ campaign: build
 paired-campaign: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign v1-paired --runs 120 --cases 80 --seed 20260501 --output-dir reports --legislative-input '/Users/jacobanderson/Documents/simulators/Congress Institutional Simulator/reports/simulation-campaign-v21-paper.csv' $(ARGS)
 
+sensitivity-check: build
+	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign sensitivity --runs 80 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
+
 paper:
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
 
@@ -30,7 +33,7 @@ test: build
 	javac --release $(JAVA_RELEASE) -cp out/main -d out/test $(TEST_SOURCES)
 	java $(JAVA_PROPS) -cp out/main:out/test courtsim.SimulatorTests
 
-ci: test campaign paired-campaign paper
+ci: test campaign paired-campaign sensitivity-check paper
 
 clean:
 	rm -rf out

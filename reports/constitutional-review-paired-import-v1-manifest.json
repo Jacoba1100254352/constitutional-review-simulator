@@ -11,7 +11,9 @@
   "scenarioCount": 12,
   "inputDescription": "986 imported legislative rows across 29 scenarios",
   "artifacts": [
-    {"path": "reports/constitutional-review-paired-import-v1.csv", "sha256": "eb274ecb0a13c760cc0a62fae0af901f31a07d17d71de264487c3d9669c95c1a"},
-    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "e146724d8f591bd3c844988231eaccbb8719bb3ba8f3162c645e95a1e3b6257b"}
+    {"path": "reports/constitutional-review-paired-import-v1.csv", "sha256": "f4034ca967b5cc8088910a7b915a170db2400c610bb6aeff2cd9f2571cbc45aa"},
+    {"path": "reports/constitutional-review-paired-import-v1-periods.csv", "sha256": "da83519251b1e990ea88dce7d7d6ae1316c434497ada6ec864d6d0234f11ce71"},
+    {"path": "reports/constitutional-review-paired-import-v1-doctrines.csv", "sha256": "059dd6aac3408cf088e2a0ab4f4575105902207eb2dcec81a8a80733e9713b46"},
+    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "b2149d3293c9eaa54b670aaf49616a2337892e52962e3d9bd87799b255d191b1"}
   ]
 }

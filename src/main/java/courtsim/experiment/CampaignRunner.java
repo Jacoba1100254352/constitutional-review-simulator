@@ -6,6 +6,7 @@ import courtsim.reporting.ReportProvenance;
 import courtsim.simulation.Scenario;
 import courtsim.simulation.ScenarioCatalog;
 import courtsim.simulation.ScenarioReport;
+import courtsim.simulation.SegmentReport;
 import courtsim.simulation.Simulator;
 import courtsim.simulation.WorldSpec;
 import courtsim.util.Values;
@@ -44,15 +45,17 @@ public final class CampaignRunner {
             Path outputDir,
             List<LegislativeSignal> importedSignals
     ) throws IOException {
-        if (!"v0".equals(campaignKey) && !"v1-paired".equals(campaignKey) && !"paired-import".equals(campaignKey)) {
+        if (!isSupportedCampaign(campaignKey)) {
             throw new IllegalArgumentException("Unknown campaign: " + campaignKey);
         }
         Files.createDirectories(outputDir);
         List<Scenario> scenarios = ScenarioCatalog.scenariosForKeys(CORE_SCENARIOS);
-        boolean pairedImport = "v1-paired".equals(campaignKey) || "paired-import".equals(campaignKey);
-        List<CampaignCase> cases = pairedImport
-                ? pairedImportCases(baseSpec, importedSignals)
-                : campaignCases(baseSpec, !importedSignals.isEmpty());
+        boolean pairedImport = isPairedImport(campaignKey);
+        List<CampaignCase> cases = isSensitivity(campaignKey)
+                ? sensitivityCases(baseSpec)
+                : (pairedImport
+                        ? pairedImportCases(baseSpec, importedSignals)
+                        : campaignCases(baseSpec, !importedSignals.isEmpty()));
         List<CampaignRow> rows = new ArrayList<>();
         for (int caseIndex = 0; caseIndex < cases.size(); caseIndex++) {
             CampaignCase campaignCase = cases.get(caseIndex);
@@ -69,30 +72,72 @@ public final class CampaignRunner {
             }
         }
 
-        String basename = pairedImport ? "constitutional-review-paired-import-v1" : "constitutional-review-campaign-v0";
+        String basename = basename(campaignKey);
+        String reportName = reportName(campaignKey);
         Path csvPath = outputDir.resolve(basename + ".csv");
+        Path periodCsvPath = outputDir.resolve(basename + "-periods.csv");
+        Path doctrineCsvPath = outputDir.resolve(basename + "-doctrines.csv");
         Path markdownPath = outputDir.resolve(basename + ".md");
         Path manifestPath = outputDir.resolve(basename + "-manifest.json");
         writeCsv(csvPath, rows);
-        writeMarkdown(markdownPath, rows, runs, seed, importedSignals);
+        writeSegmentCsv(periodCsvPath, rows, SegmentKind.PERIOD);
+        writeSegmentCsv(doctrineCsvPath, rows, SegmentKind.DOCTRINE);
+        writeMarkdown(markdownPath, rows, runs, seed, importedSignals, reportName);
         ReportProvenance.write(
                 manifestPath,
-                pairedImport ? "Constitutional Review Paired Import Campaign v1" : "Constitutional Review Campaign v0",
+                reportName,
                 runs,
                 baseSpec.caseCount(),
                 seed,
                 cases.size(),
                 scenarios.size(),
                 LegislativeOutputImporter.describeImport(importedSignals),
-                List.of(csvPath, markdownPath)
+                List.of(csvPath, periodCsvPath, doctrineCsvPath, markdownPath)
         );
         return new CampaignResult(
-                pairedImport ? "Constitutional Review Paired Import Campaign v1" : "Constitutional Review Campaign v0",
+                reportName,
                 csvPath,
+                periodCsvPath,
+                doctrineCsvPath,
                 markdownPath,
                 manifestPath,
                 List.copyOf(rows)
         );
+    }
+
+    private boolean isSupportedCampaign(String campaignKey) {
+        return "v0".equals(campaignKey)
+                || "v1-paired".equals(campaignKey)
+                || "paired-import".equals(campaignKey)
+                || isSensitivity(campaignKey);
+    }
+
+    private boolean isPairedImport(String campaignKey) {
+        return "v1-paired".equals(campaignKey) || "paired-import".equals(campaignKey);
+    }
+
+    private boolean isSensitivity(String campaignKey) {
+        return "sensitivity".equals(campaignKey) || "sensitivity-v1".equals(campaignKey);
+    }
+
+    private String basename(String campaignKey) {
+        if (isPairedImport(campaignKey)) {
+            return "constitutional-review-paired-import-v1";
+        }
+        if (isSensitivity(campaignKey)) {
+            return "constitutional-review-sensitivity-v1";
+        }
+        return "constitutional-review-campaign-v0";
+    }
+
+    private String reportName(String campaignKey) {
+        if (isPairedImport(campaignKey)) {
+            return "Constitutional Review Paired Import Campaign v1";
+        }
+        if (isSensitivity(campaignKey)) {
+            return "Constitutional Review Sensitivity Campaign v1";
+        }
+        return "Constitutional Review Campaign v0";
     }
 
     private List<CampaignCase> campaignCases(WorldSpec baseSpec, boolean includeImportedCase) {
@@ -187,6 +232,88 @@ public final class CampaignRunner {
         );
     }
 
+    private List<CampaignCase> sensitivityCases(WorldSpec baseSpec) {
+        return List.of(
+                new CampaignCase(
+                        "baseline",
+                        "Baseline",
+                        "Baseline assumptions for sensitivity comparison.",
+                        baseSpec,
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "low-emergency-pressure",
+                        "Low emergency pressure",
+                        "Lower urgency and emergency docket pressure.",
+                        baseSpec.withEmergencyPressure(0.12),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "high-emergency-pressure",
+                        "High emergency pressure",
+                        "Higher urgency and emergency docket pressure.",
+                        baseSpec.withEmergencyPressure(0.82),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "low-appointment-polarization",
+                        "Low appointment polarization",
+                        "Lower appointment ideology spread and partisan pressure.",
+                        baseSpec.withAppointmentPolarization(0.24).withPartisanPressure(0.28),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "high-appointment-polarization",
+                        "High appointment polarization",
+                        "Higher appointment ideology spread and partisan pressure.",
+                        baseSpec.withAppointmentPolarization(0.90).withPartisanPressure(0.86),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "low-rights-threat",
+                        "Low rights threat",
+                        "Lower share of cases with generated rights-risk signals.",
+                        baseSpec.withRightsThreatRate(0.16),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "high-rights-threat",
+                        "High rights threat",
+                        "Higher share of cases with generated rights-risk signals.",
+                        baseSpec.withRightsThreatRate(0.78),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "high-public-trust",
+                        "High public trust",
+                        "High initial trust and lower institutional conflict.",
+                        baseSpec.withPublicTrust(0.82).withLegislativeConflict(0.24),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "low-public-trust",
+                        "Low public trust",
+                        "Low initial trust and higher institutional conflict.",
+                        baseSpec.withPublicTrust(0.24).withLegislativeConflict(0.70),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "low-legislative-conflict",
+                        "Low legislative conflict",
+                        "Lower legislature-court conflict pressure.",
+                        baseSpec.withLegislativeConflict(0.18),
+                        SignalMode.SYNTHETIC
+                ),
+                new CampaignCase(
+                        "high-legislative-conflict",
+                        "High legislative conflict",
+                        "Higher legislature-court conflict pressure and lower trust.",
+                        baseSpec.withLegislativeConflict(0.86).withPublicTrust(0.38),
+                        SignalMode.SYNTHETIC
+                )
+        );
+    }
+
     private List<LegislativeSignal> campaignSignals(CampaignCase campaignCase, List<LegislativeSignal> importedSignals) {
         return switch (campaignCase.signalMode()) {
             case SYNTHETIC -> List.of();
@@ -209,7 +336,7 @@ public final class CampaignRunner {
 
     private void writeCsv(Path path, List<CampaignRow> rows) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,administrativeLoad\n");
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad\n");
         for (CampaignRow row : rows) {
             ScenarioReport report = row.report();
             builder.append(csv(row.caseKey())).append(',')
@@ -249,8 +376,54 @@ public final class CampaignRunner {
                     .append(number(report.lowerCourtConflict())).append(',')
                     .append(number(report.averageTimeToReview())).append(',')
                     .append(number(report.replacementRate())).append(',')
+                    .append(number(report.complianceRate())).append(',')
+                    .append(number(report.defianceRate())).append(',')
+                    .append(number(report.workaroundRate())).append(',')
+                    .append(number(report.repeatedLitigationRate())).append(',')
+                    .append(number(report.publicTrust())).append(',')
+                    .append(number(report.legislativeConflict())).append(',')
+                    .append(number(report.courtCurbingPressure())).append(',')
+                    .append(number(report.amendmentPressure())).append(',')
                     .append(number(report.administrativeLoad()))
                     .append('\n');
+        }
+        Files.writeString(path, builder.toString());
+    }
+
+    private void writeSegmentCsv(Path path, List<CampaignRow> rows, SegmentKind kind) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,totalCases,reviewedCases,reviewRate,legalStability,rightsProtection,shadowDocketAbuse,emergencyReliefRate,meritsInvalidationRate,legitimacy,constitutionalConflict,democraticResponsiveness,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure\n");
+        for (CampaignRow row : rows) {
+            ScenarioReport report = row.report();
+            for (SegmentReport segment : segments(row, kind)) {
+                builder.append(csv(row.caseKey())).append(',')
+                        .append(csv(row.caseName())).append(',')
+                        .append(csv(row.caseDescription())).append(',')
+                        .append(csv(report.scenarioKey())).append(',')
+                        .append(csv(report.scenarioName())).append(',')
+                        .append(csv(segment.segmentType())).append(',')
+                        .append(csv(segment.segmentKey())).append(',')
+                        .append(segment.totalCases()).append(',')
+                        .append(segment.reviewedCases()).append(',')
+                        .append(number(segment.reviewRate())).append(',')
+                        .append(number(segment.legalStability())).append(',')
+                        .append(number(segment.rightsProtection())).append(',')
+                        .append(number(segment.shadowDocketAbuse())).append(',')
+                        .append(number(segment.emergencyReliefRate())).append(',')
+                        .append(number(segment.meritsInvalidationRate())).append(',')
+                        .append(number(segment.legitimacy())).append(',')
+                        .append(number(segment.constitutionalConflict())).append(',')
+                        .append(number(segment.democraticResponsiveness())).append(',')
+                        .append(number(segment.complianceRate())).append(',')
+                        .append(number(segment.defianceRate())).append(',')
+                        .append(number(segment.workaroundRate())).append(',')
+                        .append(number(segment.repeatedLitigationRate())).append(',')
+                        .append(number(segment.publicTrust())).append(',')
+                        .append(number(segment.legislativeConflict())).append(',')
+                        .append(number(segment.courtCurbingPressure())).append(',')
+                        .append(number(segment.amendmentPressure()))
+                        .append('\n');
+            }
         }
         Files.writeString(path, builder.toString());
     }
@@ -260,12 +433,11 @@ public final class CampaignRunner {
             List<CampaignRow> rows,
             int runs,
             long seed,
-            List<LegislativeSignal> importedSignals
+            List<LegislativeSignal> importedSignals,
+            String reportName
     ) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("# ").append(rows.stream().anyMatch(row -> row.caseKey().startsWith("legislative-"))
-                ? "Constitutional Review Paired Import Campaign v1"
-                : "Constitutional Review Campaign v0").append("\n\n");
+        builder.append("# ").append(reportName).append("\n\n");
         builder.append("- runs per case: ").append(runs).append('\n');
         builder.append("- seed: ").append(seed).append('\n');
         builder.append("- input: ").append(LegislativeOutputImporter.describeImport(importedSignals)).append("\n\n");
@@ -284,6 +456,12 @@ public final class CampaignRunner {
             CampaignRow lowestEmergencyRelief = caseRows.stream()
                     .min(Comparator.comparingDouble(row -> row.report().emergencyReliefRate()))
                     .orElseThrow();
+            CampaignRow highestCompliance = caseRows.stream()
+                    .max(Comparator.comparingDouble(row -> row.report().complianceRate()))
+                    .orElseThrow();
+            CampaignRow lowestDefiance = caseRows.stream()
+                    .min(Comparator.comparingDouble(row -> row.report().defianceRate()))
+                    .orElseThrow();
             builder.append("### ").append(best.caseName()).append("\n\n");
             builder.append(best.caseDescription()).append("\n\n");
             builder.append("- best overall: ").append(best.report().scenarioName())
@@ -294,12 +472,16 @@ public final class CampaignRunner {
             builder.append("- lowest shadow-docket abuse: ").append(lowestShadow.report().scenarioName())
                     .append(" at ").append(Values.format(lowestShadow.report().shadowDocketAbuse())).append('\n');
             builder.append("- lowest emergency relief rate: ").append(lowestEmergencyRelief.report().scenarioName())
-                    .append(" at ").append(Values.format(lowestEmergencyRelief.report().emergencyReliefRate())).append("\n\n");
+                    .append(" at ").append(Values.format(lowestEmergencyRelief.report().emergencyReliefRate())).append('\n');
+            builder.append("- highest compliance rate: ").append(highestCompliance.report().scenarioName())
+                    .append(" at ").append(Values.format(highestCompliance.report().complianceRate())).append('\n');
+            builder.append("- lowest defiance rate: ").append(lowestDefiance.report().scenarioName())
+                    .append(" at ").append(Values.format(lowestDefiance.report().defianceRate())).append("\n\n");
         }
 
         builder.append("## Scenario Averages\n\n");
-        builder.append("| Scenario | Score | Stability | Rights | Partisan | Shadow | Emerg. relief | Merits inval. | Legitimacy | Reversal | Conflict | Response | Delay | Turnover | Admin |\n");
-        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
+        builder.append("| Scenario | Score | Stability | Rights | Partisan | Shadow | Emerg. relief | Merits inval. | Legitimacy | Reversal | Conflict | Response | Compliance | Defiance | Trust | Curbing | Admin |\n");
+        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
         for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
             List<ScenarioReport> reports = rows.stream()
                     .filter(row -> row.report().scenarioKey().equals(scenarioKey))
@@ -318,11 +500,84 @@ public final class CampaignRunner {
                     .append(number(average(reports, ScenarioReport::reversalRate))).append(" | ")
                     .append(number(average(reports, ScenarioReport::constitutionalConflict))).append(" | ")
                     .append(number(average(reports, ScenarioReport::democraticResponsiveness))).append(" | ")
-                    .append(number(average(reports, ScenarioReport::averageTimeToReview))).append(" | ")
-                    .append(number(average(reports, ScenarioReport::replacementRate))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::complianceRate))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::defianceRate))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::publicTrust))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::courtCurbingPressure))).append(" | ")
                     .append(number(average(reports, ScenarioReport::administrativeLoad))).append(" |\n");
         }
+        appendSegmentDiagnostics(builder, rows, "Period Diagnostics", SegmentKind.PERIOD);
+        appendSegmentDiagnostics(builder, rows, "Doctrine Diagnostics", SegmentKind.DOCTRINE);
         Files.writeString(path, builder.toString());
+    }
+
+    private void appendSegmentDiagnostics(
+            StringBuilder builder,
+            List<CampaignRow> rows,
+            String title,
+            SegmentKind kind
+    ) {
+        builder.append("\n## ").append(title).append("\n\n");
+        builder.append("| Scenario | Segment | Cases | Review | Rights | Shadow | Merits inval. | Compliance | Defiance | Workaround | Trust | Conflict | Curbing |\n");
+        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
+        for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
+            List<CampaignRow> scenarioRows = rows.stream()
+                    .filter(row -> row.report().scenarioKey().equals(scenarioKey))
+                    .toList();
+            ScenarioReport first = scenarioRows.get(0).report();
+            List<String> segmentKeys = scenarioRows.stream()
+                    .flatMap(row -> segments(row, kind).stream())
+                    .map(SegmentReport::segmentKey)
+                    .distinct()
+                    .sorted()
+                    .toList();
+            for (String segmentKey : segmentKeys) {
+                List<SegmentReport> reports = scenarioRows.stream()
+                        .flatMap(row -> segments(row, kind).stream())
+                        .filter(segment -> segment.segmentKey().equals(segmentKey))
+                        .toList();
+                builder.append("| ").append(first.scenarioName()).append(" | ")
+                        .append(segmentKey).append(" | ")
+                        .append(segmentCases(reports)).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::reviewRate))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::rightsProtection))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::shadowDocketAbuse))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::meritsInvalidationRate))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::complianceRate))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::defianceRate))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::workaroundRate))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::publicTrust))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::legislativeConflict))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::courtCurbingPressure))).append(" |\n");
+            }
+        }
+    }
+
+    private static List<SegmentReport> segments(CampaignRow row, SegmentKind kind) {
+        return switch (kind) {
+            case PERIOD -> row.report().periodReports();
+            case DOCTRINE -> row.report().doctrineReports();
+        };
+    }
+
+    private static int segmentCases(List<SegmentReport> reports) {
+        int cases = 0;
+        for (SegmentReport report : reports) {
+            cases += report.totalCases();
+        }
+        return cases;
+    }
+
+    private static double segmentAverage(List<SegmentReport> reports, SegmentMetricReader reader) {
+        int cases = segmentCases(reports);
+        if (cases == 0) {
+            return 0.0;
+        }
+        double sum = 0.0;
+        for (SegmentReport report : reports) {
+            sum += reader.value(report) * report.totalCases();
+        }
+        return sum / cases;
     }
 
     private static double average(List<ScenarioReport> reports, MetricReader reader) {
@@ -364,6 +619,11 @@ public final class CampaignRunner {
         LOW_MANDATE
     }
 
+    private enum SegmentKind {
+        PERIOD,
+        DOCTRINE
+    }
+
     @FunctionalInterface
     private interface SignalPredicate {
         boolean matches(LegislativeSignal signal);
@@ -372,5 +632,10 @@ public final class CampaignRunner {
     @FunctionalInterface
     private interface MetricReader {
         double value(ScenarioReport report);
+    }
+
+    @FunctionalInterface
+    private interface SegmentMetricReader {
+        double value(SegmentReport report);
     }
 }

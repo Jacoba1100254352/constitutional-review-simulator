@@ -24,6 +24,7 @@ public final class SimulatorTests {
         legislativeImporterToleratesCampaignCsv();
         campaignWritesArtifacts();
         pairedCampaignWritesArtifacts();
+        sensitivityCampaignWritesArtifacts();
         System.out.println("All simulator tests passed.");
     }
 
@@ -57,6 +58,10 @@ public final class SimulatorTests {
             assertBetween(report.rightsProtection(), "rights protection");
             assertBetween(report.emergencyReliefRate(), "emergency relief rate");
             assertBetween(report.meritsInvalidationRate(), "merits invalidation rate");
+            assertBetween(report.complianceRate(), "compliance rate");
+            assertBetween(report.defianceRate(), "defiance rate");
+            assertTrue(!report.periodReports().isEmpty(), "expected period diagnostics");
+            assertTrue(!report.doctrineReports().isEmpty(), "expected doctrine diagnostics");
         }
     }
 
@@ -90,11 +95,18 @@ public final class SimulatorTests {
                 List.of()
         );
         assertTrue(Files.exists(result.csvPath()), "expected CSV artifact");
+        assertTrue(Files.exists(result.periodCsvPath()), "expected period CSV artifact");
+        assertTrue(Files.exists(result.doctrineCsvPath()), "expected doctrine CSV artifact");
         assertTrue(Files.exists(result.markdownPath()), "expected Markdown artifact");
         assertTrue(Files.exists(result.manifestPath()), "expected manifest artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legalStability"), "expected CSV header");
         assertTrue(Files.readString(result.csvPath()).contains("emergencyReliefRate"), "expected split emergency metric");
+        assertTrue(Files.readString(result.csvPath()).contains("complianceRate"), "expected compliance metric");
+        assertTrue(Files.readString(result.periodCsvPath()).contains("period"), "expected period report rows");
+        assertTrue(Files.readString(result.doctrineCsvPath()).contains("doctrine"), "expected doctrine report rows");
         assertTrue(Files.readString(result.markdownPath()).contains("Scenario Averages"), "expected Markdown summary");
+        assertTrue(Files.readString(result.markdownPath()).contains("Period Diagnostics"), "expected period diagnostics");
+        assertTrue(Files.readString(result.markdownPath()).contains("Doctrine Diagnostics"), "expected doctrine diagnostics");
     }
 
     private static void pairedCampaignWritesArtifacts() throws Exception {
@@ -154,8 +166,27 @@ public final class SimulatorTests {
                 signals
         );
         assertTrue(Files.exists(result.csvPath()), "expected paired CSV artifact");
+        assertTrue(Files.exists(result.periodCsvPath()), "expected paired period CSV artifact");
+        assertTrue(Files.exists(result.doctrineCsvPath()), "expected paired doctrine CSV artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legislative-low-mandate"), "expected paired legislative cases");
         assertTrue(Files.readString(result.markdownPath()).contains("Paired Import Campaign"), "expected paired Markdown title");
+    }
+
+    private static void sensitivityCampaignWritesArtifacts() throws Exception {
+        Path tempDir = Files.createTempDirectory("court-sensitivity-campaign");
+        CampaignResult result = new CampaignRunner().run(
+                "sensitivity",
+                WorldSpec.baseline(10),
+                2,
+                20260501L,
+                tempDir,
+                List.of()
+        );
+        assertTrue(Files.exists(result.csvPath()), "expected sensitivity CSV artifact");
+        assertTrue(Files.exists(result.periodCsvPath()), "expected sensitivity period CSV artifact");
+        assertTrue(Files.exists(result.doctrineCsvPath()), "expected sensitivity doctrine CSV artifact");
+        assertTrue(Files.readString(result.csvPath()).contains("high-emergency-pressure"), "expected sensitivity cases");
+        assertTrue(Files.readString(result.markdownPath()).contains("Sensitivity Campaign"), "expected sensitivity Markdown title");
     }
 
     private static void assertBetween(double value, String label) {

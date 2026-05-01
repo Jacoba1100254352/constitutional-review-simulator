@@ -1,6 +1,7 @@
 package courtsim.simulation;
 
 import courtsim.institution.CaseOutcome;
+import courtsim.institution.ReactionState;
 import courtsim.institution.ReviewContext;
 import courtsim.institution.ReviewProcess;
 import courtsim.model.CaseFile;
@@ -33,12 +34,13 @@ public final class Simulator {
                 int currentPeriod = -1;
                 ReviewProcess process = null;
                 ReviewContext context = null;
+                ReactionState reactionState = ReactionState.from(worldSpec);
                 for (CaseFile caseFile : world.docket()) {
                     if (caseFile.reviewPeriod() != currentPeriod) {
                         currentPeriod = caseFile.reviewPeriod();
                         Random periodRandom = new Random(mix(seed, run, scenarioIndex + 101 + currentPeriod * 503));
                         process = scenario.buildProcess(world, periodRandom, currentPeriod);
-                        context = new ReviewContext(periodRandom);
+                        context = new ReviewContext(periodRandom, reactionState);
                     }
                     CaseOutcome outcome = process.review(caseFile, context);
                     accumulators[scenarioIndex].add(outcome);

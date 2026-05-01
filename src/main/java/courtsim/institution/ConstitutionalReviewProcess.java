@@ -32,6 +32,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
     @Override
     public CaseOutcome review(CaseFile caseFile, ReviewContext context) {
         Random random = context.random();
+        ReactionState reactionState = context.reactionState();
         boolean emergency = isEmergency(caseFile, random);
         boolean reviewed = shouldReview(caseFile, emergency, random);
         int recused = recusedJustices(caseFile, random);
@@ -40,7 +41,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 : Math.max(3, configuration.courtSize() - recused);
 
         if (!reviewed) {
-            return declinedOutcome(caseFile, emergency, recused, participating);
+            return declinedOutcome(caseFile, emergency, recused, participating, reactionState);
         }
 
         VoteResult primary = vote(caseFile, activeJustices(participating), emergency, random, 0.0);
@@ -109,12 +110,38 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         );
         double legitimacy = Values.clamp01(
                 caseFile.publicTrust() * 0.24
+                        + reactionState.publicTrust() * 0.12
                         + configuration.transparency() * 0.18
                         + majorityShare * 0.12
                         + rightsProtection * 0.18
                         + Values.lowerIsBetter(partisanAlignment) * 0.14
                         + Values.lowerIsBetter(shadowAbuse) * 0.14
                         - constitutionalConflict * 0.18
+        );
+        double complianceRate = complianceRate(
+                caseFile,
+                legitimacy,
+                constitutionalConflict,
+                meritsInvalidated,
+                emergencyReliefGranted,
+                overrideUsed,
+                reactionState
+        );
+        boolean complied = random.nextDouble() < complianceRate;
+        boolean defied = !complied && random.nextDouble() < defianceRisk(caseFile, constitutionalConflict, reactionState);
+        boolean workaround = !complied && !defied && random.nextDouble() < workaroundRisk(caseFile, meritsInvalidated, emergencyReliefGranted, reactionState);
+        boolean repeatedLitigation = (!complied || workaround)
+                && random.nextDouble() < repeatedLitigationRisk(caseFile, meritsInvalidated, emergencyReliefGranted);
+        reactionState.apply(
+                legitimacy,
+                constitutionalConflict,
+                meritsInvalidated,
+                emergencyReliefGranted,
+                overrideUsed,
+                complied,
+                defied,
+                workaround,
+                repeatedLitigation
         );
         double administrativeLoad = administrativeLoad(caseFile, emergency, enBanc, crossChecked, councilScreen, recused);
 
@@ -144,6 +171,15 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 constitutionalConflict,
                 democraticResponsiveness,
                 independenceBalance,
+                complianceRate,
+                complied,
+                defied,
+                workaround,
+                repeatedLitigation,
+                reactionState.publicTrust(),
+                reactionState.legislativeConflict(),
+                reactionState.courtCurbingPressure(),
+                reactionState.amendmentPressure(),
                 concurrenceFragmentation,
                 dissentIntensity,
                 caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure,
@@ -246,7 +282,8 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                     + caseFile.certiorariPressure() * 0.08;
             double mandateRestraint = caseFile.legislativeMandate()
                     * caseFile.doctrineArea().deferenceWeight()
-                    * (configuration.accountabilityPressure() * 0.24 + justice.accountabilityPressure() * 0.18);
+                    * (configuration.accountabilityPressure() * 0.24 + justice.accountabilityPressure() * 0.18)
+                    * (1.0 + worldSpec.legislativeConflict() * 0.18);
             double ambiguityRestraint = caseFile.legalAmbiguity()
                     * justice.institutionalism()
                     * (0.20 + configuration.stabilityPreference() * 0.14);
@@ -321,7 +358,13 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         return reliefScore >= threshold;
     }
 
-    private CaseOutcome declinedOutcome(CaseFile caseFile, boolean emergency, int recused, int participating) {
+    private CaseOutcome declinedOutcome(
+            CaseFile caseFile,
+            boolean emergency,
+            int recused,
+            int participating,
+            ReactionState reactionState
+    ) {
         double rightsProtection = Values.clamp01(1.0 - caseFile.rightsThreat() * 0.78);
         double democraticResponsiveness = Values.clamp01(caseFile.legislativeMandate() * 0.72 + caseFile.publicSupport() * 0.18);
         double constitutionalConflict = Values.clamp01(
@@ -334,6 +377,17 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                         + democraticResponsiveness * 0.22
                         + rightsProtection * 0.16
                         - constitutionalConflict * 0.16
+        );
+        reactionState.apply(
+                legitimacy,
+                constitutionalConflict,
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                false
         );
         double legalStability = Values.clamp01(0.82 - constitutionalConflict * 0.20 + configuration.stabilityPreference() * 0.10);
         return new CaseOutcome(
@@ -362,6 +416,15 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 constitutionalConflict,
                 democraticResponsiveness,
                 independenceAccountabilityBalance(caseFile),
+                1.0,
+                true,
+                false,
+                false,
+                false,
+                reactionState.publicTrust(),
+                reactionState.legislativeConflict(),
+                reactionState.courtCurbingPressure(),
+                reactionState.amendmentPressure(),
                 0.0,
                 0.0,
                 caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure,
@@ -526,6 +589,66 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                         + caseFile.legalAmbiguity() * 0.12
                         + caseFile.timeToReview() * 0.08
                         + (caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure * 0.05)
+        );
+    }
+
+    private double complianceRate(
+            CaseFile caseFile,
+            double legitimacy,
+            double constitutionalConflict,
+            boolean meritsInvalidated,
+            boolean emergencyReliefGranted,
+            boolean overrideUsed,
+            ReactionState reactionState
+    ) {
+        double compliancePressure = 0.46
+                + legitimacy * 0.24
+                + reactionState.complianceNorm() * 0.22
+                + configuration.independence() * 0.06
+                - constitutionalConflict * 0.18
+                - reactionState.legislativeConflict() * 0.12
+                - reactionState.courtCurbingPressure() * 0.10
+                - (emergencyReliefGranted && !meritsInvalidated ? 0.08 : 0.0)
+                - (overrideUsed ? 0.10 : 0.0)
+                - caseFile.executivePressure() * 0.08;
+        return Values.clamp01(compliancePressure);
+    }
+
+    private double defianceRisk(CaseFile caseFile, double constitutionalConflict, ReactionState reactionState) {
+        return Values.clamp01(
+                0.08
+                        + constitutionalConflict * 0.30
+                        + reactionState.legislativeConflict() * 0.24
+                        + caseFile.executivePressure() * 0.18
+                        - reactionState.publicTrust() * 0.12
+        );
+    }
+
+    private double workaroundRisk(
+            CaseFile caseFile,
+            boolean meritsInvalidated,
+            boolean emergencyReliefGranted,
+            ReactionState reactionState
+    ) {
+        return Values.clamp01(
+                0.12
+                        + (meritsInvalidated ? 0.18 : 0.0)
+                        + (emergencyReliefGranted ? 0.10 : 0.0)
+                        + reactionState.overridePressure() * 0.22
+                        + caseFile.legislativeMandate() * 0.12
+        );
+    }
+
+    private double repeatedLitigationRisk(
+            CaseFile caseFile,
+            boolean meritsInvalidated,
+            boolean emergencyReliefGranted
+    ) {
+        return Values.clamp01(
+                0.10
+                        + caseFile.legalAmbiguity() * 0.24
+                        + caseFile.lowerCourtConflict() * 0.18
+                        + (emergencyReliefGranted && !meritsInvalidated ? 0.18 : 0.0)
         );
     }
 

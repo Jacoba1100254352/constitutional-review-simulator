@@ -18,6 +18,8 @@ Emergency review is split into interim relief and merits invalidation. A case ca
 
 Court composition now changes across review periods. `WorldSpec.reviewPeriods` partitions each run's docket, and scenario term/removal/accountability settings control replacement pressure between periods. Life-tenure scenarios drift slowly; renewable or retention-election designs turn over faster.
 
+Outcomes now update public and legislative reaction state. Each decision changes public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and a compliance norm. Those state variables feed later cases in the same run, so emergency relief, merits invalidation, override use, defiance, workaround behavior, and repeated litigation can compound instead of appearing as isolated case-level events.
+
 Imported legislative outputs are not treated as empirical truth. They become stress signals for generated cases:
 
 - weak public mandate and low welfare increase rights-threat probability
@@ -25,4 +27,12 @@ Imported legislative outputs are not treated as empirical truth. They become str
 - lobby capture and proposer gain increase partisan/executive pressure
 - high challenge, fast-lane, and high-risk lane rates increase emergency docket pressure
 
-The first campaign is meant to expose design tradeoffs, not select a winner. The paired-import campaign uses the sibling legislative simulator's generated rows in four docket modes: all imported rows, high-capture rows, high-volatility rows, and low-mandate rows. Later iterations should add state/federal splits, public reaction dynamics, and empirical calibration only after the synthetic diagnostics are useful.
+The first campaign is meant to expose design tradeoffs, not select a winner. The paired-import campaign uses the sibling legislative simulator's generated rows in four docket modes: all imported rows, high-capture rows, high-volatility rows, and low-mandate rows. Later iterations should add state/federal splits and external calibration targets only after the synthetic diagnostics are useful.
+
+Campaign reports now write three CSV layers:
+
+- aggregate scenario/campaign-case averages
+- period-by-period diagnostics for replacement and reaction dynamics
+- doctrine-specific scoreboards for speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state claims
+
+The sensitivity campaign is a calibration check rather than empirical validation. It runs the same scenario catalog over high/low assumption sweeps for emergency pressure, appointment polarization, rights-threat rate, public trust, and legislative conflict so directional scores can be inspected for brittle parameter dependence.
