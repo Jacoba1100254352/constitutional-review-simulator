@@ -7,6 +7,7 @@ import courtsim.model.DoctrineArea;
 import courtsim.model.Jurisdiction;
 import courtsim.model.LegislativeSignal;
 import courtsim.model.LowerCourtPath;
+import courtsim.model.PolicyDomain;
 import courtsim.util.Values;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public final class WorldGenerator {
 
     private CaseFile syntheticCase(WorldSpec spec, int index, Random random) {
         DoctrineArea doctrineArea = randomDoctrine(random);
+        PolicyDomain policyDomain = policyDomainFor(doctrineArea, random);
         Jurisdiction jurisdiction = jurisdictionFor(doctrineArea, spec, random);
         LowerCourtPath lowerCourtPath = lowerCourtPathFor(jurisdiction, doctrineArea, random);
         int reviewPeriod = reviewPeriod(spec, index);
@@ -72,6 +74,7 @@ public final class WorldGenerator {
                 "synthetic-" + (index + 1),
                 type,
                 doctrineArea,
+                policyDomain,
                 jurisdiction,
                 lowerCourtPath,
                 reviewPeriod,
@@ -97,9 +100,10 @@ public final class WorldGenerator {
     }
 
     private CaseFile fromLegislativeSignal(WorldSpec spec, LegislativeSignal signal, int index, Random random) {
-        DoctrineArea doctrineArea = importedDoctrine(signal, random);
-        Jurisdiction jurisdiction = importedJurisdiction(signal, doctrineArea, spec, random);
-        LowerCourtPath lowerCourtPath = lowerCourtPathFor(jurisdiction, doctrineArea, random);
+        PolicyDomain policyDomain = signal.policyDomain();
+        DoctrineArea doctrineArea = importedDoctrine(signal, policyDomain, random);
+        Jurisdiction jurisdiction = importedJurisdiction(signal, policyDomain, doctrineArea, spec, random);
+        LowerCourtPath lowerCourtPath = lowerCourtPathFor(jurisdiction, doctrineArea, policyDomain, random);
         int reviewPeriod = reviewPeriod(spec, index);
         double sign = Values.stableSigned(signal.scenarioKey() + ":" + signal.caseKey());
         double policyPosition = Values.signedClamp(
@@ -113,6 +117,7 @@ public final class WorldGenerator {
                         + signal.minorityHarm() * 0.10
                         + signal.concentratedHarmPassage() * 0.08
                         + signal.lobbyCapture() * 0.08
+                        + domainRightsPressure(policyDomain) * 0.08
                         + random.nextDouble() * 0.06
         ) * doctrineArea.rightsWeight());
         double publicSupport = Values.clamp01(
@@ -132,6 +137,7 @@ public final class WorldGenerator {
                         + signal.fastLaneRate() * 0.26
                         + signal.highRiskLaneRate() * 0.24
                         + signal.challengeRate() * 0.14
+                        + domainUrgencyPressure(policyDomain) * 0.10
                         + random.nextDouble() * 0.16
         ) * emergencyDoctrineWeight(doctrineArea));
         double ambiguity = Values.clamp01((
@@ -146,6 +152,7 @@ public final class WorldGenerator {
                         + signal.policyShift() * 0.22
                         + signal.statusQuoVolatility() * 0.16
                         + signal.weakPublicMandatePassage() * 0.12
+                        + domainSaliencePressure(policyDomain) * 0.10
                         + random.nextDouble() * 0.16
         ) * doctrineArea.salienceWeight());
         double lowerPanelSkew = Values.signedClamp(
@@ -197,6 +204,7 @@ public final class WorldGenerator {
                 "leg-" + (index + 1) + "-" + signal.scenarioKey(),
                 type,
                 doctrineArea,
+                policyDomain,
                 jurisdiction,
                 lowerCourtPath,
                 reviewPeriod,
@@ -239,7 +247,19 @@ public final class WorldGenerator {
         return areas[random.nextInt(areas.length)];
     }
 
-    private static DoctrineArea importedDoctrine(LegislativeSignal signal, Random random) {
+    private static DoctrineArea importedDoctrine(LegislativeSignal signal, PolicyDomain policyDomain, Random random) {
+        DoctrineArea domainDoctrine = switch (policyDomain) {
+            case CIVIL_RIGHTS -> signal.minorityHarm() > 0.16 ? DoctrineArea.EQUALITY : DoctrineArea.SPEECH;
+            case CRIMINAL_JUSTICE -> DoctrineArea.CRIMINAL_PROCEDURE;
+            case ELECTIONS -> DoctrineArea.ELECTION_LAW;
+            case EMERGENCY_SECURITY -> DoctrineArea.EMERGENCY_POWERS;
+            case ADMINISTRATION -> DoctrineArea.ADMINISTRATIVE_STATE;
+            case ECONOMIC_REGULATION -> random.nextDouble() < 0.62 ? DoctrineArea.ADMINISTRATIVE_STATE : DoctrineArea.FEDERALISM;
+            case GOVERNANCE -> null;
+        };
+        if (domainDoctrine != null && random.nextDouble() < 0.78) {
+            return domainDoctrine;
+        }
         if (signal.highRiskLaneRate() > 0.24 || signal.fastLaneRate() > 0.24) {
             return DoctrineArea.EMERGENCY_POWERS;
         }
@@ -253,6 +273,18 @@ public final class WorldGenerator {
             return DoctrineArea.ADMINISTRATIVE_STATE;
         }
         return randomDoctrine(random);
+    }
+
+    private static PolicyDomain policyDomainFor(DoctrineArea doctrineArea, Random random) {
+        return switch (doctrineArea) {
+            case SPEECH -> random.nextDouble() < 0.72 ? PolicyDomain.CIVIL_RIGHTS : PolicyDomain.GOVERNANCE;
+            case EQUALITY -> PolicyDomain.CIVIL_RIGHTS;
+            case CRIMINAL_PROCEDURE -> PolicyDomain.CRIMINAL_JUSTICE;
+            case FEDERALISM -> random.nextDouble() < 0.58 ? PolicyDomain.GOVERNANCE : PolicyDomain.ECONOMIC_REGULATION;
+            case ELECTION_LAW -> PolicyDomain.ELECTIONS;
+            case EMERGENCY_POWERS -> PolicyDomain.EMERGENCY_SECURITY;
+            case ADMINISTRATIVE_STATE -> random.nextDouble() < 0.64 ? PolicyDomain.ADMINISTRATION : PolicyDomain.ECONOMIC_REGULATION;
+        };
     }
 
     private static Jurisdiction jurisdictionFor(DoctrineArea doctrineArea, WorldSpec spec, Random random) {
@@ -288,10 +320,20 @@ public final class WorldGenerator {
 
     private static Jurisdiction importedJurisdiction(
             LegislativeSignal signal,
+            PolicyDomain policyDomain,
             DoctrineArea doctrineArea,
             WorldSpec spec,
             Random random
     ) {
+        if (policyDomain == PolicyDomain.ELECTIONS) {
+            return random.nextDouble() < 0.58 ? Jurisdiction.STATE : Jurisdiction.MIXED_STATE_FEDERAL;
+        }
+        if (policyDomain == PolicyDomain.CRIMINAL_JUSTICE) {
+            return random.nextDouble() < 0.64 ? Jurisdiction.STATE : Jurisdiction.FEDERAL;
+        }
+        if (policyDomain == PolicyDomain.ADMINISTRATION) {
+            return random.nextDouble() < 0.78 ? Jurisdiction.FEDERAL : Jurisdiction.MIXED_STATE_FEDERAL;
+        }
         if (doctrineArea == DoctrineArea.FEDERALISM
                 || signal.publicPreferenceDistortion() > 0.24
                 || signal.statusQuoVolatility() > 0.20) {
@@ -304,7 +346,25 @@ public final class WorldGenerator {
     }
 
     private static LowerCourtPath lowerCourtPathFor(Jurisdiction jurisdiction, DoctrineArea doctrineArea, Random random) {
+        return lowerCourtPathFor(jurisdiction, doctrineArea, policyDomainFor(doctrineArea, random), random);
+    }
+
+    private static LowerCourtPath lowerCourtPathFor(
+            Jurisdiction jurisdiction,
+            DoctrineArea doctrineArea,
+            PolicyDomain policyDomain,
+            Random random
+    ) {
         double draw = random.nextDouble();
+        if (policyDomain == PolicyDomain.ELECTIONS && draw < 0.36) {
+            return LowerCourtPath.STATE_FEDERAL_SPLIT;
+        }
+        if (policyDomain == PolicyDomain.ADMINISTRATION && draw < 0.46) {
+            return LowerCourtPath.CIRCUIT_EN_BANC;
+        }
+        if (policyDomain == PolicyDomain.EMERGENCY_SECURITY && draw < 0.34) {
+            return LowerCourtPath.DISTRICT_ONLY;
+        }
         if (jurisdiction == Jurisdiction.MIXED_STATE_FEDERAL) {
             return draw < 0.72 ? LowerCourtPath.STATE_FEDERAL_SPLIT : LowerCourtPath.CIRCUIT_EN_BANC;
         }
@@ -321,6 +381,41 @@ public final class WorldGenerator {
             return LowerCourtPath.DISTRICT_ONLY;
         }
         return draw < 0.84 ? LowerCourtPath.CIRCUIT_PANEL : LowerCourtPath.CIRCUIT_EN_BANC;
+    }
+
+    private static double domainRightsPressure(PolicyDomain policyDomain) {
+        return switch (policyDomain) {
+            case CIVIL_RIGHTS -> 0.42;
+            case CRIMINAL_JUSTICE -> 0.34;
+            case ELECTIONS -> 0.30;
+            case EMERGENCY_SECURITY -> 0.24;
+            case ADMINISTRATION -> 0.12;
+            case ECONOMIC_REGULATION -> 0.10;
+            case GOVERNANCE -> 0.16;
+        };
+    }
+
+    private static double domainUrgencyPressure(PolicyDomain policyDomain) {
+        return switch (policyDomain) {
+            case EMERGENCY_SECURITY -> 0.52;
+            case ELECTIONS -> 0.30;
+            case ADMINISTRATION -> 0.22;
+            case CIVIL_RIGHTS, CRIMINAL_JUSTICE -> 0.18;
+            case ECONOMIC_REGULATION -> 0.14;
+            case GOVERNANCE -> 0.12;
+        };
+    }
+
+    private static double domainSaliencePressure(PolicyDomain policyDomain) {
+        return switch (policyDomain) {
+            case ELECTIONS -> 0.46;
+            case EMERGENCY_SECURITY -> 0.42;
+            case CIVIL_RIGHTS -> 0.34;
+            case CRIMINAL_JUSTICE -> 0.26;
+            case ADMINISTRATION -> 0.22;
+            case ECONOMIC_REGULATION -> 0.20;
+            case GOVERNANCE -> 0.18;
+        };
     }
 
     private static double stateFederalTension(

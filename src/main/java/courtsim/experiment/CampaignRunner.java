@@ -25,6 +25,8 @@ import java.util.Map;
 
 public final class CampaignRunner {
     private static final Path DEFAULT_CALIBRATION_TARGETS = Path.of("config/calibration-targets.csv");
+    private static final Path CALIBRATION_TARGET_DIR = Path.of("config/calibration");
+    private static final String INTERVAL_METHOD = "conservative-bounded-normal-95";
     private static final List<String> CORE_SCENARIOS = List.of(
             "current-federal-court",
             "eighteen-year-terms",
@@ -83,17 +85,27 @@ public final class CampaignRunner {
         Path periodCsvPath = outputDir.resolve(basename + "-periods.csv");
         Path doctrineCsvPath = outputDir.resolve(basename + "-doctrines.csv");
         Path pipelineCsvPath = outputDir.resolve(basename + "-pipelines.csv");
+        Path policyDomainCsvPath = outputDir.resolve(basename + "-policy-domains.csv");
         Path compositionCsvPath = outputDir.resolve(basename + "-composition.csv");
         Path calibrationCsvPath = outputDir.resolve(basename + "-calibration.csv");
+        Path intervalCsvPath = outputDir.resolve(basename + "-intervals.csv");
+        Path pipelineIntervalCsvPath = outputDir.resolve(basename + "-pipeline-intervals.csv");
+        Path compositionIntervalCsvPath = outputDir.resolve(basename + "-composition-intervals.csv");
+        Path calibrationIntervalCsvPath = outputDir.resolve(basename + "-calibration-intervals.csv");
         Path markdownPath = outputDir.resolve(basename + ".md");
         Path manifestPath = outputDir.resolve(basename + "-manifest.json");
         writeCsv(csvPath, rows);
         writeSegmentCsv(periodCsvPath, rows, SegmentKind.PERIOD);
         writeSegmentCsv(doctrineCsvPath, rows, SegmentKind.DOCTRINE);
         writeSegmentCsv(pipelineCsvPath, rows, SegmentKind.PIPELINE);
+        writeSegmentCsv(policyDomainCsvPath, rows, SegmentKind.POLICY_DOMAIN);
         writeCompositionCsv(compositionCsvPath, rows);
         List<CalibrationRow> calibrationRows = calibrationRows(rows);
         writeCalibrationCsv(calibrationCsvPath, calibrationRows);
+        writeCampaignIntervalCsv(intervalCsvPath, rows);
+        writeSegmentIntervalCsv(pipelineIntervalCsvPath, rows, SegmentKind.PIPELINE);
+        writeCompositionIntervalCsv(compositionIntervalCsvPath, rows);
+        writeCalibrationIntervalCsv(calibrationIntervalCsvPath, calibrationRows);
         writeMarkdown(markdownPath, rows, runs, seed, importedSignals, reportName, calibrationRows);
         ReportProvenance.write(
                 manifestPath,
@@ -104,7 +116,20 @@ public final class CampaignRunner {
                 cases.size(),
                 scenarios.size(),
                 LegislativeOutputImporter.describeImport(importedSignals),
-                List.of(csvPath, periodCsvPath, doctrineCsvPath, pipelineCsvPath, compositionCsvPath, calibrationCsvPath, markdownPath)
+                List.of(
+                        csvPath,
+                        periodCsvPath,
+                        doctrineCsvPath,
+                        pipelineCsvPath,
+                        policyDomainCsvPath,
+                        compositionCsvPath,
+                        calibrationCsvPath,
+                        intervalCsvPath,
+                        pipelineIntervalCsvPath,
+                        compositionIntervalCsvPath,
+                        calibrationIntervalCsvPath,
+                        markdownPath
+                )
         );
         return new CampaignResult(
                 reportName,
@@ -112,8 +137,13 @@ public final class CampaignRunner {
                 periodCsvPath,
                 doctrineCsvPath,
                 pipelineCsvPath,
+                policyDomainCsvPath,
                 compositionCsvPath,
                 calibrationCsvPath,
+                intervalCsvPath,
+                pipelineIntervalCsvPath,
+                compositionIntervalCsvPath,
+                calibrationIntervalCsvPath,
                 markdownPath,
                 manifestPath,
                 List.copyOf(rows)
@@ -351,7 +381,7 @@ public final class CampaignRunner {
 
     private void writeCsv(Path path, List<CampaignRow> rows) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad\n");
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
         for (CampaignRow row : rows) {
             ScenarioReport report = row.report();
             builder.append(csv(row.caseKey())).append(',')
@@ -408,7 +438,11 @@ public final class CampaignRunner {
                     .append(number(report.legislativeConflict())).append(',')
                     .append(number(report.courtCurbingPressure())).append(',')
                     .append(number(report.amendmentPressure())).append(',')
-                    .append(number(report.administrativeLoad()))
+                    .append(number(report.administrativeLoad())).append(',')
+                    .append(number(report.institutionalBudgetCost())).append(',')
+                    .append(number(report.institutionalDelayCost())).append(',')
+                    .append(number(report.implementationComplexity())).append(',')
+                    .append(number(report.totalInstitutionalCost()))
                     .append('\n');
         }
         Files.writeString(path, builder.toString());
@@ -416,7 +450,7 @@ public final class CampaignRunner {
 
     private void writeSegmentCsv(Path path, List<CampaignRow> rows, SegmentKind kind) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,totalCases,reviewedCases,reviewRate,legalStability,rightsProtection,shadowDocketAbuse,emergencyReliefRate,meritsInvalidationRate,lowerCourtConflict,averageTimeToReview,averageLowerCourtDepth,stateFederalTension,intercourtConflict,legitimacy,constitutionalConflict,democraticResponsiveness,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure\n");
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,totalCases,reviewedCases,reviewRate,legalStability,rightsProtection,shadowDocketAbuse,emergencyReliefRate,meritsInvalidationRate,lowerCourtConflict,averageTimeToReview,averageLowerCourtDepth,stateFederalTension,intercourtConflict,legitimacy,constitutionalConflict,democraticResponsiveness,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
         for (CampaignRow row : rows) {
             ScenarioReport report = row.report();
             for (SegmentReport segment : segments(row, kind)) {
@@ -454,7 +488,11 @@ public final class CampaignRunner {
                         .append(number(segment.publicTrust())).append(',')
                         .append(number(segment.legislativeConflict())).append(',')
                         .append(number(segment.courtCurbingPressure())).append(',')
-                        .append(number(segment.amendmentPressure()))
+                        .append(number(segment.amendmentPressure())).append(',')
+                        .append(number(segment.institutionalBudgetCost())).append(',')
+                        .append(number(segment.institutionalDelayCost())).append(',')
+                        .append(number(segment.implementationComplexity())).append(',')
+                        .append(number(segment.totalInstitutionalCost()))
                         .append('\n');
             }
         }
@@ -491,17 +529,131 @@ public final class CampaignRunner {
 
     private void writeCalibrationCsv(Path path, List<CalibrationRow> rows) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("targetKey,label,targetSource,observedValue,lowerBound,upperBound,withinTarget,gap,note\n");
+        builder.append("profileKey,court,timePeriod,targetKey,label,sourceName,sourceUrl,observedValue,lowerBound,upperBound,lower95,upper95,withinTarget,gap,n,method,note,targetFile\n");
         for (CalibrationRow row : rows) {
-            builder.append(csv(row.target().key())).append(',')
+            Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
+            builder.append(csv(row.target().profileKey())).append(',')
+                    .append(csv(row.target().court())).append(',')
+                    .append(csv(row.target().timePeriod())).append(',')
+                    .append(csv(row.target().key())).append(',')
                     .append(csv(row.target().label())).append(',')
-                    .append(csv(row.target().source())).append(',')
+                    .append(csv(row.target().sourceName())).append(',')
+                    .append(csv(row.target().sourceUrl())).append(',')
                     .append(number(row.observedValue())).append(',')
                     .append(number(row.target().lowerBound())).append(',')
                     .append(number(row.target().upperBound())).append(',')
+                    .append(number(interval.lower())).append(',')
+                    .append(number(interval.upper())).append(',')
                     .append(row.withinTarget()).append(',')
                     .append(number(row.gap())).append(',')
-                    .append(csv(row.target().note()))
+                    .append(row.sampleSize()).append(',')
+                    .append(csv(INTERVAL_METHOD)).append(',')
+                    .append(csv(row.target().note())).append(',')
+                    .append(csv(row.target().targetFile()))
+                    .append('\n');
+        }
+        Files.writeString(path, builder.toString());
+    }
+
+    private void writeCampaignIntervalCsv(Path path, List<CampaignRow> rows) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,metric,estimate,lower95,upper95,n,method\n");
+        for (CampaignRow row : rows) {
+            ScenarioReport report = row.report();
+            for (ReportIntervalMetric metric : reportIntervalMetrics()) {
+                Interval interval = interval(metric.value().value(report), metric.sampleSize().value(report), metric.minimum(), metric.maximum());
+                builder.append(csv(row.caseKey())).append(',')
+                        .append(csv(row.caseName())).append(',')
+                        .append(csv(row.caseDescription())).append(',')
+                        .append(csv(report.scenarioKey())).append(',')
+                        .append(csv(report.scenarioName())).append(',')
+                        .append(csv(metric.key())).append(',')
+                        .append(number(metric.value().value(report))).append(',')
+                        .append(number(interval.lower())).append(',')
+                        .append(number(interval.upper())).append(',')
+                        .append(metric.sampleSize().value(report)).append(',')
+                        .append(csv(INTERVAL_METHOD))
+                        .append('\n');
+            }
+        }
+        Files.writeString(path, builder.toString());
+    }
+
+    private void writeSegmentIntervalCsv(Path path, List<CampaignRow> rows, SegmentKind kind) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,metric,estimate,lower95,upper95,n,method\n");
+        for (CampaignRow row : rows) {
+            ScenarioReport report = row.report();
+            for (SegmentReport segment : segments(row, kind)) {
+                for (SegmentIntervalMetric metric : segmentIntervalMetrics()) {
+                    Interval interval = interval(metric.value().value(segment), metric.sampleSize().value(segment), metric.minimum(), metric.maximum());
+                    builder.append(csv(row.caseKey())).append(',')
+                            .append(csv(row.caseName())).append(',')
+                            .append(csv(row.caseDescription())).append(',')
+                            .append(csv(report.scenarioKey())).append(',')
+                            .append(csv(report.scenarioName())).append(',')
+                            .append(csv(segment.segmentType())).append(',')
+                            .append(csv(segment.segmentKey())).append(',')
+                            .append(csv(metric.key())).append(',')
+                            .append(number(metric.value().value(segment))).append(',')
+                            .append(number(interval.lower())).append(',')
+                            .append(number(interval.upper())).append(',')
+                            .append(metric.sampleSize().value(segment)).append(',')
+                            .append(csv(INTERVAL_METHOD))
+                            .append('\n');
+                }
+            }
+        }
+        Files.writeString(path, builder.toString());
+    }
+
+    private void writeCompositionIntervalCsv(Path path, List<CampaignRow> rows) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,metric,estimate,lower95,upper95,n,method\n");
+        for (CampaignRow row : rows) {
+            ScenarioReport report = row.report();
+            for (CompositionReport composition : report.compositionReports()) {
+                for (CompositionIntervalMetric metric : compositionIntervalMetrics()) {
+                    Interval interval = interval(metric.value().value(composition), composition.observations(), metric.minimum(), metric.maximum());
+                    builder.append(csv(row.caseKey())).append(',')
+                            .append(csv(row.caseName())).append(',')
+                            .append(csv(row.caseDescription())).append(',')
+                            .append(csv(report.scenarioKey())).append(',')
+                            .append(csv(report.scenarioName())).append(',')
+                            .append(csv(composition.segmentType())).append(',')
+                            .append(csv(composition.segmentKey())).append(',')
+                            .append(csv(metric.key())).append(',')
+                            .append(number(metric.value().value(composition))).append(',')
+                            .append(number(interval.lower())).append(',')
+                            .append(number(interval.upper())).append(',')
+                            .append(composition.observations()).append(',')
+                            .append(csv(INTERVAL_METHOD))
+                            .append('\n');
+                }
+            }
+        }
+        Files.writeString(path, builder.toString());
+    }
+
+    private void writeCalibrationIntervalCsv(Path path, List<CalibrationRow> rows) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        builder.append("profileKey,court,timePeriod,targetKey,label,estimate,lower95,upper95,targetLower,targetUpper,n,method,sourceName,sourceUrl\n");
+        for (CalibrationRow row : rows) {
+            Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
+            builder.append(csv(row.target().profileKey())).append(',')
+                    .append(csv(row.target().court())).append(',')
+                    .append(csv(row.target().timePeriod())).append(',')
+                    .append(csv(row.target().key())).append(',')
+                    .append(csv(row.target().label())).append(',')
+                    .append(number(row.observedValue())).append(',')
+                    .append(number(interval.lower())).append(',')
+                    .append(number(interval.upper())).append(',')
+                    .append(number(row.target().lowerBound())).append(',')
+                    .append(number(row.target().upperBound())).append(',')
+                    .append(row.sampleSize()).append(',')
+                    .append(csv(INTERVAL_METHOD)).append(',')
+                    .append(csv(row.target().sourceName())).append(',')
+                    .append(csv(row.target().sourceUrl()))
                     .append('\n');
         }
         Files.writeString(path, builder.toString());
@@ -560,8 +712,8 @@ public final class CampaignRunner {
         }
 
         builder.append("## Scenario Averages\n\n");
-        builder.append("| Scenario | Score | Stability | Rights | Partisan | Shadow | Emerg. relief | Merits inval. | Legitimacy | Reversal | Conflict | Response | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin |\n");
-        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
+        builder.append("| Scenario | Score | Stability | Rights | Partisan | Shadow | Emerg. relief | Merits inval. | Legitimacy | Reversal | Conflict | Response | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Budget | Delay | Complex | Cost |\n");
+        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
         for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
             List<ScenarioReport> reports = rows.stream()
                     .filter(row -> row.report().scenarioKey().equals(scenarioKey))
@@ -587,12 +739,18 @@ public final class CampaignRunner {
                     .append(number(average(reports, ScenarioReport::localGovernmentComplianceRate))).append(" | ")
                     .append(number(average(reports, ScenarioReport::averageLowerCourtDepth))).append(" | ")
                     .append(number(average(reports, ScenarioReport::stateFederalTension))).append(" | ")
-                    .append(number(average(reports, ScenarioReport::administrativeLoad))).append(" |\n");
+                    .append(number(average(reports, ScenarioReport::administrativeLoad))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::institutionalBudgetCost))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::institutionalDelayCost))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::implementationComplexity))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::totalInstitutionalCost))).append(" |\n");
         }
         appendSegmentDiagnostics(builder, rows, "Period Diagnostics", SegmentKind.PERIOD);
         appendSegmentDiagnostics(builder, rows, "Doctrine Diagnostics", SegmentKind.DOCTRINE);
         appendSegmentDiagnostics(builder, rows, "Pipeline Diagnostics", SegmentKind.PIPELINE);
+        appendSegmentDiagnostics(builder, rows, "Policy Domain Diagnostics", SegmentKind.POLICY_DOMAIN);
         appendCompositionDiagnostics(builder, rows);
+        appendUncertaintySummary(builder, rows);
         appendCalibrationDiagnostics(builder, calibrationRows);
         Files.writeString(path, builder.toString());
     }
@@ -604,8 +762,8 @@ public final class CampaignRunner {
             SegmentKind kind
     ) {
         builder.append("\n## ").append(title).append("\n\n");
-        builder.append("| Scenario | Segment | Cases | Review | Rights | Shadow | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing |\n");
-        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
+        builder.append("| Scenario | Segment | Cases | Review | Rights | Shadow | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |\n");
+        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
         for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
             List<CampaignRow> scenarioRows = rows.stream()
                     .filter(row -> row.report().scenarioKey().equals(scenarioKey))
@@ -639,7 +797,8 @@ public final class CampaignRunner {
                         .append(number(segmentAverage(reports, SegmentReport::localGovernmentComplianceRate))).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::publicTrust))).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::legislativeConflict))).append(" | ")
-                        .append(number(segmentAverage(reports, SegmentReport::courtCurbingPressure))).append(" |\n");
+                        .append(number(segmentAverage(reports, SegmentReport::courtCurbingPressure))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::totalInstitutionalCost))).append(" |\n");
             }
         }
     }
@@ -678,13 +837,35 @@ public final class CampaignRunner {
         }
     }
 
+    private void appendUncertaintySummary(StringBuilder builder, List<CampaignRow> rows) {
+        builder.append("\n## Uncertainty Diagnostics\n\n");
+        builder.append("Campaign, pipeline, composition, and calibration CSV artifacts include 95% uncertainty bands using `")
+                .append(INTERVAL_METHOD)
+                .append("`. These bands are conservative approximations from aggregate report denominators; they are not a substitute for raw per-case bootstrap resampling.\n\n");
+        builder.append("| Scenario | Median score band width | Median cost band width |\n");
+        builder.append("| --- | ---: | ---: |\n");
+        for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
+            List<CampaignRow> scenarioRows = rows.stream()
+                    .filter(row -> row.report().scenarioKey().equals(scenarioKey))
+                    .toList();
+            ScenarioReport first = scenarioRows.get(0).report();
+            builder.append("| ").append(first.scenarioName()).append(" | ")
+                    .append(number(medianIntervalWidth(scenarioRows, ScenarioReport::directionalScore, 0.0, 1.0))).append(" | ")
+                    .append(number(medianIntervalWidth(scenarioRows, ScenarioReport::totalInstitutionalCost, 0.0, 1.0))).append(" |\n");
+        }
+    }
+
     private void appendCalibrationDiagnostics(StringBuilder builder, List<CalibrationRow> rows) {
         builder.append("\n## Calibration Diagnostics\n\n");
-        builder.append("| Target | Observed | Range | Gap | Status |\n");
-        builder.append("| --- | ---: | ---: | ---: | --- |\n");
+        builder.append("| Profile | Target | Observed | 95% band | Range | Gap | Status |\n");
+        builder.append("| --- | --- | ---: | ---: | ---: | ---: | --- |\n");
         for (CalibrationRow row : rows) {
-            builder.append("| ").append(row.target().label()).append(" | ")
+            Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
+            builder.append("| ").append(row.target().profileKey()).append(" | ")
+                    .append(row.target().label()).append(" | ")
                     .append(number(row.observedValue())).append(" | ")
+                    .append(number(interval.lower())).append("-")
+                    .append(number(interval.upper())).append(" | ")
                     .append(number(row.target().lowerBound())).append("-")
                     .append(number(row.target().upperBound())).append(" | ")
                     .append(number(row.gap())).append(" | ")
@@ -698,6 +879,7 @@ public final class CampaignRunner {
             case PERIOD -> row.report().periodReports();
             case DOCTRINE -> row.report().doctrineReports();
             case PIPELINE -> row.report().pipelineReports();
+            case POLICY_DOMAIN -> row.report().policyDomainReports();
         };
     }
 
@@ -742,19 +924,20 @@ public final class CampaignRunner {
     }
 
     private List<CalibrationRow> calibrationRows(List<CampaignRow> rows) throws IOException {
-        Map<String, Double> observed = observedCalibrationValues(rows);
+        Map<String, CalibrationObservation> observed = observedCalibrationValues(rows);
         List<CalibrationRow> calibrationRows = new ArrayList<>();
         for (CalibrationTarget target : calibrationTargets()) {
-            double value = observed.getOrDefault(target.key(), 0.0);
+            CalibrationObservation observation = observed.getOrDefault(target.key(), new CalibrationObservation(0.0, 0));
+            double value = observation.value();
             boolean within = value >= target.lowerBound() && value <= target.upperBound();
             double gap = within ? 0.0 : Math.min(Math.abs(value - target.lowerBound()), Math.abs(value - target.upperBound()));
-            calibrationRows.add(new CalibrationRow(target, value, within, gap));
+            calibrationRows.add(new CalibrationRow(target, value, observation.sampleSize(), within, gap));
         }
         return List.copyOf(calibrationRows);
     }
 
-    private Map<String, Double> observedCalibrationValues(List<CampaignRow> rows) {
-        Map<String, Double> observed = new LinkedHashMap<>();
+    private Map<String, CalibrationObservation> observedCalibrationValues(List<CampaignRow> rows) {
+        Map<String, CalibrationObservation> observed = new LinkedHashMap<>();
         int totalCases = rows.stream().mapToInt(row -> row.report().totalCases()).sum();
         for (DoctrineArea doctrineArea : DoctrineArea.values()) {
             int doctrineCases = rows.stream()
@@ -762,55 +945,85 @@ public final class CampaignRunner {
                     .filter(segment -> segment.segmentKey().equals(doctrineArea.name().toLowerCase()))
                     .mapToInt(SegmentReport::totalCases)
                     .sum();
-            observed.put("doctrine_mix." + doctrineArea.name().toLowerCase(), Values.ratio(doctrineCases, totalCases));
+            observed.put("doctrine_mix." + doctrineArea.name().toLowerCase(), new CalibrationObservation(Values.ratio(doctrineCases, totalCases), totalCases));
         }
         int emergencyOrders = rows.stream().mapToInt(row -> row.report().emergencyOrders()).sum();
         int emergencyReliefs = rows.stream().mapToInt(row -> row.report().emergencyReliefs()).sum();
-        observed.put("emergency_relief_rate", Values.ratio(emergencyReliefs, emergencyOrders));
-        observed.put("compliance_rate", weightedAverage(rows, ScenarioReport::complianceRate));
-        observed.put("legitimacy_trust_gradient", legitimacyTrustGradient(rows));
+        observed.put("emergency_relief_rate", new CalibrationObservation(Values.ratio(emergencyReliefs, emergencyOrders), emergencyOrders));
+        observed.put("compliance_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::complianceRate), totalCases));
+        observed.put("public_trust", new CalibrationObservation(weightedAverage(rows, ScenarioReport::publicTrust), totalCases));
+        observed.put("legitimacy_trust_gradient", new CalibrationObservation(legitimacyTrustGradient(rows), rows.size()));
         return observed;
     }
 
     private List<CalibrationTarget> calibrationTargets() throws IOException {
-        if (!Files.exists(DEFAULT_CALIBRATION_TARGETS)) {
-            return defaultCalibrationTargets("built-in-defaults");
-        }
         List<CalibrationTarget> targets = new ArrayList<>();
-        List<String> lines = Files.readAllLines(DEFAULT_CALIBRATION_TARGETS);
+        List<Path> targetFiles = calibrationTargetFiles();
+        for (Path targetFile : targetFiles) {
+            targets.addAll(calibrationTargets(targetFile));
+        }
+        return targets.isEmpty() ? defaultCalibrationTargets("built-in-defaults") : List.copyOf(targets);
+    }
+
+    private List<Path> calibrationTargetFiles() throws IOException {
+        if (Files.isDirectory(CALIBRATION_TARGET_DIR)) {
+            try (var stream = Files.list(CALIBRATION_TARGET_DIR)) {
+                List<Path> files = stream
+                        .filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith(".csv"))
+                        .sorted()
+                        .toList();
+                if (!files.isEmpty()) {
+                    return files;
+                }
+            }
+        }
+        if (Files.exists(DEFAULT_CALIBRATION_TARGETS)) {
+            return List.of(DEFAULT_CALIBRATION_TARGETS);
+        }
+        return List.of();
+    }
+
+    private List<CalibrationTarget> calibrationTargets(Path targetFile) throws IOException {
+        List<CalibrationTarget> targets = new ArrayList<>();
+        List<String> lines = Files.readAllLines(targetFile);
+        if (lines.isEmpty()) {
+            return targets;
+        }
+        List<String> header = parseCsvLine(lines.get(0));
+        Map<String, Integer> columns = new LinkedHashMap<>();
+        for (int i = 0; i < header.size(); i++) {
+            columns.put(header.get(i), i);
+        }
         for (int i = 1; i < lines.size(); i++) {
             String line = lines.get(i).trim();
             if (line.isEmpty() || line.startsWith("#")) {
                 continue;
             }
-            String[] parts = line.split(",", -1);
-            if (parts.length < 5) {
-                throw new IOException("Malformed calibration target row " + (i + 1) + " in " + DEFAULT_CALIBRATION_TARGETS);
-            }
+            List<String> parts = parseCsvLine(line);
             targets.add(new CalibrationTarget(
-                    parts[0].trim(),
-                    parts[1].trim(),
-                    Double.parseDouble(parts[2].trim()),
-                    Double.parseDouble(parts[3].trim()),
-                    parts[4].trim(),
-                    DEFAULT_CALIBRATION_TARGETS.toString()
+                    calibrationValue(parts, columns, "profileKey", "default"),
+                    calibrationValue(parts, columns, "court", "unspecified court"),
+                    calibrationValue(parts, columns, "timePeriod", "unspecified period"),
+                    calibrationValue(parts, columns, "targetKey", positional(parts, 0)),
+                    calibrationValue(parts, columns, "label", positional(parts, 1)),
+                    Double.parseDouble(calibrationValue(parts, columns, "lowerBound", positional(parts, 2))),
+                    Double.parseDouble(calibrationValue(parts, columns, "upperBound", positional(parts, 3))),
+                    calibrationValue(parts, columns, "note", positional(parts, 4)),
+                    calibrationValue(parts, columns, "sourceName", targetFile.getFileName().toString()),
+                    calibrationValue(parts, columns, "sourceUrl", ""),
+                    targetFile.toString()
             ));
         }
-        return targets.isEmpty() ? defaultCalibrationTargets("built-in-defaults") : List.copyOf(targets);
+        return targets;
     }
 
     private List<CalibrationTarget> defaultCalibrationTargets(String source) {
+        String sourceUrl = "https://scdb.la.psu.edu/data/2025-release-01/";
         return List.of(
-                new CalibrationTarget("doctrine_mix.speech", "Speech docket share", 0.08, 0.20, "Starter external range for speech claims.", source),
-                new CalibrationTarget("doctrine_mix.equality", "Equality docket share", 0.08, 0.20, "Starter external range for equality claims.", source),
-                new CalibrationTarget("doctrine_mix.criminal_procedure", "Criminal procedure docket share", 0.08, 0.20, "Starter external range for criminal-procedure claims.", source),
-                new CalibrationTarget("doctrine_mix.federalism", "Federalism docket share", 0.06, 0.18, "Starter external range for federalism claims.", source),
-                new CalibrationTarget("doctrine_mix.election_law", "Election law docket share", 0.05, 0.16, "Starter external range for election-law claims.", source),
-                new CalibrationTarget("doctrine_mix.emergency_powers", "Emergency powers docket share", 0.04, 0.14, "Starter external range for emergency-powers claims.", source),
-                new CalibrationTarget("doctrine_mix.administrative_state", "Administrative state docket share", 0.06, 0.18, "Starter external range for administrative-state claims.", source),
-                new CalibrationTarget("emergency_relief_rate", "Emergency relief rate", 0.05, 0.24, "Share of emergency orders granting interim relief.", source),
-                new CalibrationTarget("compliance_rate", "Compliance rate", 0.70, 0.95, "Share of cases with institutional compliance.", source),
-                new CalibrationTarget("legitimacy_trust_gradient", "Legitimacy response to trust", 0.15, 1.20, "Slope of legitimacy over public-trust outcomes across campaign rows.", source)
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.speech", "Speech docket share", 0.039, 0.080, "SCDB issueArea 3 share in 2000-2024 case-centered data.", source, sourceUrl, source),
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.equality", "Civil-rights and privacy docket share", 0.137, 0.191, "SCDB issueArea 2 and 5 less election-law issue subset.", source, sourceUrl, source),
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.criminal_procedure", "Criminal procedure docket share", 0.230, 0.289, "SCDB issueArea 1 share in 2000-2024 case-centered data.", source, sourceUrl, source),
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.federalism", "Federalism docket share", 0.037, 0.078, "SCDB issueArea 10 and 11 share in 2000-2024 case-centered data.", source, sourceUrl, source)
         );
     }
 
@@ -842,6 +1055,94 @@ public final class CampaignRunner {
         return covariance / variance;
     }
 
+    private static List<ReportIntervalMetric> reportIntervalMetrics() {
+        return List.of(
+                new ReportIntervalMetric("directionalScore", ScenarioReport::directionalScore, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("legalStability", ScenarioReport::legalStability, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("rightsProtection", ScenarioReport::rightsProtection, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("partisanAlignment", ScenarioReport::partisanAlignment, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("shadowDocketAbuse", ScenarioReport::shadowDocketAbuse, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("legitimacy", ScenarioReport::legitimacy, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("reversalRate", ScenarioReport::reversalRate, ScenarioReport::reviewedCases, 0.0, 1.0),
+                new ReportIntervalMetric("reviewRate", ScenarioReport::reviewRate, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("emergencyReliefRate", ScenarioReport::emergencyReliefRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
+                new ReportIntervalMetric("meritsInvalidationRate", ScenarioReport::meritsInvalidationRate, ScenarioReport::meritsReviews, 0.0, 1.0),
+                new ReportIntervalMetric("constitutionalConflict", ScenarioReport::constitutionalConflict, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("democraticResponsiveness", ScenarioReport::democraticResponsiveness, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("complianceRate", ScenarioReport::complianceRate, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("publicTrust", ScenarioReport::publicTrust, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("administrativeLoad", ScenarioReport::administrativeLoad, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("institutionalBudgetCost", ScenarioReport::institutionalBudgetCost, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("institutionalDelayCost", ScenarioReport::institutionalDelayCost, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("implementationComplexity", ScenarioReport::implementationComplexity, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("totalInstitutionalCost", ScenarioReport::totalInstitutionalCost, ScenarioReport::totalCases, 0.0, 1.0)
+        );
+    }
+
+    private static List<SegmentIntervalMetric> segmentIntervalMetrics() {
+        return List.of(
+                new SegmentIntervalMetric("reviewRate", SegmentReport::reviewRate, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("legalStability", SegmentReport::legalStability, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("rightsProtection", SegmentReport::rightsProtection, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("shadowDocketAbuse", SegmentReport::shadowDocketAbuse, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("emergencyReliefRate", SegmentReport::emergencyReliefRate, SegmentReport::reviewedCases, 0.0, 1.0),
+                new SegmentIntervalMetric("meritsInvalidationRate", SegmentReport::meritsInvalidationRate, SegmentReport::reviewedCases, 0.0, 1.0),
+                new SegmentIntervalMetric("legitimacy", SegmentReport::legitimacy, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("constitutionalConflict", SegmentReport::constitutionalConflict, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("democraticResponsiveness", SegmentReport::democraticResponsiveness, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("complianceRate", SegmentReport::complianceRate, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("publicTrust", SegmentReport::publicTrust, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("institutionalBudgetCost", SegmentReport::institutionalBudgetCost, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("institutionalDelayCost", SegmentReport::institutionalDelayCost, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("implementationComplexity", SegmentReport::implementationComplexity, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("totalInstitutionalCost", SegmentReport::totalInstitutionalCost, SegmentReport::totalCases, 0.0, 1.0)
+        );
+    }
+
+    private static List<CompositionIntervalMetric> compositionIntervalMetrics() {
+        return List.of(
+                new CompositionIntervalMetric("courtSize", CompositionReport::courtSize, 3.0, 30.0),
+                new CompositionIntervalMetric("medianIdeology", CompositionReport::medianIdeology, -1.0, 1.0),
+                new CompositionIntervalMetric("ideologicalSpread", CompositionReport::ideologicalSpread, 0.0, 2.0),
+                new CompositionIntervalMetric("meanPartisanAttachment", CompositionReport::meanPartisanAttachment, 0.0, 1.0),
+                new CompositionIntervalMetric("meanRightsSensitivity", CompositionReport::meanRightsSensitivity, 0.0, 1.0),
+                new CompositionIntervalMetric("meanInstitutionalism", CompositionReport::meanInstitutionalism, 0.0, 1.0),
+                new CompositionIntervalMetric("replacementPressure", CompositionReport::replacementPressure, 0.0, 1.0),
+                new CompositionIntervalMetric("estimatedReplacementEvents", CompositionReport::estimatedReplacementEvents, 0.0, 18.0)
+        );
+    }
+
+    private static double medianIntervalWidth(List<CampaignRow> rows, MetricReader reader, double minimum, double maximum) {
+        List<Double> widths = rows.stream()
+                .map(row -> interval(reader.value(row.report()), row.report().totalCases(), minimum, maximum))
+                .map(interval -> interval.upper() - interval.lower())
+                .sorted()
+                .toList();
+        if (widths.isEmpty()) {
+            return 0.0;
+        }
+        int middle = widths.size() / 2;
+        if (widths.size() % 2 == 1) {
+            return widths.get(middle);
+        }
+        return (widths.get(middle - 1) + widths.get(middle)) / 2.0;
+    }
+
+    private static Interval interval(double estimate, int sampleSize, double minimum, double maximum) {
+        if (sampleSize <= 1 || maximum <= minimum) {
+            return new Interval(estimate, estimate);
+        }
+        double bounded = Values.clamp(estimate, minimum, maximum);
+        double width = maximum - minimum;
+        double normalized = Values.clamp01((bounded - minimum) / width);
+        double variance = Math.max(normalized * (1.0 - normalized), 0.04);
+        double margin = 1.96 * width * Math.sqrt(variance / sampleSize);
+        return new Interval(
+                Values.clamp(bounded - margin, minimum, maximum),
+                Values.clamp(bounded + margin, minimum, maximum)
+        );
+    }
+
     private static double average(List<ScenarioReport> reports, MetricReader reader) {
         if (reports.isEmpty()) {
             return 0.0;
@@ -858,6 +1159,46 @@ public final class CampaignRunner {
             return value;
         }
         return '"' + value.replace("\"", "\"\"") + '"';
+    }
+
+    private static List<String> parseCsvLine(String line) {
+        List<String> values = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean quoted = false;
+        for (int i = 0; i < line.length(); i++) {
+            char character = line.charAt(i);
+            if (character == '"') {
+                if (quoted && i + 1 < line.length() && line.charAt(i + 1) == '"') {
+                    current.append('"');
+                    i++;
+                } else {
+                    quoted = !quoted;
+                }
+            } else if (character == ',' && !quoted) {
+                values.add(current.toString());
+                current.setLength(0);
+            } else {
+                current.append(character);
+            }
+        }
+        values.add(current.toString());
+        return values;
+    }
+
+    private static String calibrationValue(List<String> row, Map<String, Integer> columns, String key, String defaultValue) {
+        Integer index = columns.get(key);
+        if (index == null || index >= row.size()) {
+            return defaultValue;
+        }
+        String value = row.get(index).trim();
+        return value.isEmpty() ? defaultValue : value;
+    }
+
+    private static String positional(List<String> row, int index) {
+        if (index < 0 || index >= row.size()) {
+            return "";
+        }
+        return row.get(index).trim();
     }
 
     private static String number(double value) {
@@ -884,7 +1225,8 @@ public final class CampaignRunner {
     private enum SegmentKind {
         PERIOD,
         DOCTRINE,
-        PIPELINE
+        PIPELINE,
+        POLICY_DOMAIN
     }
 
     @FunctionalInterface
@@ -903,23 +1245,71 @@ public final class CampaignRunner {
     }
 
     @FunctionalInterface
+    private interface ReportSampleSizeReader {
+        int value(ScenarioReport report);
+    }
+
+    @FunctionalInterface
+    private interface SegmentSampleSizeReader {
+        int value(SegmentReport report);
+    }
+
+    @FunctionalInterface
     private interface CompositionMetricReader {
         double value(CompositionReport report);
     }
 
+    private record ReportIntervalMetric(
+            String key,
+            MetricReader value,
+            ReportSampleSizeReader sampleSize,
+            double minimum,
+            double maximum
+    ) {
+    }
+
+    private record SegmentIntervalMetric(
+            String key,
+            SegmentMetricReader value,
+            SegmentSampleSizeReader sampleSize,
+            double minimum,
+            double maximum
+    ) {
+    }
+
+    private record CompositionIntervalMetric(
+            String key,
+            CompositionMetricReader value,
+            double minimum,
+            double maximum
+    ) {
+    }
+
+    private record Interval(double lower, double upper) {
+    }
+
     private record CalibrationTarget(
+            String profileKey,
+            String court,
+            String timePeriod,
             String key,
             String label,
             double lowerBound,
             double upperBound,
             String note,
-            String source
+            String sourceName,
+            String sourceUrl,
+            String targetFile
     ) {
+    }
+
+    private record CalibrationObservation(double value, int sampleSize) {
     }
 
     private record CalibrationRow(
             CalibrationTarget target,
             double observedValue,
+            int sampleSize,
             boolean withinTarget,
             double gap
     ) {

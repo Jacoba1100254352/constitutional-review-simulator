@@ -55,8 +55,13 @@ public final class Main {
             System.out.println("Wrote " + result.periodCsvPath());
             System.out.println("Wrote " + result.doctrineCsvPath());
             System.out.println("Wrote " + result.pipelineCsvPath());
+            System.out.println("Wrote " + result.policyDomainCsvPath());
             System.out.println("Wrote " + result.compositionCsvPath());
             System.out.println("Wrote " + result.calibrationCsvPath());
+            System.out.println("Wrote " + result.intervalCsvPath());
+            System.out.println("Wrote " + result.pipelineIntervalCsvPath());
+            System.out.println("Wrote " + result.compositionIntervalCsvPath());
+            System.out.println("Wrote " + result.calibrationIntervalCsvPath());
             System.out.println("Wrote " + result.markdownPath());
             System.out.println("Wrote " + result.manifestPath());
             return;
@@ -103,7 +108,7 @@ public final class Main {
         System.out.println("Input: " + LegislativeOutputImporter.describeImport(importedSignals));
         System.out.printf(
                 Locale.ROOT,
-                "%-38s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s%n",
+                "%-38s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s%n",
                 "Scenario",
                 "Score",
                 "Stable",
@@ -115,12 +120,13 @@ public final class Main {
                 "ERel",
                 "Conf",
                 "Resp",
-                "Comp"
+                "Comp",
+                "Cost"
         );
         for (ScenarioReport report : reports) {
             System.out.printf(
                     Locale.ROOT,
-                    "%-38s %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f%n",
+                    "%-38s %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f%n",
                     truncate(report.scenarioKey(), 38),
                     report.directionalScore(),
                     report.legalStability(),
@@ -132,17 +138,18 @@ public final class Main {
                     report.emergencyReliefRate(),
                     report.constitutionalConflict(),
                     report.democraticResponsiveness(),
-                    report.complianceRate()
+                    report.complianceRate(),
+                    report.totalInstitutionalCost()
             );
         }
     }
 
     private static void printCsv(List<ScenarioReport> reports) {
-        System.out.println("scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad");
+        System.out.println("scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost");
         for (ScenarioReport report : reports) {
             System.out.printf(
                     Locale.ROOT,
-                    "%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f%n",
+                    "%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f%n",
                     csv(report.scenarioKey()),
                     csv(report.scenarioName()),
                     report.totalCases(),
@@ -194,7 +201,11 @@ public final class Main {
                     report.legislativeConflict(),
                     report.courtCurbingPressure(),
                     report.amendmentPressure(),
-                    report.administrativeLoad()
+                    report.administrativeLoad(),
+                    report.institutionalBudgetCost(),
+                    report.institutionalDelayCost(),
+                    report.implementationComplexity(),
+                    report.totalInstitutionalCost()
             );
         }
     }

@@ -49,7 +49,11 @@ public record MetricDefinition(
             new MetricDefinition("lowerCourtConflict", "Lower-court conflict", MetricDirection.DIAGNOSTIC, "Average lower-court conflict and circuit-split pressure."),
             new MetricDefinition("averageTimeToReview", "Time to review", MetricDirection.DIAGNOSTIC, "Stylized delay before final review."),
             new MetricDefinition("replacementRate", "Replacement pressure", MetricDirection.DIAGNOSTIC, "Dynamic court-composition turnover pressure across review periods."),
-            new MetricDefinition("administrativeLoad", "Administrative load", MetricDirection.LOWER_IS_BETTER, "Procedural cost from review structure, emergency review, cross-checks, and recusals.")
+            new MetricDefinition("administrativeLoad", "Administrative load", MetricDirection.LOWER_IS_BETTER, "Procedural cost from review structure, emergency review, cross-checks, and recusals."),
+            new MetricDefinition("institutionalBudgetCost", "Institutional budget cost", MetricDirection.LOWER_IS_BETTER, "Scenario-specific staffing and duplication cost from court size, councils, cross-checking structures, and substitutions."),
+            new MetricDefinition("institutionalDelayCost", "Institutional delay cost", MetricDirection.LOWER_IS_BETTER, "Scenario-specific delay burden from lower-court path, en banc steps, cross-checks, councils, and emergency shortcuts."),
+            new MetricDefinition("implementationComplexity", "Implementation complexity", MetricDirection.LOWER_IS_BETTER, "Operational complexity of thresholds, overrides, recusal machinery, and docket procedures."),
+            new MetricDefinition("totalInstitutionalCost", "Total institutional cost", MetricDirection.LOWER_IS_BETTER, "Weighted budget, delay, and implementation complexity cost.")
     );
 
     private static final Map<String, MetricDefinition> BY_KEY = DEFINITIONS.stream()

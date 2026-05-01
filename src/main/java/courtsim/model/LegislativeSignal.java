@@ -4,6 +4,7 @@ public record LegislativeSignal(
         String caseKey,
         String scenarioKey,
         String scenarioName,
+        PolicyDomain policyDomain,
         double averageSupport,
         double welfare,
         double legitimacy,
@@ -23,4 +24,3 @@ public record LegislativeSignal(
         double challengeRate
 ) {
 }
-

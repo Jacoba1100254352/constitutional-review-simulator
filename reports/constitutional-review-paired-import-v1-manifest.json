@@ -11,12 +11,17 @@
   "scenarioCount": 12,
   "inputDescription": "986 imported legislative rows across 29 scenarios",
   "artifacts": [
-    {"path": "reports/constitutional-review-paired-import-v1.csv", "sha256": "c6a194b7f46062240c31a7701fca9a2f47a4cc230741119cd9a83f6ee45dcacd"},
-    {"path": "reports/constitutional-review-paired-import-v1-periods.csv", "sha256": "cd2f474e5c12e0e2c6dc394c27a1bfcba9227f49d241550327bafe65a50eb5aa"},
-    {"path": "reports/constitutional-review-paired-import-v1-doctrines.csv", "sha256": "a03875b4662872f055bf46e0b2970636b9acf18dfc483abdabc70ff3eabe2260"},
-    {"path": "reports/constitutional-review-paired-import-v1-pipelines.csv", "sha256": "f896da2171c5767932f7494c9c3f7e624a44f4fa4564af78bca150022c363a84"},
+    {"path": "reports/constitutional-review-paired-import-v1.csv", "sha256": "d0d786ae3235a4735f912edbb210ad91a92e7033ec3c14c9285b9d76fd7feff9"},
+    {"path": "reports/constitutional-review-paired-import-v1-periods.csv", "sha256": "d252ea5da562eb1bade1174e95f93c3ebe93e78d9c3dea08057d86d2d4ed09cc"},
+    {"path": "reports/constitutional-review-paired-import-v1-doctrines.csv", "sha256": "5d7876591b0321b54ee7930844b3519cc22a3cab3f215c69bc02b10eb34acbce"},
+    {"path": "reports/constitutional-review-paired-import-v1-pipelines.csv", "sha256": "aac6c0214a091d83da49adb2fb49e3cde92f3556207a80297b6878b18a9366e9"},
+    {"path": "reports/constitutional-review-paired-import-v1-policy-domains.csv", "sha256": "b04d01f116651776dd5d7bab0023b34c55a10bb1209eba8a3d4ea6b43e298c98"},
     {"path": "reports/constitutional-review-paired-import-v1-composition.csv", "sha256": "876b07cb85a8ce2eed945c24a9423f5b38c00b7659171bdfe68c6ef76991a1a9"},
-    {"path": "reports/constitutional-review-paired-import-v1-calibration.csv", "sha256": "bdcee5a70784ca6c593553703727592a7bcde11fe0b61073c0e78274c9496a94"},
-    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "9356ea0062d2b8f61da6478807ee5c6ca432467a85a44603fd0b11899b3d0b61"}
+    {"path": "reports/constitutional-review-paired-import-v1-calibration.csv", "sha256": "990af551937c51db8987549df6def3caaa5e5fe5403488dad6f9a15899a16af8"},
+    {"path": "reports/constitutional-review-paired-import-v1-intervals.csv", "sha256": "cda540cb85f74b67db556bba64714f8ff368e4f85eb050f20de9dc852cba51c8"},
+    {"path": "reports/constitutional-review-paired-import-v1-pipeline-intervals.csv", "sha256": "40e4c6731496f7f6bfff536aee7c7e50822e720f0470a1fc01da2b41d38f70d3"},
+    {"path": "reports/constitutional-review-paired-import-v1-composition-intervals.csv", "sha256": "7ed3d98e7cd72ed7240608c963ee8437f4b210a3a7797e330c00ad37279d3f9e"},
+    {"path": "reports/constitutional-review-paired-import-v1-calibration-intervals.csv", "sha256": "f66cd9bb7fa8407cf9cb8d35995af54b7ceadaef518edf2268e58549bada11d6"},
+    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "4891462a4d7a35b0e83c2db705898a8d49b833f19bb615930e2b9c930f7661c0"}
   ]
 }

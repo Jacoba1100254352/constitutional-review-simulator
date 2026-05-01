@@ -1,11 +1,8 @@
-targetKey,label,lowerBound,upperBound,note
-doctrine_mix.speech,Speech docket share,0.08,0.20,Starter external range for speech claims.
-doctrine_mix.equality,Equality docket share,0.08,0.20,Starter external range for equality claims.
-doctrine_mix.criminal_procedure,Criminal procedure docket share,0.08,0.20,Starter external range for criminal-procedure claims.
-doctrine_mix.federalism,Federalism docket share,0.06,0.18,Starter external range for federalism claims.
-doctrine_mix.election_law,Election law docket share,0.05,0.16,Starter external range for election-law claims.
-doctrine_mix.emergency_powers,Emergency powers docket share,0.04,0.14,Starter external range for emergency-powers claims.
-doctrine_mix.administrative_state,Administrative state docket share,0.06,0.18,Starter external range for administrative-state claims.
-emergency_relief_rate,Emergency relief rate,0.05,0.24,Share of emergency orders granting interim relief.
-compliance_rate,Compliance rate,0.70,0.95,Share of cases with institutional compliance.
-legitimacy_trust_gradient,Legitimacy response to trust,0.15,1.20,Slope of legitimacy over public-trust outcomes across campaign rows.
+profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,note,sourceName,sourceUrl
+scdb-modern-merits-2000-2024,U.S. Supreme Court,2000-2024 terms,doctrine_mix.speech,Speech docket share,0.039,0.080,SCDB issueArea 3 share in case-centered citation data.,Supreme Court Database 2025 Release 01,https://scdb.la.psu.edu/data/2025-release-01/
+scdb-modern-merits-2000-2024,U.S. Supreme Court,2000-2024 terms,doctrine_mix.equality,Civil-rights and privacy docket share,0.137,0.191,SCDB issueArea 2 and 5 less election-law issue subset.,Supreme Court Database 2025 Release 01,https://scdb.la.psu.edu/data/2025-release-01/
+scdb-modern-merits-2000-2024,U.S. Supreme Court,2000-2024 terms,doctrine_mix.criminal_procedure,Criminal procedure docket share,0.230,0.289,SCDB issueArea 1 share in case-centered citation data.,Supreme Court Database 2025 Release 01,https://scdb.la.psu.edu/data/2025-release-01/
+scdb-modern-merits-2000-2024,U.S. Supreme Court,2000-2024 terms,doctrine_mix.federalism,Federalism docket share,0.037,0.078,SCDB issueArea 10 and 11 share in case-centered citation data.,Supreme Court Database 2025 Release 01,https://scdb.la.psu.edu/data/2025-release-01/
+scdb-modern-merits-2000-2024,U.S. Supreme Court,2000-2024 terms,doctrine_mix.election_law,Election-law docket share,0.009,0.043,SCDB issues 20010 20020 20030 20090 and 30140.,Supreme Court Database issue codebook,https://scdb.la.psu.edu/online-codebook/issue/
+scdb-modern-merits-2000-2024,U.S. Supreme Court,2000-2024 terms,doctrine_mix.emergency_powers,Emergency-powers merits share,0.000,0.019,SCDB executive-authority issue 130015 share in merits data.,Supreme Court Database issue codebook,https://scdb.la.psu.edu/online-codebook/issue/
+scdb-modern-merits-2000-2024,U.S. Supreme Court,2000-2024 terms,doctrine_mix.administrative_state,Administrative and economic regulation share,0.193,0.250,SCDB economic activity plus agency-review issue 90120 proxy.,Supreme Court Database issue codebook,https://scdb.la.psu.edu/online-codebook/issue/

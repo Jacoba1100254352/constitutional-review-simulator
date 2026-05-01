@@ -4,6 +4,7 @@ import courtsim.experiment.CampaignResult;
 import courtsim.experiment.CampaignRunner;
 import courtsim.importer.LegislativeOutputImporter;
 import courtsim.model.LegislativeSignal;
+import courtsim.model.PolicyDomain;
 import courtsim.simulation.Scenario;
 import courtsim.simulation.ScenarioCatalog;
 import courtsim.simulation.ScenarioReport;
@@ -69,9 +70,14 @@ public final class SimulatorTests {
             assertBetween(report.agencyNonacquiescenceRate(), "agency nonacquiescence rate");
             assertBetween(report.legislativeReenactmentRate(), "legislative reenactment rate");
             assertBetween(report.localGovernmentComplianceRate(), "local-government compliance rate");
+            assertBetween(report.institutionalBudgetCost(), "institutional budget cost");
+            assertBetween(report.institutionalDelayCost(), "institutional delay cost");
+            assertBetween(report.implementationComplexity(), "implementation complexity");
+            assertBetween(report.totalInstitutionalCost(), "total institutional cost");
             assertTrue(!report.periodReports().isEmpty(), "expected period diagnostics");
             assertTrue(!report.doctrineReports().isEmpty(), "expected doctrine diagnostics");
             assertTrue(!report.pipelineReports().isEmpty(), "expected pipeline diagnostics");
+            assertTrue(!report.policyDomainReports().isEmpty(), "expected policy-domain diagnostics");
             assertTrue(!report.compositionReports().isEmpty(), "expected composition diagnostics");
         }
     }
@@ -85,6 +91,7 @@ public final class SimulatorTests {
                 """);
         List<LegislativeSignal> signals = LegislativeOutputImporter.read(temp);
         assertTrue(signals.size() == 2, "expected imported rows");
+        assertTrue(signals.get(0).policyDomain() != PolicyDomain.GOVERNANCE, "expected inferred policy domain");
         List<ScenarioReport> reports = new Simulator().compare(
                 ScenarioCatalog.scenariosForKeys(List.of("current-federal-court")),
                 WorldSpec.baseline(16),
@@ -109,8 +116,13 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.periodCsvPath()), "expected period CSV artifact");
         assertTrue(Files.exists(result.doctrineCsvPath()), "expected doctrine CSV artifact");
         assertTrue(Files.exists(result.pipelineCsvPath()), "expected pipeline CSV artifact");
+        assertTrue(Files.exists(result.policyDomainCsvPath()), "expected policy-domain CSV artifact");
         assertTrue(Files.exists(result.compositionCsvPath()), "expected composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected calibration CSV artifact");
+        assertTrue(Files.exists(result.intervalCsvPath()), "expected interval CSV artifact");
+        assertTrue(Files.exists(result.pipelineIntervalCsvPath()), "expected pipeline interval CSV artifact");
+        assertTrue(Files.exists(result.compositionIntervalCsvPath()), "expected composition interval CSV artifact");
+        assertTrue(Files.exists(result.calibrationIntervalCsvPath()), "expected calibration interval CSV artifact");
         assertTrue(Files.exists(result.markdownPath()), "expected Markdown artifact");
         assertTrue(Files.exists(result.manifestPath()), "expected manifest artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legalStability"), "expected CSV header");
@@ -118,16 +130,24 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.csvPath()).contains("complianceRate"), "expected compliance metric");
         assertTrue(Files.readString(result.csvPath()).contains("executiveImplementationRate"), "expected enforcement metric");
         assertTrue(Files.readString(result.csvPath()).contains("stateFederalTension"), "expected hierarchy metric");
+        assertTrue(Files.readString(result.csvPath()).contains("totalInstitutionalCost"), "expected institutional cost metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("period"), "expected period report rows");
         assertTrue(Files.readString(result.doctrineCsvPath()).contains("doctrine"), "expected doctrine report rows");
         assertTrue(Files.readString(result.pipelineCsvPath()).contains("pipeline"), "expected pipeline report rows");
+        assertTrue(Files.readString(result.policyDomainCsvPath()).contains("policy-domain"), "expected policy-domain report rows");
         assertTrue(Files.readString(result.compositionCsvPath()).contains("medianIdeology"), "expected composition report rows");
-        assertTrue(Files.readString(result.calibrationCsvPath()).contains("legitimacy_trust_gradient"), "expected calibration rows");
+        assertTrue(Files.readString(result.calibrationCsvPath()).contains("profileKey"), "expected calibration profiles");
+        assertTrue(Files.readString(result.intervalCsvPath()).contains("lower95"), "expected campaign uncertainty bands");
+        assertTrue(Files.readString(result.pipelineIntervalCsvPath()).contains("lower95"), "expected pipeline uncertainty bands");
+        assertTrue(Files.readString(result.compositionIntervalCsvPath()).contains("lower95"), "expected composition uncertainty bands");
+        assertTrue(Files.readString(result.calibrationIntervalCsvPath()).contains("lower95"), "expected calibration uncertainty bands");
         assertTrue(Files.readString(result.markdownPath()).contains("Scenario Averages"), "expected Markdown summary");
         assertTrue(Files.readString(result.markdownPath()).contains("Period Diagnostics"), "expected period diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Doctrine Diagnostics"), "expected doctrine diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Pipeline Diagnostics"), "expected pipeline diagnostics");
+        assertTrue(Files.readString(result.markdownPath()).contains("Policy Domain Diagnostics"), "expected policy-domain diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Composition Diagnostics"), "expected composition diagnostics");
+        assertTrue(Files.readString(result.markdownPath()).contains("Uncertainty Diagnostics"), "expected uncertainty diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Calibration Diagnostics"), "expected calibration diagnostics");
     }
 
@@ -138,6 +158,7 @@ public final class SimulatorTests {
                         "baseline",
                         "default-pass",
                         "Default pass",
+                        PolicyDomain.CIVIL_RIGHTS,
                         0.48,
                         0.42,
                         0.51,
@@ -160,6 +181,7 @@ public final class SimulatorTests {
                         "baseline",
                         "committee-regular-order",
                         "Committee regular order",
+                        PolicyDomain.GOVERNANCE,
                         0.66,
                         0.71,
                         0.62,
@@ -191,8 +213,10 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.periodCsvPath()), "expected paired period CSV artifact");
         assertTrue(Files.exists(result.doctrineCsvPath()), "expected paired doctrine CSV artifact");
         assertTrue(Files.exists(result.pipelineCsvPath()), "expected paired pipeline CSV artifact");
+        assertTrue(Files.exists(result.policyDomainCsvPath()), "expected paired policy-domain CSV artifact");
         assertTrue(Files.exists(result.compositionCsvPath()), "expected paired composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected paired calibration CSV artifact");
+        assertTrue(Files.exists(result.intervalCsvPath()), "expected paired interval CSV artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legislative-low-mandate"), "expected paired legislative cases");
         assertTrue(Files.readString(result.markdownPath()).contains("Paired Import Campaign"), "expected paired Markdown title");
     }
@@ -211,8 +235,10 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.periodCsvPath()), "expected sensitivity period CSV artifact");
         assertTrue(Files.exists(result.doctrineCsvPath()), "expected sensitivity doctrine CSV artifact");
         assertTrue(Files.exists(result.pipelineCsvPath()), "expected sensitivity pipeline CSV artifact");
+        assertTrue(Files.exists(result.policyDomainCsvPath()), "expected sensitivity policy-domain CSV artifact");
         assertTrue(Files.exists(result.compositionCsvPath()), "expected sensitivity composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected sensitivity calibration CSV artifact");
+        assertTrue(Files.exists(result.intervalCsvPath()), "expected sensitivity interval CSV artifact");
         assertTrue(Files.readString(result.csvPath()).contains("high-emergency-pressure"), "expected sensitivity cases");
         assertTrue(Files.readString(result.markdownPath()).contains("Sensitivity Campaign"), "expected sensitivity Markdown title");
     }

@@ -11,12 +11,17 @@
   "scenarioCount": 12,
   "inputDescription": "synthetic docket",
   "artifacts": [
-    {"path": "reports/constitutional-review-campaign-v0.csv", "sha256": "5af8327b389da0108f75f78acc98792d80ce58c276528901dd668fc1fe84fa10"},
-    {"path": "reports/constitutional-review-campaign-v0-periods.csv", "sha256": "f574acc509609e65f0d490f7d8191f91de310f9c79a93c5c46c60452436776d7"},
-    {"path": "reports/constitutional-review-campaign-v0-doctrines.csv", "sha256": "3435d30e735b8806807b48047941b25ac7fad202083175484dafb06b2e7f15bd"},
-    {"path": "reports/constitutional-review-campaign-v0-pipelines.csv", "sha256": "b559968af4dd5238b3d26386cfa7d87c5e819831878046f4205895cf6f26d71b"},
+    {"path": "reports/constitutional-review-campaign-v0.csv", "sha256": "6aad62113ef6de47796dc5c8ecc856fdc7647386850cddee8c0934a415c3f5de"},
+    {"path": "reports/constitutional-review-campaign-v0-periods.csv", "sha256": "0c2f66833a6f3ac755c1889b79edbc1387e6d93c180862e5f74bbf492b524221"},
+    {"path": "reports/constitutional-review-campaign-v0-doctrines.csv", "sha256": "a1f661ae45a11738fb6808e3ea9b3dd3779449a4f8e378c8c32c5cc04278de16"},
+    {"path": "reports/constitutional-review-campaign-v0-pipelines.csv", "sha256": "b95eb0013edba6bd6de930b159ce4c5852894f0d125d629f5e98479ebb75f5fe"},
+    {"path": "reports/constitutional-review-campaign-v0-policy-domains.csv", "sha256": "b3fb4d79a19485c1709f7367cc9302908084685b79236a05ccecb1dcea2b7ad1"},
     {"path": "reports/constitutional-review-campaign-v0-composition.csv", "sha256": "6d2f463829f98c6def0da093e3b5824aa368db0f4246e3d5c67e5ecbee6a4b78"},
-    {"path": "reports/constitutional-review-campaign-v0-calibration.csv", "sha256": "a798268a6600fa23e05070976777b979ec463a0ba8e209788f9be521d90336eb"},
-    {"path": "reports/constitutional-review-campaign-v0.md", "sha256": "88d14d13178b8d4057e9d8aa2e8140d1871504d658a33af4f31534e7a9e1058f"}
+    {"path": "reports/constitutional-review-campaign-v0-calibration.csv", "sha256": "10d8fc1bcb400551b9416613d8f254884b26a2d346b8bc85623535431adcf2dc"},
+    {"path": "reports/constitutional-review-campaign-v0-intervals.csv", "sha256": "15d039ef6a0742000f0e3949dcab41c499a7101d901059fafb29b3bf48addbcc"},
+    {"path": "reports/constitutional-review-campaign-v0-pipeline-intervals.csv", "sha256": "b25363a9a752147abdc2c0a115fa3b3f011958d6b19961aaa6685fa4881dda64"},
+    {"path": "reports/constitutional-review-campaign-v0-composition-intervals.csv", "sha256": "1a6ec69305deb321fc4eff0dfaffba8d836859edf980be94bd6c5f591ded65da"},
+    {"path": "reports/constitutional-review-campaign-v0-calibration-intervals.csv", "sha256": "e45d7d7bb872a64371b726b24ecdbe8fef642fa906855bf06e2f446aa9a03d26"},
+    {"path": "reports/constitutional-review-campaign-v0.md", "sha256": "735309c40787979ea23819e511e5af8e5afeb13d82a706237eb9d20913dcf7fc"}
   ]
 }

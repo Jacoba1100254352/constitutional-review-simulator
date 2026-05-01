@@ -4,6 +4,7 @@ public record CaseFile(
         String id,
         CaseType type,
         DoctrineArea doctrineArea,
+        PolicyDomain policyDomain,
         Jurisdiction jurisdiction,
         LowerCourtPath lowerCourtPath,
         int reviewPeriod,

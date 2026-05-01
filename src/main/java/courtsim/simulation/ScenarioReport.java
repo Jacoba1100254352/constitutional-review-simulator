@@ -55,9 +55,14 @@ public record ScenarioReport(
         double legislativeConflict,
         double courtCurbingPressure,
         double amendmentPressure,
+        double institutionalBudgetCost,
+        double institutionalDelayCost,
+        double implementationComplexity,
+        double totalInstitutionalCost,
         List<SegmentReport> periodReports,
         List<SegmentReport> doctrineReports,
         List<SegmentReport> pipelineReports,
+        List<SegmentReport> policyDomainReports,
         List<CompositionReport> compositionReports,
         double administrativeLoad
 ) {
@@ -81,7 +86,8 @@ public record ScenarioReport(
                 Values.lowerIsBetter(agencyNonacquiescenceRate),
                 Values.lowerIsBetter(legislativeReenactmentRate),
                 localGovernmentComplianceRate,
-                Values.lowerIsBetter(administrativeLoad)
+                Values.lowerIsBetter(administrativeLoad),
+                Values.lowerIsBetter(totalInstitutionalCost)
         );
     }
 }

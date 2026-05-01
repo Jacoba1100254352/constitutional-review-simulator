@@ -1,6 +1,7 @@
 package courtsim.importer;
 
 import courtsim.model.LegislativeSignal;
+import courtsim.model.PolicyDomain;
 import courtsim.util.Values;
 
 import java.io.IOException;
@@ -40,10 +41,12 @@ public final class LegislativeOutputImporter {
             String caseKey = value(row, columns, "caseKey", "row-" + lineIndex);
             String scenarioKey = value(row, columns, "scenarioKey", "unknown-scenario");
             String scenarioName = value(row, columns, "scenario", scenarioKey);
+            PolicyDomain policyDomain = policyDomain(row, columns, caseKey, scenarioKey, scenarioName);
             signals.add(new LegislativeSignal(
                     caseKey,
                     scenarioKey,
                     scenarioName,
+                    policyDomain,
                     number(row, columns, "avgSupport", 0.55),
                     number(row, columns, "welfare", 0.55),
                     number(row, columns, "legitimacy", 0.55),
@@ -64,6 +67,66 @@ public final class LegislativeOutputImporter {
             ));
         }
         return List.copyOf(signals);
+    }
+
+    private static PolicyDomain policyDomain(
+            List<String> row,
+            Map<String, Integer> columns,
+            String caseKey,
+            String scenarioKey,
+            String scenarioName
+    ) {
+        String explicit = value(row, columns, "policyDomain", "");
+        if (!explicit.isBlank()) {
+            return PolicyDomain.fromKey(explicit);
+        }
+        String subject = (caseKey + " " + scenarioKey + " " + scenarioName).toLowerCase(Locale.ROOT);
+        if (containsAny(subject, "speech", "religion", "press", "assembly", "expression")) {
+            return PolicyDomain.CIVIL_RIGHTS;
+        }
+        if (containsAny(subject, "election", "voting", "ballot", "campaign", "redistrict", "mandate")) {
+            return PolicyDomain.ELECTIONS;
+        }
+        if (containsAny(subject, "emergency", "security", "war", "executive", "fast-lane", "high-risk")) {
+            return PolicyDomain.EMERGENCY_SECURITY;
+        }
+        if (containsAny(subject, "crime", "criminal", "police", "prison", "sentence")) {
+            return PolicyDomain.CRIMINAL_JUSTICE;
+        }
+        if (containsAny(subject, "agency", "administrative", "bureaucracy", "rulemaking")) {
+            return PolicyDomain.ADMINISTRATION;
+        }
+        if (containsAny(subject, "tax", "market", "labor", "business", "economic", "capture", "lobby")) {
+            return PolicyDomain.ECONOMIC_REGULATION;
+        }
+        double minorityHarm = number(row, columns, "minorityHarm", 0.0);
+        double concentratedHarm = number(row, columns, "concentratedHarmPassage", 0.0);
+        double highRisk = number(row, columns, "highRiskLaneRate", 0.0);
+        double fastLane = number(row, columns, "fastLaneRate", 0.0);
+        double lobbyCapture = number(row, columns, "lobbyCapture", 0.0);
+        double distortion = number(row, columns, "publicPreferenceDistortion", 0.0);
+        if (highRisk >= 0.22 || fastLane >= 0.22) {
+            return PolicyDomain.EMERGENCY_SECURITY;
+        }
+        if (minorityHarm >= 0.18 || concentratedHarm >= 0.18) {
+            return PolicyDomain.CIVIL_RIGHTS;
+        }
+        if (distortion >= 0.22) {
+            return PolicyDomain.ELECTIONS;
+        }
+        if (lobbyCapture >= 0.22) {
+            return PolicyDomain.ECONOMIC_REGULATION;
+        }
+        return PolicyDomain.GOVERNANCE;
+    }
+
+    private static boolean containsAny(String value, String... needles) {
+        for (String needle : needles) {
+            if (value.contains(needle)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String value(List<String> row, Map<String, Integer> columns, String key, String defaultValue) {
@@ -119,4 +182,3 @@ public final class LegislativeOutputImporter {
         return String.format(Locale.ROOT, "%d imported legislative rows across %d scenarios", signals.size(), scenarioCount);
     }
 }
-

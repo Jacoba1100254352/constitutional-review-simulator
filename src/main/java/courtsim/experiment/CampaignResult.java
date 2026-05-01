@@ -9,8 +9,13 @@ public record CampaignResult(
         Path periodCsvPath,
         Path doctrineCsvPath,
         Path pipelineCsvPath,
+        Path policyDomainCsvPath,
         Path compositionCsvPath,
         Path calibrationCsvPath,
+        Path intervalCsvPath,
+        Path pipelineIntervalCsvPath,
+        Path compositionIntervalCsvPath,
+        Path calibrationIntervalCsvPath,
         Path markdownPath,
         Path manifestPath,
         List<CampaignRow> rows

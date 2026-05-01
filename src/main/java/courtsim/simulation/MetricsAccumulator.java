@@ -3,6 +3,7 @@ package courtsim.simulation;
 import courtsim.institution.CaseOutcome;
 import courtsim.model.DoctrineArea;
 import courtsim.model.Jurisdiction;
+import courtsim.model.PolicyDomain;
 import courtsim.util.Values;
 
 import java.util.Comparator;
@@ -56,9 +57,14 @@ final class MetricsAccumulator {
     private double courtCurbingPressureSum;
     private double amendmentPressureSum;
     private double administrativeLoadSum;
+    private double institutionalBudgetCostSum;
+    private double institutionalDelayCostSum;
+    private double implementationComplexitySum;
+    private double totalInstitutionalCostSum;
     private final Map<Integer, SegmentAccumulator> periodAccumulators = new HashMap<>();
     private final Map<DoctrineArea, SegmentAccumulator> doctrineAccumulators = new EnumMap<>(DoctrineArea.class);
     private final Map<String, SegmentAccumulator> pipelineAccumulators = new HashMap<>();
+    private final Map<PolicyDomain, SegmentAccumulator> policyDomainAccumulators = new EnumMap<>(PolicyDomain.class);
     private final Map<Integer, CompositionAccumulator> compositionAccumulators = new HashMap<>();
 
     void add(CaseOutcome outcome) {
@@ -146,6 +152,10 @@ final class MetricsAccumulator {
         courtCurbingPressureSum += outcome.courtCurbingPressure();
         amendmentPressureSum += outcome.amendmentPressure();
         administrativeLoadSum += outcome.administrativeLoad();
+        institutionalBudgetCostSum += outcome.institutionalBudgetCost();
+        institutionalDelayCostSum += outcome.institutionalDelayCost();
+        implementationComplexitySum += outcome.implementationComplexity();
+        totalInstitutionalCostSum += outcome.totalInstitutionalCost();
         periodAccumulators
                 .computeIfAbsent(outcome.caseFile().reviewPeriod(), period -> new SegmentAccumulator("period", Integer.toString(period + 1)))
                 .add(outcome);
@@ -154,6 +164,9 @@ final class MetricsAccumulator {
                 .add(outcome);
         pipelineAccumulators
                 .computeIfAbsent(pipelineKey(outcome), key -> new SegmentAccumulator("pipeline", key))
+                .add(outcome);
+        policyDomainAccumulators
+                .computeIfAbsent(outcome.caseFile().policyDomain(), domain -> new SegmentAccumulator("policy-domain", domain.key()))
                 .add(outcome);
     }
 
@@ -215,9 +228,14 @@ final class MetricsAccumulator {
                 average(legislativeConflictSum),
                 average(courtCurbingPressureSum),
                 average(amendmentPressureSum),
+                average(institutionalBudgetCostSum),
+                average(institutionalDelayCostSum),
+                average(implementationComplexitySum),
+                average(totalInstitutionalCostSum),
                 periodReports(),
                 doctrineReports(),
                 pipelineReports(),
+                policyDomainReports(),
                 compositionReports(),
                 average(administrativeLoadSum)
         );
@@ -240,6 +258,13 @@ final class MetricsAccumulator {
     private List<SegmentReport> pipelineReports() {
         return pipelineAccumulators.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
+                .map(entry -> entry.getValue().toReport())
+                .toList();
+    }
+
+    private List<SegmentReport> policyDomainReports() {
+        return policyDomainAccumulators.entrySet().stream()
+                .sorted(Comparator.comparing(entry -> entry.getKey().key()))
                 .map(entry -> entry.getValue().toReport())
                 .toList();
     }
@@ -294,6 +319,10 @@ final class MetricsAccumulator {
         private double legislativeConflictSum;
         private double courtCurbingPressureSum;
         private double amendmentPressureSum;
+        private double institutionalBudgetCostSum;
+        private double institutionalDelayCostSum;
+        private double implementationComplexitySum;
+        private double totalInstitutionalCostSum;
 
         private SegmentAccumulator(String segmentType, String segmentKey) {
             this.segmentType = segmentType;
@@ -356,6 +385,10 @@ final class MetricsAccumulator {
             legislativeConflictSum += outcome.legislativeConflictAfter();
             courtCurbingPressureSum += outcome.courtCurbingPressure();
             amendmentPressureSum += outcome.amendmentPressure();
+            institutionalBudgetCostSum += outcome.institutionalBudgetCost();
+            institutionalDelayCostSum += outcome.institutionalDelayCost();
+            implementationComplexitySum += outcome.implementationComplexity();
+            totalInstitutionalCostSum += outcome.totalInstitutionalCost();
         }
 
         private SegmentReport toReport() {
@@ -389,7 +422,11 @@ final class MetricsAccumulator {
                     average(publicTrustSum),
                     average(legislativeConflictSum),
                     average(courtCurbingPressureSum),
-                    average(amendmentPressureSum)
+                    average(amendmentPressureSum),
+                    average(institutionalBudgetCostSum),
+                    average(institutionalDelayCostSum),
+                    average(implementationComplexitySum),
+                    average(totalInstitutionalCostSum)
             );
         }
 

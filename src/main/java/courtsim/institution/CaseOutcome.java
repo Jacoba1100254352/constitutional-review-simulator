@@ -44,6 +44,10 @@ public record CaseOutcome(
         double concurrenceFragmentation,
         double dissentIntensity,
         double replacementPressure,
-        double administrativeLoad
+        double administrativeLoad,
+        double institutionalBudgetCost,
+        double institutionalDelayCost,
+        double implementationComplexity,
+        double totalInstitutionalCost
 ) {
 }

@@ -30,6 +30,10 @@ public record SegmentReport(
         double publicTrust,
         double legislativeConflict,
         double courtCurbingPressure,
-        double amendmentPressure
+        double amendmentPressure,
+        double institutionalBudgetCost,
+        double institutionalDelayCost,
+        double implementationComplexity,
+        double totalInstitutionalCost
 ) {
 }
