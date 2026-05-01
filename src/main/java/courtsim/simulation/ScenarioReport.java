@@ -38,16 +38,27 @@ public record ScenarioReport(
         double lowerCourtConflict,
         double averageTimeToReview,
         double replacementRate,
+        double stateCaseShare,
+        double mixedJurisdictionShare,
+        double averageLowerCourtDepth,
+        double stateFederalTension,
+        double intercourtConflict,
         double complianceRate,
         double defianceRate,
         double workaroundRate,
         double repeatedLitigationRate,
+        double executiveImplementationRate,
+        double agencyNonacquiescenceRate,
+        double legislativeReenactmentRate,
+        double localGovernmentComplianceRate,
         double publicTrust,
         double legislativeConflict,
         double courtCurbingPressure,
         double amendmentPressure,
         List<SegmentReport> periodReports,
         List<SegmentReport> doctrineReports,
+        List<SegmentReport> pipelineReports,
+        List<CompositionReport> compositionReports,
         double administrativeLoad
 ) {
     public double directionalScore() {
@@ -66,6 +77,10 @@ public record ScenarioReport(
                 complianceRate,
                 Values.lowerIsBetter(defianceRate),
                 Values.lowerIsBetter(workaroundRate),
+                executiveImplementationRate,
+                Values.lowerIsBetter(agencyNonacquiescenceRate),
+                Values.lowerIsBetter(legislativeReenactmentRate),
+                localGovernmentComplianceRate,
                 Values.lowerIsBetter(administrativeLoad)
         );
     }

@@ -2,6 +2,7 @@ package courtsim.simulation;
 
 import courtsim.institution.CaseOutcome;
 import courtsim.model.DoctrineArea;
+import courtsim.model.Jurisdiction;
 import courtsim.util.Values;
 
 import java.util.Comparator;
@@ -37,10 +38,19 @@ final class MetricsAccumulator {
     private double lowerCourtConflictSum;
     private double timeToReviewSum;
     private double replacementPressureSum;
+    private int stateCases;
+    private int mixedJurisdictionCases;
+    private double lowerCourtDepthSum;
+    private double stateFederalTensionSum;
+    private double intercourtConflictSum;
     private int compliedCases;
     private int defiedCases;
     private int workaroundCases;
     private int repeatedLitigationCases;
+    private int executiveImplementationCases;
+    private int agencyNonacquiescenceCases;
+    private int legislativeReenactmentCases;
+    private int localGovernmentComplianceCases;
     private double publicTrustSum;
     private double legislativeConflictSum;
     private double courtCurbingPressureSum;
@@ -48,6 +58,8 @@ final class MetricsAccumulator {
     private double administrativeLoadSum;
     private final Map<Integer, SegmentAccumulator> periodAccumulators = new HashMap<>();
     private final Map<DoctrineArea, SegmentAccumulator> doctrineAccumulators = new EnumMap<>(DoctrineArea.class);
+    private final Map<String, SegmentAccumulator> pipelineAccumulators = new HashMap<>();
+    private final Map<Integer, CompositionAccumulator> compositionAccumulators = new HashMap<>();
 
     void add(CaseOutcome outcome) {
         totalCases++;
@@ -96,6 +108,15 @@ final class MetricsAccumulator {
         lowerCourtConflictSum += outcome.caseFile().lowerCourtConflict();
         timeToReviewSum += outcome.caseFile().timeToReview();
         replacementPressureSum += outcome.replacementPressure();
+        if (outcome.caseFile().jurisdiction() == Jurisdiction.STATE) {
+            stateCases++;
+        }
+        if (outcome.caseFile().jurisdiction() == Jurisdiction.MIXED_STATE_FEDERAL) {
+            mixedJurisdictionCases++;
+        }
+        lowerCourtDepthSum += outcome.caseFile().lowerCourtPath().depth();
+        stateFederalTensionSum += outcome.caseFile().stateFederalTension();
+        intercourtConflictSum += outcome.caseFile().intercourtConflict();
         if (outcome.complied()) {
             compliedCases++;
         }
@@ -108,6 +129,18 @@ final class MetricsAccumulator {
         if (outcome.repeatedLitigation()) {
             repeatedLitigationCases++;
         }
+        if (outcome.executiveImplementation()) {
+            executiveImplementationCases++;
+        }
+        if (outcome.agencyNonacquiescence()) {
+            agencyNonacquiescenceCases++;
+        }
+        if (outcome.legislativeReenactment()) {
+            legislativeReenactmentCases++;
+        }
+        if (outcome.localGovernmentCompliance()) {
+            localGovernmentComplianceCases++;
+        }
         publicTrustSum += outcome.publicTrustAfter();
         legislativeConflictSum += outcome.legislativeConflictAfter();
         courtCurbingPressureSum += outcome.courtCurbingPressure();
@@ -119,6 +152,15 @@ final class MetricsAccumulator {
         doctrineAccumulators
                 .computeIfAbsent(outcome.caseFile().doctrineArea(), doctrine -> new SegmentAccumulator("doctrine", doctrine.name().toLowerCase()))
                 .add(outcome);
+        pipelineAccumulators
+                .computeIfAbsent(pipelineKey(outcome), key -> new SegmentAccumulator("pipeline", key))
+                .add(outcome);
+    }
+
+    void addComposition(CompositionSnapshot snapshot) {
+        compositionAccumulators
+                .computeIfAbsent(snapshot.reviewPeriod(), period -> new CompositionAccumulator("period", Integer.toString(period + 1)))
+                .add(snapshot);
     }
 
     ScenarioReport toReport(String scenarioKey, String scenarioName) {
@@ -156,16 +198,27 @@ final class MetricsAccumulator {
                 average(lowerCourtConflictSum),
                 average(timeToReviewSum),
                 average(replacementPressureSum),
+                Values.ratio(stateCases, totalCases),
+                Values.ratio(mixedJurisdictionCases, totalCases),
+                average(lowerCourtDepthSum),
+                average(stateFederalTensionSum),
+                average(intercourtConflictSum),
                 Values.ratio(compliedCases, totalCases),
                 Values.ratio(defiedCases, totalCases),
                 Values.ratio(workaroundCases, totalCases),
                 Values.ratio(repeatedLitigationCases, totalCases),
+                Values.ratio(executiveImplementationCases, totalCases),
+                Values.ratio(agencyNonacquiescenceCases, totalCases),
+                Values.ratio(legislativeReenactmentCases, totalCases),
+                Values.ratio(localGovernmentComplianceCases, totalCases),
                 average(publicTrustSum),
                 average(legislativeConflictSum),
                 average(courtCurbingPressureSum),
                 average(amendmentPressureSum),
                 periodReports(),
                 doctrineReports(),
+                pipelineReports(),
+                compositionReports(),
                 average(administrativeLoadSum)
         );
     }
@@ -182,6 +235,24 @@ final class MetricsAccumulator {
                 .sorted(Comparator.comparing(entry -> entry.getKey().name()))
                 .map(entry -> entry.getValue().toReport())
                 .toList();
+    }
+
+    private List<SegmentReport> pipelineReports() {
+        return pipelineAccumulators.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> entry.getValue().toReport())
+                .toList();
+    }
+
+    private List<CompositionReport> compositionReports() {
+        return compositionAccumulators.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> entry.getValue().toReport())
+                .toList();
+    }
+
+    private static String pipelineKey(CaseOutcome outcome) {
+        return outcome.caseFile().jurisdiction().key() + "/" + outcome.caseFile().lowerCourtPath().key();
     }
 
     private double average(double sum) {
@@ -204,9 +275,18 @@ final class MetricsAccumulator {
         private int defiedCases;
         private int workaroundCases;
         private int repeatedLitigationCases;
+        private int executiveImplementationCases;
+        private int agencyNonacquiescenceCases;
+        private int legislativeReenactmentCases;
+        private int localGovernmentComplianceCases;
         private double legalStabilitySum;
         private double rightsProtectionSum;
         private double shadowDocketAbuseSum;
+        private double lowerCourtConflictSum;
+        private double timeToReviewSum;
+        private double lowerCourtDepthSum;
+        private double stateFederalTensionSum;
+        private double intercourtConflictSum;
         private double legitimacySum;
         private double constitutionalConflictSum;
         private double democraticResponsivenessSum;
@@ -249,9 +329,26 @@ final class MetricsAccumulator {
             if (outcome.repeatedLitigation()) {
                 repeatedLitigationCases++;
             }
+            if (outcome.executiveImplementation()) {
+                executiveImplementationCases++;
+            }
+            if (outcome.agencyNonacquiescence()) {
+                agencyNonacquiescenceCases++;
+            }
+            if (outcome.legislativeReenactment()) {
+                legislativeReenactmentCases++;
+            }
+            if (outcome.localGovernmentCompliance()) {
+                localGovernmentComplianceCases++;
+            }
             legalStabilitySum += outcome.legalStability();
             rightsProtectionSum += outcome.rightsProtection();
             shadowDocketAbuseSum += outcome.shadowDocketAbuse();
+            lowerCourtConflictSum += outcome.caseFile().lowerCourtConflict();
+            timeToReviewSum += outcome.caseFile().timeToReview();
+            lowerCourtDepthSum += outcome.caseFile().lowerCourtPath().depth();
+            stateFederalTensionSum += outcome.caseFile().stateFederalTension();
+            intercourtConflictSum += outcome.caseFile().intercourtConflict();
             legitimacySum += outcome.legitimacy();
             constitutionalConflictSum += outcome.constitutionalConflict();
             democraticResponsivenessSum += outcome.democraticResponsiveness();
@@ -273,6 +370,11 @@ final class MetricsAccumulator {
                     average(shadowDocketAbuseSum),
                     Values.ratio(emergencyReliefs, emergencyOrders),
                     Values.ratio(meritsInvalidations, Math.max(meritsReviews, 1)),
+                    average(lowerCourtConflictSum),
+                    average(timeToReviewSum),
+                    average(lowerCourtDepthSum),
+                    average(stateFederalTensionSum),
+                    average(intercourtConflictSum),
                     average(legitimacySum),
                     average(constitutionalConflictSum),
                     average(democraticResponsivenessSum),
@@ -280,6 +382,10 @@ final class MetricsAccumulator {
                     Values.ratio(defiedCases, totalCases),
                     Values.ratio(workaroundCases, totalCases),
                     Values.ratio(repeatedLitigationCases, totalCases),
+                    Values.ratio(executiveImplementationCases, totalCases),
+                    Values.ratio(agencyNonacquiescenceCases, totalCases),
+                    Values.ratio(legislativeReenactmentCases, totalCases),
+                    Values.ratio(localGovernmentComplianceCases, totalCases),
                     average(publicTrustSum),
                     average(legislativeConflictSum),
                     average(courtCurbingPressureSum),
@@ -292,6 +398,60 @@ final class MetricsAccumulator {
                 return 0.0;
             }
             return sum / totalCases;
+        }
+    }
+
+    private static final class CompositionAccumulator {
+        private final String segmentType;
+        private final String segmentKey;
+        private int observations;
+        private double courtSizeSum;
+        private double medianIdeologySum;
+        private double ideologicalSpreadSum;
+        private double meanPartisanAttachmentSum;
+        private double meanRightsSensitivitySum;
+        private double meanInstitutionalismSum;
+        private double replacementPressureSum;
+        private double estimatedReplacementEventsSum;
+
+        private CompositionAccumulator(String segmentType, String segmentKey) {
+            this.segmentType = segmentType;
+            this.segmentKey = segmentKey;
+        }
+
+        private void add(CompositionSnapshot snapshot) {
+            observations++;
+            courtSizeSum += snapshot.courtSize();
+            medianIdeologySum += snapshot.medianIdeology();
+            ideologicalSpreadSum += snapshot.ideologicalSpread();
+            meanPartisanAttachmentSum += snapshot.meanPartisanAttachment();
+            meanRightsSensitivitySum += snapshot.meanRightsSensitivity();
+            meanInstitutionalismSum += snapshot.meanInstitutionalism();
+            replacementPressureSum += snapshot.replacementPressure();
+            estimatedReplacementEventsSum += snapshot.estimatedReplacementEvents();
+        }
+
+        private CompositionReport toReport() {
+            return new CompositionReport(
+                    segmentType,
+                    segmentKey,
+                    observations,
+                    average(courtSizeSum),
+                    average(medianIdeologySum),
+                    average(ideologicalSpreadSum),
+                    average(meanPartisanAttachmentSum),
+                    average(meanRightsSensitivitySum),
+                    average(meanInstitutionalismSum),
+                    average(replacementPressureSum),
+                    average(estimatedReplacementEventsSum)
+            );
+        }
+
+        private double average(double sum) {
+            if (observations == 0) {
+                return 0.0;
+            }
+            return sum / observations;
         }
     }
 }

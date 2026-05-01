@@ -54,6 +54,9 @@ public final class Main {
             System.out.println("Wrote " + result.csvPath());
             System.out.println("Wrote " + result.periodCsvPath());
             System.out.println("Wrote " + result.doctrineCsvPath());
+            System.out.println("Wrote " + result.pipelineCsvPath());
+            System.out.println("Wrote " + result.compositionCsvPath());
+            System.out.println("Wrote " + result.calibrationCsvPath());
             System.out.println("Wrote " + result.markdownPath());
             System.out.println("Wrote " + result.manifestPath());
             return;
@@ -135,11 +138,11 @@ public final class Main {
     }
 
     private static void printCsv(List<ScenarioReport> reports) {
-        System.out.println("scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad");
+        System.out.println("scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad");
         for (ScenarioReport report : reports) {
             System.out.printf(
                     Locale.ROOT,
-                    "%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f%n",
+                    "%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f%n",
                     csv(report.scenarioKey()),
                     csv(report.scenarioName()),
                     report.totalCases(),
@@ -174,10 +177,19 @@ public final class Main {
                     report.lowerCourtConflict(),
                     report.averageTimeToReview(),
                     report.replacementRate(),
+                    report.stateCaseShare(),
+                    report.mixedJurisdictionShare(),
+                    report.averageLowerCourtDepth(),
+                    report.stateFederalTension(),
+                    report.intercourtConflict(),
                     report.complianceRate(),
                     report.defianceRate(),
                     report.workaroundRate(),
                     report.repeatedLitigationRate(),
+                    report.executiveImplementationRate(),
+                    report.agencyNonacquiescenceRate(),
+                    report.legislativeReenactmentRate(),
+                    report.localGovernmentComplianceRate(),
                     report.publicTrust(),
                     report.legislativeConflict(),
                     report.courtCurbingPressure(),

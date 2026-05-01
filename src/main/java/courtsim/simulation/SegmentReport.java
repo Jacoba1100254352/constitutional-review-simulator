@@ -11,6 +11,11 @@ public record SegmentReport(
         double shadowDocketAbuse,
         double emergencyReliefRate,
         double meritsInvalidationRate,
+        double lowerCourtConflict,
+        double averageTimeToReview,
+        double averageLowerCourtDepth,
+        double stateFederalTension,
+        double intercourtConflict,
         double legitimacy,
         double constitutionalConflict,
         double democraticResponsiveness,
@@ -18,10 +23,13 @@ public record SegmentReport(
         double defianceRate,
         double workaroundRate,
         double repeatedLitigationRate,
+        double executiveImplementationRate,
+        double agencyNonacquiescenceRate,
+        double legislativeReenactmentRate,
+        double localGovernmentComplianceRate,
         double publicTrust,
         double legislativeConflict,
         double courtCurbingPressure,
         double amendmentPressure
 ) {
 }
-

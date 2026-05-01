@@ -11,9 +11,12 @@
   "scenarioCount": 12,
   "inputDescription": "synthetic docket",
   "artifacts": [
-    {"path": "reports/constitutional-review-campaign-v0.csv", "sha256": "42d404c9a514ffda1d09ad0071c81bc31b70ed4146f65e82bcd5b356b014478a"},
-    {"path": "reports/constitutional-review-campaign-v0-periods.csv", "sha256": "cae638bb4e436735c0dbc14c16101b40f8881ae85afe22ee3aabbc78cdad7f38"},
-    {"path": "reports/constitutional-review-campaign-v0-doctrines.csv", "sha256": "bdbc5889362bbba018052b88d97076f8b17f2a442e348a724faee686d2093d31"},
-    {"path": "reports/constitutional-review-campaign-v0.md", "sha256": "e677faa2211eb834c32be31ea48aca0fe030bc807002d2a46e6caf54bed87746"}
+    {"path": "reports/constitutional-review-campaign-v0.csv", "sha256": "5af8327b389da0108f75f78acc98792d80ce58c276528901dd668fc1fe84fa10"},
+    {"path": "reports/constitutional-review-campaign-v0-periods.csv", "sha256": "f574acc509609e65f0d490f7d8191f91de310f9c79a93c5c46c60452436776d7"},
+    {"path": "reports/constitutional-review-campaign-v0-doctrines.csv", "sha256": "3435d30e735b8806807b48047941b25ac7fad202083175484dafb06b2e7f15bd"},
+    {"path": "reports/constitutional-review-campaign-v0-pipelines.csv", "sha256": "b559968af4dd5238b3d26386cfa7d87c5e819831878046f4205895cf6f26d71b"},
+    {"path": "reports/constitutional-review-campaign-v0-composition.csv", "sha256": "6d2f463829f98c6def0da093e3b5824aa368db0f4246e3d5c67e5ecbee6a4b78"},
+    {"path": "reports/constitutional-review-campaign-v0-calibration.csv", "sha256": "a798268a6600fa23e05070976777b979ec463a0ba8e209788f9be521d90336eb"},
+    {"path": "reports/constitutional-review-campaign-v0.md", "sha256": "88d14d13178b8d4057e9d8aa2e8140d1871504d658a33af4f31534e7a9e1058f"}
   ]
 }

@@ -1,6 +1,7 @@
 package courtsim.simulation;
 
 import courtsim.institution.CaseOutcome;
+import courtsim.institution.ConstitutionalReviewProcess;
 import courtsim.institution.ReactionState;
 import courtsim.institution.ReviewContext;
 import courtsim.institution.ReviewProcess;
@@ -41,6 +42,11 @@ public final class Simulator {
                         Random periodRandom = new Random(mix(seed, run, scenarioIndex + 101 + currentPeriod * 503));
                         process = scenario.buildProcess(world, periodRandom, currentPeriod);
                         context = new ReviewContext(periodRandom, reactionState);
+                        if (process instanceof ConstitutionalReviewProcess constitutionalReviewProcess) {
+                            accumulators[scenarioIndex].addComposition(
+                                    constitutionalReviewProcess.compositionSnapshot(currentPeriod)
+                            );
+                        }
                     }
                     CaseOutcome outcome = process.review(caseFile, context);
                     accumulators[scenarioIndex].add(outcome);

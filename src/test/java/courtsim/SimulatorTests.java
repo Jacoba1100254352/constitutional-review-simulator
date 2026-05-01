@@ -60,8 +60,19 @@ public final class SimulatorTests {
             assertBetween(report.meritsInvalidationRate(), "merits invalidation rate");
             assertBetween(report.complianceRate(), "compliance rate");
             assertBetween(report.defianceRate(), "defiance rate");
+            assertBetween(report.stateCaseShare(), "state case share");
+            assertBetween(report.mixedJurisdictionShare(), "mixed jurisdiction share");
+            assertTrue(report.averageLowerCourtDepth() >= 1.0, "expected lower-court depth");
+            assertBetween(report.stateFederalTension(), "state-federal tension");
+            assertBetween(report.intercourtConflict(), "intercourt conflict");
+            assertBetween(report.executiveImplementationRate(), "executive implementation rate");
+            assertBetween(report.agencyNonacquiescenceRate(), "agency nonacquiescence rate");
+            assertBetween(report.legislativeReenactmentRate(), "legislative reenactment rate");
+            assertBetween(report.localGovernmentComplianceRate(), "local-government compliance rate");
             assertTrue(!report.periodReports().isEmpty(), "expected period diagnostics");
             assertTrue(!report.doctrineReports().isEmpty(), "expected doctrine diagnostics");
+            assertTrue(!report.pipelineReports().isEmpty(), "expected pipeline diagnostics");
+            assertTrue(!report.compositionReports().isEmpty(), "expected composition diagnostics");
         }
     }
 
@@ -97,16 +108,27 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.csvPath()), "expected CSV artifact");
         assertTrue(Files.exists(result.periodCsvPath()), "expected period CSV artifact");
         assertTrue(Files.exists(result.doctrineCsvPath()), "expected doctrine CSV artifact");
+        assertTrue(Files.exists(result.pipelineCsvPath()), "expected pipeline CSV artifact");
+        assertTrue(Files.exists(result.compositionCsvPath()), "expected composition CSV artifact");
+        assertTrue(Files.exists(result.calibrationCsvPath()), "expected calibration CSV artifact");
         assertTrue(Files.exists(result.markdownPath()), "expected Markdown artifact");
         assertTrue(Files.exists(result.manifestPath()), "expected manifest artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legalStability"), "expected CSV header");
         assertTrue(Files.readString(result.csvPath()).contains("emergencyReliefRate"), "expected split emergency metric");
         assertTrue(Files.readString(result.csvPath()).contains("complianceRate"), "expected compliance metric");
+        assertTrue(Files.readString(result.csvPath()).contains("executiveImplementationRate"), "expected enforcement metric");
+        assertTrue(Files.readString(result.csvPath()).contains("stateFederalTension"), "expected hierarchy metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("period"), "expected period report rows");
         assertTrue(Files.readString(result.doctrineCsvPath()).contains("doctrine"), "expected doctrine report rows");
+        assertTrue(Files.readString(result.pipelineCsvPath()).contains("pipeline"), "expected pipeline report rows");
+        assertTrue(Files.readString(result.compositionCsvPath()).contains("medianIdeology"), "expected composition report rows");
+        assertTrue(Files.readString(result.calibrationCsvPath()).contains("legitimacy_trust_gradient"), "expected calibration rows");
         assertTrue(Files.readString(result.markdownPath()).contains("Scenario Averages"), "expected Markdown summary");
         assertTrue(Files.readString(result.markdownPath()).contains("Period Diagnostics"), "expected period diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Doctrine Diagnostics"), "expected doctrine diagnostics");
+        assertTrue(Files.readString(result.markdownPath()).contains("Pipeline Diagnostics"), "expected pipeline diagnostics");
+        assertTrue(Files.readString(result.markdownPath()).contains("Composition Diagnostics"), "expected composition diagnostics");
+        assertTrue(Files.readString(result.markdownPath()).contains("Calibration Diagnostics"), "expected calibration diagnostics");
     }
 
     private static void pairedCampaignWritesArtifacts() throws Exception {
@@ -168,6 +190,9 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.csvPath()), "expected paired CSV artifact");
         assertTrue(Files.exists(result.periodCsvPath()), "expected paired period CSV artifact");
         assertTrue(Files.exists(result.doctrineCsvPath()), "expected paired doctrine CSV artifact");
+        assertTrue(Files.exists(result.pipelineCsvPath()), "expected paired pipeline CSV artifact");
+        assertTrue(Files.exists(result.compositionCsvPath()), "expected paired composition CSV artifact");
+        assertTrue(Files.exists(result.calibrationCsvPath()), "expected paired calibration CSV artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legislative-low-mandate"), "expected paired legislative cases");
         assertTrue(Files.readString(result.markdownPath()).contains("Paired Import Campaign"), "expected paired Markdown title");
     }
@@ -185,6 +210,9 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.csvPath()), "expected sensitivity CSV artifact");
         assertTrue(Files.exists(result.periodCsvPath()), "expected sensitivity period CSV artifact");
         assertTrue(Files.exists(result.doctrineCsvPath()), "expected sensitivity doctrine CSV artifact");
+        assertTrue(Files.exists(result.pipelineCsvPath()), "expected sensitivity pipeline CSV artifact");
+        assertTrue(Files.exists(result.compositionCsvPath()), "expected sensitivity composition CSV artifact");
+        assertTrue(Files.exists(result.calibrationCsvPath()), "expected sensitivity calibration CSV artifact");
         assertTrue(Files.readString(result.csvPath()).contains("high-emergency-pressure"), "expected sensitivity cases");
         assertTrue(Files.readString(result.markdownPath()).contains("Sensitivity Campaign"), "expected sensitivity Markdown title");
     }

@@ -1,0 +1,11 @@
+targetKey,label,lowerBound,upperBound,note
+doctrine_mix.speech,Speech docket share,0.08,0.20,Starter external range for speech claims.
+doctrine_mix.equality,Equality docket share,0.08,0.20,Starter external range for equality claims.
+doctrine_mix.criminal_procedure,Criminal procedure docket share,0.08,0.20,Starter external range for criminal-procedure claims.
+doctrine_mix.federalism,Federalism docket share,0.06,0.18,Starter external range for federalism claims.
+doctrine_mix.election_law,Election law docket share,0.05,0.16,Starter external range for election-law claims.
+doctrine_mix.emergency_powers,Emergency powers docket share,0.04,0.14,Starter external range for emergency-powers claims.
+doctrine_mix.administrative_state,Administrative state docket share,0.06,0.18,Starter external range for administrative-state claims.
+emergency_relief_rate,Emergency relief rate,0.05,0.24,Share of emergency orders granting interim relief.
+compliance_rate,Compliance rate,0.70,0.95,Share of cases with institutional compliance.
+legitimacy_trust_gradient,Legitimacy response to trust,0.15,1.20,Slope of legitimacy over public-trust outcomes across campaign rows.

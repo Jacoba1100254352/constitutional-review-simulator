@@ -11,9 +11,12 @@
   "scenarioCount": 12,
   "inputDescription": "synthetic docket",
   "artifacts": [
-    {"path": "reports/constitutional-review-sensitivity-v1.csv", "sha256": "1286d8670a389fcf7eabca029ca37aec9e3dd1409d1a57d509db29f737093ba2"},
-    {"path": "reports/constitutional-review-sensitivity-v1-periods.csv", "sha256": "3b3d470ee6dc249871b7b0e49c47735de0895848dfc3c62b6b6f76753e53cbbd"},
-    {"path": "reports/constitutional-review-sensitivity-v1-doctrines.csv", "sha256": "57300579ccad550b3adbf231ba6c29338b261da88172d92af0ec7de86bd3d298"},
-    {"path": "reports/constitutional-review-sensitivity-v1.md", "sha256": "8dca4d112e9d683d90bd22e2647c1f787471d3348a927fb1d8fb27008780e88e"}
+    {"path": "reports/constitutional-review-sensitivity-v1.csv", "sha256": "78487a94f67f44a0f8821a74df1c54f78271d40785ce143c1b5e4c4c39e4722a"},
+    {"path": "reports/constitutional-review-sensitivity-v1-periods.csv", "sha256": "f3ef452ca957487f9a3a6f03d67a18ec9c2e2ba4920e314db2187e1ffe2aba0e"},
+    {"path": "reports/constitutional-review-sensitivity-v1-doctrines.csv", "sha256": "a968a6f6eb5293a4a8f59562ba5b864380f2f595f253c0f63643b249eaa59053"},
+    {"path": "reports/constitutional-review-sensitivity-v1-pipelines.csv", "sha256": "cb3db982274bb31c447222ff1f2f9e28e03943b6a5b96dedc6fff5085b0da657"},
+    {"path": "reports/constitutional-review-sensitivity-v1-composition.csv", "sha256": "3f6bf334ffab73aa3537886c5c40213b10ee73e1f6b21b91b03094124dc8a614"},
+    {"path": "reports/constitutional-review-sensitivity-v1-calibration.csv", "sha256": "a9e3e694905b63eb9e06dd092a4aff33c149db5a6cf8e5c97941e8f93a1d7ebc"},
+    {"path": "reports/constitutional-review-sensitivity-v1.md", "sha256": "3098335d55f9270421fbafdb2653874cad00a6ae57b103894232666b38916dc5"}
   ]
 }

@@ -71,12 +71,16 @@ public final class ReactionState {
             boolean complied,
             boolean defied,
             boolean workaround,
-            boolean repeatedLitigation
+            boolean repeatedLitigation,
+            boolean agencyNonacquiescence,
+            boolean legislativeReenactment
     ) {
         double decisionShock = constitutionalConflict * 0.16
                 + (emergencyReliefGranted ? 0.05 : 0.0)
                 + (meritsInvalidated ? 0.04 : 0.0)
-                + (overrideUsed ? 0.08 : 0.0);
+                + (overrideUsed ? 0.08 : 0.0)
+                + (agencyNonacquiescence ? 0.035 : 0.0)
+                + (legislativeReenactment ? 0.030 : 0.0);
         double legitimacyGain = Math.max(0.0, legitimacy - 0.58) * 0.08;
         publicTrust = Values.clamp01(publicTrust + legitimacyGain - decisionShock + (complied ? 0.018 : -0.025));
 
@@ -85,6 +89,8 @@ public final class ReactionState {
                         + constitutionalConflict * 0.12
                         + (meritsInvalidated ? 0.035 : 0.0)
                         + (emergencyReliefGranted ? 0.025 : 0.0)
+                        + (agencyNonacquiescence ? 0.030 : 0.0)
+                        + (legislativeReenactment ? 0.028 : 0.0)
                         - legitimacy * 0.045
                         - (complied ? 0.012 : 0.0)
         );
@@ -93,11 +99,13 @@ public final class ReactionState {
                         + legislativeConflict * 0.055
                         + (meritsInvalidated ? 0.045 : 0.0)
                         + (emergencyReliefGranted ? 0.035 : 0.0)
+                        + (agencyNonacquiescence ? 0.030 : 0.0)
                         - legitimacy * 0.040
         );
         overridePressure = Values.clamp01(
                 overridePressure
                         + (meritsInvalidated ? 0.060 : 0.0)
+                        + (legislativeReenactment ? 0.045 : 0.0)
                         + legislativeConflict * 0.040
                         - publicTrust * 0.030
                         - (overrideUsed ? 0.050 : 0.0)
@@ -107,6 +115,7 @@ public final class ReactionState {
                         + constitutionalConflict * 0.050
                         + (defied ? 0.050 : 0.0)
                         + (repeatedLitigation ? 0.035 : 0.0)
+                        + (agencyNonacquiescence ? 0.030 : 0.0)
                         - legitimacy * 0.025
         );
         complianceNorm = Values.clamp01(
@@ -114,7 +123,7 @@ public final class ReactionState {
                         + (complied ? 0.020 : -0.035)
                         - courtCurbingPressure * 0.020
                         - (workaround ? 0.020 : 0.0)
+                        - (agencyNonacquiescence ? 0.018 : 0.0)
         );
     }
 }
-

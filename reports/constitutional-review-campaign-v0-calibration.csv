@@ -1,0 +1,11 @@
+targetKey,label,targetSource,observedValue,lowerBound,upperBound,withinTarget,gap,note
+doctrine_mix.speech,Speech docket share,config/calibration-targets.csv,0.141,0.080,0.200,true,0.000,Starter external range for speech claims.
+doctrine_mix.equality,Equality docket share,config/calibration-targets.csv,0.144,0.080,0.200,true,0.000,Starter external range for equality claims.
+doctrine_mix.criminal_procedure,Criminal procedure docket share,config/calibration-targets.csv,0.143,0.080,0.200,true,0.000,Starter external range for criminal-procedure claims.
+doctrine_mix.federalism,Federalism docket share,config/calibration-targets.csv,0.143,0.060,0.180,true,0.000,Starter external range for federalism claims.
+doctrine_mix.election_law,Election law docket share,config/calibration-targets.csv,0.146,0.050,0.160,true,0.000,Starter external range for election-law claims.
+doctrine_mix.emergency_powers,Emergency powers docket share,config/calibration-targets.csv,0.142,0.040,0.140,false,0.002,Starter external range for emergency-powers claims.
+doctrine_mix.administrative_state,Administrative state docket share,config/calibration-targets.csv,0.142,0.060,0.180,true,0.000,Starter external range for administrative-state claims.
+emergency_relief_rate,Emergency relief rate,config/calibration-targets.csv,0.547,0.050,0.240,false,0.307,Share of emergency orders granting interim relief.
+compliance_rate,Compliance rate,config/calibration-targets.csv,0.375,0.700,0.950,false,0.325,Share of cases with institutional compliance.
+legitimacy_trust_gradient,Legitimacy response to trust,config/calibration-targets.csv,3.446,0.150,1.200,false,2.246,Slope of legitimacy over public-trust outcomes across campaign rows.
