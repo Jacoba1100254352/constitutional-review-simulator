@@ -8,6 +8,9 @@ final class MetricsAccumulator {
     private int reviewedCases;
     private int invalidations;
     private int emergencyOrders;
+    private int emergencyReliefs;
+    private int meritsReviews;
+    private int meritsInvalidations;
     private int overrides;
     private int enBancReviews;
     private int crossChecks;
@@ -24,6 +27,9 @@ final class MetricsAccumulator {
     private double independenceAccountabilityBalanceSum;
     private double concurrenceFragmentationSum;
     private double dissentIntensitySum;
+    private double lowerCourtConflictSum;
+    private double timeToReviewSum;
+    private double replacementPressureSum;
     private double administrativeLoadSum;
 
     void add(CaseOutcome outcome) {
@@ -36,6 +42,15 @@ final class MetricsAccumulator {
         }
         if (outcome.emergencyOrder()) {
             emergencyOrders++;
+        }
+        if (outcome.emergencyReliefGranted()) {
+            emergencyReliefs++;
+        }
+        if (outcome.meritsReview()) {
+            meritsReviews++;
+        }
+        if (outcome.meritsInvalidated()) {
+            meritsInvalidations++;
         }
         if (outcome.overrideUsed()) {
             overrides++;
@@ -61,6 +76,9 @@ final class MetricsAccumulator {
         independenceAccountabilityBalanceSum += outcome.independenceAccountabilityBalance();
         concurrenceFragmentationSum += outcome.concurrenceFragmentation();
         dissentIntensitySum += outcome.dissentIntensity();
+        lowerCourtConflictSum += outcome.caseFile().lowerCourtConflict();
+        timeToReviewSum += outcome.caseFile().timeToReview();
+        replacementPressureSum += outcome.replacementPressure();
         administrativeLoadSum += outcome.administrativeLoad();
     }
 
@@ -72,8 +90,14 @@ final class MetricsAccumulator {
                 reviewedCases,
                 invalidations,
                 emergencyOrders,
+                emergencyReliefs,
+                meritsReviews,
+                meritsInvalidations,
                 overrides,
                 Values.ratio(reviewedCases, totalCases),
+                Values.ratio(emergencyReliefs, emergencyOrders),
+                Values.ratio(meritsReviews, reviewedCases),
+                Values.ratio(meritsInvalidations, Math.max(meritsReviews, 1)),
                 average(legalStabilitySum),
                 average(rightsProtectionSum),
                 average(partisanAlignmentSum),
@@ -90,6 +114,9 @@ final class MetricsAccumulator {
                 Values.ratio(crossChecks, reviewedCases),
                 Values.ratio(councilScreens, reviewedCases),
                 Values.ratio(overrides, Math.max(invalidations, 1)),
+                average(lowerCourtConflictSum),
+                average(timeToReviewSum),
+                average(replacementPressureSum),
                 average(administrativeLoadSum)
         );
     }
@@ -101,4 +128,3 @@ final class MetricsAccumulator {
         return sum / totalCases;
     }
 }
-

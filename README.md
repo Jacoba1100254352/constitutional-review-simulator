@@ -34,6 +34,18 @@ This writes:
 - `reports/constitutional-review-campaign-v0.md`
 - `reports/constitutional-review-campaign-v0-manifest.json`
 
+Run the paired imported-legislative campaign:
+
+```sh
+make paired-campaign
+```
+
+This reads the sibling legislative simulator campaign CSV and writes:
+
+- `reports/constitutional-review-paired-import-v1.csv`
+- `reports/constitutional-review-paired-import-v1.md`
+- `reports/constitutional-review-paired-import-v1-manifest.json`
+
 Run tests:
 
 ```sh
@@ -58,6 +70,8 @@ The starter catalog covers:
 - removal standards: impeachment-only, misconduct commission, and retention election pressure
 - recusal rules: self-policing, mandatory conflict recusal, random substitution, and strict transparency
 - emergency/shadow docket procedures: fast emergency orders, reasoned emergency panels, full-court emergency review, and merits follow-up
+- doctrine areas: speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state
+- lower-court pipeline signals: panel skew, government win/loss, conflict pressure, certiorari pressure, and time-to-review
 - voting thresholds: simple majority, supermajority invalidation, concurrent-majority logic, and high constitutional thresholds
 - concurring/dissenting coalitions: modeled as fragmentation and dissent intensity metrics
 - panel vs en banc review
@@ -76,11 +90,16 @@ Core metrics:
 - `shadowDocketAbuse` `↓`: unexplained or emergency-driven high-impact review
 - `legitimacy` `↑`: public trust, transparency, broad agreement, and rights performance net of conflict
 - `reversalRate` `↓/diag.`: share of cases where laws are invalidated or reversed
+- `emergencyReliefRate` `↓`: emergency orders granting interim relief
+- `meritsReviewRate` `diag.`: accepted cases receiving merits review
+- `meritsInvalidationRate` `↓/diag.`: merits reviews that invalidate a law or action
 - `constitutionalConflict` `↓`: clashes among court, legislature, executive, public mandate, and cross-checking bodies
 - `democraticResponsiveness` `↑`: respect for public mandate unless rights-threat signals justify countermajoritarian action
 - `independenceAccountabilityBalance` `↑`: scenario-specific fit between independence and accountability pressure
 - `concurrenceFragmentation` `↓/diag.`: fractured majority/opinion structure
 - `dissentIntensity` `↓/diag.`: close, polarized dissent pressure
+- `averageTimeToReview` `diag.`: lower-court and certiorari pipeline delay
+- `replacementRate` `diag.`: court-composition turnover pressure across review periods
 
 ## Legislative Import Contract
 

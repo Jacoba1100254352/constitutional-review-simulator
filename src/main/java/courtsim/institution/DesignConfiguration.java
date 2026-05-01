@@ -88,5 +88,18 @@ public record DesignConfiguration(
     public boolean substitutesRecusedJustices() {
         return recusalRule == RecusalRule.RANDOM_SUBSTITUTION;
     }
-}
 
+    public double periodTurnoverRate() {
+        double termTurnover = switch (termLimit) {
+            case LIFE_TENURE -> 0.08;
+            case NONRENEWABLE_18_YEAR -> 0.28;
+            case SHORT_RENEWABLE -> 0.52;
+        };
+        double removalTurnover = switch (removalStandard) {
+            case IMPEACHMENT_ONLY -> 0.04;
+            case MISCONDUCT_COMMISSION -> 0.12;
+            case RETENTION_ELECTION -> 0.30;
+        };
+        return Values.clamp01(termTurnover + removalTurnover + accountability * 0.14);
+    }
+}

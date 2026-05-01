@@ -33,6 +33,7 @@ public final class Main {
                 : LegislativeOutputImporter.read(options.legislativeInput);
         WorldSpec worldSpec = new WorldSpec(
                 options.caseCount,
+                options.reviewPeriods,
                 options.appointmentPolarization,
                 options.rightsThreatRate,
                 options.emergencyPressure,
@@ -97,7 +98,7 @@ public final class Main {
         System.out.println("Input: " + LegislativeOutputImporter.describeImport(importedSignals));
         System.out.printf(
                 Locale.ROOT,
-                "%-38s %6s %6s %6s %6s %6s %6s %6s %6s %6s%n",
+                "%-38s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s%n",
                 "Scenario",
                 "Score",
                 "Stable",
@@ -106,13 +107,14 @@ public final class Main {
                 "Shadow",
                 "Legit",
                 "Rev",
+                "ERel",
                 "Conf",
                 "Resp"
         );
         for (ScenarioReport report : reports) {
             System.out.printf(
                     Locale.ROOT,
-                    "%-38s %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f%n",
+                    "%-38s %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f%n",
                     truncate(report.scenarioKey(), 38),
                     report.directionalScore(),
                     report.legalStability(),
@@ -121,6 +123,7 @@ public final class Main {
                     report.shadowDocketAbuse(),
                     report.legitimacy(),
                     report.reversalRate(),
+                    report.emergencyReliefRate(),
                     report.constitutionalConflict(),
                     report.democraticResponsiveness()
             );
@@ -128,20 +131,26 @@ public final class Main {
     }
 
     private static void printCsv(List<ScenarioReport> reports) {
-        System.out.println("scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,overrides,directionalScore,reviewRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,administrativeLoad");
+        System.out.println("scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,administrativeLoad");
         for (ScenarioReport report : reports) {
             System.out.printf(
                     Locale.ROOT,
-                    "%s,%s,%d,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f%n",
+                    "%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f%n",
                     csv(report.scenarioKey()),
                     csv(report.scenarioName()),
                     report.totalCases(),
                     report.reviewedCases(),
                     report.invalidations(),
                     report.emergencyOrders(),
+                    report.emergencyReliefs(),
+                    report.meritsReviews(),
+                    report.meritsInvalidations(),
                     report.overrides(),
                     report.directionalScore(),
                     report.reviewRate(),
+                    report.emergencyReliefRate(),
+                    report.meritsReviewRate(),
+                    report.meritsInvalidationRate(),
                     report.legalStability(),
                     report.rightsProtection(),
                     report.partisanAlignment(),
@@ -158,6 +167,9 @@ public final class Main {
                     report.crossCheckRate(),
                     report.councilScreenRate(),
                     report.overrideRate(),
+                    report.lowerCourtConflict(),
+                    report.averageTimeToReview(),
+                    report.replacementRate(),
                     report.administrativeLoad()
             );
         }
@@ -180,13 +192,14 @@ public final class Main {
         System.out.println("Core options:");
         System.out.println("  --runs N                       randomized worlds per scenario (default 100)");
         System.out.println("  --cases N                      cases per run (default 80)");
+        System.out.println("  --review-periods N             court-composition periods per run (default 4)");
         System.out.println("  --seed N                       random seed (default 20260501)");
         System.out.println("  --scenarios a,b,c              scenario keys to compare");
         System.out.println("  --all-scenarios                compare every scenario in the catalog");
         System.out.println("  --format table|csv|bars         output format (default table)");
         System.out.println("  --charts                       add ASCII bars after the table");
         System.out.println("  --legislative-input PATH        import legislative campaign CSV rows as docket signals");
-        System.out.println("  --campaign v0                  write campaign CSV/Markdown/provenance artifacts");
+        System.out.println("  --campaign v0|v1-paired        write campaign CSV/Markdown/provenance artifacts");
         System.out.println("  --output-dir PATH               report output directory (default reports)");
         System.out.println();
         System.out.println("World controls:");
@@ -231,6 +244,7 @@ public final class Main {
         private boolean help;
         private int runs = 100;
         private int caseCount = 80;
+        private int reviewPeriods = 4;
         private long seed = 20260501L;
         private String format = "table";
         private boolean charts;
@@ -254,6 +268,7 @@ public final class Main {
                     case "--help", "-h" -> options.help = true;
                     case "--runs" -> options.runs = integer(next(args, ++i, arg), arg);
                     case "--cases" -> options.caseCount = integer(next(args, ++i, arg), arg);
+                    case "--review-periods" -> options.reviewPeriods = integer(next(args, ++i, arg), arg);
                     case "--seed" -> options.seed = Long.parseLong(next(args, ++i, arg));
                     case "--format" -> options.format = next(args, ++i, arg);
                     case "--charts" -> options.charts = true;

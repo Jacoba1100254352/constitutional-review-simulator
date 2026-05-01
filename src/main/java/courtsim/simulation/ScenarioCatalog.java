@@ -396,13 +396,13 @@ public final class ScenarioCatalog {
         }
 
         @Override
-        public courtsim.institution.ReviewProcess buildProcess(CourtWorld world, Random random) {
+        public courtsim.institution.ReviewProcess buildProcess(CourtWorld world, Random random, int reviewPeriod) {
             return new ConstitutionalReviewProcess(
                     configuration,
                     world.spec(),
-                    CourtFactory.create(configuration, world.spec(), random)
+                    CourtFactory.create(configuration, world.spec(), random, reviewPeriod),
+                    configuration.periodTurnoverRate()
             );
         }
     }
 }
-

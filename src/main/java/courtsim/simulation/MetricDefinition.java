@@ -18,6 +18,8 @@ public record MetricDefinition(
             new MetricDefinition("shadowDocketAbuse", "Shadow-docket abuse", MetricDirection.LOWER_IS_BETTER, "Emergency, unexplained, or high-impact non-merits action."),
             new MetricDefinition("legitimacy", "Legitimacy", MetricDirection.HIGHER_IS_BETTER, "Public trust, transparency, agreement, and rights performance net of conflict."),
             new MetricDefinition("reversalRate", "Reversal rate", MetricDirection.LOWER_IS_BETTER, "Share of cases in which a law or action is invalidated."),
+            new MetricDefinition("emergencyReliefRate", "Emergency relief rate", MetricDirection.LOWER_IS_BETTER, "Share of emergency orders granting interim relief."),
+            new MetricDefinition("meritsInvalidationRate", "Merits invalidation rate", MetricDirection.LOWER_IS_BETTER, "Share of merits reviews invalidating a law or action."),
             new MetricDefinition("constitutionalConflict", "Constitutional conflict", MetricDirection.LOWER_IS_BETTER, "Institutional clash around review outcomes."),
             new MetricDefinition("democraticResponsiveness", "Democratic responsiveness", MetricDirection.HIGHER_IS_BETTER, "Respect for public mandate unless rights risk justifies review."),
             new MetricDefinition("independenceAccountabilityBalance", "Independence/accountability balance", MetricDirection.HIGHER_IS_BETTER, "Fit between decisional independence and accountability pressure."),
@@ -26,6 +28,10 @@ public record MetricDefinition(
             new MetricDefinition("reviewRate", "Review rate", MetricDirection.DIAGNOSTIC, "Share of docket accepted for constitutional review."),
             new MetricDefinition("recusalRate", "Recusal rate", MetricDirection.DIAGNOSTIC, "Justice recusals per possible justice-case."),
             new MetricDefinition("overrideRate", "Override rate", MetricDirection.DIAGNOSTIC, "Legislative overrides per invalidation."),
+            new MetricDefinition("meritsReviewRate", "Merits review rate", MetricDirection.DIAGNOSTIC, "Share of accepted cases receiving merits review."),
+            new MetricDefinition("lowerCourtConflict", "Lower-court conflict", MetricDirection.DIAGNOSTIC, "Average lower-court conflict and circuit-split pressure."),
+            new MetricDefinition("averageTimeToReview", "Time to review", MetricDirection.DIAGNOSTIC, "Stylized delay before final review."),
+            new MetricDefinition("replacementRate", "Replacement pressure", MetricDirection.DIAGNOSTIC, "Dynamic court-composition turnover pressure across review periods."),
             new MetricDefinition("administrativeLoad", "Administrative load", MetricDirection.LOWER_IS_BETTER, "Procedural cost from review structure, emergency review, cross-checks, and recusals.")
     );
 
@@ -44,4 +50,3 @@ public record MetricDefinition(
         return definition;
     }
 }
-

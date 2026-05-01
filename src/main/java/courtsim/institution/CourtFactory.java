@@ -13,15 +13,25 @@ public final class CourtFactory {
     private CourtFactory() {
     }
 
-    public static List<Justice> create(DesignConfiguration configuration, WorldSpec worldSpec, Random random) {
+    public static List<Justice> create(
+            DesignConfiguration configuration,
+            WorldSpec worldSpec,
+            Random random,
+            int reviewPeriod
+    ) {
         List<Justice> justices = new ArrayList<>();
         double spread = worldSpec.appointmentPolarization() * configuration.appointmentPolarizationMultiplier();
-        double skew = configuration.appointmentSkew();
+        double turnover = configuration.periodTurnoverRate();
+        double periodSwing = reviewPeriod == 0
+                ? 0.0
+                : random.nextGaussian() * worldSpec.partisanPressure() * turnover * 0.32;
+        double skew = Values.signedClamp(configuration.appointmentSkew() + periodSwing);
         for (int i = 0; i < configuration.courtSize(); i++) {
             double seatPosition = configuration.courtSize() == 1
                     ? 0.0
                     : -1.0 + (2.0 * i / (configuration.courtSize() - 1.0));
-            double ideology = Values.signedClamp((seatPosition * spread) + (skew * 0.45) + gaussian(random, 0.16));
+            double replacementNoise = gaussian(random, 0.08 + turnover * reviewPeriod * 0.04);
+            double ideology = Values.signedClamp((seatPosition * spread) + (skew * 0.45) + replacementNoise);
             double partisanAttachment = Values.clamp01(
                     0.30
                             + worldSpec.partisanPressure() * 0.42
@@ -76,4 +86,3 @@ public final class CourtFactory {
         return random.nextGaussian() * standardDeviation;
     }
 }
-

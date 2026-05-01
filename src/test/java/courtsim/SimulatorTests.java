@@ -23,6 +23,7 @@ public final class SimulatorTests {
         simulatorProducesReports();
         legislativeImporterToleratesCampaignCsv();
         campaignWritesArtifacts();
+        pairedCampaignWritesArtifacts();
         System.out.println("All simulator tests passed.");
     }
 
@@ -54,6 +55,8 @@ public final class SimulatorTests {
             assertBetween(report.directionalScore(), "directional score");
             assertBetween(report.legalStability(), "legal stability");
             assertBetween(report.rightsProtection(), "rights protection");
+            assertBetween(report.emergencyReliefRate(), "emergency relief rate");
+            assertBetween(report.meritsInvalidationRate(), "merits invalidation rate");
         }
     }
 
@@ -90,7 +93,69 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.markdownPath()), "expected Markdown artifact");
         assertTrue(Files.exists(result.manifestPath()), "expected manifest artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legalStability"), "expected CSV header");
+        assertTrue(Files.readString(result.csvPath()).contains("emergencyReliefRate"), "expected split emergency metric");
         assertTrue(Files.readString(result.markdownPath()).contains("Scenario Averages"), "expected Markdown summary");
+    }
+
+    private static void pairedCampaignWritesArtifacts() throws Exception {
+        Path tempDir = Files.createTempDirectory("court-paired-campaign");
+        List<LegislativeSignal> signals = List.of(
+                new LegislativeSignal(
+                        "baseline",
+                        "default-pass",
+                        "Default pass",
+                        0.48,
+                        0.42,
+                        0.51,
+                        0.31,
+                        0.44,
+                        0.22,
+                        0.18,
+                        0.27,
+                        0.52,
+                        0.25,
+                        0.36,
+                        0.19,
+                        0.08,
+                        0.14,
+                        0.07,
+                        0.22,
+                        0.18
+                ),
+                new LegislativeSignal(
+                        "baseline",
+                        "committee-regular-order",
+                        "Committee regular order",
+                        0.66,
+                        0.71,
+                        0.62,
+                        0.02,
+                        0.04,
+                        0.10,
+                        0.05,
+                        0.08,
+                        0.76,
+                        0.08,
+                        0.12,
+                        0.06,
+                        0.04,
+                        0.06,
+                        0.03,
+                        0.08,
+                        0.05
+                )
+        );
+        CampaignResult result = new CampaignRunner().run(
+                "v1-paired",
+                WorldSpec.baseline(12),
+                3,
+                20260501L,
+                tempDir,
+                signals
+        );
+        assertTrue(Files.exists(result.csvPath()), "expected paired CSV artifact");
+        assertTrue(Files.readString(result.csvPath()).contains("legislative-low-mandate"), "expected paired legislative cases");
+        assertTrue(Files.readString(result.markdownPath()).contains("Paired Import Campaign"), "expected paired Markdown title");
     }
 
     private static void assertBetween(double value, String label) {
@@ -103,4 +168,3 @@ public final class SimulatorTests {
         }
     }
 }
-

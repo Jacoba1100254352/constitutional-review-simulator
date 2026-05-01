@@ -6,7 +6,9 @@ public record CaseOutcome(
         CaseFile caseFile,
         boolean reviewed,
         boolean emergencyOrder,
+        boolean emergencyReliefGranted,
         boolean meritsReview,
+        boolean meritsInvalidated,
         boolean invalidated,
         boolean lawEffectiveAfterReview,
         boolean enBancReview,
@@ -28,7 +30,7 @@ public record CaseOutcome(
         double independenceAccountabilityBalance,
         double concurrenceFragmentation,
         double dissentIntensity,
+        double replacementPressure,
         double administrativeLoad
 ) {
 }
-

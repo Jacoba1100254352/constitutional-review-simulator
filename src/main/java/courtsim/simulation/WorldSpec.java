@@ -4,6 +4,7 @@ import courtsim.util.Values;
 
 public record WorldSpec(
         int caseCount,
+        int reviewPeriods,
         double appointmentPolarization,
         double rightsThreatRate,
         double emergencyPressure,
@@ -15,6 +16,9 @@ public record WorldSpec(
         if (caseCount <= 0) {
             throw new IllegalArgumentException("caseCount must be positive");
         }
+        if (reviewPeriods <= 0) {
+            throw new IllegalArgumentException("reviewPeriods must be positive");
+        }
         appointmentPolarization = Values.clamp01(appointmentPolarization);
         rightsThreatRate = Values.clamp01(rightsThreatRate);
         emergencyPressure = Values.clamp01(emergencyPressure);
@@ -24,12 +28,26 @@ public record WorldSpec(
     }
 
     public static WorldSpec baseline(int caseCount) {
-        return new WorldSpec(caseCount, 0.62, 0.36, 0.28, 0.42, 0.58, 0.55);
+        return new WorldSpec(caseCount, 4, 0.62, 0.36, 0.28, 0.42, 0.58, 0.55);
     }
 
     public WorldSpec withCaseCount(int newCaseCount) {
         return new WorldSpec(
                 newCaseCount,
+                reviewPeriods,
+                appointmentPolarization,
+                rightsThreatRate,
+                emergencyPressure,
+                legislativeConflict,
+                publicTrust,
+                partisanPressure
+        );
+    }
+
+    public WorldSpec withReviewPeriods(int newReviewPeriods) {
+        return new WorldSpec(
+                caseCount,
+                newReviewPeriods,
                 appointmentPolarization,
                 rightsThreatRate,
                 emergencyPressure,
@@ -40,27 +58,26 @@ public record WorldSpec(
     }
 
     public WorldSpec withAppointmentPolarization(double value) {
-        return new WorldSpec(caseCount, value, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure);
+        return new WorldSpec(caseCount, reviewPeriods, value, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure);
     }
 
     public WorldSpec withRightsThreatRate(double value) {
-        return new WorldSpec(caseCount, appointmentPolarization, value, emergencyPressure, legislativeConflict, publicTrust, partisanPressure);
+        return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, value, emergencyPressure, legislativeConflict, publicTrust, partisanPressure);
     }
 
     public WorldSpec withEmergencyPressure(double value) {
-        return new WorldSpec(caseCount, appointmentPolarization, rightsThreatRate, value, legislativeConflict, publicTrust, partisanPressure);
+        return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, value, legislativeConflict, publicTrust, partisanPressure);
     }
 
     public WorldSpec withLegislativeConflict(double value) {
-        return new WorldSpec(caseCount, appointmentPolarization, rightsThreatRate, emergencyPressure, value, publicTrust, partisanPressure);
+        return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, value, publicTrust, partisanPressure);
     }
 
     public WorldSpec withPublicTrust(double value) {
-        return new WorldSpec(caseCount, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, value, partisanPressure);
+        return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, value, partisanPressure);
     }
 
     public WorldSpec withPartisanPressure(double value) {
-        return new WorldSpec(caseCount, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, value);
+        return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, value);
     }
 }
-

@@ -11,7 +11,7 @@
   "scenarioCount": 12,
   "inputDescription": "synthetic docket",
   "artifacts": [
-    {"path": "reports/constitutional-review-campaign-v0.csv", "sha256": "9f4bfb0b1a173288c5a449057143fb1b20ec04bdf680a140969c38d69a9997f7"},
-    {"path": "reports/constitutional-review-campaign-v0.md", "sha256": "1b896b2749dfea413475ed2c4b469a8bcf909e50faecc2f637878083bf81e9f8"}
+    {"path": "reports/constitutional-review-campaign-v0.csv", "sha256": "69dbad0e6a9591560c36b6dfa45d15083d9a7283dd8e1d2d7257ece13113be10"},
+    {"path": "reports/constitutional-review-campaign-v0.md", "sha256": "11ced329976651f9d9bd8ed0c5ffde5a64ebbf498466c28d437786cdc3b89b4b"}
   ]
 }

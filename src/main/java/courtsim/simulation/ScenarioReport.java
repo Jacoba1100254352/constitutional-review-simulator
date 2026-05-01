@@ -9,8 +9,14 @@ public record ScenarioReport(
         int reviewedCases,
         int invalidations,
         int emergencyOrders,
+        int emergencyReliefs,
+        int meritsReviews,
+        int meritsInvalidations,
         int overrides,
         double reviewRate,
+        double emergencyReliefRate,
+        double meritsReviewRate,
+        double meritsInvalidationRate,
         double legalStability,
         double rightsProtection,
         double partisanAlignment,
@@ -27,6 +33,9 @@ public record ScenarioReport(
         double crossCheckRate,
         double councilScreenRate,
         double overrideRate,
+        double lowerCourtConflict,
+        double averageTimeToReview,
+        double replacementRate,
         double administrativeLoad
 ) {
     public double directionalScore() {
@@ -37,6 +46,8 @@ public record ScenarioReport(
                 Values.lowerIsBetter(shadowDocketAbuse),
                 legitimacy,
                 Values.lowerIsBetter(reversalRate),
+                Values.lowerIsBetter(emergencyReliefRate),
+                Values.lowerIsBetter(meritsInvalidationRate),
                 Values.lowerIsBetter(constitutionalConflict),
                 democraticResponsiveness,
                 independenceAccountabilityBalance,
@@ -44,4 +55,3 @@ public record ScenarioReport(
         );
     }
 }
-

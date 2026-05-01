@@ -30,10 +30,16 @@ public final class Simulator {
             CourtWorld world = worldGenerator.generate(worldSpec, mix(seed, run, 17), importedSignals);
             for (int scenarioIndex = 0; scenarioIndex < scenarios.size(); scenarioIndex++) {
                 Scenario scenario = scenarios.get(scenarioIndex);
-                Random scenarioRandom = new Random(mix(seed, run, scenarioIndex + 101));
-                ReviewProcess process = scenario.buildProcess(world, scenarioRandom);
-                ReviewContext context = new ReviewContext(scenarioRandom);
+                int currentPeriod = -1;
+                ReviewProcess process = null;
+                ReviewContext context = null;
                 for (CaseFile caseFile : world.docket()) {
+                    if (caseFile.reviewPeriod() != currentPeriod) {
+                        currentPeriod = caseFile.reviewPeriod();
+                        Random periodRandom = new Random(mix(seed, run, scenarioIndex + 101 + currentPeriod * 503));
+                        process = scenario.buildProcess(world, periodRandom, currentPeriod);
+                        context = new ReviewContext(periodRandom);
+                    }
                     CaseOutcome outcome = process.review(caseFile, context);
                     accumulators[scenarioIndex].add(outcome);
                 }
@@ -55,4 +61,3 @@ public final class Simulator {
         return value;
     }
 }
-

@@ -1,0 +1,17 @@
+{
+  "reportName": "Constitutional Review Paired Import Campaign v1",
+  "provenanceFormat": "constitutional-review-report-v1",
+  "sourceTree": "tracked project artifact; inspect repository history for commit identity",
+  "javaRelease": "21",
+  "javaCommand": "courtsim.Main --campaign v1-paired --runs 120 --cases 80 --seed 20260501 --output-dir reports --legislative-input /Users/jacobanderson/Documents/simulators/Congress Institutional Simulator/reports/simulation-campaign-v21-paper.csv",
+  "runs": 120,
+  "casesPerRun": 80,
+  "seed": 20260501,
+  "campaignCaseCount": 5,
+  "scenarioCount": 12,
+  "inputDescription": "986 imported legislative rows across 29 scenarios",
+  "artifacts": [
+    {"path": "reports/constitutional-review-paired-import-v1.csv", "sha256": "eb274ecb0a13c760cc0a62fae0af901f31a07d17d71de264487c3d9669c95c1a"},
+    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "e146724d8f591bd3c844988231eaccbb8719bb3ba8f3162c645e95a1e3b6257b"}
+  ]
+}

@@ -10,6 +10,5 @@ public interface Scenario {
 
     String name();
 
-    ReviewProcess buildProcess(CourtWorld world, Random random);
+    ReviewProcess buildProcess(CourtWorld world, Random random, int reviewPeriod);
 }
-
