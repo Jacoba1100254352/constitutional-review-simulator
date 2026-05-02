@@ -1,108 +1,183 @@
-\documentclass[11pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Journal of Law and Courts target manuscript.
+% Official Cambridge/Overleaf small-template source uses cup-journal.
+% JLC author instructions: anonymous review, Chicago author-date citations,
+% tables/figures near first reference, and replication materials at acceptance.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[
+  journal=small,
+  manuscript=research-article,
+  year=2026
+]{cup-journal}
 
-\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage[nopatch]{microtype}
 \usepackage{booktabs}
-\usepackage{hyperref}
 \usepackage{longtable}
+\usepackage[authoryear,round]{natbib}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
 
 \title{Supreme Courts as Constitutional Review Infrastructure: A Comparative Simulation Framework}
-\author{Jacob Anderson}
-\date{Working draft, May 2026}
+
+\author{Anonymous Author}
+\affiliation{Manuscript prepared for anonymous review}
+\date{}
+
+\keywords{constitutional review, judicial politics, comparative courts, institutional design, simulation}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-This working paper introduces a simulation framework for comparing supreme-court and constitutional-review designs. The model is not intended to forecast a real court. It is a design instrument for testing how institutional choices such as appointment method, court size, term length, recusal rules, emergency docket procedure, voting thresholds, panel structure, constitutional councils, dual-court cross-checks, and legislative overrides shape legal stability, rights protection, partisan alignment, legitimacy, and democratic responsiveness. The current implementation also models court-system archetypes, doctrine areas, policy domains, state/federal jurisdiction, lower-court hierarchy, intake screening, dynamic justice replacement, public and legislative reaction dynamics, enforcement channels, documented external calibration profiles, uncertainty bands, benchmarked institutional costs, and a split between emergency relief and merits invalidation. The project is separate from the legislative simulator, but can import legislative campaign outputs as subject-matter-preserving stress signals for generated constitutional-review dockets.
+Constitutional review is usually studied through doctrine, case studies, or strategic models of judicial behavior. This article instead models constitutional review as an institutional system whose performance depends on interacting design choices: appointment method, court size, tenure, recusal, decision thresholds, emergency procedures, panel structure, legislative override rules, lower-court pipelines, and compliance pathways. I introduce a comparative simulation framework that treats apex adjudication as review infrastructure rather than a single court-centered variable. The model generates counterfactual comparisons across supreme-court, constitutional-court, council, and cross-checking designs, and it is calibrated against observable institutional features and benchmark patterns in comparative constitutional practice. The results are not predictions about any real court. They show how design bundles trace different tradeoffs among independence, accountability, speed, consistency, rights protection, emergency control, and implementation capacity. The article contributes to law-and-courts scholarship by integrating comparative constitutional design with computational institutional analysis and by offering a reusable framework for evaluating court architecture beyond case-level outcomes.
 \end{abstract}
 
-\section{Motivation}
+\section{Introduction}
 
-Constitutional review systems face a recurring design problem: courts need enough independence to enforce constitutional limits, but enough accountability and procedural discipline to avoid becoming unreviewable political actors. The classic countermajoritarian framing emphasizes the difficulty of judicial invalidation in a democracy \cite{bickel1962}, while comparative constitutional scholarship shows that constitutional review can be organized through many institutional forms rather than a single supreme-court template \cite{stoneSweet2000,ginsburg2003}. This project treats that design space as a simulation problem.
+Constitutional review systems face a recurring design problem: courts need enough independence to enforce constitutional limits, but enough accountability and procedural discipline to avoid becoming unreviewable political actors. The classic countermajoritarian framing emphasizes the difficulty of judicial invalidation in a democracy \citep{bickel1962}, while comparative constitutional scholarship shows that review can be organized through many institutional forms rather than a single supreme-court template \citep{stoneSweet2000,ginsburg2003}. Law-and-courts scholarship also treats courts as institutions whose behavior depends on selection rules, legal hierarchy, compliance expectations, and political context \citep{epsteinKnight1998,helmke2005,vanberg2005,staton2010}.
 
-The goal is not to reproduce the United States Supreme Court, a European constitutional court, or any particular historical system. The goal is to compare mechanisms. A useful simulator should make it easy to ask whether a rule reduces shadow-docket abuse at the cost of administrative load, whether a supermajority invalidation rule improves stability while weakening rights protection, or whether a constitutional council improves legitimacy but becomes too deferential.
+The premise of this article is that those institutional choices should be analyzed jointly. Appointment method affects ideological composition, but its effects depend on tenure, removal standards, court size, docket control, voting thresholds, and emergency procedure. A strict supermajority rule may improve stability in ordinary merits cases but weaken rights protection when the docket contains high-risk legislation. A constitutional council may reduce ex post invalidation but shift costs into upstream screening. A reason-giving emergency procedure may reduce shadow-docket abuse while slowing response time. These are system-level interactions.
 
-\section{Modeling Approach}
+The contribution is a Java simulation framework for comparing institutional designs for supreme courts and constitutional review. The model is deliberately stylized. It does not forecast the U.S. Supreme Court, the German Federal Constitutional Court, or any other real tribunal. Instead, it provides a structured way to ask how design bundles behave under shared dockets and shared worlds. The simulator is separate from a legislative institutional simulator, but it can import legislative campaign outputs as subject-matter-preserving docket stress signals. That bridge makes it possible to compare court designs against the kinds of laws different legislative systems produce without merging the two projects.
 
-The simulator uses a modular Java architecture similar in shape to the legislative simulator, but keeps the court project independent. Each scenario is a named institutional design. A randomized world produces a docket of constitutional cases, and each scenario applies its own review process to the same docket.
+The rest of the article is organized for a law-and-courts audience. Section~\ref{sec:infrastructure} defines constitutional review as institutional infrastructure. Section~\ref{sec:framework} describes the simulation framework. Section~\ref{sec:calibration} explains calibration, uncertainty, and replication. Section~\ref{sec:experiments} summarizes the comparative experiments. Section~\ref{sec:implications} identifies implications for institutional design. Section~\ref{sec:limits} discusses limitations and next steps.
 
-Each case has a generated policy position, doctrine area, policy domain, jurisdiction, lower-court path, rights-threat signal, public support, legislative mandate, urgency, legal ambiguity, constitutional salience, lower-court conflict, lower-court panel skew, state-federal tension, intercourt conflict, certiorari pressure, time-to-review, executive pressure, conflict-of-interest risk, and public-trust context. The review process estimates upstream filings and screened filings before accepted merits or emergency review. These are deliberately stylized variables. They are intended to expose institutional tradeoffs, not to act as measured legal facts.
+\section{Constitutional Review as Institutional Infrastructure}
+\label{sec:infrastructure}
 
-Each court scenario creates justices from the scenario's appointment method, court size, term and removal structure, independence level, accountability pressure, transparency level, coalition norm, rights priority, stability preference, review archetype, docket-control mechanism, review timing, and cost profile. The review process then models review selection, emergency handling, recusals, panel or en banc review, voting thresholds, cross-checking court agreement, constitutional-council screening, legislative override, and opinion fragmentation. Emergency orders separately track reason-giving, vote disclosure, public disagreement, government applicants, government wins, and merits follow-up. Runs are partitioned into review periods so term limits and removal or retention rules can change court composition over time rather than only at initial world generation. Decision outcomes also update an institutional reaction state: public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and compliance norms feed later cases in the same run. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance. Each outcome also carries direct court cost, upstream screening cost, capacity strain, institutional delay, and implementation-complexity costs so structural designs can be compared against resource constraints rather than only legal outputs.
+A constitutional review system is more than an apex court. It includes appointment and replacement rules, lower-court pathways, docket filters, emergency relief procedures, merits review, voting thresholds, opinion coalitions, recusal practices, legislative override rules, and enforcement channels. Treating these features as separate design variables makes sense analytically, but reform proposals usually bundle them. The simulation therefore models review as an infrastructure problem: a constitutional system routes disputes through a sequence of institutions, and the consequences depend on how those routing rules interact.
 
-\section{Design Space}
+Table~\ref{tab:design-space} summarizes the current design space. The categories are intentionally broad enough to cover U.S.-style discretionary appellate review, specialized constitutional complaints, pre-enactment councils, mixed abstract and concrete review, declaration-oriented parliamentary review, and supranational treaty courts.
 
-The catalog includes twelve core experimental scenarios, two additional institutional variants, and ten real-world benchmark presets. Table~\ref{tab:design-space} summarizes the current coverage.
-
-\begin{longtable}{p{0.34\linewidth}p{0.56\linewidth}}
-\caption{Initial constitutional-review design coverage.}
+\begin{longtable}{p{0.32\linewidth}p{0.58\linewidth}}
+\caption{Modeled constitutional-review design space.}
 \label{tab:design-space}\\
 \toprule
-Design family & Current modeled variants \\
+Design family & Modeled variants \\
 \midrule
 \endfirsthead
 \toprule
-Design family & Current modeled variants \\
+Design family & Modeled variants \\
 \midrule
 \endhead
 Appointment method & Presidential/senate appointment, supermajority commission, merit sortition, legislative selection, and popular-retention variants. \\
-Court size & 9-, 12-, 15-, and 18-member courts. \\
-Terms and removal & Life tenure, nonrenewable 18-year terms, short renewable terms, impeachment-only removal, misconduct commission removal, and retention-election accountability. \\
+Court size & 9-, 11-, 12-, 15-, 16-, 18-, 27-, 34-, and 46-member designs for experimental and real-world benchmark scenarios. \\
+Terms and removal & Life tenure, nonrenewable long terms, short renewable terms, impeachment-only removal, misconduct commission removal, and retention-election accountability. \\
 Recusal & Self-policing, mandatory conflict recusal, random substitution, and strict transparency. \\
+Docket control & Discretionary certiorari, leave to appeal, complaint admissibility, referral-gated review, and mandatory review with filters. \\
 Emergency docket & Fast shadow docket, reasoned emergency panels, full-court emergency review, and merits follow-up. \\
 Doctrine & Speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state claims. \\
-Policy domains & Civil rights, speech/religion, criminal justice, federalism, governance, elections, emergency/security, economic regulation, and administration. Imported legislative rows can carry an explicit policy-domain field or infer one from row labels and stress signals. \\
-Court-system archetypes & Discretionary appellate leave, constitutional complaint, pre-enactment council, mixed abstract/concrete review, declaration-only parliamentary review, and supranational treaty review. \\
-Jurisdiction and lower courts & Federal, state, and mixed state-federal disputes; district-only, circuit-panel, en banc, state high-court, and state-federal split paths; panel skew, government win/loss, conflict pressure, certiorari pressure, and time-to-review. \\
+Policy domains & Civil rights, speech/religion, criminal justice, federalism, governance, elections, emergency/security, economic regulation, and administration. \\
+Jurisdiction and lower courts & Federal, state, and mixed state-federal disputes; district-only, circuit-panel, en banc, state high-court, and state-federal split paths. \\
 Voting threshold & Simple majority, supermajority invalidation, concurrent-majority logic, and high constitutional threshold. \\
 Review structure & Full court, panel plus en banc review, dual supreme courts, cross-checking courts, and constitutional council review. \\
 Legislative override & No override, supermajority override, delayed majority override, and referendum override. \\
-Real-world presets & U.S. Supreme Court, German Federal Constitutional Court, French Constitutional Council, Supreme Court of Canada, South African Constitutional Court, UK Supreme Court, India Supreme Court, Brazil STF, ECHR, and CJEU benchmark scenarios. \\
+Real-world benchmark presets & U.S. Supreme Court, German Federal Constitutional Court, French Constitutional Council, Supreme Court of Canada, South African Constitutional Court, UK Supreme Court, India Supreme Court, Brazil STF, ECHR, and CJEU. \\
 \bottomrule
 \end{longtable}
 
-\section{Metrics}
+The central design question is not whether one feature is good or bad in isolation. It is whether a bundle produces an acceptable balance among legal stability, rights protection, democratic responsiveness, legitimacy, conflict management, administrative burden, and enforceability.
 
-The first metric set is designed to keep the main tradeoffs visible. Higher values are better for legal stability, rights protection, legitimacy, democratic responsiveness, independence/accountability balance, compliance rate, executive implementation, local-government compliance, emergency reason-giving, emergency vote disclosure, and emergency merits follow-up. Lower values are better for partisan alignment, shadow-docket abuse, emergency relief rate, emergency public disagreement, merits invalidation rate, reversal rate, constitutional conflict, direct defiance, workaround behavior, agency nonacquiescence, legislative reenactment, legislature-court conflict, court-curbing pressure, concurrence fragmentation, dissent intensity, administrative load, direct court cost, upstream screening cost, capacity strain, institutional budget cost, institutional delay cost, implementation complexity, and total institutional cost. Review rate, intake acceptance rate, government emergency applicant share, government emergency win rate, merits review rate, repeated litigation rate, public trust, amendment pressure, recusal rate, panel/en banc rate, cross-check rate, council-screen rate, override rate, state-case share, mixed-jurisdiction share, lower-court depth, lower-court conflict, state-federal tension, intercourt conflict, time-to-review, and replacement pressure are diagnostic rather than directly good or bad.
+\section{Simulation Framework}
+\label{sec:framework}
 
-The directional score is a display aid. It combines the directional metrics after inverting lower-is-better values. It should not be treated as a final welfare function. The individual metrics matter more than the aggregate score when diagnosing a design.
+The simulator uses named scenarios, randomized worlds, shared dockets, campaign sweeps, directional metrics, CSV and Markdown reports, and provenance manifests. Each case has a generated policy position, doctrine area, policy domain, jurisdiction, lower-court path, rights-threat signal, public support, legislative mandate, urgency, legal ambiguity, constitutional salience, lower-court conflict, lower-court panel skew, state-federal tension, intercourt conflict, certiorari pressure, time-to-review, executive pressure, conflict-of-interest risk, and public-trust context.
 
-\section{Legislative Output Bridge}
+Each court scenario creates justices from appointment method, court size, term and removal structure, independence level, accountability pressure, transparency level, coalition norm, rights priority, stability preference, review archetype, docket-control mechanism, review timing, and cost profile. The review process then models intake selection, emergency handling, recusals, panel or en banc review, voting thresholds, cross-checking court agreement, constitutional-council screening, legislative override, and opinion fragmentation.
 
-The court simulator can use synthetic dockets or import legislative campaign CSV rows. Imported legislative outputs are converted into case-generation signals. Weak public mandate, low generated welfare, minority harm, concentrated-harm passage, lobby capture, public-preference distortion, policy shift, proposer gain, reversal activity, and status-quo volatility increase the likelihood of rights-threat, legal-ambiguity, salience, urgency, or conflict signals in the constitutional-review docket. If an imported row includes a policy-domain column, the generated review case preserves it; otherwise the importer infers a domain from row labels and stress signals. This keeps subject matter visible in policy-domain reports instead of collapsing legislative outputs into generic stress levels.
+Emergency orders are modeled separately from merits invalidation. The simulator tracks interim relief, reason-giving, vote disclosure, public disagreement, government applicants, government wins, and merits follow-up. This distinction matters because an institution can be restrained on the merits while still aggressive on emergency relief, or transparent in merits decisions while opaque on emergency orders.
 
-This bridge keeps the two projects separate. The legislative simulator remains responsible for generating institutional outputs from lawmaking rules. The court simulator treats those outputs as stress signals for review design.
+Runs are partitioned into review periods so term limits and removal or retention rules can change court composition over time. Decision outcomes also update an institutional reaction state: public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and compliance norms feed later cases in the same run. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance.
 
-\section{Starter Campaign}
+The main outcome metrics are listed in Table~\ref{tab:metrics}. The directional score is only a display aid. It combines directional metrics after inverting lower-is-better values; it should not be treated as a final welfare function.
 
-The first campaign compares the core scenario set across five stress cases: baseline, polarized appointments, rights-threat surge, emergency-docket stress, and low-trust conflict. It writes aggregate, period-by-period, doctrine-specific, pipeline, policy-domain, composition, calibration, and uncertainty-band CSV files, a Markdown summary, and a provenance manifest under \texttt{reports/}. The starter synthetic campaign is useful for checking model behavior and report shape, but it is not empirical validation.
+\begin{table}[hbt!]
+\centering
+\caption{Core metric families.}
+\label{tab:metrics}
+\begin{tabular}{@{}p{0.23\linewidth}p{0.50\linewidth}p{0.13\linewidth}@{}}
+\toprule
+Metric family & Examples & Direction \\
+\midrule
+Legal performance & legal stability, rights protection, reversal rate, merits invalidation rate & mixed \\
+Political alignment & partisan alignment, democratic responsiveness, independence/accountability balance & mixed \\
+Emergency docket & emergency relief, reason-giving, vote disclosure, public disagreement, merits follow-up & mixed \\
+Legitimacy and conflict & legitimacy, public trust, constitutional conflict, court-curbing pressure, amendment pressure & mixed \\
+Pipeline and intake & review rate, intake acceptance, lower-court depth, state-federal tension, intercourt conflict & diagnostic \\
+Coalitions and recusals & concurrence fragmentation, dissent intensity, recusal rate, en banc rate, cross-check rate & mixed \\
+Compliance & compliance, defiance, workarounds, executive implementation, agency nonacquiescence, reenactment, local compliance & mixed \\
+Institutional cost & administrative load, direct court cost, upstream screening cost, capacity strain, delay, implementation complexity & lower \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-The second campaign is paired with the legislative simulator. It compares the same court designs against a synthetic baseline and four imported legislative docket modes: all imported rows, high-capture rows, high-volatility rows, and low-mandate rows. This makes the bridge operational: court designs can now be tested against outputs from different legislative systems without merging the two codebases.
+\section{Calibration, Uncertainty, and Replication}
+\label{sec:calibration}
 
-The third campaign is a sensitivity check. It reruns the scenario catalog under high and low assumptions for emergency pressure, appointment polarization, rights-threat rate, public trust, and legislature-court conflict. These sweeps are not calibration in the empirical sense. They are a check on whether reported rankings are robust to plausible changes in the synthetic environment. Calibration profiles now live in \texttt{config/calibration/*.csv}, with \texttt{config/calibration-targets.csv} retained as a compatibility mirror. The current schema records profile key, court, period, target key, label, target range, empirical observed value, sample size, unit, method, reliability, validation-use flag, note, source name, and source URL. The current profiles use Supreme Court Database issue-area shares for 1946--2024 and 2000--2024 merits dockets \cite{scdb2025,scdbIssueCodebook}, emergency-docket context \cite{scotusblogInterim2024}, Gallup court-confidence reporting for public-trust targets \cite{gallupCourtApproval2024}, comparative court calibration profiles, and normalized institutional cost benchmarks. Generated calibration reports compare simulator observations against those source-bearing profiles and include conservative 95\% bands.
+The model is not empirically validated in the sense of fitting a historical court. It is calibrated as a comparative design instrument. Calibration targets live in structured CSV files and identify the court, time period, target key, target range, observed value when available, sample size, unit, method, reliability, source name, and source URL. Current target files include U.S. Supreme Court merits-docket doctrine shares from the Supreme Court Database \citep{scdb2025,scdbIssueCodebook}, emergency-docket context, public-trust context \citep{gallupCourtApproval2024}, comparative court profiles, lower-court pipeline benchmarks, emergency docket summaries, and normalized institutional cost profiles.
 
-Across the initial run, the current-style federal court has the strongest rights-protection score in several stress cases, but also shows higher shadow-docket abuse than designs with reason-giving or merits follow-up. The hybrid independence/accountability scenario has the highest directional score in the starter campaign because it combines reasoned emergency procedure, recusal substitution, supermajority invalidation, panel/en banc review, and a limited supermajority override. Cross-checking courts and constitutional councils improve stability and legitimacy in the synthetic run, but carry higher administrative load and lower reversal rates.
+Campaign reports include conservative 95 percent uncertainty bands for aggregate campaign metrics, pipeline segments, composition periods, and calibration diagnostics. These intervals are lightweight approximations based on aggregate denominators already stored in the reports. They are not a substitute for a raw per-case bootstrap, but they prevent the reports from presenting point estimates as if they were exact.
 
-\section{Implemented Research Increments}
+The repository also separates source code, configuration inputs, generated reports, paper source, and provenance manifests. This is meant to support the replication-material expectations of Journal of Law and Courts. For anonymous review, the manuscript should be submitted without author-identifying repository links; at acceptance, an archived replication package should include the Java source, Makefile, calibration/configuration CSVs, generated reports, and instructions for reproducing the campaign outputs.
 
-The current implementation now includes four research increments that move the simulator beyond the original starter campaign.
+\section{Comparative Experiments}
+\label{sec:experiments}
 
-\begin{enumerate}
-  \item Structured research files now live under \texttt{config/}: comparative designs, pipeline targets, emergency schema and summaries, and cost benchmarks.
-  \item Calibration target files identify court, time period, target range, empirical observed value, sample size, unit, method, reliability, validation-use flag, source name, and source URL instead of relying on undocumented starter ranges.
-  \item Court-system archetypes distinguish discretionary appellate leave, constitutional complaints, pre-enactment councils, mixed abstract/concrete review, declaration-only parliamentary review, and supranational treaty courts.
-  \item Intake filings and screened filings are modeled separately from the accepted merits docket.
-  \item Emergency review now separates interim relief from merits invalidation and tracks reason-giving, vote disclosure, public disagreement, government applicants, government wins, and merits follow-up.
-  \item Scenario outputs include benchmarked direct court cost, upstream screening cost, capacity strain, delay cost, implementation complexity, and total institutional cost so expanded courts, dual courts, cross-checking courts, and constitutional councils can be evaluated against resource and delay constraints.
-  \item Policy domains now separately include speech/religion and federalism overlays so imported legislative outputs preserve more subject matter.
-  \item Real-world scenario presets map the comparative design matrix into U.S., German, French, Canadian, South African, UK, Indian, Brazilian, ECHR, and CJEU-style designs.
-\end{enumerate}
+The starter campaign compares twelve core scenarios across five stress cases: baseline, polarized appointments, rights-threat surge, emergency-docket stress, and low-trust conflict. The paired-import campaign then compares the same court designs against a synthetic baseline and four imported legislative docket modes: all imported rows, high-capture rows, high-volatility rows, and low-mandate rows. The sensitivity campaign reruns the scenario catalog under high and low assumptions for emergency pressure, appointment polarization, rights-threat rate, public trust, and legislature-court conflict.
 
-\section{Conclusion}
+Three patterns motivate the next empirical version of the paper. First, institutional transparency changes emergency outcomes without simply eliminating emergency relief. Reasoned emergency panels and merits follow-up reduce shadow-docket abuse by moving more emergency matters into reasoned or merits-connected review. Second, cross-checking and council designs tend to improve stability and lower reversal rates, but they do so by increasing administrative load, upstream screening, and implementation complexity. Third, term limits and appointment systems matter most when linked to dynamic replacement over time; their effects are muted if composition is treated as fixed at initial court creation.
 
-The simulator starts from the premise that constitutional review is institutional infrastructure. The same constitutional values can be implemented through different combinations of appointment, tenure, docket control, voting thresholds, review structure, recusal discipline, emergency procedure, and override rules. A comparative simulator cannot settle constitutional theory, but it can make design tradeoffs explicit enough to argue about them with more precision.
+These patterns should be read as comparative diagnostics rather than findings about any existing court. The model is useful because all scenarios face the same generated worlds and dockets. The relevant comparison is not whether a simulated current-style court matches a historical court. It is whether changing a design feature while holding the rest of the simulated environment constant exposes a tradeoff that constitutional designers should take seriously.
 
-\bibliographystyle{plain}
+\section{Implications for Institutional Design}
+\label{sec:implications}
+
+The simulation framework points toward a bundle-based account of constitutional review. Independence rules do not have a single effect; they interact with docket control, voting thresholds, review timing, emergency procedure, and enforcement channels. Accountability mechanisms can improve democratic responsiveness but also increase partisan alignment or weaken rights protection if they operate through short renewable terms or retention pressure. Emergency reforms are especially sensitive to whether the reform only demands speed, only demands reasons, or requires a structured merits follow-up pathway.
+
+The model also makes administrative externalities visible. A small council may look inexpensive if only the top body is counted, but referral-gated review shifts costs into lower courts, political actors, or admissibility filters. A dual-court design may increase legitimacy through cross-checking but raise delay and capacity strain. A declaration-oriented model may improve democratic responsiveness while reducing judicial finality. These are not purely technical details; they are constitutional design consequences.
+
+\section{Limitations and Next Steps}
+\label{sec:limits}
+
+The simulator is intentionally abstract. It compresses doctrinal variation, legal culture, party systems, federal design, and executive implementation into variables that can be compared across institutional scenarios. It does not yet model litigant strategy, judicial opinion assignment, actual precedent networks, budget appropriations, media framing, or reform backlash as independently strategic actors. It also uses calibration targets as external checks rather than as fitted parameters.
+
+The next research increment should export raw case-level outcomes for bootstrap intervals and model diagnostics, add richer case-flow validation against specific courts and periods, and separate publication-oriented paper outputs from full technical appendices. A Journal of Law and Courts submission should keep the main text compact and move large scenario tables, source matrices, and sensitivity reports to supplementary materials.
+
+\paragraph{Funding Statement}
+No external funding is reported for this manuscript.
+
+\paragraph{Competing Interests}
+The author reports no competing interests.
+
+\paragraph{Data Availability Statement}
+An anonymized replication archive will be supplied with the submitted manuscript and, if accepted, deposited in an appropriate public repository. The archive will include Java source code, configuration files, calibration targets, generated campaign reports, paper source, and commands needed to reproduce the reported outputs.
+
+\paragraph{Use of AI Tools}
+AI tools were used during project development to assist with source discovery, venue research, code editing, and manuscript drafting. All code, source claims, model choices, and manuscript text remain subject to author review and revision.
+
+\paragraph{Ethical Standards}
+This project uses synthetic simulation outputs and public institutional benchmarks. It does not involve human-subjects data.
+
+\bibliographystyle{plainnat}
 \bibliography{references}
+
+\appendix
+
+\section{Repository Artifacts}
+
+The implementation workspace keeps the main code, tests, configuration, and paper source in separate repository areas:
+\begin{itemize}
+  \item source code and tests: \path{src/main/java}; \path{src/test/java};
+  \item calibration and benchmark inputs: \path{config/calibration}; \path{config/comparative}; \path{config/pipeline}; \path{config/emergency}; \path{config/cost-benchmarks};
+  \item reproducibility commands:
+  \begin{itemize}
+    \item \texttt{make test}
+    \item \texttt{make campaign}
+    \item \texttt{make paired-campaign}
+    \item \texttt{make sensitivity-check}
+    \item \texttt{make paper}
+  \end{itemize}
+\end{itemize}
 
 \end{document}

@@ -3,7 +3,7 @@ TEST_SOURCES := $(shell find src/test/java -name '*.java')
 JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 
-.PHONY: build run campaign paired-campaign sensitivity-check paper paper-clean test ci clean
+.PHONY: build run campaign paired-campaign sensitivity-check paper paper-clean paper-word-count test ci clean
 
 build:
 	mkdir -p out/main
@@ -23,6 +23,9 @@ sensitivity-check: build
 
 paper:
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
+
+paper-word-count:
+	cd paper && texcount -inc -total main.tex || true
 
 paper-clean:
 	cd paper && latexmk -C -outdir=build main.tex
