@@ -13,9 +13,11 @@
 \usepackage{amsmath}
 \usepackage[nopatch]{microtype}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{longtable}
 \usepackage[authoryear,round]{natbib}
 \usepackage{url}
+\usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 
 \title{Supreme Courts as Constitutional Review Infrastructure: A Comparative Simulation Framework}
@@ -84,9 +86,27 @@ The central design question is not whether one feature is good or bad in isolati
 
 The simulator uses named scenarios, randomized worlds, shared dockets, campaign sweeps, directional metrics, CSV and Markdown reports, and provenance manifests. Each case has a generated policy position, doctrine area, policy domain, jurisdiction, lower-court path, rights-threat signal, public support, legislative mandate, urgency, legal ambiguity, constitutional salience, lower-court conflict, lower-court panel skew, state-federal tension, intercourt conflict, certiorari pressure, time-to-review, executive pressure, conflict-of-interest risk, and public-trust context.
 
+Figure~\ref{fig:model-pipeline} summarizes the model pipeline. The legislative simulator remains separate: imported legislative outputs enter only as CSV stress signals that alter the generated constitutional-review docket.
+
+\begin{figure}[hbt!]
+\centering
+\input{figures/model_pipeline}
+\caption{Simulation pipeline and legislative-output bridge.}
+\label{fig:model-pipeline}
+\end{figure}
+
 Each court scenario creates justices from appointment method, court size, term and removal structure, independence level, accountability pressure, transparency level, coalition norm, rights priority, stability preference, review archetype, docket-control mechanism, review timing, and cost profile. The review process then models intake selection, emergency handling, recusals, panel or en banc review, voting thresholds, cross-checking court agreement, constitutional-council screening, legislative override, and opinion fragmentation.
 
 Emergency orders are modeled separately from merits invalidation. The simulator tracks interim relief, reason-giving, vote disclosure, public disagreement, government applicants, government wins, and merits follow-up. This distinction matters because an institution can be restrained on the merits while still aggressive on emergency relief, or transparent in merits decisions while opaque on emergency orders.
+
+Figure~\ref{fig:emergency-docket} illustrates why that separation matters. The current-style scenario generates high emergency relief and high shadow-docket abuse, while reason-giving and cross-checking designs can keep emergency relief available while sharply changing transparency and follow-up behavior.
+
+\begin{figure}[hbt!]
+\centering
+\input{figures/emergency_docket_bars}
+\caption{Emergency-docket diagnostics in the baseline campaign. Higher reason-giving and merits follow-up are generally desirable; lower shadow-docket abuse is generally desirable.}
+\label{fig:emergency-docket}
+\end{figure}
 
 Runs are partitioned into review periods so term limits and removal or retention rules can change court composition over time. Decision outcomes also update an institutional reaction state: public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and compliance norms feed later cases in the same run. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance.
 
@@ -126,6 +146,15 @@ The repository also separates source code, configuration inputs, generated repor
 
 The starter campaign compares twelve core scenarios across five stress cases: baseline, polarized appointments, rights-threat surge, emergency-docket stress, and low-trust conflict. The paired-import campaign then compares the same court designs against a synthetic baseline and four imported legislative docket modes: all imported rows, high-capture rows, high-volatility rows, and low-mandate rows. The sensitivity campaign reruns the scenario catalog under high and low assumptions for emergency pressure, appointment polarization, rights-threat rate, public trust, and legislature-court conflict.
 
+Figure~\ref{fig:paired-import} shows the paired-import campaign as a design stress test. Imported legislative outputs can change the relative diagnostic score of each court design, which is the reason the bridge is useful even though the court and legislative simulators remain separate.
+
+\begin{figure}[hbt!]
+\centering
+\input{figures/paired_import_lines}
+\caption{Directional diagnostic scores under synthetic and imported legislative docket sources. The score is a compact display aid, not a welfare function.}
+\label{fig:paired-import}
+\end{figure}
+
 Three patterns motivate the next empirical version of the paper. First, institutional transparency changes emergency outcomes without simply eliminating emergency relief. Reasoned emergency panels and merits follow-up reduce shadow-docket abuse by moving more emergency matters into reasoned or merits-connected review. Second, cross-checking and council designs tend to improve stability and lower reversal rates, but they do so by increasing administrative load, upstream screening, and implementation complexity. Third, term limits and appointment systems matter most when linked to dynamic replacement over time; their effects are muted if composition is treated as fixed at initial court creation.
 
 These patterns should be read as comparative diagnostics rather than findings about any existing court. The model is useful because all scenarios face the same generated worlds and dockets. The relevant comparison is not whether a simulated current-style court matches a historical court. It is whether changing a design feature while holding the rest of the simulated environment constant exposes a tradeoff that constitutional designers should take seriously.
@@ -136,6 +165,15 @@ These patterns should be read as comparative diagnostics rather than findings ab
 The simulation framework points toward a bundle-based account of constitutional review. Independence rules do not have a single effect; they interact with docket control, voting thresholds, review timing, emergency procedure, and enforcement channels. Accountability mechanisms can improve democratic responsiveness but also increase partisan alignment or weaken rights protection if they operate through short renewable terms or retention pressure. Emergency reforms are especially sensitive to whether the reform only demands speed, only demands reasons, or requires a structured merits follow-up pathway.
 
 The model also makes administrative externalities visible. A small council may look inexpensive if only the top body is counted, but referral-gated review shifts costs into lower courts, political actors, or admissibility filters. A dual-court design may increase legitimacy through cross-checking but raise delay and capacity strain. A declaration-oriented model may improve democratic responsiveness while reducing judicial finality. These are not purely technical details; they are constitutional design consequences.
+
+Figure~\ref{fig:cost-score} displays the same point graphically. The current-style court is low cost but has a lower directional diagnostic score in the baseline campaign, while cross-checking, council, and hybrid designs move upward at the price of higher institutional cost. This is the kind of tradeoff the paper should emphasize rather than burying in CSV columns.
+
+\begin{figure}[hbt!]
+\centering
+\input{figures/cost_score_scatter}
+\caption{Baseline institutional cost versus directional diagnostic score. The diagnostic score summarizes multiple directional metrics for display only; individual metric tables remain the substantive evidence.}
+\label{fig:cost-score}
+\end{figure}
 
 \section{Limitations and Next Steps}
 \label{sec:limits}

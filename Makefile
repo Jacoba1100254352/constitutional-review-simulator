@@ -3,7 +3,7 @@ TEST_SOURCES := $(shell find src/test/java -name '*.java')
 JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 
-.PHONY: build run campaign paired-campaign sensitivity-check paper paper-clean paper-word-count test ci clean
+.PHONY: build run campaign paired-campaign sensitivity-check paper paper-figures paper-clean paper-word-count test ci clean
 
 build:
 	mkdir -p out/main
@@ -21,7 +21,10 @@ paired-campaign: build
 sensitivity-check: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign sensitivity --runs 80 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
 
-paper:
+paper-figures:
+	python3 paper/scripts/generate_figures.py
+
+paper: paper-figures
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
 
 paper-word-count:

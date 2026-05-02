@@ -11,6 +11,9 @@ Build the manuscript from the repository root:
 make paper
 ```
 
+`make paper` regenerates the LaTeX figure fragments in `paper/figures/` from
+the tracked campaign CSVs before compiling the PDF.
+
 Run a word-count check when `texcount` is installed:
 
 ```sh
@@ -46,10 +49,18 @@ Relevant venue-format constraints now reflected in the manuscript:
 - anonymous-review posture;
 - compact article structure rather than a broad working-paper report;
 - author-date citations in the text;
-- tables placed near their first discussion;
+- tables and figures placed near their first discussion;
 - data availability and replication-package statements;
 - large scenario matrices, calibration source tables, and sensitivity details
   treated as supplement candidates instead of main-text material.
+
+The current figures are deterministic LaTeX fragments generated from repository
+reports. They are kept inline for review because JLC asks tables and figures to
+appear near first reference; if accepted, the figures should also be exported as
+separate high-resolution artwork files for production.
+
+For the venue comparison against the ACM route used by the Congress simulator,
+see `paper/venue-rationale.md`.
 
 Reference links:
 
