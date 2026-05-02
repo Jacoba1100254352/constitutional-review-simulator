@@ -250,7 +250,9 @@ public final class WorldGenerator {
     private static DoctrineArea importedDoctrine(LegislativeSignal signal, PolicyDomain policyDomain, Random random) {
         DoctrineArea domainDoctrine = switch (policyDomain) {
             case CIVIL_RIGHTS -> signal.minorityHarm() > 0.16 ? DoctrineArea.EQUALITY : DoctrineArea.SPEECH;
+            case SPEECH_RELIGION -> DoctrineArea.SPEECH;
             case CRIMINAL_JUSTICE -> DoctrineArea.CRIMINAL_PROCEDURE;
+            case FEDERALISM -> DoctrineArea.FEDERALISM;
             case ELECTIONS -> DoctrineArea.ELECTION_LAW;
             case EMERGENCY_SECURITY -> DoctrineArea.EMERGENCY_POWERS;
             case ADMINISTRATION -> DoctrineArea.ADMINISTRATIVE_STATE;
@@ -277,10 +279,10 @@ public final class WorldGenerator {
 
     private static PolicyDomain policyDomainFor(DoctrineArea doctrineArea, Random random) {
         return switch (doctrineArea) {
-            case SPEECH -> random.nextDouble() < 0.72 ? PolicyDomain.CIVIL_RIGHTS : PolicyDomain.GOVERNANCE;
+            case SPEECH -> random.nextDouble() < 0.82 ? PolicyDomain.SPEECH_RELIGION : PolicyDomain.CIVIL_RIGHTS;
             case EQUALITY -> PolicyDomain.CIVIL_RIGHTS;
             case CRIMINAL_PROCEDURE -> PolicyDomain.CRIMINAL_JUSTICE;
-            case FEDERALISM -> random.nextDouble() < 0.58 ? PolicyDomain.GOVERNANCE : PolicyDomain.ECONOMIC_REGULATION;
+            case FEDERALISM -> random.nextDouble() < 0.72 ? PolicyDomain.FEDERALISM : PolicyDomain.ECONOMIC_REGULATION;
             case ELECTION_LAW -> PolicyDomain.ELECTIONS;
             case EMERGENCY_POWERS -> PolicyDomain.EMERGENCY_SECURITY;
             case ADMINISTRATIVE_STATE -> random.nextDouble() < 0.64 ? PolicyDomain.ADMINISTRATION : PolicyDomain.ECONOMIC_REGULATION;
@@ -328,6 +330,9 @@ public final class WorldGenerator {
         if (policyDomain == PolicyDomain.ELECTIONS) {
             return random.nextDouble() < 0.58 ? Jurisdiction.STATE : Jurisdiction.MIXED_STATE_FEDERAL;
         }
+        if (policyDomain == PolicyDomain.FEDERALISM) {
+            return random.nextDouble() < 0.72 ? Jurisdiction.MIXED_STATE_FEDERAL : Jurisdiction.STATE;
+        }
         if (policyDomain == PolicyDomain.CRIMINAL_JUSTICE) {
             return random.nextDouble() < 0.64 ? Jurisdiction.STATE : Jurisdiction.FEDERAL;
         }
@@ -359,6 +364,9 @@ public final class WorldGenerator {
         if (policyDomain == PolicyDomain.ELECTIONS && draw < 0.36) {
             return LowerCourtPath.STATE_FEDERAL_SPLIT;
         }
+        if (policyDomain == PolicyDomain.FEDERALISM && draw < 0.52) {
+            return LowerCourtPath.STATE_FEDERAL_SPLIT;
+        }
         if (policyDomain == PolicyDomain.ADMINISTRATION && draw < 0.46) {
             return LowerCourtPath.CIRCUIT_EN_BANC;
         }
@@ -386,7 +394,9 @@ public final class WorldGenerator {
     private static double domainRightsPressure(PolicyDomain policyDomain) {
         return switch (policyDomain) {
             case CIVIL_RIGHTS -> 0.42;
+            case SPEECH_RELIGION -> 0.38;
             case CRIMINAL_JUSTICE -> 0.34;
+            case FEDERALISM -> 0.20;
             case ELECTIONS -> 0.30;
             case EMERGENCY_SECURITY -> 0.24;
             case ADMINISTRATION -> 0.12;
@@ -400,7 +410,8 @@ public final class WorldGenerator {
             case EMERGENCY_SECURITY -> 0.52;
             case ELECTIONS -> 0.30;
             case ADMINISTRATION -> 0.22;
-            case CIVIL_RIGHTS, CRIMINAL_JUSTICE -> 0.18;
+            case CIVIL_RIGHTS, CRIMINAL_JUSTICE, SPEECH_RELIGION -> 0.18;
+            case FEDERALISM -> 0.16;
             case ECONOMIC_REGULATION -> 0.14;
             case GOVERNANCE -> 0.12;
         };
@@ -410,7 +421,9 @@ public final class WorldGenerator {
         return switch (policyDomain) {
             case ELECTIONS -> 0.46;
             case EMERGENCY_SECURITY -> 0.42;
+            case SPEECH_RELIGION -> 0.36;
             case CIVIL_RIGHTS -> 0.34;
+            case FEDERALISM -> 0.32;
             case CRIMINAL_JUSTICE -> 0.26;
             case ADMINISTRATION -> 0.22;
             case ECONOMIC_REGULATION -> 0.20;

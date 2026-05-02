@@ -82,7 +82,10 @@ public final class LegislativeOutputImporter {
         }
         String subject = (caseKey + " " + scenarioKey + " " + scenarioName).toLowerCase(Locale.ROOT);
         if (containsAny(subject, "speech", "religion", "press", "assembly", "expression")) {
-            return PolicyDomain.CIVIL_RIGHTS;
+            return PolicyDomain.SPEECH_RELIGION;
+        }
+        if (containsAny(subject, "federalism", "federal-state", "state-federal", "state power", "preemption", "supremacy")) {
+            return PolicyDomain.FEDERALISM;
         }
         if (containsAny(subject, "election", "voting", "ballot", "campaign", "redistrict", "mandate")) {
             return PolicyDomain.ELECTIONS;

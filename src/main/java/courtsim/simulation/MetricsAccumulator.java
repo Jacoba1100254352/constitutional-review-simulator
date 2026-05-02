@@ -21,6 +21,14 @@ final class MetricsAccumulator {
     private int meritsReviews;
     private int meritsInvalidations;
     private int overrides;
+    private int intakeFilings;
+    private int screenedFilings;
+    private int emergencyReasonedOrders;
+    private int emergencyVoteDisclosedOrders;
+    private int emergencyPublicDisagreements;
+    private int governmentEmergencyApplicants;
+    private int governmentEmergencyWins;
+    private int meritsFollowUps;
     private int enBancReviews;
     private int crossChecks;
     private int councilScreens;
@@ -57,6 +65,9 @@ final class MetricsAccumulator {
     private double courtCurbingPressureSum;
     private double amendmentPressureSum;
     private double administrativeLoadSum;
+    private double directCourtCostSum;
+    private double upstreamScreeningCostSum;
+    private double capacityStrainCostSum;
     private double institutionalBudgetCostSum;
     private double institutionalDelayCostSum;
     private double implementationComplexitySum;
@@ -89,6 +100,26 @@ final class MetricsAccumulator {
         }
         if (outcome.overrideUsed()) {
             overrides++;
+        }
+        intakeFilings += outcome.intakeFilings();
+        screenedFilings += outcome.screenedFilings();
+        if (outcome.emergencyOrder() && outcome.reasonsGiven()) {
+            emergencyReasonedOrders++;
+        }
+        if (outcome.emergencyOrder() && outcome.voteDisclosed()) {
+            emergencyVoteDisclosedOrders++;
+        }
+        if (outcome.emergencyOrder() && outcome.publicDisagreement()) {
+            emergencyPublicDisagreements++;
+        }
+        if (outcome.governmentEmergencyApplicant()) {
+            governmentEmergencyApplicants++;
+        }
+        if (outcome.governmentEmergencyWin()) {
+            governmentEmergencyWins++;
+        }
+        if (outcome.meritsFollowUp()) {
+            meritsFollowUps++;
         }
         if (outcome.enBancReview()) {
             enBancReviews++;
@@ -152,6 +183,9 @@ final class MetricsAccumulator {
         courtCurbingPressureSum += outcome.courtCurbingPressure();
         amendmentPressureSum += outcome.amendmentPressure();
         administrativeLoadSum += outcome.administrativeLoad();
+        directCourtCostSum += outcome.directCourtCost();
+        upstreamScreeningCostSum += outcome.upstreamScreeningCost();
+        capacityStrainCostSum += outcome.capacityStrainCost();
         institutionalBudgetCostSum += outcome.institutionalBudgetCost();
         institutionalDelayCostSum += outcome.institutionalDelayCost();
         implementationComplexitySum += outcome.implementationComplexity();
@@ -188,10 +222,19 @@ final class MetricsAccumulator {
                 meritsReviews,
                 meritsInvalidations,
                 overrides,
+                intakeFilings,
+                screenedFilings,
                 Values.ratio(reviewedCases, totalCases),
+                Values.ratio(reviewedCases, intakeFilings),
                 Values.ratio(emergencyReliefs, emergencyOrders),
                 Values.ratio(meritsReviews, reviewedCases),
                 Values.ratio(meritsInvalidations, Math.max(meritsReviews, 1)),
+                Values.ratio(emergencyReasonedOrders, emergencyOrders),
+                Values.ratio(emergencyVoteDisclosedOrders, emergencyOrders),
+                Values.ratio(emergencyPublicDisagreements, emergencyOrders),
+                Values.ratio(governmentEmergencyApplicants, emergencyOrders),
+                Values.ratio(governmentEmergencyWins, governmentEmergencyApplicants),
+                Values.ratio(meritsFollowUps, emergencyOrders),
                 average(legalStabilitySum),
                 average(rightsProtectionSum),
                 average(partisanAlignmentSum),
@@ -228,6 +271,9 @@ final class MetricsAccumulator {
                 average(legislativeConflictSum),
                 average(courtCurbingPressureSum),
                 average(amendmentPressureSum),
+                average(directCourtCostSum),
+                average(upstreamScreeningCostSum),
+                average(capacityStrainCostSum),
                 average(institutionalBudgetCostSum),
                 average(institutionalDelayCostSum),
                 average(implementationComplexitySum),
@@ -292,8 +338,16 @@ final class MetricsAccumulator {
         private final String segmentKey;
         private int totalCases;
         private int reviewedCases;
+        private int intakeFilings;
+        private int screenedFilings;
         private int emergencyOrders;
         private int emergencyReliefs;
+        private int emergencyReasonedOrders;
+        private int emergencyVoteDisclosedOrders;
+        private int emergencyPublicDisagreements;
+        private int governmentEmergencyApplicants;
+        private int governmentEmergencyWins;
+        private int meritsFollowUps;
         private int meritsReviews;
         private int meritsInvalidations;
         private int compliedCases;
@@ -319,6 +373,9 @@ final class MetricsAccumulator {
         private double legislativeConflictSum;
         private double courtCurbingPressureSum;
         private double amendmentPressureSum;
+        private double directCourtCostSum;
+        private double upstreamScreeningCostSum;
+        private double capacityStrainCostSum;
         private double institutionalBudgetCostSum;
         private double institutionalDelayCostSum;
         private double implementationComplexitySum;
@@ -334,11 +391,31 @@ final class MetricsAccumulator {
             if (outcome.reviewed()) {
                 reviewedCases++;
             }
+            intakeFilings += outcome.intakeFilings();
+            screenedFilings += outcome.screenedFilings();
             if (outcome.emergencyOrder()) {
                 emergencyOrders++;
             }
             if (outcome.emergencyReliefGranted()) {
                 emergencyReliefs++;
+            }
+            if (outcome.emergencyOrder() && outcome.reasonsGiven()) {
+                emergencyReasonedOrders++;
+            }
+            if (outcome.emergencyOrder() && outcome.voteDisclosed()) {
+                emergencyVoteDisclosedOrders++;
+            }
+            if (outcome.emergencyOrder() && outcome.publicDisagreement()) {
+                emergencyPublicDisagreements++;
+            }
+            if (outcome.governmentEmergencyApplicant()) {
+                governmentEmergencyApplicants++;
+            }
+            if (outcome.governmentEmergencyWin()) {
+                governmentEmergencyWins++;
+            }
+            if (outcome.meritsFollowUp()) {
+                meritsFollowUps++;
             }
             if (outcome.meritsReview()) {
                 meritsReviews++;
@@ -385,6 +462,9 @@ final class MetricsAccumulator {
             legislativeConflictSum += outcome.legislativeConflictAfter();
             courtCurbingPressureSum += outcome.courtCurbingPressure();
             amendmentPressureSum += outcome.amendmentPressure();
+            directCourtCostSum += outcome.directCourtCost();
+            upstreamScreeningCostSum += outcome.upstreamScreeningCost();
+            capacityStrainCostSum += outcome.capacityStrainCost();
             institutionalBudgetCostSum += outcome.institutionalBudgetCost();
             institutionalDelayCostSum += outcome.institutionalDelayCost();
             implementationComplexitySum += outcome.implementationComplexity();
@@ -397,12 +477,20 @@ final class MetricsAccumulator {
                     segmentKey,
                     totalCases,
                     reviewedCases,
+                    intakeFilings,
+                    screenedFilings,
                     Values.ratio(reviewedCases, totalCases),
+                    Values.ratio(reviewedCases, intakeFilings),
                     average(legalStabilitySum),
                     average(rightsProtectionSum),
                     average(shadowDocketAbuseSum),
                     Values.ratio(emergencyReliefs, emergencyOrders),
                     Values.ratio(meritsInvalidations, Math.max(meritsReviews, 1)),
+                    Values.ratio(emergencyReasonedOrders, emergencyOrders),
+                    Values.ratio(emergencyVoteDisclosedOrders, emergencyOrders),
+                    Values.ratio(emergencyPublicDisagreements, emergencyOrders),
+                    Values.ratio(governmentEmergencyWins, governmentEmergencyApplicants),
+                    Values.ratio(meritsFollowUps, emergencyOrders),
                     average(lowerCourtConflictSum),
                     average(timeToReviewSum),
                     average(lowerCourtDepthSum),
@@ -423,6 +511,9 @@ final class MetricsAccumulator {
                     average(legislativeConflictSum),
                     average(courtCurbingPressureSum),
                     average(amendmentPressureSum),
+                    average(directCourtCostSum),
+                    average(upstreamScreeningCostSum),
+                    average(capacityStrainCostSum),
                     average(institutionalBudgetCostSum),
                     average(institutionalDelayCostSum),
                     average(implementationComplexitySum),

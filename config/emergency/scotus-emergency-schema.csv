@@ -1,0 +1,20 @@
+field,type,coding,note
+court,string,court name,Use one row per emergency application or significant interim docket matter.
+term_year,integer,Supreme Court term year,Prefer term year over calendar year for U.S. data.
+docket_number,string,official docket number,Keep refilings as separate rows when the source does.
+case_name,string,case caption,Use a short caption suitable for report labels.
+application_type,string,stay injunction vacatur execution other,Controlled vocabulary can be extended for non-U.S. courts.
+applicant,string,applicant name,Applicant identity is separate from applicant type.
+applicant_type,string,federal-government state-government agency private-party criminal-defendant regulated-party,Used by government emergency applicant and win metrics.
+respondent_type,string,government private-party mixed,Respondent coding supports asymmetry checks.
+policy_domain,string,speech-religion civil-rights criminal-justice federalism elections emergency-security economic-regulation administration governance,Matches simulator PolicyDomain keys.
+lower_court_posture,string,injunction stay mandate denial other,Tracks whether emergency relief changes lower-court status quo.
+relief_requested,string,stay vacatur injunction execution stay administrative stay other,Compatible with shadow-docket relief categories.
+decision,string,granted partial denied dismissed withdrawn,Maps to emergency relief granted.
+reasons_given,boolean,true when public explanation accompanies order,Maps to emergencyReasonGivingRate.
+vote_disclosed,boolean,true when votes or member positions are disclosed,Maps to emergencyVoteDisclosureRate.
+concurrences_dissents,string,public separate writings or disagreements,Maps to emergencyPublicDisagreementRate.
+government_prevailed,boolean,true when a government applicant or respondent obtains preferred result,Supports government win diagnostics.
+merits_review_followed,boolean,true when later merits review follows emergency order,Maps to meritsFollowUpRate.
+later_merits_outcome,string,affirm reverse vacate dismiss pending none,Optional merits follow-up detail.
+source_url,string,official or dataset source URL,Prefer official Court docket pages plus coded dataset references.

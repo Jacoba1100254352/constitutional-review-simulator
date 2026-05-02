@@ -9,19 +9,19 @@
   "seed": 20260501,
   "campaignCaseCount": 5,
   "scenarioCount": 12,
-  "inputDescription": "986 imported legislative rows across 29 scenarios",
+  "inputDescription": "1190 imported legislative rows across 35 scenarios",
   "artifacts": [
-    {"path": "reports/constitutional-review-paired-import-v1.csv", "sha256": "d0d786ae3235a4735f912edbb210ad91a92e7033ec3c14c9285b9d76fd7feff9"},
-    {"path": "reports/constitutional-review-paired-import-v1-periods.csv", "sha256": "d252ea5da562eb1bade1174e95f93c3ebe93e78d9c3dea08057d86d2d4ed09cc"},
-    {"path": "reports/constitutional-review-paired-import-v1-doctrines.csv", "sha256": "5d7876591b0321b54ee7930844b3519cc22a3cab3f215c69bc02b10eb34acbce"},
-    {"path": "reports/constitutional-review-paired-import-v1-pipelines.csv", "sha256": "aac6c0214a091d83da49adb2fb49e3cde92f3556207a80297b6878b18a9366e9"},
-    {"path": "reports/constitutional-review-paired-import-v1-policy-domains.csv", "sha256": "b04d01f116651776dd5d7bab0023b34c55a10bb1209eba8a3d4ea6b43e298c98"},
+    {"path": "reports/constitutional-review-paired-import-v1.csv", "sha256": "62b5f8ca2cbacfaa56b18b45b59377be528ac2a29a920ae70d6cb9346372513a"},
+    {"path": "reports/constitutional-review-paired-import-v1-periods.csv", "sha256": "6d6e2b4efa3f757f145aeb98ad9500d13de4e8866f7ae35c4d42cbe74e1abd80"},
+    {"path": "reports/constitutional-review-paired-import-v1-doctrines.csv", "sha256": "0f7a18d3c26942a1ac160d021dcbab3d47e004437eb085754aa35944e1966e66"},
+    {"path": "reports/constitutional-review-paired-import-v1-pipelines.csv", "sha256": "68aa4ce57ed180d59ac75234de714829d10b69fc70bb455195e42f3fb1a74ca3"},
+    {"path": "reports/constitutional-review-paired-import-v1-policy-domains.csv", "sha256": "1fa5f43d0dbc0653950d0644038585b68cabe8fe80eb031e2b56a6f24710cc38"},
     {"path": "reports/constitutional-review-paired-import-v1-composition.csv", "sha256": "876b07cb85a8ce2eed945c24a9423f5b38c00b7659171bdfe68c6ef76991a1a9"},
-    {"path": "reports/constitutional-review-paired-import-v1-calibration.csv", "sha256": "990af551937c51db8987549df6def3caaa5e5fe5403488dad6f9a15899a16af8"},
-    {"path": "reports/constitutional-review-paired-import-v1-intervals.csv", "sha256": "cda540cb85f74b67db556bba64714f8ff368e4f85eb050f20de9dc852cba51c8"},
-    {"path": "reports/constitutional-review-paired-import-v1-pipeline-intervals.csv", "sha256": "40e4c6731496f7f6bfff536aee7c7e50822e720f0470a1fc01da2b41d38f70d3"},
+    {"path": "reports/constitutional-review-paired-import-v1-calibration.csv", "sha256": "e5ae8424b60836921d70222204bb8beb1e38edfe7d26e51faf035c83ada99242"},
+    {"path": "reports/constitutional-review-paired-import-v1-intervals.csv", "sha256": "afa3f82c874e32dc00f6c62037566393b723e82cc92b4c2fea98b236dc4219d2"},
+    {"path": "reports/constitutional-review-paired-import-v1-pipeline-intervals.csv", "sha256": "7dcd503c4ed2e879608343b6ba79eff40f993bd9546b4ac957128852befad4e0"},
     {"path": "reports/constitutional-review-paired-import-v1-composition-intervals.csv", "sha256": "7ed3d98e7cd72ed7240608c963ee8437f4b210a3a7797e330c00ad37279d3f9e"},
-    {"path": "reports/constitutional-review-paired-import-v1-calibration-intervals.csv", "sha256": "f66cd9bb7fa8407cf9cb8d35995af54b7ceadaef518edf2268e58549bada11d6"},
-    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "4891462a4d7a35b0e83c2db705898a8d49b833f19bb615930e2b9c930f7661c0"}
+    {"path": "reports/constitutional-review-paired-import-v1-calibration-intervals.csv", "sha256": "2e5dfe93e1a4f5158e3711eee1281288ebfe74f3548426dc00fd9ed027864d5d"},
+    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "618d864b14ea4b70f524cefb5d1a121661e0235a3bab741f9c98e0566ef393d2"}
   ]
 }

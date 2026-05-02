@@ -381,7 +381,7 @@ public final class CampaignRunner {
 
     private void writeCsv(Path path, List<CampaignRow> rows) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,directionalScore,reviewRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
         for (CampaignRow row : rows) {
             ScenarioReport report = row.report();
             builder.append(csv(row.caseKey())).append(',')
@@ -397,11 +397,20 @@ public final class CampaignRunner {
                     .append(report.meritsReviews()).append(',')
                     .append(report.meritsInvalidations()).append(',')
                     .append(report.overrides()).append(',')
+                    .append(report.intakeFilings()).append(',')
+                    .append(report.screenedFilings()).append(',')
                     .append(number(report.directionalScore())).append(',')
                     .append(number(report.reviewRate())).append(',')
+                    .append(number(report.intakeAcceptanceRate())).append(',')
                     .append(number(report.emergencyReliefRate())).append(',')
                     .append(number(report.meritsReviewRate())).append(',')
                     .append(number(report.meritsInvalidationRate())).append(',')
+                    .append(number(report.emergencyReasonGivingRate())).append(',')
+                    .append(number(report.emergencyVoteDisclosureRate())).append(',')
+                    .append(number(report.emergencyPublicDisagreementRate())).append(',')
+                    .append(number(report.governmentEmergencyApplicantShare())).append(',')
+                    .append(number(report.governmentEmergencyWinRate())).append(',')
+                    .append(number(report.meritsFollowUpRate())).append(',')
                     .append(number(report.legalStability())).append(',')
                     .append(number(report.rightsProtection())).append(',')
                     .append(number(report.partisanAlignment())).append(',')
@@ -439,6 +448,9 @@ public final class CampaignRunner {
                     .append(number(report.courtCurbingPressure())).append(',')
                     .append(number(report.amendmentPressure())).append(',')
                     .append(number(report.administrativeLoad())).append(',')
+                    .append(number(report.directCourtCost())).append(',')
+                    .append(number(report.upstreamScreeningCost())).append(',')
+                    .append(number(report.capacityStrainCost())).append(',')
                     .append(number(report.institutionalBudgetCost())).append(',')
                     .append(number(report.institutionalDelayCost())).append(',')
                     .append(number(report.implementationComplexity())).append(',')
@@ -450,7 +462,7 @@ public final class CampaignRunner {
 
     private void writeSegmentCsv(Path path, List<CampaignRow> rows, SegmentKind kind) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,totalCases,reviewedCases,reviewRate,legalStability,rightsProtection,shadowDocketAbuse,emergencyReliefRate,meritsInvalidationRate,lowerCourtConflict,averageTimeToReview,averageLowerCourtDepth,stateFederalTension,intercourtConflict,legitimacy,constitutionalConflict,democraticResponsiveness,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
+        builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,totalCases,reviewedCases,intakeFilings,screenedFilings,reviewRate,intakeAcceptanceRate,legalStability,rightsProtection,shadowDocketAbuse,emergencyReliefRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyWinRate,meritsFollowUpRate,lowerCourtConflict,averageTimeToReview,averageLowerCourtDepth,stateFederalTension,intercourtConflict,legitimacy,constitutionalConflict,democraticResponsiveness,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
         for (CampaignRow row : rows) {
             ScenarioReport report = row.report();
             for (SegmentReport segment : segments(row, kind)) {
@@ -463,12 +475,20 @@ public final class CampaignRunner {
                         .append(csv(segment.segmentKey())).append(',')
                         .append(segment.totalCases()).append(',')
                         .append(segment.reviewedCases()).append(',')
+                        .append(segment.intakeFilings()).append(',')
+                        .append(segment.screenedFilings()).append(',')
                         .append(number(segment.reviewRate())).append(',')
+                        .append(number(segment.intakeAcceptanceRate())).append(',')
                         .append(number(segment.legalStability())).append(',')
                         .append(number(segment.rightsProtection())).append(',')
                         .append(number(segment.shadowDocketAbuse())).append(',')
                         .append(number(segment.emergencyReliefRate())).append(',')
                         .append(number(segment.meritsInvalidationRate())).append(',')
+                        .append(number(segment.emergencyReasonGivingRate())).append(',')
+                        .append(number(segment.emergencyVoteDisclosureRate())).append(',')
+                        .append(number(segment.emergencyPublicDisagreementRate())).append(',')
+                        .append(number(segment.governmentEmergencyWinRate())).append(',')
+                        .append(number(segment.meritsFollowUpRate())).append(',')
                         .append(number(segment.lowerCourtConflict())).append(',')
                         .append(number(segment.averageTimeToReview())).append(',')
                         .append(number(segment.averageLowerCourtDepth())).append(',')
@@ -489,6 +509,9 @@ public final class CampaignRunner {
                         .append(number(segment.legislativeConflict())).append(',')
                         .append(number(segment.courtCurbingPressure())).append(',')
                         .append(number(segment.amendmentPressure())).append(',')
+                        .append(number(segment.directCourtCost())).append(',')
+                        .append(number(segment.upstreamScreeningCost())).append(',')
+                        .append(number(segment.capacityStrainCost())).append(',')
                         .append(number(segment.institutionalBudgetCost())).append(',')
                         .append(number(segment.institutionalDelayCost())).append(',')
                         .append(number(segment.implementationComplexity())).append(',')
@@ -529,7 +552,7 @@ public final class CampaignRunner {
 
     private void writeCalibrationCsv(Path path, List<CalibrationRow> rows) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("profileKey,court,timePeriod,targetKey,label,sourceName,sourceUrl,observedValue,lowerBound,upperBound,lower95,upper95,withinTarget,gap,n,method,note,targetFile\n");
+        builder.append("profileKey,court,timePeriod,targetKey,label,sourceName,sourceUrl,observedValue,lowerBound,upperBound,unit,targetN,targetMethod,reliability,useForValidation,modelObservedValue,lower95,upper95,withinTarget,gap,n,method,note,targetFile\n");
         for (CalibrationRow row : rows) {
             Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
             builder.append(csv(row.target().profileKey())).append(',')
@@ -539,9 +562,15 @@ public final class CampaignRunner {
                     .append(csv(row.target().label())).append(',')
                     .append(csv(row.target().sourceName())).append(',')
                     .append(csv(row.target().sourceUrl())).append(',')
-                    .append(number(row.observedValue())).append(',')
+                    .append(numberOrBlank(row.target().observedValue())).append(',')
                     .append(number(row.target().lowerBound())).append(',')
                     .append(number(row.target().upperBound())).append(',')
+                    .append(csv(row.target().unit())).append(',')
+                    .append(row.target().sampleSize()).append(',')
+                    .append(csv(row.target().method())).append(',')
+                    .append(csv(row.target().reliability())).append(',')
+                    .append(row.target().useForValidation()).append(',')
+                    .append(number(row.observedValue())).append(',')
                     .append(number(interval.lower())).append(',')
                     .append(number(interval.upper())).append(',')
                     .append(row.withinTarget()).append(',')
@@ -637,7 +666,7 @@ public final class CampaignRunner {
 
     private void writeCalibrationIntervalCsv(Path path, List<CalibrationRow> rows) throws IOException {
         StringBuilder builder = new StringBuilder();
-        builder.append("profileKey,court,timePeriod,targetKey,label,estimate,lower95,upper95,targetLower,targetUpper,n,method,sourceName,sourceUrl\n");
+        builder.append("profileKey,court,timePeriod,targetKey,label,estimate,lower95,upper95,targetLower,targetUpper,targetObservedValue,targetN,unit,targetMethod,reliability,useForValidation,n,method,sourceName,sourceUrl\n");
         for (CalibrationRow row : rows) {
             Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
             builder.append(csv(row.target().profileKey())).append(',')
@@ -650,6 +679,12 @@ public final class CampaignRunner {
                     .append(number(interval.upper())).append(',')
                     .append(number(row.target().lowerBound())).append(',')
                     .append(number(row.target().upperBound())).append(',')
+                    .append(numberOrBlank(row.target().observedValue())).append(',')
+                    .append(row.target().sampleSize()).append(',')
+                    .append(csv(row.target().unit())).append(',')
+                    .append(csv(row.target().method())).append(',')
+                    .append(csv(row.target().reliability())).append(',')
+                    .append(row.target().useForValidation()).append(',')
                     .append(row.sampleSize()).append(',')
                     .append(csv(INTERVAL_METHOD)).append(',')
                     .append(csv(row.target().sourceName())).append(',')
@@ -712,8 +747,8 @@ public final class CampaignRunner {
         }
 
         builder.append("## Scenario Averages\n\n");
-        builder.append("| Scenario | Score | Stability | Rights | Partisan | Shadow | Emerg. relief | Merits inval. | Legitimacy | Reversal | Conflict | Response | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Budget | Delay | Complex | Cost |\n");
-        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
+        builder.append("| Scenario | Score | Stability | Rights | Partisan | Shadow | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legitimacy | Reversal | Conflict | Response | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |\n");
+        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
         for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
             List<ScenarioReport> reports = rows.stream()
                     .filter(row -> row.report().scenarioKey().equals(scenarioKey))
@@ -726,7 +761,10 @@ public final class CampaignRunner {
                     .append(number(average(reports, ScenarioReport::rightsProtection))).append(" | ")
                     .append(number(average(reports, ScenarioReport::partisanAlignment))).append(" | ")
                     .append(number(average(reports, ScenarioReport::shadowDocketAbuse))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::intakeAcceptanceRate))).append(" | ")
                     .append(number(average(reports, ScenarioReport::emergencyReliefRate))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::emergencyReasonGivingRate))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::emergencyPublicDisagreementRate))).append(" | ")
                     .append(number(average(reports, ScenarioReport::meritsInvalidationRate))).append(" | ")
                     .append(number(average(reports, ScenarioReport::legitimacy))).append(" | ")
                     .append(number(average(reports, ScenarioReport::reversalRate))).append(" | ")
@@ -740,9 +778,9 @@ public final class CampaignRunner {
                     .append(number(average(reports, ScenarioReport::averageLowerCourtDepth))).append(" | ")
                     .append(number(average(reports, ScenarioReport::stateFederalTension))).append(" | ")
                     .append(number(average(reports, ScenarioReport::administrativeLoad))).append(" | ")
-                    .append(number(average(reports, ScenarioReport::institutionalBudgetCost))).append(" | ")
-                    .append(number(average(reports, ScenarioReport::institutionalDelayCost))).append(" | ")
-                    .append(number(average(reports, ScenarioReport::implementationComplexity))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::directCourtCost))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::upstreamScreeningCost))).append(" | ")
+                    .append(number(average(reports, ScenarioReport::capacityStrainCost))).append(" | ")
                     .append(number(average(reports, ScenarioReport::totalInstitutionalCost))).append(" |\n");
         }
         appendSegmentDiagnostics(builder, rows, "Period Diagnostics", SegmentKind.PERIOD);
@@ -762,8 +800,8 @@ public final class CampaignRunner {
             SegmentKind kind
     ) {
         builder.append("\n## ").append(title).append("\n\n");
-        builder.append("| Scenario | Segment | Cases | Review | Rights | Shadow | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |\n");
-        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
+        builder.append("| Scenario | Segment | Cases | Review | Intake | Rights | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |\n");
+        builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
         for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
             List<CampaignRow> scenarioRows = rows.stream()
                     .filter(row -> row.report().scenarioKey().equals(scenarioKey))
@@ -784,8 +822,11 @@ public final class CampaignRunner {
                         .append(segmentKey).append(" | ")
                         .append(segmentCases(reports)).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::reviewRate))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::intakeAcceptanceRate))).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::rightsProtection))).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::shadowDocketAbuse))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::emergencyReasonGivingRate))).append(" | ")
+                        .append(number(segmentAverage(reports, SegmentReport::emergencyPublicDisagreementRate))).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::meritsInvalidationRate))).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::averageLowerCourtDepth))).append(" | ")
                         .append(number(segmentAverage(reports, SegmentReport::stateFederalTension))).append(" | ")
@@ -857,17 +898,20 @@ public final class CampaignRunner {
 
     private void appendCalibrationDiagnostics(StringBuilder builder, List<CalibrationRow> rows) {
         builder.append("\n## Calibration Diagnostics\n\n");
-        builder.append("| Profile | Target | Observed | 95% band | Range | Gap | Status |\n");
-        builder.append("| --- | --- | ---: | ---: | ---: | ---: | --- |\n");
+        builder.append("| Profile | Target | Model | Empirical | 95% band | Range | Reliability | Validation | Gap | Status |\n");
+        builder.append("| --- | --- | ---: | ---: | ---: | ---: | --- | ---: | ---: | --- |\n");
         for (CalibrationRow row : rows) {
             Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
             builder.append("| ").append(row.target().profileKey()).append(" | ")
                     .append(row.target().label()).append(" | ")
                     .append(number(row.observedValue())).append(" | ")
+                    .append(numberOrBlank(row.target().observedValue())).append(" | ")
                     .append(number(interval.lower())).append("-")
                     .append(number(interval.upper())).append(" | ")
                     .append(number(row.target().lowerBound())).append("-")
                     .append(number(row.target().upperBound())).append(" | ")
+                    .append(row.target().reliability()).append(" | ")
+                    .append(row.target().useForValidation()).append(" | ")
                     .append(number(row.gap())).append(" | ")
                     .append(row.withinTarget() ? "within" : "outside")
                     .append(" |\n");
@@ -949,9 +993,25 @@ public final class CampaignRunner {
         }
         int emergencyOrders = rows.stream().mapToInt(row -> row.report().emergencyOrders()).sum();
         int emergencyReliefs = rows.stream().mapToInt(row -> row.report().emergencyReliefs()).sum();
+        int intakeFilings = rows.stream().mapToInt(row -> row.report().intakeFilings()).sum();
+        int reviewedCases = rows.stream().mapToInt(row -> row.report().reviewedCases()).sum();
+        int meritsReviews = rows.stream().mapToInt(row -> row.report().meritsReviews()).sum();
+        int meritsInvalidations = rows.stream().mapToInt(row -> row.report().meritsInvalidations()).sum();
+        observed.put("review_rate", new CalibrationObservation(Values.ratio(reviewedCases, totalCases), totalCases));
         observed.put("emergency_relief_rate", new CalibrationObservation(Values.ratio(emergencyReliefs, emergencyOrders), emergencyOrders));
+        observed.put("merits_invalidation_rate", new CalibrationObservation(Values.ratio(meritsInvalidations, meritsReviews), meritsReviews));
+        observed.put("intake_acceptance_rate", new CalibrationObservation(Values.ratio(reviewedCases, intakeFilings), intakeFilings));
+        observed.put("emergency_reason_giving_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::emergencyReasonGivingRate), emergencyOrders));
+        observed.put("emergency_vote_disclosure_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::emergencyVoteDisclosureRate), emergencyOrders));
+        observed.put("emergency_public_disagreement_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::emergencyPublicDisagreementRate), emergencyOrders));
+        observed.put("government_emergency_win_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::governmentEmergencyWinRate), emergencyOrders));
+        observed.put("merits_follow_up_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::meritsFollowUpRate), emergencyOrders));
         observed.put("compliance_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::complianceRate), totalCases));
         observed.put("public_trust", new CalibrationObservation(weightedAverage(rows, ScenarioReport::publicTrust), totalCases));
+        observed.put("direct_court_cost", new CalibrationObservation(weightedAverage(rows, ScenarioReport::directCourtCost), totalCases));
+        observed.put("upstream_screening_cost", new CalibrationObservation(weightedAverage(rows, ScenarioReport::upstreamScreeningCost), totalCases));
+        observed.put("capacity_strain_cost", new CalibrationObservation(weightedAverage(rows, ScenarioReport::capacityStrainCost), totalCases));
+        observed.put("total_institutional_cost", new CalibrationObservation(weightedAverage(rows, ScenarioReport::totalInstitutionalCost), totalCases));
         observed.put("legitimacy_trust_gradient", new CalibrationObservation(legitimacyTrustGradient(rows), rows.size()));
         return observed;
     }
@@ -1008,6 +1068,12 @@ public final class CampaignRunner {
                     calibrationValue(parts, columns, "label", positional(parts, 1)),
                     Double.parseDouble(calibrationValue(parts, columns, "lowerBound", positional(parts, 2))),
                     Double.parseDouble(calibrationValue(parts, columns, "upperBound", positional(parts, 3))),
+                    optionalDouble(calibrationValue(parts, columns, "observedValue", "")),
+                    optionalInt(calibrationValue(parts, columns, "n", "0")),
+                    calibrationValue(parts, columns, "unit", "share"),
+                    calibrationValue(parts, columns, "method", "documented-range"),
+                    calibrationValue(parts, columns, "reliability", "medium"),
+                    Boolean.parseBoolean(calibrationValue(parts, columns, "useForValidation", "true")),
                     calibrationValue(parts, columns, "note", positional(parts, 4)),
                     calibrationValue(parts, columns, "sourceName", targetFile.getFileName().toString()),
                     calibrationValue(parts, columns, "sourceUrl", ""),
@@ -1020,10 +1086,10 @@ public final class CampaignRunner {
     private List<CalibrationTarget> defaultCalibrationTargets(String source) {
         String sourceUrl = "https://scdb.la.psu.edu/data/2025-release-01/";
         return List.of(
-                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.speech", "Speech docket share", 0.039, 0.080, "SCDB issueArea 3 share in 2000-2024 case-centered data.", source, sourceUrl, source),
-                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.equality", "Civil-rights and privacy docket share", 0.137, 0.191, "SCDB issueArea 2 and 5 less election-law issue subset.", source, sourceUrl, source),
-                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.criminal_procedure", "Criminal procedure docket share", 0.230, 0.289, "SCDB issueArea 1 share in 2000-2024 case-centered data.", source, sourceUrl, source),
-                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.federalism", "Federalism docket share", 0.037, 0.078, "SCDB issueArea 10 and 11 share in 2000-2024 case-centered data.", source, sourceUrl, source)
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.speech", "Speech docket share", 0.039, 0.080, 0.060, 0, "share", "SCDB issue-area proxy", "high", true, "SCDB issueArea 3 share in 2000-2024 case-centered data.", source, sourceUrl, source),
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.equality", "Civil-rights and privacy docket share", 0.137, 0.191, 0.164, 0, "share", "SCDB issue-area proxy", "high", true, "SCDB issueArea 2 and 5 less election-law issue subset.", source, sourceUrl, source),
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.criminal_procedure", "Criminal procedure docket share", 0.230, 0.289, 0.260, 0, "share", "SCDB issue-area proxy", "high", true, "SCDB issueArea 1 share in 2000-2024 case-centered data.", source, sourceUrl, source),
+                new CalibrationTarget("fallback-scdb-modern", "U.S. Supreme Court", "2000-2024 terms", "doctrine_mix.federalism", "Federalism docket share", 0.037, 0.078, 0.058, 0, "share", "SCDB issue-area proxy", "high", true, "SCDB issueArea 10 and 11 share in 2000-2024 case-centered data.", source, sourceUrl, source)
         );
     }
 
@@ -1065,13 +1131,22 @@ public final class CampaignRunner {
                 new ReportIntervalMetric("legitimacy", ScenarioReport::legitimacy, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("reversalRate", ScenarioReport::reversalRate, ScenarioReport::reviewedCases, 0.0, 1.0),
                 new ReportIntervalMetric("reviewRate", ScenarioReport::reviewRate, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("intakeAcceptanceRate", ScenarioReport::intakeAcceptanceRate, ScenarioReport::intakeFilings, 0.0, 1.0),
                 new ReportIntervalMetric("emergencyReliefRate", ScenarioReport::emergencyReliefRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
+                new ReportIntervalMetric("emergencyReasonGivingRate", ScenarioReport::emergencyReasonGivingRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
+                new ReportIntervalMetric("emergencyVoteDisclosureRate", ScenarioReport::emergencyVoteDisclosureRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
+                new ReportIntervalMetric("emergencyPublicDisagreementRate", ScenarioReport::emergencyPublicDisagreementRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
+                new ReportIntervalMetric("governmentEmergencyWinRate", ScenarioReport::governmentEmergencyWinRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
+                new ReportIntervalMetric("meritsFollowUpRate", ScenarioReport::meritsFollowUpRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
                 new ReportIntervalMetric("meritsInvalidationRate", ScenarioReport::meritsInvalidationRate, ScenarioReport::meritsReviews, 0.0, 1.0),
                 new ReportIntervalMetric("constitutionalConflict", ScenarioReport::constitutionalConflict, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("democraticResponsiveness", ScenarioReport::democraticResponsiveness, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("complianceRate", ScenarioReport::complianceRate, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("publicTrust", ScenarioReport::publicTrust, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("administrativeLoad", ScenarioReport::administrativeLoad, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("directCourtCost", ScenarioReport::directCourtCost, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("upstreamScreeningCost", ScenarioReport::upstreamScreeningCost, ScenarioReport::totalCases, 0.0, 1.0),
+                new ReportIntervalMetric("capacityStrainCost", ScenarioReport::capacityStrainCost, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("institutionalBudgetCost", ScenarioReport::institutionalBudgetCost, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("institutionalDelayCost", ScenarioReport::institutionalDelayCost, ScenarioReport::totalCases, 0.0, 1.0),
                 new ReportIntervalMetric("implementationComplexity", ScenarioReport::implementationComplexity, ScenarioReport::totalCases, 0.0, 1.0),
@@ -1082,16 +1157,25 @@ public final class CampaignRunner {
     private static List<SegmentIntervalMetric> segmentIntervalMetrics() {
         return List.of(
                 new SegmentIntervalMetric("reviewRate", SegmentReport::reviewRate, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("intakeAcceptanceRate", SegmentReport::intakeAcceptanceRate, SegmentReport::intakeFilings, 0.0, 1.0),
                 new SegmentIntervalMetric("legalStability", SegmentReport::legalStability, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("rightsProtection", SegmentReport::rightsProtection, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("shadowDocketAbuse", SegmentReport::shadowDocketAbuse, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("emergencyReliefRate", SegmentReport::emergencyReliefRate, SegmentReport::reviewedCases, 0.0, 1.0),
+                new SegmentIntervalMetric("emergencyReasonGivingRate", SegmentReport::emergencyReasonGivingRate, SegmentReport::reviewedCases, 0.0, 1.0),
+                new SegmentIntervalMetric("emergencyVoteDisclosureRate", SegmentReport::emergencyVoteDisclosureRate, SegmentReport::reviewedCases, 0.0, 1.0),
+                new SegmentIntervalMetric("emergencyPublicDisagreementRate", SegmentReport::emergencyPublicDisagreementRate, SegmentReport::reviewedCases, 0.0, 1.0),
+                new SegmentIntervalMetric("governmentEmergencyWinRate", SegmentReport::governmentEmergencyWinRate, SegmentReport::reviewedCases, 0.0, 1.0),
+                new SegmentIntervalMetric("meritsFollowUpRate", SegmentReport::meritsFollowUpRate, SegmentReport::reviewedCases, 0.0, 1.0),
                 new SegmentIntervalMetric("meritsInvalidationRate", SegmentReport::meritsInvalidationRate, SegmentReport::reviewedCases, 0.0, 1.0),
                 new SegmentIntervalMetric("legitimacy", SegmentReport::legitimacy, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("constitutionalConflict", SegmentReport::constitutionalConflict, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("democraticResponsiveness", SegmentReport::democraticResponsiveness, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("complianceRate", SegmentReport::complianceRate, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("publicTrust", SegmentReport::publicTrust, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("directCourtCost", SegmentReport::directCourtCost, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("upstreamScreeningCost", SegmentReport::upstreamScreeningCost, SegmentReport::totalCases, 0.0, 1.0),
+                new SegmentIntervalMetric("capacityStrainCost", SegmentReport::capacityStrainCost, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("institutionalBudgetCost", SegmentReport::institutionalBudgetCost, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("institutionalDelayCost", SegmentReport::institutionalDelayCost, SegmentReport::totalCases, 0.0, 1.0),
                 new SegmentIntervalMetric("implementationComplexity", SegmentReport::implementationComplexity, SegmentReport::totalCases, 0.0, 1.0),
@@ -1201,8 +1285,29 @@ public final class CampaignRunner {
         return row.get(index).trim();
     }
 
+    private static double optionalDouble(String value) {
+        if (value == null || value.isBlank()) {
+            return Double.NaN;
+        }
+        return Double.parseDouble(value.trim());
+    }
+
+    private static int optionalInt(String value) {
+        if (value == null || value.isBlank()) {
+            return 0;
+        }
+        return Integer.parseInt(value.trim());
+    }
+
     private static String number(double value) {
         return String.format(Locale.ROOT, "%.3f", value);
+    }
+
+    private static String numberOrBlank(double value) {
+        if (Double.isNaN(value)) {
+            return "";
+        }
+        return number(value);
     }
 
     private record CampaignCase(
@@ -1296,6 +1401,12 @@ public final class CampaignRunner {
             String label,
             double lowerBound,
             double upperBound,
+            double observedValue,
+            int sampleSize,
+            String unit,
+            String method,
+            String reliability,
+            boolean useForValidation,
             String note,
             String sourceName,
             String sourceUrl,

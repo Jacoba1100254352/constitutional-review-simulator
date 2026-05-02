@@ -33,10 +33,15 @@ public final class SimulatorTests {
         List<Scenario> scenarios = ScenarioCatalog.scenariosForKeys(List.of(
                 "current-federal-court",
                 "constitutional-council",
-                "dual-cross-checking-courts"
+                "dual-cross-checking-courts",
+                "german-constitutional-court",
+                "uk-supreme-court"
         ));
-        assertTrue(scenarios.size() == 3, "expected selected scenarios");
+        assertTrue(scenarios.size() == 5, "expected selected scenarios");
         assertTrue(scenarios.get(1).name().contains("constitutional council"), "expected council scenario name");
+        assertTrue(ScenarioCatalog.scenarioKeys().contains("canadian-supreme-court"), "expected real-world preset");
+        assertTrue(PolicyDomain.fromKey("speech").equals(PolicyDomain.SPEECH_RELIGION), "expected speech domain alias");
+        assertTrue(PolicyDomain.fromKey("preemption").equals(PolicyDomain.FEDERALISM), "expected federalism domain alias");
     }
 
     private static void simulatorProducesReports() {
@@ -59,6 +64,15 @@ public final class SimulatorTests {
             assertBetween(report.rightsProtection(), "rights protection");
             assertBetween(report.emergencyReliefRate(), "emergency relief rate");
             assertBetween(report.meritsInvalidationRate(), "merits invalidation rate");
+            assertTrue(report.intakeFilings() >= report.reviewedCases(), "expected intake filings to cover reviewed cases");
+            assertTrue(report.screenedFilings() >= 0, "expected screened filings");
+            assertBetween(report.intakeAcceptanceRate(), "intake acceptance rate");
+            assertBetween(report.emergencyReasonGivingRate(), "emergency reason-giving rate");
+            assertBetween(report.emergencyVoteDisclosureRate(), "emergency vote disclosure rate");
+            assertBetween(report.emergencyPublicDisagreementRate(), "emergency public disagreement rate");
+            assertBetween(report.governmentEmergencyApplicantShare(), "government emergency applicant share");
+            assertBetween(report.governmentEmergencyWinRate(), "government emergency win rate");
+            assertBetween(report.meritsFollowUpRate(), "merits follow-up rate");
             assertBetween(report.complianceRate(), "compliance rate");
             assertBetween(report.defianceRate(), "defiance rate");
             assertBetween(report.stateCaseShare(), "state case share");
@@ -70,6 +84,9 @@ public final class SimulatorTests {
             assertBetween(report.agencyNonacquiescenceRate(), "agency nonacquiescence rate");
             assertBetween(report.legislativeReenactmentRate(), "legislative reenactment rate");
             assertBetween(report.localGovernmentComplianceRate(), "local-government compliance rate");
+            assertBetween(report.directCourtCost(), "direct court cost");
+            assertBetween(report.upstreamScreeningCost(), "upstream screening cost");
+            assertBetween(report.capacityStrainCost(), "capacity strain cost");
             assertBetween(report.institutionalBudgetCost(), "institutional budget cost");
             assertBetween(report.institutionalDelayCost(), "institutional delay cost");
             assertBetween(report.implementationComplexity(), "implementation complexity");
@@ -127,6 +144,9 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.manifestPath()), "expected manifest artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legalStability"), "expected CSV header");
         assertTrue(Files.readString(result.csvPath()).contains("emergencyReliefRate"), "expected split emergency metric");
+        assertTrue(Files.readString(result.csvPath()).contains("intakeAcceptanceRate"), "expected intake metric");
+        assertTrue(Files.readString(result.csvPath()).contains("emergencyReasonGivingRate"), "expected emergency transparency metric");
+        assertTrue(Files.readString(result.csvPath()).contains("directCourtCost"), "expected direct cost metric");
         assertTrue(Files.readString(result.csvPath()).contains("complianceRate"), "expected compliance metric");
         assertTrue(Files.readString(result.csvPath()).contains("executiveImplementationRate"), "expected enforcement metric");
         assertTrue(Files.readString(result.csvPath()).contains("stateFederalTension"), "expected hierarchy metric");
@@ -136,7 +156,12 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.pipelineCsvPath()).contains("pipeline"), "expected pipeline report rows");
         assertTrue(Files.readString(result.policyDomainCsvPath()).contains("policy-domain"), "expected policy-domain report rows");
         assertTrue(Files.readString(result.compositionCsvPath()).contains("medianIdeology"), "expected composition report rows");
-        assertTrue(Files.readString(result.calibrationCsvPath()).contains("profileKey"), "expected calibration profiles");
+        String calibrationCsv = Files.readString(result.calibrationCsvPath());
+        assertTrue(calibrationCsv.contains("profileKey"), "expected calibration profiles");
+        assertTrue(calibrationCsv.contains("targetMethod"), "expected target method column");
+        assertTrue(calibrationCsv.contains("reliability"), "expected reliability column");
+        assertTrue(calibrationCsv.contains("useForValidation"), "expected validation-use column");
+        assertTrue(calibrationCsv.contains("germany-bverfg-2024"), "expected comparative calibration profile");
         assertTrue(Files.readString(result.intervalCsvPath()).contains("lower95"), "expected campaign uncertainty bands");
         assertTrue(Files.readString(result.pipelineIntervalCsvPath()).contains("lower95"), "expected pipeline uncertainty bands");
         assertTrue(Files.readString(result.compositionIntervalCsvPath()).contains("lower95"), "expected composition uncertainty bands");
@@ -149,6 +174,10 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.markdownPath()).contains("Composition Diagnostics"), "expected composition diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Uncertainty Diagnostics"), "expected uncertainty diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Calibration Diagnostics"), "expected calibration diagnostics");
+        assertTrue(Files.exists(Path.of("config/comparative/constitutional-review-designs.csv")), "expected comparative design config");
+        assertTrue(Files.exists(Path.of("config/pipeline/us-scotus-pipeline.csv")), "expected pipeline config");
+        assertTrue(Files.exists(Path.of("config/emergency/scotus-emergency-schema.csv")), "expected emergency schema config");
+        assertTrue(Files.exists(Path.of("config/cost-benchmarks/institutional-costs.csv")), "expected cost benchmark config");
     }
 
     private static void pairedCampaignWritesArtifacts() throws Exception {

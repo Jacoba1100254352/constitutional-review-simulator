@@ -13,6 +13,10 @@ public record DesignConfiguration(
         VotingThreshold votingThreshold,
         ReviewStructure reviewStructure,
         LegislativeOverrideRule overrideRule,
+        ReviewArchetype reviewArchetype,
+        ReviewTiming reviewTiming,
+        DocketControl docketControl,
+        CostProfileKey costProfileKey,
         double appointmentSkew,
         double independence,
         double accountability,
@@ -21,9 +25,65 @@ public record DesignConfiguration(
         double rightsPriority,
         double stabilityPreference
 ) {
+    public DesignConfiguration(
+            String label,
+            AppointmentMethod appointmentMethod,
+            int courtSize,
+            TermLimit termLimit,
+            RemovalStandard removalStandard,
+            RecusalRule recusalRule,
+            DocketProcedure docketProcedure,
+            VotingThreshold votingThreshold,
+            ReviewStructure reviewStructure,
+            LegislativeOverrideRule overrideRule,
+            double appointmentSkew,
+            double independence,
+            double accountability,
+            double transparency,
+            double coalitionNorm,
+            double rightsPriority,
+            double stabilityPreference
+    ) {
+        this(
+                label,
+                appointmentMethod,
+                courtSize,
+                termLimit,
+                removalStandard,
+                recusalRule,
+                docketProcedure,
+                votingThreshold,
+                reviewStructure,
+                overrideRule,
+                ReviewArchetype.DISCRETIONARY_APPELLATE_LEAVE,
+                ReviewTiming.POST_ENACTMENT,
+                DocketControl.DISCRETIONARY_CERTIORARI,
+                CostProfileKey.STYLIZED_INTERNAL,
+                appointmentSkew,
+                independence,
+                accountability,
+                transparency,
+                coalitionNorm,
+                rightsPriority,
+                stabilityPreference
+        );
+    }
+
     public DesignConfiguration {
         if (courtSize < 3) {
             throw new IllegalArgumentException("courtSize must be at least 3");
+        }
+        if (reviewArchetype == null) {
+            reviewArchetype = ReviewArchetype.DISCRETIONARY_APPELLATE_LEAVE;
+        }
+        if (reviewTiming == null) {
+            reviewTiming = ReviewTiming.POST_ENACTMENT;
+        }
+        if (docketControl == null) {
+            docketControl = DocketControl.DISCRETIONARY_CERTIORARI;
+        }
+        if (costProfileKey == null) {
+            costProfileKey = CostProfileKey.STYLIZED_INTERNAL;
         }
         appointmentSkew = Values.signedClamp(appointmentSkew);
         independence = Values.clamp01(independence);
@@ -87,6 +147,66 @@ public record DesignConfiguration(
 
     public boolean substitutesRecusedJustices() {
         return recusalRule == RecusalRule.RANDOM_SUBSTITUTION;
+    }
+
+    public boolean preEnactmentReview() {
+        return reviewTiming == ReviewTiming.PRE_ENACTMENT
+                || reviewTiming == ReviewTiming.MIXED_TIMING
+                || reviewArchetype == ReviewArchetype.PRE_ENACTMENT_COUNCIL;
+    }
+
+    public double baseIntakeAcceptanceRate() {
+        double archetypeBase = switch (reviewArchetype) {
+            case DISCRETIONARY_APPELLATE_LEAVE -> 0.018;
+            case CONSTITUTIONAL_COMPLAINT -> 0.0085;
+            case PRE_ENACTMENT_COUNCIL -> 0.32;
+            case MIXED_ABSTRACT_CONCRETE -> 0.12;
+            case DECLARATION_ONLY_PARLIAMENTARY -> 0.26;
+            case SUPRANATIONAL_TREATY -> 0.10;
+        };
+        double controlMultiplier = switch (docketControl) {
+            case DISCRETIONARY_CERTIORARI -> 1.00;
+            case LEAVE_TO_APPEAL -> 4.80;
+            case COMPLAINT_ADMISSIBILITY -> 0.75;
+            case REFERRAL_GATED -> 2.80;
+            case MANDATORY_WITH_FILTERS -> 6.50;
+        };
+        return Values.clamp(archetypeBase * controlMultiplier, 0.003, 0.72);
+    }
+
+    public double intakeScreeningIntensity() {
+        double control = switch (docketControl) {
+            case DISCRETIONARY_CERTIORARI -> 0.72;
+            case LEAVE_TO_APPEAL -> 0.62;
+            case COMPLAINT_ADMISSIBILITY -> 0.88;
+            case REFERRAL_GATED -> 0.56;
+            case MANDATORY_WITH_FILTERS -> 0.48;
+        };
+        double archetype = switch (reviewArchetype) {
+            case CONSTITUTIONAL_COMPLAINT -> 0.82;
+            case PRE_ENACTMENT_COUNCIL -> 0.42;
+            case MIXED_ABSTRACT_CONCRETE -> 0.64;
+            case DECLARATION_ONLY_PARLIAMENTARY -> 0.36;
+            case SUPRANATIONAL_TREATY -> 0.76;
+            case DISCRETIONARY_APPELLATE_LEAVE -> 0.68;
+        };
+        return Values.clamp01((control + archetype) / 2.0);
+    }
+
+    public double benchmarkedDirectCourtCost() {
+        return costProfileKey.directCourtCost();
+    }
+
+    public double benchmarkedDelayCost() {
+        return costProfileKey.delayCost();
+    }
+
+    public double benchmarkedComplexityCost() {
+        return costProfileKey.complexityCost();
+    }
+
+    public double benchmarkedCapacityStrain() {
+        return costProfileKey.capacityStrain();
     }
 
     public double periodTurnoverRate() {

@@ -5,6 +5,7 @@ import courtsim.model.CaseType;
 import courtsim.model.Jurisdiction;
 import courtsim.model.Justice;
 import courtsim.model.LowerCourtPath;
+import courtsim.model.PolicyDomain;
 import courtsim.simulation.CompositionSnapshot;
 import courtsim.simulation.WorldSpec;
 import courtsim.util.Values;
@@ -57,13 +58,14 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         ReactionState reactionState = context.reactionState();
         boolean emergency = isEmergency(caseFile, random);
         boolean reviewed = shouldReview(caseFile, emergency, random);
+        IntakeEstimate intake = intakeEstimate(caseFile, emergency, reviewed);
         int recused = recusedJustices(caseFile, random);
         int participating = configuration.substitutesRecusedJustices()
                 ? configuration.courtSize()
                 : Math.max(3, configuration.courtSize() - recused);
 
         if (!reviewed) {
-            return declinedOutcome(caseFile, emergency, recused, participating, reactionState);
+            return declinedOutcome(caseFile, emergency, recused, participating, reactionState, intake, random);
         }
 
         VoteResult primary = vote(caseFile, activeJustices(participating), emergency, random, 0.0);
@@ -117,6 +119,13 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 : 0.0;
         double partisanAlignment = partisanAlignment(caseFile, finalVote.strikeVoteShare(), meritsInvalidated || emergencyReliefGranted);
         double shadowAbuse = shadowDocketAbuse(caseFile, emergency, meritsReview, emergencyReliefGranted, meritsInvalidated);
+        String emergencyApplicantType = emergencyApplicantType(caseFile, emergency);
+        boolean governmentEmergencyApplicant = emergency && isGovernmentApplicant(emergencyApplicantType);
+        boolean governmentEmergencyWin = governmentEmergencyApplicant && emergencyReliefGranted;
+        boolean reasonsGiven = !emergency || random.nextDouble() < emergencyReasonsProbability(caseFile, emergencyReliefGranted, meritsReview);
+        boolean voteDisclosed = !emergency || random.nextDouble() < emergencyVoteDisclosureProbability(caseFile, emergencyReliefGranted, reasonsGiven);
+        boolean publicDisagreement = emergency && random.nextDouble() < publicDisagreementProbability(caseFile, dissentIntensity, shadowAbuse, reasonsGiven);
+        boolean meritsFollowUp = emergency && meritsReview;
         double rightsProtection = rightsProtection(caseFile, meritsInvalidated, emergencyReliefGranted, overrideUsed);
         double constitutionalConflict = constitutionalConflict(caseFile, meritsInvalidated, emergencyReliefGranted, overrideUsed, shadowAbuse, crossCheckConflict);
         double democraticResponsiveness = democraticResponsiveness(caseFile, meritsInvalidated, emergencyReliefGranted, overrideUsed);
@@ -185,7 +194,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 legislativeReenactment
         );
         double administrativeLoad = administrativeLoad(caseFile, emergency, enBanc, crossChecked, councilScreen, recused);
-        CostEstimate institutionalCosts = institutionalCosts(caseFile, emergency, enBanc, crossChecked, councilScreen, recused, administrativeLoad);
+        CostEstimate institutionalCosts = institutionalCosts(caseFile, emergency, enBanc, crossChecked, councilScreen, recused, administrativeLoad, intake);
 
         return new CaseOutcome(
                 caseFile,
@@ -196,6 +205,16 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 meritsInvalidated,
                 meritsInvalidated,
                 lawEffective,
+                intake.intakeFilings(),
+                intake.screenedFilings(),
+                intake.acceptanceRate(),
+                reasonsGiven,
+                voteDisclosed,
+                publicDisagreement,
+                emergencyApplicantType,
+                governmentEmergencyApplicant,
+                governmentEmergencyWin,
+                meritsFollowUp,
                 enBanc,
                 crossChecked,
                 councilScreen,
@@ -230,6 +249,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 dissentIntensity,
                 caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure,
                 administrativeLoad,
+                institutionalCosts.directCourt(),
+                institutionalCosts.upstreamScreening(),
+                institutionalCosts.capacityStrain(),
                 institutionalCosts.budget(),
                 institutionalCosts.delay(),
                 institutionalCosts.complexity(),
@@ -268,6 +290,99 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 + (emergency ? 0.18 : 0.0)
                 - caseFile.legalAmbiguity() * 0.05;
         return reviewScore * caseFile.jurisdiction().reviewAccessWeight() + random.nextDouble() * 0.24 > 0.48;
+    }
+
+    private IntakeEstimate intakeEstimate(CaseFile caseFile, boolean emergency, boolean reviewed) {
+        double acceptance = configuration.baseIntakeAcceptanceRate()
+                * (0.64
+                + caseFile.certiorariPressure() * 0.52
+                + caseFile.constitutionalSalience() * 0.34
+                + caseFile.lowerCourtConflict() * 0.24
+                + caseFile.stateFederalTension() * 0.10
+                + caseFile.intercourtConflict() * 0.12
+                + (emergency ? 0.55 : 0.0)
+                + (configuration.preEnactmentReview() ? 0.34 : 0.0));
+        if (configuration.docketControl() == DocketControl.MANDATORY_WITH_FILTERS) {
+            acceptance *= 1.55;
+        }
+        if (configuration.docketControl() == DocketControl.COMPLAINT_ADMISSIBILITY) {
+            acceptance *= 0.76 + caseFile.rightsThreat() * 0.28;
+        }
+        acceptance = Values.clamp(acceptance, 0.003, 0.82);
+        int representedFilings = Math.max(1, (int) Math.round(1.0 / acceptance));
+        int pressureFilings = (int) Math.round(
+                representedFilings
+                        * (1.0
+                        + caseFile.legalAmbiguity() * 0.20
+                        + caseFile.lowerCourtConflict() * 0.18
+                        + (emergency ? 0.24 : 0.0)
+                        + configuration.intakeScreeningIntensity() * 0.18)
+        );
+        int intakeFilings = Math.max(1, pressureFilings);
+        int acceptedFilings = reviewed ? 1 : 0;
+        int screenedFilings = Math.max(0, intakeFilings - acceptedFilings);
+        return new IntakeEstimate(intakeFilings, screenedFilings, Values.ratio(acceptedFilings, intakeFilings));
+    }
+
+    private String emergencyApplicantType(CaseFile caseFile, boolean emergency) {
+        if (!emergency) {
+            return "not-emergency";
+        }
+        PolicyDomain domain = caseFile.policyDomain();
+        if (domain == PolicyDomain.ADMINISTRATION || domain == PolicyDomain.EMERGENCY_SECURITY) {
+            return caseFile.executivePressure() > 0.45 ? "federal-government" : "agency";
+        }
+        if (domain == PolicyDomain.FEDERALISM || domain == PolicyDomain.ELECTIONS
+                || caseFile.jurisdiction() == Jurisdiction.STATE
+                || caseFile.jurisdiction() == Jurisdiction.MIXED_STATE_FEDERAL) {
+            return "state-government";
+        }
+        if (domain == PolicyDomain.CRIMINAL_JUSTICE) {
+            return "criminal-defendant";
+        }
+        if (domain == PolicyDomain.ECONOMIC_REGULATION) {
+            return caseFile.publicSupport() > 0.58 ? "federal-government" : "regulated-party";
+        }
+        return "private-party";
+    }
+
+    private boolean isGovernmentApplicant(String applicantType) {
+        return applicantType.contains("government") || applicantType.equals("agency");
+    }
+
+    private double emergencyReasonsProbability(CaseFile caseFile, boolean emergencyReliefGranted, boolean meritsReview) {
+        return Values.clamp01(
+                configuration.emergencyReasonGiving() * 0.62
+                        + configuration.transparency() * 0.18
+                        + (meritsReview ? 0.12 : 0.0)
+                        + (emergencyReliefGranted ? caseFile.constitutionalSalience() * 0.08 : 0.03)
+                        - (configuration.docketProcedure() == DocketProcedure.FAST_SHADOW_DOCKET ? 0.18 : 0.0)
+        );
+    }
+
+    private double emergencyVoteDisclosureProbability(CaseFile caseFile, boolean emergencyReliefGranted, boolean reasonsGiven) {
+        return Values.clamp01(
+                configuration.transparency() * 0.52
+                        + configuration.coalitionNorm() * 0.14
+                        + (reasonsGiven ? 0.14 : 0.0)
+                        + (emergencyReliefGranted ? 0.08 : 0.0)
+                        + caseFile.constitutionalSalience() * 0.08
+        );
+    }
+
+    private double publicDisagreementProbability(
+            CaseFile caseFile,
+            double dissentIntensity,
+            double shadowAbuse,
+            boolean reasonsGiven
+    ) {
+        return Values.clamp01(
+                shadowAbuse * 0.42
+                        + dissentIntensity * 0.32
+                        + caseFile.constitutionalSalience() * 0.18
+                        + caseFile.executivePressure() * 0.08
+                        - (reasonsGiven ? 0.12 : 0.0)
+        );
     }
 
     private int recusedJustices(CaseFile caseFile, Random random) {
@@ -421,7 +536,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             boolean emergency,
             int recused,
             int participating,
-            ReactionState reactionState
+            ReactionState reactionState,
+            IntakeEstimate intake,
+            Random random
     ) {
         double rightsProtection = Values.clamp01(1.0 - caseFile.rightsThreat() * 0.78);
         double democraticResponsiveness = Values.clamp01(caseFile.legislativeMandate() * 0.72 + caseFile.publicSupport() * 0.18);
@@ -453,7 +570,17 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         );
         double legalStability = Values.clamp01(0.82 - constitutionalConflict * 0.20 + configuration.stabilityPreference() * 0.10);
         double administrativeLoad = 0.08 + (emergency ? 0.06 : 0.0);
-        CostEstimate institutionalCosts = institutionalCosts(caseFile, emergency, false, false, false, recused, administrativeLoad);
+        CostEstimate institutionalCosts = institutionalCosts(caseFile, emergency, false, false, false, recused, administrativeLoad, intake);
+        String emergencyApplicantType = emergencyApplicantType(caseFile, emergency);
+        boolean governmentEmergencyApplicant = emergency && isGovernmentApplicant(emergencyApplicantType);
+        boolean reasonsGiven = !emergency || random.nextDouble() < emergencyReasonsProbability(caseFile, false, false) * 0.55;
+        boolean voteDisclosed = !emergency || random.nextDouble() < emergencyVoteDisclosureProbability(caseFile, false, reasonsGiven) * 0.40;
+        boolean publicDisagreement = emergency && random.nextDouble() < publicDisagreementProbability(
+                caseFile,
+                0.0,
+                shadowDocketAbuse(caseFile, true, false, false, false) * 0.45,
+                reasonsGiven
+        );
         return new CaseOutcome(
                 caseFile,
                 false,
@@ -463,6 +590,16 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 false,
                 false,
                 true,
+                intake.intakeFilings(),
+                intake.screenedFilings(),
+                intake.acceptanceRate(),
+                reasonsGiven,
+                voteDisclosed,
+                publicDisagreement,
+                emergencyApplicantType,
+                governmentEmergencyApplicant,
+                false,
+                false,
                 false,
                 false,
                 false,
@@ -497,6 +634,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 0.0,
                 caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure,
                 administrativeLoad,
+                institutionalCosts.directCourt(),
+                institutionalCosts.upstreamScreening(),
+                institutionalCosts.capacityStrain(),
                 institutionalCosts.budget(),
                 institutionalCosts.delay(),
                 institutionalCosts.complexity(),
@@ -682,7 +822,8 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             boolean crossChecked,
             boolean councilScreen,
             int recused,
-            double administrativeLoad
+            double administrativeLoad,
+            IntakeEstimate intake
     ) {
         double sizeCost = Values.clamp01(0.10 + Math.max(0, configuration.courtSize() - 9) * 0.028);
         double structureBudget = switch (configuration.reviewStructure()) {
@@ -692,7 +833,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             case CROSS_CHECKING_COURTS -> 0.40;
             case CONSTITUTIONAL_COUNCIL -> 0.34;
         };
-        double budget = Values.clamp01(
+        double stylizedBudget = Values.clamp01(
                 sizeCost
                         + structureBudget
                         + (configuration.substitutesRecusedJustices() ? 0.08 : 0.0)
@@ -707,7 +848,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             case CROSS_CHECKING_COURTS -> 0.26;
             case CONSTITUTIONAL_COUNCIL -> 0.20;
         };
-        double delay = Values.clamp01(
+        double stylizedDelay = Values.clamp01(
                 caseFile.timeToReview() * 0.42
                         + caseFile.lowerCourtPath().delayWeight() * 0.10
                         + caseFile.lowerCourtPath().depth() * 0.035
@@ -735,7 +876,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             case FULL_COURT_EMERGENCY -> 0.20;
             case MERITS_FOLLOW_UP -> 0.24;
         };
-        double complexity = Values.clamp01(
+        double stylizedComplexity = Values.clamp01(
                 administrativeLoad * 0.34
                         + thresholdComplexity
                         + overrideComplexity
@@ -744,8 +885,43 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                         + (configuration.recusalRule() == RecusalRule.RANDOM_SUBSTITUTION ? 0.10 : 0.0)
                         + caseFile.legalAmbiguity() * 0.08
         );
-        double total = Values.clamp01(budget * 0.36 + delay * 0.34 + complexity * 0.30);
-        return new CostEstimate(budget, delay, complexity, total);
+        double directCourt = Values.clamp01(
+                configuration.benchmarkedDirectCourtCost() * 0.62
+                        + stylizedBudget * 0.30
+                        + administrativeLoad * 0.08
+        );
+        double intakePressure = Values.clamp01(Math.log1p(intake.intakeFilings()) / Math.log(140.0));
+        double upstreamScreening = Values.clamp01(
+                configuration.intakeScreeningIntensity() * 0.38
+                        + intakePressure * 0.30
+                        + caseFile.lowerCourtPath().depth() * 0.035
+                        + caseFile.lowerCourtConflict() * 0.10
+                        + caseFile.intercourtConflict() * 0.08
+                        + (configuration.preEnactmentReview() ? -0.08 : 0.0)
+        );
+        double capacityStrain = Values.clamp01(
+                configuration.benchmarkedCapacityStrain() * 0.48
+                        + intakePressure * 0.20
+                        + administrativeLoad * 0.18
+                        + (emergency ? 0.06 : 0.0)
+                        + (crossChecked ? 0.08 : 0.0)
+                        + (caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure * 0.08)
+        );
+        double budget = Values.clamp01(directCourt * 0.68 + upstreamScreening * 0.22 + stylizedBudget * 0.10);
+        double delay = Values.clamp01(
+                configuration.benchmarkedDelayCost() * 0.45
+                        + stylizedDelay * 0.34
+                        + upstreamScreening * 0.10
+                        + capacityStrain * 0.11
+        );
+        double complexity = Values.clamp01(
+                configuration.benchmarkedComplexityCost() * 0.42
+                        + stylizedComplexity * 0.34
+                        + upstreamScreening * 0.14
+                        + capacityStrain * 0.10
+        );
+        double total = Values.clamp01(directCourt * 0.25 + upstreamScreening * 0.20 + capacityStrain * 0.20 + delay * 0.18 + complexity * 0.17);
+        return new CostEstimate(directCourt, upstreamScreening, capacityStrain, budget, delay, complexity, total);
     }
 
     private double complianceRate(
@@ -899,6 +1075,17 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
     private record VoteResult(double strikeVoteShare, boolean invalidates) {
     }
 
-    private record CostEstimate(double budget, double delay, double complexity, double total) {
+    private record IntakeEstimate(int intakeFilings, int screenedFilings, double acceptanceRate) {
+    }
+
+    private record CostEstimate(
+            double directCourt,
+            double upstreamScreening,
+            double capacityStrain,
+            double budget,
+            double delay,
+            double complexity,
+            double total
+    ) {
     }
 }

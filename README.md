@@ -44,6 +44,8 @@ This writes:
 - `reports/constitutional-review-campaign-v0.md`
 - `reports/constitutional-review-campaign-v0-manifest.json`
 
+The aggregate CSVs include intake filings, screened filings, intake acceptance rate, emergency reason-giving, emergency vote disclosure, public emergency disagreement, government emergency applicant/win diagnostics, emergency merits follow-up, direct court cost, upstream screening cost, capacity strain cost, and the legacy aggregate budget/delay/complexity cost fields.
+
 Run the paired imported-legislative campaign:
 
 ```sh
@@ -113,8 +115,10 @@ The starter catalog covers:
 - recusal rules: self-policing, mandatory conflict recusal, random substitution, and strict transparency
 - emergency/shadow docket procedures: fast emergency orders, reasoned emergency panels, full-court emergency review, and merits follow-up
 - doctrine areas: speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state
-- policy domains: civil rights, criminal justice, governance, elections, emergency/security, economic regulation, and administration; imported legislative rows preserve an explicit `policyDomain` column when present and otherwise infer one from row labels and stress signals
+- policy domains: civil rights, speech/religion, criminal justice, federalism, governance, elections, emergency/security, economic regulation, and administration; imported legislative rows preserve an explicit `policyDomain` column when present and otherwise infer one from row labels and stress signals
 - state/federal and lower-court pipeline signals: federal, state, and mixed state-federal jurisdiction; district-only, circuit-panel, en banc, state high-court, and state-federal split paths; panel skew, government win/loss, conflict pressure, certiorari pressure, and time-to-review
+- court-system archetypes: discretionary appellate leave, constitutional complaint, pre-enactment council, mixed abstract/concrete review, declaration-only parliamentary review, and supranational treaty review
+- real-world presets: U.S. Supreme Court, German Federal Constitutional Court, French Constitutional Council, Supreme Court of Canada, South African Constitutional Court, UK Supreme Court, India Supreme Court, Brazil STF, ECHR, and CJEU
 - public and legislative reaction dynamics: compliance, defiance, workarounds, repeated litigation, court-curbing pressure, amendment pressure, trust shifts, executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance
 - voting thresholds: simple majority, supermajority invalidation, concurrent-majority logic, and high constitutional thresholds
 - concurring/dissenting coalitions: modeled as fragmentation and dissent intensity metrics
@@ -135,6 +139,12 @@ Core metrics:
 - `legitimacy` `↑`: public trust, transparency, broad agreement, and rights performance net of conflict
 - `reversalRate` `↓/diag.`: share of cases where laws are invalidated or reversed
 - `emergencyReliefRate` `↓`: emergency orders granting interim relief
+- `intakeAcceptanceRate` `diag.`: accepted review matters divided by estimated upstream filings
+- `emergencyReasonGivingRate` `↑`: emergency orders with public reasons or explanation
+- `emergencyVoteDisclosureRate` `↑`: emergency orders with disclosed votes or member positions
+- `emergencyPublicDisagreementRate` `↓`: emergency orders with public dissents, concurrences, or visible disagreement
+- `governmentEmergencyWinRate` `diag.`: government emergency applicants receiving requested interim relief
+- `meritsFollowUpRate` `↑`: emergency matters routed into merits review
 - `meritsReviewRate` `diag.`: accepted cases receiving merits review
 - `meritsInvalidationRate` `↓/diag.`: merits reviews that invalidate a law or action
 - `constitutionalConflict` `↓`: clashes among court, legislature, executive, public mandate, and cross-checking bodies
@@ -162,6 +172,9 @@ Core metrics:
 - `averageTimeToReview` `diag.`: lower-court and certiorari pipeline delay
 - `replacementRate` `diag.`: court-composition turnover pressure across review periods
 - `administrativeLoad` `↓`: procedural burden from review structure, emergency review, cross-checks, and recusals
+- `directCourtCost` `↓`: benchmarked direct court budget, staffing, and institutional-scale burden
+- `upstreamScreeningCost` `↓`: burden shifted to intake filters, lower courts, councils, or admissibility screening
+- `capacityStrainCost` `↓`: capacity pressure from filings, emergency load, cross-checks, and turnover
 - `institutionalBudgetCost` `↓`: scenario-specific staffing and duplication cost from court size, councils, cross-checking structures, and recusal substitutions
 - `institutionalDelayCost` `↓`: scenario-specific delay cost from lower-court path, en banc steps, cross-checks, councils, and emergency shortcuts
 - `implementationComplexity` `↓`: operational complexity from thresholds, overrides, recusal machinery, and docket procedure
@@ -169,7 +182,23 @@ Core metrics:
 
 ## Calibration Targets
 
-Default calibration profiles live in `config/calibration/*.csv`; `config/calibration-targets.csv` mirrors the modern SCDB profile for compatibility. Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, plus 2024 public/emergency context targets from SCOTUSblog and Gallup. The campaign `*-calibration.csv` files report profile key, court, time period, source URL, observed value, target range, 95% band, and gap. These are documented external checks, not claims that the synthetic model is empirically validated.
+Default calibration profiles live in `config/calibration/*.csv`; `config/calibration-targets.csv` mirrors the modern SCDB profile for compatibility. The calibration schema is:
+
+```text
+profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl
+```
+
+Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, and South Africa, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the empirical target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. These are documented external checks, not claims that the synthetic model is empirically validated.
+
+## Research Configs
+
+Research-derived structured inputs are checked in under `config/`:
+
+- `config/comparative/constitutional-review-designs.csv`: court-system design matrix and simulator scenario mapping
+- `config/pipeline/us-scotus-pipeline.csv`: filings, certiorari, lower-court conflict, state-court origin, en banc, and timing benchmarks
+- `config/emergency/scotus-emergency-schema.csv`: row schema for future emergency/shadow-docket datasets
+- `config/emergency/scotus-emergency-summary.csv`: universe and curated-sample emergency docket benchmarks
+- `config/cost-benchmarks/institutional-costs.csv`: normalized direct, delay, complexity, and capacity cost profiles
 
 ## Uncertainty Bands
 
@@ -180,7 +209,7 @@ Campaign runs write conservative 95% uncertainty bands for aggregate campaign me
 The importer reads the legislative simulator's campaign CSV columns when present:
 
 - `scenarioKey`, `caseKey`, `avgSupport`, `welfare`, `legitimacy`
-- `policyDomain` when present; accepted values include `civil-rights`, `criminal-justice`, `governance`, `elections`, `emergency-security`, `economic-regulation`, and `administration`
+- `policyDomain` when present; accepted values include `civil-rights`, `speech-religion`, `criminal-justice`, `federalism`, `governance`, `elections`, `emergency-security`, `economic-regulation`, and `administration`
 - `lowSupport`, `weakPublicMandatePassage`, `minorityHarm`, `concentratedHarmPassage`
 - `lobbyCapture`, `publicAlignment`, `publicPreferenceDistortion`
 - `policyShift`, `proposerGain`, `reversalRate`, `statusQuoVolatility`

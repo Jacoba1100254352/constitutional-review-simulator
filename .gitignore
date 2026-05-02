@@ -1,5 +1,10 @@
 out/
 paper/build/
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.pdf
+paper/*.synctex.gz
 .DS_Store
 *.class
 .idea/
