@@ -135,10 +135,12 @@ make supplement
 The paper source is in `paper/main.tex`; the compiled PDF is written to `paper/build/main.pdf`.
 The supplementary appendix source is in `paper/supplementary-appendix.tex`;
 its compiled PDF is written to `paper/build/supplementary-appendix.pdf`.
-Use `make submission-bundle` after building both PDFs to assemble anonymous
-review and replication ZIP archives under `submission/`. The bundle builder
-fails if source or replication ZIPs contain build logs, local machine paths, IDE
-files, `.DS_Store`, generated PDFs, or other anonymous-review leakage.
+Use `make submission-bundle` to refresh the generated LaTeX inputs, rebuild both
+PDFs with `latexmk` when their content changes, and assemble anonymous review
+and replication ZIP archives under `submission/`. The bundle builder fails if
+PDF generation fails or if source or replication ZIPs contain build logs, local
+machine paths, IDE files, `.DS_Store`, generated PDFs, or other anonymous-review
+leakage.
 
 ## Scenario Families
 

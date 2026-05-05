@@ -12,6 +12,7 @@ Use these commands from this directory:
 - `make sensitivity-check`
 - `make calibration-check`
 - `make supplement`
+- `make paper-pdf-check`
 - `make submission-bundle`
 - `make run ARGS="--legislative-input data/legislative/simulation-campaign-v21-paper.csv"`
 

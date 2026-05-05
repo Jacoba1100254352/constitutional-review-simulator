@@ -4,7 +4,7 @@ JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 
-.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check paper-clean paper-word-count supplement submission-bundle test ci clean
+.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -59,7 +59,10 @@ supplement:
 	python3 paper/scripts/generate_supplement.py
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build supplementary-appendix.tex
 
-submission-bundle: paper supplement
+paper-pdf-check:
+	python3 scripts/build_submission_bundle.py --check-pdfs-only
+
+submission-bundle:
 	python3 scripts/build_submission_bundle.py
 
 test: build

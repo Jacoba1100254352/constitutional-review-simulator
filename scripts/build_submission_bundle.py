@@ -3,15 +3,18 @@
 
 from __future__ import annotations
 
+import argparse
 import shutil
+import subprocess
 import zipfile
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PAPER_DIR = ROOT / "paper"
 SUBMISSION_DIR = ROOT / "submission"
-MANUSCRIPT_PDF = ROOT / "paper" / "build" / "main.pdf"
-SUPPLEMENT_PDF = ROOT / "paper" / "build" / "supplementary-appendix.pdf"
+MANUSCRIPT_PDF = PAPER_DIR / "build" / "main.pdf"
+SUPPLEMENT_PDF = PAPER_DIR / "build" / "supplementary-appendix.pdf"
 
 
 REPLICATION_PREFIXES = [
@@ -58,7 +61,34 @@ def ensure_inputs() -> None:
     missing = [path for path in [MANUSCRIPT_PDF, SUPPLEMENT_PDF] if not path.exists()]
     if missing:
         joined = ", ".join(str(path.relative_to(ROOT)) for path in missing)
-        raise SystemExit(f"missing build artifact(s): {joined}; run make paper supplement first")
+        raise SystemExit(f"missing build artifact(s): {joined}; run make paper-pdf-check first")
+
+
+def run(command: list[str], *, cwd: Path = ROOT) -> None:
+    subprocess.run(command, cwd=cwd, check=True)
+
+
+def refresh_pdfs() -> None:
+    run(["python3", "paper/scripts/generate_figures.py"])
+    run(["python3", "paper/scripts/generate_tables.py"])
+    run(["python3", "paper/scripts/generate_supplement.py"])
+    run(["python3", "paper/scripts/check_jlc_format.py"])
+    run(
+        ["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", "-outdir=build", "main.tex"],
+        cwd=PAPER_DIR,
+    )
+    run(["python3", "paper/scripts/generate_supplement.py"])
+    run(
+        [
+            "latexmk",
+            "-pdf",
+            "-interaction=nonstopmode",
+            "-halt-on-error",
+            "-outdir=build",
+            "supplementary-appendix.tex",
+        ],
+        cwd=PAPER_DIR,
+    )
 
 
 def should_include(path: Path) -> bool:
@@ -164,7 +194,20 @@ The archive is intended for anonymous review. Repository metadata, IDE files, bu
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Build or validate the anonymous JLC submission bundle.")
+    parser.add_argument(
+        "--check-pdfs-only",
+        action="store_true",
+        help="refresh manuscript and supplement PDFs without writing submission ZIPs",
+    )
+    args = parser.parse_args()
+
+    refresh_pdfs()
     ensure_inputs()
+    if args.check_pdfs_only:
+        print("PDF refresh check passed.")
+        return
+
     if SUBMISSION_DIR.exists():
         shutil.rmtree(SUBMISSION_DIR)
     SUBMISSION_DIR.mkdir(parents=True)

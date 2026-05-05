@@ -52,6 +52,8 @@ Use this checklist before uploading to Editorial Manager.
   exports, figure/table-generation scripts, and reproduction commands.
 - `make submission-bundle` has generated the local anonymous review bundle
   under `submission/`.
+- `make paper-pdf-check` passes, confirming that generated LaTeX inputs refresh
+  and both manuscript PDFs build cleanly before ZIP packaging.
 - The submission-bundle validator passes, with no `paper/build` logs, local
   machine paths, IDE files, `.DS_Store`, generated PDFs, or repository metadata
   in source/replication ZIPs.
@@ -68,6 +70,7 @@ Run these commands from the repository root:
 make paper-check
 make paper
 make supplement
+make paper-pdf-check
 make submission-bundle
 make test
 make ci

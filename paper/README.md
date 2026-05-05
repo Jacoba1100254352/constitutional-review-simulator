@@ -29,12 +29,19 @@ make supplement
 make submission-bundle
 ```
 
-`make submission-bundle` writes ignored local artifacts under `submission/`:
-an anonymous manuscript PDF, a supplementary appendix PDF, editable source ZIP,
-replication-package ZIP, and a combined review bundle ZIP. The bundle builder
-also validates the source and replication ZIPs for anonymous-review hygiene,
-rejecting local paths, build logs, generated PDFs, IDE files, and `.DS_Store`
-entries.
+`make submission-bundle` refreshes generated LaTeX inputs, rebuilds the
+manuscript and supplement PDFs with `latexmk` when their content changes, and
+writes ignored local artifacts under `submission/`: an anonymous manuscript PDF,
+a supplementary appendix PDF, editable source ZIP, replication-package ZIP, and
+a combined review bundle ZIP. The bundle builder also validates the source and
+replication ZIPs for anonymous-review hygiene, rejecting local paths, build
+logs, generated PDFs, IDE files, and `.DS_Store` entries.
+
+Refresh and validate the PDFs without rebuilding the ZIPs with:
+
+```bash
+make paper-pdf-check
+```
 
 Run a word-count check when `texcount` is installed:
 
