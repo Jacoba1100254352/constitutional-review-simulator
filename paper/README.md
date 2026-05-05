@@ -12,7 +12,14 @@ make paper
 ```
 
 `make paper` regenerates the LaTeX figure fragments in `paper/figures/` from
-the tracked campaign CSVs before compiling the PDF.
+the tracked campaign CSVs, runs the repository JLC formatting check, and then
+compiles the PDF.
+
+Run only the JLC formatting check with:
+
+```sh
+make paper-check
+```
 
 Run a word-count check when `texcount` is installed:
 
@@ -50,14 +57,22 @@ Relevant venue-format constraints now reflected in the manuscript:
 - compact article structure rather than a broad working-paper report;
 - author-date citations in the text;
 - tables and figures placed near their first discussion;
+- back-matter declarations placed under separate headings before references;
 - data availability and replication-package statements;
+- AI-tool use declaration;
 - large scenario matrices, calibration source tables, and sensitivity details
   treated as supplement candidates instead of main-text material.
 
 The current figures are deterministic LaTeX fragments generated from repository
 reports. They are kept inline for review because JLC asks tables and figures to
 appear near first reference; if accepted, the figures should also be exported as
-separate high-resolution artwork files for production.
+separate high-resolution artwork files for production. Accessibility
+descriptions for all current figures and tables are maintained in
+`paper/accessibility-descriptions.md`.
+
+The submission checklist in `paper/jlc-submission-checklist.md` tracks the
+remaining upload-time tasks, especially anonymous supplementary material,
+publisher artwork, and repository deposit after acceptance.
 
 For the venue comparison against the ACM route used by the Congress simulator,
 see `paper/venue-rationale.md`.

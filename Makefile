@@ -3,7 +3,7 @@ TEST_SOURCES := $(shell find src/test/java -name '*.java')
 JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 
-.PHONY: build run campaign paired-campaign sensitivity-check paper paper-figures paper-clean paper-word-count test ci clean
+.PHONY: build run campaign paired-campaign sensitivity-check paper paper-figures paper-check paper-clean paper-word-count test ci clean
 
 build:
 	mkdir -p out/main
@@ -24,7 +24,10 @@ sensitivity-check: build
 paper-figures:
 	python3 paper/scripts/generate_figures.py
 
-paper: paper-figures
+paper-check: paper-figures
+	python3 paper/scripts/check_jlc_format.py
+
+paper: paper-figures paper-check
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
 
 paper-word-count:

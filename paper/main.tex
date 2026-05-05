@@ -182,40 +182,25 @@ The simulator is intentionally abstract. It compresses doctrinal variation, lega
 
 The next research increment should export raw case-level outcomes for bootstrap intervals and model diagnostics, add richer case-flow validation against specific courts and periods, and separate publication-oriented paper outputs from full technical appendices. A Journal of Law and Courts submission should keep the main text compact and move large scenario tables, source matrices, and sensitivity reports to supplementary materials.
 
-\paragraph{Funding Statement}
+\section*{Supplementary Material}
+The supplementary replication package is designed to include source code and tests in \path{src/main/java} and \path{src/test/java}; calibration and benchmark inputs in \path{config/calibration}, \path{config/comparative}, \path{config/pipeline}, \path{config/emergency}, and \path{config/cost-benchmarks}; generated reports; figure-generation scripts; and reproducibility commands including \texttt{make test}, \texttt{make campaign}, \texttt{make paired-campaign}, \texttt{make sensitivity-check}, and \texttt{make paper}. For anonymous review, any repository metadata or file paths that identify the author should be removed or redacted from the submitted archive.
+
+\section*{Funding Declaration}
 No external funding is reported for this manuscript.
 
-\paragraph{Competing Interests}
-The author reports no competing interests.
+\section*{Competing Interests Declaration}
+Competing interests: The author declares none.
 
-\paragraph{Data Availability Statement}
+\section*{Data Availability Statement}
 An anonymized replication archive will be supplied with the submitted manuscript and, if accepted, deposited in an appropriate public repository. The archive will include Java source code, configuration files, calibration targets, generated campaign reports, paper source, and commands needed to reproduce the reported outputs.
 
-\paragraph{Use of AI Tools}
-AI tools were used during project development to assist with source discovery, venue research, code editing, and manuscript drafting. All code, source claims, model choices, and manuscript text remain subject to author review and revision.
-
-\paragraph{Ethical Standards}
+\section*{Ethical Statement}
 This project uses synthetic simulation outputs and public institutional benchmarks. It does not involve human-subjects data.
+
+\section*{AI Tools Declaration}
+OpenAI ChatGPT and Codex were used in May 2026 through the ChatGPT and Codex interfaces to assist with source discovery, venue research, code editing, figure preparation, and manuscript drafting. The tools were not listed as authors. All code, source claims, model choices, figures, and manuscript text remain subject to author review and revision.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
-
-\appendix
-
-\section{Repository Artifacts}
-
-The implementation workspace keeps the main code, tests, configuration, and paper source in separate repository areas:
-\begin{itemize}
-  \item source code and tests: \path{src/main/java}; \path{src/test/java};
-  \item calibration and benchmark inputs: \path{config/calibration}; \path{config/comparative}; \path{config/pipeline}; \path{config/emergency}; \path{config/cost-benchmarks};
-  \item reproducibility commands:
-  \begin{itemize}
-    \item \texttt{make test}
-    \item \texttt{make campaign}
-    \item \texttt{make paired-campaign}
-    \item \texttt{make sensitivity-check}
-    \item \texttt{make paper}
-  \end{itemize}
-\end{itemize}
 
 \end{document}
