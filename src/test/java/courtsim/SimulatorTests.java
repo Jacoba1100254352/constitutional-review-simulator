@@ -25,6 +25,7 @@ public final class SimulatorTests {
         legislativeImporterToleratesCampaignCsv();
         campaignWritesArtifacts();
         pairedCampaignWritesArtifacts();
+        validationCampaignWritesArtifacts();
         sensitivityCampaignWritesArtifacts();
         System.out.println("All simulator tests passed.");
     }
@@ -136,8 +137,12 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.policyDomainCsvPath()), "expected policy-domain CSV artifact");
         assertTrue(Files.exists(result.compositionCsvPath()), "expected composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected calibration CSV artifact");
+        assertTrue(Files.exists(result.caseCsvGzPath()), "expected compressed case-level artifact");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected interval CSV artifact");
+        assertTrue(Files.exists(result.periodIntervalCsvPath()), "expected period interval CSV artifact");
+        assertTrue(Files.exists(result.doctrineIntervalCsvPath()), "expected doctrine interval CSV artifact");
         assertTrue(Files.exists(result.pipelineIntervalCsvPath()), "expected pipeline interval CSV artifact");
+        assertTrue(Files.exists(result.policyDomainIntervalCsvPath()), "expected policy-domain interval CSV artifact");
         assertTrue(Files.exists(result.compositionIntervalCsvPath()), "expected composition interval CSV artifact");
         assertTrue(Files.exists(result.calibrationIntervalCsvPath()), "expected calibration interval CSV artifact");
         assertTrue(Files.exists(result.markdownPath()), "expected Markdown artifact");
@@ -162,8 +167,11 @@ public final class SimulatorTests {
         assertTrue(calibrationCsv.contains("reliability"), "expected reliability column");
         assertTrue(calibrationCsv.contains("useForValidation"), "expected validation-use column");
         assertTrue(calibrationCsv.contains("germany-bverfg-2024"), "expected comparative calibration profile");
-        assertTrue(Files.readString(result.intervalCsvPath()).contains("lower95"), "expected campaign uncertainty bands");
+        assertTrue(Files.readString(result.intervalCsvPath()).contains("cluster-bootstrap-runs"), "expected campaign bootstrap uncertainty bands");
+        assertTrue(Files.readString(result.periodIntervalCsvPath()).contains("cluster-bootstrap-runs"), "expected period bootstrap bands");
+        assertTrue(Files.readString(result.doctrineIntervalCsvPath()).contains("cluster-bootstrap-runs"), "expected doctrine bootstrap bands");
         assertTrue(Files.readString(result.pipelineIntervalCsvPath()).contains("lower95"), "expected pipeline uncertainty bands");
+        assertTrue(Files.readString(result.policyDomainIntervalCsvPath()).contains("cluster-bootstrap-runs"), "expected policy-domain bootstrap bands");
         assertTrue(Files.readString(result.compositionIntervalCsvPath()).contains("lower95"), "expected composition uncertainty bands");
         assertTrue(Files.readString(result.calibrationIntervalCsvPath()).contains("lower95"), "expected calibration uncertainty bands");
         assertTrue(Files.readString(result.markdownPath()).contains("Scenario Averages"), "expected Markdown summary");
@@ -245,7 +253,11 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.policyDomainCsvPath()), "expected paired policy-domain CSV artifact");
         assertTrue(Files.exists(result.compositionCsvPath()), "expected paired composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected paired calibration CSV artifact");
+        assertTrue(Files.exists(result.caseCsvGzPath()), "expected paired case-level artifact");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected paired interval CSV artifact");
+        assertTrue(Files.exists(result.periodIntervalCsvPath()), "expected paired period interval CSV artifact");
+        assertTrue(Files.exists(result.doctrineIntervalCsvPath()), "expected paired doctrine interval CSV artifact");
+        assertTrue(Files.exists(result.policyDomainIntervalCsvPath()), "expected paired policy-domain interval CSV artifact");
         assertTrue(Files.readString(result.csvPath()).contains("legislative-low-mandate"), "expected paired legislative cases");
         assertTrue(Files.readString(result.markdownPath()).contains("Paired Import Campaign"), "expected paired Markdown title");
     }
@@ -267,9 +279,32 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.policyDomainCsvPath()), "expected sensitivity policy-domain CSV artifact");
         assertTrue(Files.exists(result.compositionCsvPath()), "expected sensitivity composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected sensitivity calibration CSV artifact");
+        assertTrue(Files.exists(result.caseCsvGzPath()), "expected sensitivity case-level artifact");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected sensitivity interval CSV artifact");
+        assertTrue(Files.exists(result.periodIntervalCsvPath()), "expected sensitivity period interval CSV artifact");
+        assertTrue(Files.exists(result.doctrineIntervalCsvPath()), "expected sensitivity doctrine interval CSV artifact");
+        assertTrue(Files.exists(result.policyDomainIntervalCsvPath()), "expected sensitivity policy-domain interval CSV artifact");
         assertTrue(Files.readString(result.csvPath()).contains("high-emergency-pressure"), "expected sensitivity cases");
         assertTrue(Files.readString(result.markdownPath()).contains("Sensitivity Campaign"), "expected sensitivity Markdown title");
+    }
+
+    private static void validationCampaignWritesArtifacts() throws Exception {
+        Path tempDir = Files.createTempDirectory("court-validation-campaign");
+        CampaignResult result = new CampaignRunner().run(
+                "validation",
+                WorldSpec.baseline(10),
+                2,
+                20260501L,
+                tempDir,
+                List.of()
+        );
+        assertTrue(Files.exists(result.csvPath()), "expected validation CSV artifact");
+        assertTrue(Files.exists(result.caseCsvGzPath()), "expected validation case-level artifact");
+        assertTrue(Files.exists(result.intervalCsvPath()), "expected validation interval artifact");
+        String csv = Files.readString(result.csvPath());
+        assertTrue(csv.contains("german-constitutional-court"), "expected German validation preset");
+        assertTrue(csv.contains("south-african-constitutional-court"), "expected South African validation preset");
+        assertTrue(Files.readString(result.markdownPath()).contains("Calibration Validation Campaign"), "expected validation Markdown title");
     }
 
     private static void assertBetween(double value, String label) {

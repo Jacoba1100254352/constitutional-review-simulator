@@ -4,7 +4,7 @@ JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 
-.PHONY: build run campaign paired-campaign sensitivity-check paper paper-artifacts paper-figures paper-tables paper-check paper-clean paper-word-count test ci clean
+.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check paper paper-artifacts paper-figures paper-tables paper-check paper-clean paper-word-count supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -19,8 +19,17 @@ campaign: build
 paired-campaign: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign v1-paired --runs 120 --cases 80 --seed 20260501 --output-dir reports --legislative-input "$(LEGISLATIVE_INPUT)" $(ARGS)
 
+validation-check: build
+	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign validation --runs 120 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
+
 sensitivity-check: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign sensitivity --runs 80 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
+
+calibration-build:
+	python3 scripts/build_calibration_targets.py --write
+
+calibration-check:
+	python3 scripts/build_calibration_targets.py --check
 
 paper-figures:
 	python3 paper/scripts/generate_figures.py
@@ -43,12 +52,19 @@ paper-clean:
 	cd paper && latexmk -C -outdir=build main.tex
 	rm -rf paper/build
 
+supplement:
+	python3 paper/scripts/generate_supplement.py
+	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build supplementary-appendix.tex
+
+submission-bundle: paper supplement
+	python3 scripts/build_submission_bundle.py
+
 test: build
 	mkdir -p out/test
 	javac --release $(JAVA_RELEASE) -cp out/main -d out/test $(TEST_SOURCES)
 	java $(JAVA_PROPS) -cp out/main:out/test courtsim.SimulatorTests
 
-ci: test campaign paired-campaign sensitivity-check paper
+ci: calibration-check test campaign paired-campaign validation-check sensitivity-check paper
 
 clean:
 	rm -rf out

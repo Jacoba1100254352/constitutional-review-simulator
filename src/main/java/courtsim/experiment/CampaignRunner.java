@@ -1,19 +1,25 @@
 package courtsim.experiment;
 
 import courtsim.importer.LegislativeOutputImporter;
+import courtsim.institution.CaseOutcome;
 import courtsim.model.DoctrineArea;
 import courtsim.model.LegislativeSignal;
 import courtsim.reporting.ReportProvenance;
 import courtsim.simulation.CompositionReport;
+import courtsim.simulation.MetricsAccumulator;
 import courtsim.simulation.Scenario;
 import courtsim.simulation.ScenarioCatalog;
 import courtsim.simulation.ScenarioReport;
+import courtsim.simulation.ScenarioRunResult;
 import courtsim.simulation.SegmentReport;
 import courtsim.simulation.Simulator;
 import courtsim.simulation.WorldSpec;
 import courtsim.util.Values;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -22,11 +28,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
+import java.util.zip.GZIPOutputStream;
 
 public final class CampaignRunner {
     private static final Path DEFAULT_CALIBRATION_TARGETS = Path.of("config/calibration-targets.csv");
     private static final Path CALIBRATION_TARGET_DIR = Path.of("config/calibration");
     private static final String INTERVAL_METHOD = "conservative-bounded-normal-95";
+    private static final int BOOTSTRAP_SAMPLES = 200;
+    private static final String BOOTSTRAP_METHOD = "cluster-bootstrap-runs-" + BOOTSTRAP_SAMPLES + "-95";
     private static final List<String> CORE_SCENARIOS = List.of(
             "current-federal-court",
             "eighteen-year-terms",
@@ -40,6 +52,13 @@ public final class CampaignRunner {
             "legislative-override-court",
             "accountability-retention-court",
             "independence-accountability-hybrid"
+    );
+    private static final List<String> VALIDATION_SCENARIOS = List.of(
+            "us-supreme-court-benchmark",
+            "german-constitutional-court",
+            "french-constitutional-council",
+            "canadian-supreme-court",
+            "south-african-constitutional-court"
     );
 
     private final Simulator simulator = new Simulator();
@@ -56,26 +75,36 @@ public final class CampaignRunner {
             throw new IllegalArgumentException("Unknown campaign: " + campaignKey);
         }
         Files.createDirectories(outputDir);
-        List<Scenario> scenarios = ScenarioCatalog.scenariosForKeys(CORE_SCENARIOS);
+        List<Scenario> scenarios = ScenarioCatalog.scenariosForKeys(isValidation(campaignKey) ? VALIDATION_SCENARIOS : CORE_SCENARIOS);
         boolean pairedImport = isPairedImport(campaignKey);
         List<CampaignCase> cases = isSensitivity(campaignKey)
                 ? sensitivityCases(baseSpec)
-                : (pairedImport
+                : (isValidation(campaignKey)
+                        ? validationCases(baseSpec)
+                        : (pairedImport
                         ? pairedImportCases(baseSpec, importedSignals)
-                        : campaignCases(baseSpec, !importedSignals.isEmpty()));
+                        : campaignCases(baseSpec, !importedSignals.isEmpty())));
         List<CampaignRow> rows = new ArrayList<>();
         for (int caseIndex = 0; caseIndex < cases.size(); caseIndex++) {
             CampaignCase campaignCase = cases.get(caseIndex);
             List<LegislativeSignal> caseSignals = campaignSignals(campaignCase, importedSignals);
-            List<ScenarioReport> reports = simulator.compare(
+            List<ScenarioRunResult> reports = simulator.compareDetailed(
                     scenarios,
                     campaignCase.spec(),
                     runs,
                     seed + (caseIndex * 10_000L),
                     caseSignals
             );
-            for (ScenarioReport report : reports) {
-                rows.add(new CampaignRow(campaignCase.key(), campaignCase.name(), campaignCase.description(), report));
+            for (ScenarioRunResult result : reports) {
+                rows.add(new CampaignRow(
+                        campaignCase.key(),
+                        campaignCase.name(),
+                        campaignCase.description(),
+                        result.report(),
+                        result.outcomes(),
+                        campaignCase.spec().caseCount(),
+                        runs
+                ));
             }
         }
 
@@ -88,8 +117,12 @@ public final class CampaignRunner {
         Path policyDomainCsvPath = outputDir.resolve(basename + "-policy-domains.csv");
         Path compositionCsvPath = outputDir.resolve(basename + "-composition.csv");
         Path calibrationCsvPath = outputDir.resolve(basename + "-calibration.csv");
+        Path caseCsvGzPath = outputDir.resolve(basename + "-cases.csv.gz");
         Path intervalCsvPath = outputDir.resolve(basename + "-intervals.csv");
+        Path periodIntervalCsvPath = outputDir.resolve(basename + "-period-intervals.csv");
+        Path doctrineIntervalCsvPath = outputDir.resolve(basename + "-doctrine-intervals.csv");
         Path pipelineIntervalCsvPath = outputDir.resolve(basename + "-pipeline-intervals.csv");
+        Path policyDomainIntervalCsvPath = outputDir.resolve(basename + "-policy-domain-intervals.csv");
         Path compositionIntervalCsvPath = outputDir.resolve(basename + "-composition-intervals.csv");
         Path calibrationIntervalCsvPath = outputDir.resolve(basename + "-calibration-intervals.csv");
         Path markdownPath = outputDir.resolve(basename + ".md");
@@ -102,8 +135,13 @@ public final class CampaignRunner {
         writeCompositionCsv(compositionCsvPath, rows);
         List<CalibrationRow> calibrationRows = calibrationRows(rows);
         writeCalibrationCsv(calibrationCsvPath, calibrationRows);
-        writeCampaignIntervalCsv(intervalCsvPath, rows);
-        writeSegmentIntervalCsv(pipelineIntervalCsvPath, rows, SegmentKind.PIPELINE);
+        writeCaseCsv(caseCsvGzPath, rows);
+        Map<CampaignRow, BootstrapSummary> bootstrapSummaries = bootstrapSummaries(rows);
+        writeCampaignIntervalCsv(intervalCsvPath, rows, bootstrapSummaries);
+        writeSegmentIntervalCsv(periodIntervalCsvPath, rows, SegmentKind.PERIOD, bootstrapSummaries);
+        writeSegmentIntervalCsv(doctrineIntervalCsvPath, rows, SegmentKind.DOCTRINE, bootstrapSummaries);
+        writeSegmentIntervalCsv(pipelineIntervalCsvPath, rows, SegmentKind.PIPELINE, bootstrapSummaries);
+        writeSegmentIntervalCsv(policyDomainIntervalCsvPath, rows, SegmentKind.POLICY_DOMAIN, bootstrapSummaries);
         writeCompositionIntervalCsv(compositionIntervalCsvPath, rows);
         writeCalibrationIntervalCsv(calibrationIntervalCsvPath, calibrationRows);
         writeMarkdown(markdownPath, rows, runs, seed, importedSignals, reportName, calibrationRows);
@@ -124,8 +162,12 @@ public final class CampaignRunner {
                         policyDomainCsvPath,
                         compositionCsvPath,
                         calibrationCsvPath,
+                        caseCsvGzPath,
                         intervalCsvPath,
+                        periodIntervalCsvPath,
+                        doctrineIntervalCsvPath,
                         pipelineIntervalCsvPath,
+                        policyDomainIntervalCsvPath,
                         compositionIntervalCsvPath,
                         calibrationIntervalCsvPath,
                         markdownPath
@@ -140,8 +182,12 @@ public final class CampaignRunner {
                 policyDomainCsvPath,
                 compositionCsvPath,
                 calibrationCsvPath,
+                caseCsvGzPath,
                 intervalCsvPath,
+                periodIntervalCsvPath,
+                doctrineIntervalCsvPath,
                 pipelineIntervalCsvPath,
+                policyDomainIntervalCsvPath,
                 compositionIntervalCsvPath,
                 calibrationIntervalCsvPath,
                 markdownPath,
@@ -154,6 +200,7 @@ public final class CampaignRunner {
         return "v0".equals(campaignKey)
                 || "v1-paired".equals(campaignKey)
                 || "paired-import".equals(campaignKey)
+                || isValidation(campaignKey)
                 || isSensitivity(campaignKey);
     }
 
@@ -165,12 +212,19 @@ public final class CampaignRunner {
         return "sensitivity".equals(campaignKey) || "sensitivity-v1".equals(campaignKey);
     }
 
+    private boolean isValidation(String campaignKey) {
+        return "validation".equals(campaignKey) || "validation-v1".equals(campaignKey);
+    }
+
     private String basename(String campaignKey) {
         if (isPairedImport(campaignKey)) {
             return "constitutional-review-paired-import-v1";
         }
         if (isSensitivity(campaignKey)) {
             return "constitutional-review-sensitivity-v1";
+        }
+        if (isValidation(campaignKey)) {
+            return "constitutional-review-validation-v1";
         }
         return "constitutional-review-campaign-v0";
     }
@@ -181,6 +235,9 @@ public final class CampaignRunner {
         }
         if (isSensitivity(campaignKey)) {
             return "Constitutional Review Sensitivity Campaign v1";
+        }
+        if (isValidation(campaignKey)) {
+            return "Constitutional Review Calibration Validation Campaign v1";
         }
         return "Constitutional Review Campaign v0";
     }
@@ -273,6 +330,18 @@ public final class CampaignRunner {
                         "Imported rows with weak public mandate, low support, or public-preference distortion.",
                         baseSpec.withRightsThreatRate(0.54).withLegislativeConflict(0.70),
                         SignalMode.LOW_MANDATE
+                )
+        );
+    }
+
+    private List<CampaignCase> validationCases(WorldSpec baseSpec) {
+        return List.of(
+                new CampaignCase(
+                        "benchmark-context",
+                        "Shared benchmark context",
+                        "Shared docket context for comparing real-world scenario presets against documented calibration target ranges.",
+                        baseSpec.withLegislativeConflict(0.48).withEmergencyPressure(0.32).withPublicTrust(0.56),
+                        SignalMode.SYNTHETIC
                 )
         );
     }
@@ -584,13 +653,245 @@ public final class CampaignRunner {
         Files.writeString(path, builder.toString());
     }
 
-    private void writeCampaignIntervalCsv(Path path, List<CampaignRow> rows) throws IOException {
+    private void writeCaseCsv(Path path, List<CampaignRow> rows) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new GZIPOutputStream(Files.newOutputStream(path)),
+                StandardCharsets.UTF_8
+        ))) {
+            writer.write("caseKey,caseName,caseDescription,scenarioKey,scenario,runIndex,caseIndex,globalCaseIndex,caseId,source,reviewPeriod,caseType,doctrineArea,policyDomain,jurisdiction,lowerCourtPath,policyPosition,rightsThreat,publicSupport,legislativeMandate,urgency,legalAmbiguity,constitutionalSalience,lowerCourtConflict,lowerCourtPanelSkew,stateFederalTension,intercourtConflict,certiorariPressure,timeToReview,lowerCourtGovernmentWin,executivePressure,conflictOfInterestRisk,casePublicTrust,reviewed,emergencyOrder,emergencyReliefGranted,meritsReview,meritsInvalidated,invalidated,lawEffectiveAfterReview,intakeFilings,screenedFilings,intakeAcceptanceRate,reasonsGiven,voteDisclosed,publicDisagreement,emergencyApplicantType,governmentEmergencyApplicant,governmentEmergencyWin,meritsFollowUp,enBancReview,crossChecked,councilScreen,overrideUsed,recusedJustices,participatingJustices,strikeVoteShare,majorityShare,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalMagnitude,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,complianceRate,complied,defied,workaround,repeatedLitigation,executiveImplementation,agencyNonacquiescence,legislativeReenactment,localGovernmentCompliance,publicTrustAfter,legislativeConflictAfter,courtCurbingPressure,amendmentPressure,concurrenceFragmentation,dissentIntensity,replacementPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
+            for (CampaignRow row : rows) {
+                for (int outcomeIndex = 0; outcomeIndex < row.outcomes().size(); outcomeIndex++) {
+                    CaseOutcome outcome = row.outcomes().get(outcomeIndex);
+                    int runIndex = row.casesPerRun() == 0 ? 0 : outcomeIndex / row.casesPerRun();
+                    int caseIndex = row.casesPerRun() == 0 ? outcomeIndex : outcomeIndex % row.casesPerRun();
+                    var caseFile = outcome.caseFile();
+                    writer.write(String.join(",",
+                            csv(row.caseKey()),
+                            csv(row.caseName()),
+                            csv(row.caseDescription()),
+                            csv(row.report().scenarioKey()),
+                            csv(row.report().scenarioName()),
+                            Integer.toString(runIndex + 1),
+                            Integer.toString(caseIndex + 1),
+                            Integer.toString(outcomeIndex + 1),
+                            csv(caseFile.id()),
+                            csv(caseFile.source()),
+                            Integer.toString(caseFile.reviewPeriod() + 1),
+                            csv(caseFile.type().name().toLowerCase(Locale.ROOT)),
+                            csv(caseFile.doctrineArea().name().toLowerCase(Locale.ROOT)),
+                            csv(caseFile.policyDomain().key()),
+                            csv(caseFile.jurisdiction().key()),
+                            csv(caseFile.lowerCourtPath().key()),
+                            number(caseFile.policyPosition()),
+                            number(caseFile.rightsThreat()),
+                            number(caseFile.publicSupport()),
+                            number(caseFile.legislativeMandate()),
+                            number(caseFile.urgency()),
+                            number(caseFile.legalAmbiguity()),
+                            number(caseFile.constitutionalSalience()),
+                            number(caseFile.lowerCourtConflict()),
+                            number(caseFile.lowerCourtPanelSkew()),
+                            number(caseFile.stateFederalTension()),
+                            number(caseFile.intercourtConflict()),
+                            number(caseFile.certiorariPressure()),
+                            number(caseFile.timeToReview()),
+                            Boolean.toString(caseFile.lowerCourtGovernmentWin()),
+                            number(caseFile.executivePressure()),
+                            number(caseFile.conflictOfInterestRisk()),
+                            number(caseFile.publicTrust()),
+                            Boolean.toString(outcome.reviewed()),
+                            Boolean.toString(outcome.emergencyOrder()),
+                            Boolean.toString(outcome.emergencyReliefGranted()),
+                            Boolean.toString(outcome.meritsReview()),
+                            Boolean.toString(outcome.meritsInvalidated()),
+                            Boolean.toString(outcome.invalidated()),
+                            Boolean.toString(outcome.lawEffectiveAfterReview()),
+                            Integer.toString(outcome.intakeFilings()),
+                            Integer.toString(outcome.screenedFilings()),
+                            number(outcome.intakeAcceptanceRate()),
+                            Boolean.toString(outcome.reasonsGiven()),
+                            Boolean.toString(outcome.voteDisclosed()),
+                            Boolean.toString(outcome.publicDisagreement()),
+                            csv(outcome.emergencyApplicantType()),
+                            Boolean.toString(outcome.governmentEmergencyApplicant()),
+                            Boolean.toString(outcome.governmentEmergencyWin()),
+                            Boolean.toString(outcome.meritsFollowUp()),
+                            Boolean.toString(outcome.enBancReview()),
+                            Boolean.toString(outcome.crossChecked()),
+                            Boolean.toString(outcome.councilScreen()),
+                            Boolean.toString(outcome.overrideUsed()),
+                            Integer.toString(outcome.recusedJustices()),
+                            Integer.toString(outcome.participatingJustices()),
+                            number(outcome.strikeVoteShare()),
+                            number(outcome.majorityShare()),
+                            number(outcome.legalStability()),
+                            number(outcome.rightsProtection()),
+                            number(outcome.partisanAlignment()),
+                            number(outcome.shadowDocketAbuse()),
+                            number(outcome.legitimacy()),
+                            number(outcome.reversalMagnitude()),
+                            number(outcome.constitutionalConflict()),
+                            number(outcome.democraticResponsiveness()),
+                            number(outcome.independenceAccountabilityBalance()),
+                            number(outcome.complianceRate()),
+                            Boolean.toString(outcome.complied()),
+                            Boolean.toString(outcome.defied()),
+                            Boolean.toString(outcome.workaround()),
+                            Boolean.toString(outcome.repeatedLitigation()),
+                            Boolean.toString(outcome.executiveImplementation()),
+                            Boolean.toString(outcome.agencyNonacquiescence()),
+                            Boolean.toString(outcome.legislativeReenactment()),
+                            Boolean.toString(outcome.localGovernmentCompliance()),
+                            number(outcome.publicTrustAfter()),
+                            number(outcome.legislativeConflictAfter()),
+                            number(outcome.courtCurbingPressure()),
+                            number(outcome.amendmentPressure()),
+                            number(outcome.concurrenceFragmentation()),
+                            number(outcome.dissentIntensity()),
+                            number(outcome.replacementPressure()),
+                            number(outcome.administrativeLoad()),
+                            number(outcome.directCourtCost()),
+                            number(outcome.upstreamScreeningCost()),
+                            number(outcome.capacityStrainCost()),
+                            number(outcome.institutionalBudgetCost()),
+                            number(outcome.institutionalDelayCost()),
+                            number(outcome.implementationComplexity()),
+                            number(outcome.totalInstitutionalCost())
+                    ));
+                    writer.write('\n');
+                }
+            }
+        }
+    }
+
+    private Map<CampaignRow, BootstrapSummary> bootstrapSummaries(List<CampaignRow> rows) {
+        Map<CampaignRow, BootstrapSummary> summaries = new LinkedHashMap<>();
+        for (CampaignRow row : rows) {
+            summaries.put(row, bootstrapSummary(row));
+        }
+        return summaries;
+    }
+
+    private BootstrapSummary bootstrapSummary(CampaignRow row) {
+        if (row.outcomes().isEmpty() || row.runs() <= 1 || row.casesPerRun() <= 0) {
+            return BootstrapSummary.empty();
+        }
+        List<List<CaseOutcome>> runBlocks = runBlocks(row);
+        if (runBlocks.size() <= 1) {
+            return BootstrapSummary.empty();
+        }
+        Map<String, List<Double>> reportSamples = new LinkedHashMap<>();
+        for (ReportIntervalMetric metric : reportIntervalMetrics()) {
+            reportSamples.put(metric.key(), new ArrayList<>());
+        }
+        Map<SegmentBootstrapKey, List<Double>> segmentSamples = new LinkedHashMap<>();
+        for (SegmentKind kind : SegmentKind.values()) {
+            for (SegmentReport segment : segments(row, kind)) {
+                for (SegmentIntervalMetric metric : segmentIntervalMetrics()) {
+                    segmentSamples.put(new SegmentBootstrapKey(kind, segment.segmentKey(), metric.key()), new ArrayList<>());
+                }
+            }
+        }
+
+        Random random = new Random(bootstrapSeed(row));
+        for (int sample = 0; sample < BOOTSTRAP_SAMPLES; sample++) {
+            MetricsAccumulator accumulator = new MetricsAccumulator();
+            for (int run = 0; run < runBlocks.size(); run++) {
+                List<CaseOutcome> block = runBlocks.get(random.nextInt(runBlocks.size()));
+                for (CaseOutcome outcome : block) {
+                    accumulator.add(outcome);
+                }
+            }
+            ScenarioReport sampledReport = accumulator.toReport(row.report().scenarioKey(), row.report().scenarioName());
+            for (ReportIntervalMetric metric : reportIntervalMetrics()) {
+                reportSamples.get(metric.key()).add(metric.value().value(sampledReport));
+            }
+            for (SegmentKind kind : SegmentKind.values()) {
+                Map<String, SegmentReport> sampledSegments = segmentMap(sampledReport, kind);
+                for (SegmentReport actualSegment : segments(row, kind)) {
+                    SegmentReport sampledSegment = sampledSegments.get(actualSegment.segmentKey());
+                    if (sampledSegment == null) {
+                        continue;
+                    }
+                    for (SegmentIntervalMetric metric : segmentIntervalMetrics()) {
+                        SegmentBootstrapKey key = new SegmentBootstrapKey(kind, actualSegment.segmentKey(), metric.key());
+                        segmentSamples.get(key).add(metric.value().value(sampledSegment));
+                    }
+                }
+            }
+        }
+
+        Map<String, Interval> reportIntervals = new LinkedHashMap<>();
+        for (Map.Entry<String, List<Double>> entry : reportSamples.entrySet()) {
+            reportIntervals.put(entry.getKey(), percentileInterval(entry.getValue()));
+        }
+        Map<SegmentBootstrapKey, Interval> segmentIntervals = new LinkedHashMap<>();
+        for (Map.Entry<SegmentBootstrapKey, List<Double>> entry : segmentSamples.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                segmentIntervals.put(entry.getKey(), percentileInterval(entry.getValue()));
+            }
+        }
+        return new BootstrapSummary(reportIntervals, segmentIntervals);
+    }
+
+    private static List<List<CaseOutcome>> runBlocks(CampaignRow row) {
+        List<List<CaseOutcome>> blocks = new ArrayList<>();
+        int casesPerRun = row.casesPerRun();
+        for (int start = 0; start < row.outcomes().size(); start += casesPerRun) {
+            int end = Math.min(start + casesPerRun, row.outcomes().size());
+            blocks.add(row.outcomes().subList(start, end));
+        }
+        return blocks;
+    }
+
+    private static long bootstrapSeed(CampaignRow row) {
+        return Objects.hash(row.caseKey(), row.report().scenarioKey(), row.casesPerRun(), row.runs()) * 1_000_003L;
+    }
+
+    private static Map<String, SegmentReport> segmentMap(ScenarioReport report, SegmentKind kind) {
+        Map<String, SegmentReport> segments = new LinkedHashMap<>();
+        for (SegmentReport segment : switch (kind) {
+            case PERIOD -> report.periodReports();
+            case DOCTRINE -> report.doctrineReports();
+            case PIPELINE -> report.pipelineReports();
+            case POLICY_DOMAIN -> report.policyDomainReports();
+        }) {
+            segments.put(segment.segmentKey(), segment);
+        }
+        return segments;
+    }
+
+    private static Interval percentileInterval(List<Double> values) {
+        if (values.isEmpty()) {
+            return new Interval(0.0, 0.0);
+        }
+        List<Double> sorted = values.stream().sorted().toList();
+        return new Interval(percentile(sorted, 0.025), percentile(sorted, 0.975));
+    }
+
+    private static double percentile(List<Double> sorted, double p) {
+        if (sorted.size() == 1) {
+            return sorted.get(0);
+        }
+        double position = p * (sorted.size() - 1);
+        int lower = (int) Math.floor(position);
+        int upper = (int) Math.ceil(position);
+        if (lower == upper) {
+            return sorted.get(lower);
+        }
+        double fraction = position - lower;
+        return sorted.get(lower) * (1.0 - fraction) + sorted.get(upper) * fraction;
+    }
+
+    private void writeCampaignIntervalCsv(Path path, List<CampaignRow> rows, Map<CampaignRow, BootstrapSummary> bootstrapSummaries) throws IOException {
         StringBuilder builder = new StringBuilder();
         builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,metric,estimate,lower95,upper95,n,method\n");
         for (CampaignRow row : rows) {
             ScenarioReport report = row.report();
+            BootstrapSummary summary = bootstrapSummaries.getOrDefault(row, BootstrapSummary.empty());
             for (ReportIntervalMetric metric : reportIntervalMetrics()) {
-                Interval interval = interval(metric.value().value(report), metric.sampleSize().value(report), metric.minimum(), metric.maximum());
+                Interval interval = summary.reportInterval(metric.key())
+                        .orElseGet(() -> interval(metric.value().value(report), metric.sampleSize().value(report), metric.minimum(), metric.maximum()));
                 builder.append(csv(row.caseKey())).append(',')
                         .append(csv(row.caseName())).append(',')
                         .append(csv(row.caseDescription())).append(',')
@@ -601,21 +902,28 @@ public final class CampaignRunner {
                         .append(number(interval.lower())).append(',')
                         .append(number(interval.upper())).append(',')
                         .append(metric.sampleSize().value(report)).append(',')
-                        .append(csv(INTERVAL_METHOD))
+                        .append(csv(summary.hasReportInterval(metric.key()) ? BOOTSTRAP_METHOD : INTERVAL_METHOD))
                         .append('\n');
             }
         }
         Files.writeString(path, builder.toString());
     }
 
-    private void writeSegmentIntervalCsv(Path path, List<CampaignRow> rows, SegmentKind kind) throws IOException {
+    private void writeSegmentIntervalCsv(
+            Path path,
+            List<CampaignRow> rows,
+            SegmentKind kind,
+            Map<CampaignRow, BootstrapSummary> bootstrapSummaries
+    ) throws IOException {
         StringBuilder builder = new StringBuilder();
         builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,segmentType,segmentKey,metric,estimate,lower95,upper95,n,method\n");
         for (CampaignRow row : rows) {
             ScenarioReport report = row.report();
+            BootstrapSummary summary = bootstrapSummaries.getOrDefault(row, BootstrapSummary.empty());
             for (SegmentReport segment : segments(row, kind)) {
                 for (SegmentIntervalMetric metric : segmentIntervalMetrics()) {
-                    Interval interval = interval(metric.value().value(segment), metric.sampleSize().value(segment), metric.minimum(), metric.maximum());
+                    Interval interval = summary.segmentInterval(kind, segment.segmentKey(), metric.key())
+                            .orElseGet(() -> interval(metric.value().value(segment), metric.sampleSize().value(segment), metric.minimum(), metric.maximum()));
                     builder.append(csv(row.caseKey())).append(',')
                             .append(csv(row.caseName())).append(',')
                             .append(csv(row.caseDescription())).append(',')
@@ -628,7 +936,7 @@ public final class CampaignRunner {
                             .append(number(interval.lower())).append(',')
                             .append(number(interval.upper())).append(',')
                             .append(metric.sampleSize().value(segment)).append(',')
-                            .append(csv(INTERVAL_METHOD))
+                            .append(csv(summary.hasSegmentInterval(kind, segment.segmentKey(), metric.key()) ? BOOTSTRAP_METHOD : INTERVAL_METHOD))
                             .append('\n');
                 }
             }
@@ -880,9 +1188,11 @@ public final class CampaignRunner {
 
     private void appendUncertaintySummary(StringBuilder builder, List<CampaignRow> rows) {
         builder.append("\n## Uncertainty Diagnostics\n\n");
-        builder.append("Campaign, pipeline, composition, and calibration CSV artifacts include 95% uncertainty bands using `")
+        builder.append("Campaign and segment CSV artifacts include 95% uncertainty bands using `")
+                .append(BOOTSTRAP_METHOD)
+                .append("` from the compressed case-level export. The bootstrap resamples whole generated-world run blocks, preserving within-run case dependence. Composition and calibration interval artifacts still use `")
                 .append(INTERVAL_METHOD)
-                .append("`. These bands are conservative approximations from aggregate report denominators; they are not a substitute for raw per-case bootstrap resampling.\n\n");
+                .append("` when no case-level analogue exists.\n\n");
         builder.append("| Scenario | Median score band width | Median cost band width |\n");
         builder.append("| --- | ---: | ---: |\n");
         for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
@@ -1391,6 +1701,38 @@ public final class CampaignRunner {
     }
 
     private record Interval(double lower, double upper) {
+    }
+
+    private record SegmentBootstrapKey(
+            SegmentKind kind,
+            String segmentKey,
+            String metricKey
+    ) {
+    }
+
+    private record BootstrapSummary(
+            Map<String, Interval> reportIntervals,
+            Map<SegmentBootstrapKey, Interval> segmentIntervals
+    ) {
+        private static BootstrapSummary empty() {
+            return new BootstrapSummary(Map.of(), Map.of());
+        }
+
+        private Optional<Interval> reportInterval(String metricKey) {
+            return Optional.ofNullable(reportIntervals.get(metricKey));
+        }
+
+        private boolean hasReportInterval(String metricKey) {
+            return reportIntervals.containsKey(metricKey);
+        }
+
+        private Optional<Interval> segmentInterval(SegmentKind kind, String segmentKey, String metricKey) {
+            return Optional.ofNullable(segmentIntervals.get(new SegmentBootstrapKey(kind, segmentKey, metricKey)));
+        }
+
+        private boolean hasSegmentInterval(SegmentKind kind, String segmentKey, String metricKey) {
+            return segmentIntervals.containsKey(new SegmentBootstrapKey(kind, segmentKey, metricKey));
+        }
     }
 
     private record CalibrationTarget(

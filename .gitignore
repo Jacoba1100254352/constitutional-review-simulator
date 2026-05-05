@@ -1,5 +1,7 @@
 out/
 paper/build/
+submission/
+reports/*-cases.csv.gz
 paper/*.aux
 paper/*.log
 paper/*.out
@@ -7,5 +9,7 @@ paper/*.pdf
 paper/*.synctex.gz
 .DS_Store
 *.class
+__pycache__/
+*.pyc
 .idea/
 *.iml

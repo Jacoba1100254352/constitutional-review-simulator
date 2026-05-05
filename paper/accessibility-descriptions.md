@@ -46,7 +46,23 @@ comparative court intake or invalidation benchmarks. Columns report the court
 and period, target label, observed value, target range, sample size, and
 reliability.
 
+`tab:validation-summary`: Table listing validation-style diagnostics for U.S.,
+German, Canadian, French, and South African benchmark scenario presets. Columns
+show the scenario preset, count of mapped targets falling within documented
+ranges, median target gap, and the largest remaining miss.
+
 `tab:baseline-results`: Table listing baseline estimates for all core scenario
 codes. Columns report directional score and score interval, legal stability,
 rights protection, shadow-docket abuse, legitimacy, democratic responsiveness,
 and institutional cost.
+
+`tab:supp-scenario-matrix`: Supplementary long table listing all starter
+campaign case-scenario combinations with score, rights protection,
+shadow-docket abuse, legitimacy, and institutional cost.
+
+`tab:supp-sensitivity`: Supplementary long table listing sensitivity campaign
+stress cases and scenario diagnostics for score, stability, constitutional
+conflict, and trust.
+
+`tab:supp-artifacts`: Supplementary long table inventorying generated report
+artifacts and file sizes.

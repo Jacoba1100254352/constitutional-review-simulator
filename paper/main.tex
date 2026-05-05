@@ -147,7 +147,14 @@ The model is not empirically validated in the sense of fitting a historical cour
 
 \input{tables/calibration_targets}
 
-Campaign reports include conservative 95 percent uncertainty bands for aggregate campaign metrics, pipeline segments, composition periods, and calibration diagnostics. These intervals are lightweight approximations based on aggregate denominators already stored in the reports. They are not a substitute for a raw per-case bootstrap, but they prevent the reports from presenting point estimates as if they were exact.
+Campaign reports now include a compressed case-level outcome export and bootstrap uncertainty bands for aggregate and segment diagnostics. The bootstrap resamples entire generated-world run blocks rather than isolated cases, which preserves within-run dependence while still using the raw outcome records. Composition and calibration intervals remain conservative denominator-based checks where no case-level analogue exists.
+
+\subsection{Validation-style diagnostics}
+
+The validation campaign runs real-world scenario presets against a shared benchmark docket and compares the resulting diagnostics to documented calibration ranges where a direct analogue exists. Table~\ref{tab:validation-summary} reports the count of mapped targets that fall within range and the largest remaining miss for each profile. These checks are intentionally diagnostic. A miss may indicate that the simulator abstracts away a case-flow mechanism, that a target is contextual rather than directly comparable, or that the preset should be refined; it is not treated as a failed prediction.
+
+\input{tables/validation_summary}
+\clearpage
 
 The repository also separates source code, configuration inputs, generated reports, paper source, and provenance manifests. This is meant to support the replication-material expectations of Journal of Law and Courts. For anonymous review, the manuscript should be submitted without author-identifying repository links; at acceptance, an archived replication package should include the Java source, Makefile, calibration/configuration CSVs, generated reports, and instructions for reproducing the campaign outputs.
 
@@ -194,10 +201,10 @@ Figure~\ref{fig:cost-score} displays the same point graphically. The current-sty
 
 The simulator is intentionally abstract. It compresses doctrinal variation, legal culture, party systems, federal design, and executive implementation into variables that can be compared across institutional scenarios. It does not yet model litigant strategy, judicial opinion assignment, actual precedent networks, budget appropriations, media framing, or reform backlash as independently strategic actors. It also uses calibration targets as external checks rather than as fitted parameters.
 
-The next research increment should export raw case-level outcomes for bootstrap intervals and model diagnostics, add richer case-flow validation against specific courts and periods, and separate publication-oriented paper outputs from full technical appendices. A Journal of Law and Courts submission should keep the main text compact and move large scenario tables, source matrices, and sensitivity reports to supplementary materials.
+The next research increment should add richer case-flow validation against specific courts and periods, distinguish litigant selection from judicial selection more explicitly, and replace several synthesized calibration targets with source-specific datasets. A Journal of Law and Courts submission should keep the main text compact and move large scenario tables, source matrices, raw case records, and sensitivity reports to supplementary materials.
 
 \section*{Supplementary Material}
-The supplementary replication package is designed to include source code and tests in \path{src/main/java} and \path{src/test/java}; calibration and benchmark inputs in \path{config/calibration}, \path{config/comparative}, \path{config/pipeline}, \path{config/emergency}, and \path{config/cost-benchmarks}; generated reports; figure-generation scripts; and reproducibility commands including \texttt{make test}, \texttt{make campaign}, \texttt{make paired-campaign}, \texttt{make sensitivity-check}, and \texttt{make paper}. For anonymous review, any repository metadata or file paths that identify the author should be removed or redacted from the submitted archive.
+The supplementary replication package is designed to include source code and tests in \path{src/main/java} and \path{src/test/java}; calibration and benchmark inputs in \path{config/calibration}, \path{config/comparative}, \path{config/pipeline}, \path{config/emergency}, and \path{config/cost-benchmarks}; the normalized calibration source-observation matrix; generated reports; compressed case-level exports; figure- and table-generation scripts; and reproducibility commands including \texttt{make test}, \texttt{make campaign}, \texttt{make paired-campaign}, \texttt{make validation-check}, \texttt{make sensitivity-check}, \texttt{make paper}, and \texttt{make supplement}. For anonymous review, any repository metadata or file paths that identify the author should be removed or redacted from the submitted archive.
 
 \section*{Funding Declaration}
 No external funding is reported for this manuscript.
@@ -206,7 +213,7 @@ No external funding is reported for this manuscript.
 Competing interests: The author declares none.
 
 \section*{Data Availability Statement}
-An anonymized replication archive will be supplied with the submitted manuscript and, if accepted, deposited in an appropriate public repository. The archive will include Java source code, configuration files, calibration targets, generated campaign reports, paper source, and commands needed to reproduce the reported outputs.
+An anonymized replication archive will be supplied with the submitted manuscript and, if accepted, deposited in an appropriate public repository. The archive will include Java source code, configuration files, calibration target-construction inputs, generated campaign reports, compressed case-level outputs, paper source, and commands needed to reproduce the reported outputs.
 
 \section*{Ethical Statement}
 This project uses synthetic simulation outputs and public institutional benchmarks. It does not involve human-subjects data.

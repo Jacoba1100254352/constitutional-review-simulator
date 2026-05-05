@@ -18,10 +18,14 @@
     {"path": "reports/constitutional-review-paired-import-v1-policy-domains.csv", "sha256": "1fa5f43d0dbc0653950d0644038585b68cabe8fe80eb031e2b56a6f24710cc38"},
     {"path": "reports/constitutional-review-paired-import-v1-composition.csv", "sha256": "876b07cb85a8ce2eed945c24a9423f5b38c00b7659171bdfe68c6ef76991a1a9"},
     {"path": "reports/constitutional-review-paired-import-v1-calibration.csv", "sha256": "e5ae8424b60836921d70222204bb8beb1e38edfe7d26e51faf035c83ada99242"},
-    {"path": "reports/constitutional-review-paired-import-v1-intervals.csv", "sha256": "afa3f82c874e32dc00f6c62037566393b723e82cc92b4c2fea98b236dc4219d2"},
-    {"path": "reports/constitutional-review-paired-import-v1-pipeline-intervals.csv", "sha256": "7dcd503c4ed2e879608343b6ba79eff40f993bd9546b4ac957128852befad4e0"},
+    {"path": "reports/constitutional-review-paired-import-v1-cases.csv.gz", "sha256": "69e84d2651c73f9fbe63f23a2bbd1bb64536bed028aa3423abd2a43b1a76b456"},
+    {"path": "reports/constitutional-review-paired-import-v1-intervals.csv", "sha256": "8d9a778eba2cf609b1a4430d665903e6a8bde4b2f0a88e80617184684eba6fa4"},
+    {"path": "reports/constitutional-review-paired-import-v1-period-intervals.csv", "sha256": "0782d3e91fef4c8d1e7c3338412afd8b2390c736fcca2f03ca2c03eaf3a4636f"},
+    {"path": "reports/constitutional-review-paired-import-v1-doctrine-intervals.csv", "sha256": "e2b560df555f118c13d974bf56a62c66593db6491dc848d181db43e843ad9761"},
+    {"path": "reports/constitutional-review-paired-import-v1-pipeline-intervals.csv", "sha256": "6df58ee0728bf40ddd82920acd0f3af0be9b2f50b023383423cf5fc33ec3e4e9"},
+    {"path": "reports/constitutional-review-paired-import-v1-policy-domain-intervals.csv", "sha256": "2cc8c112dbe733e8bc54c2abf7c9e87fb6297afcc7091ed50b890f75101262ca"},
     {"path": "reports/constitutional-review-paired-import-v1-composition-intervals.csv", "sha256": "7ed3d98e7cd72ed7240608c963ee8437f4b210a3a7797e330c00ad37279d3f9e"},
     {"path": "reports/constitutional-review-paired-import-v1-calibration-intervals.csv", "sha256": "2e5dfe93e1a4f5158e3711eee1281288ebfe74f3548426dc00fd9ed027864d5d"},
-    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "618d864b14ea4b70f524cefb5d1a121661e0235a3bab741f9c98e0566ef393d2"}
+    {"path": "reports/constitutional-review-paired-import-v1.md", "sha256": "f578b8cdf5379b38e81502650d8e677e57f0051db01e81a59498f8e52101cfac"}
   ]
 }

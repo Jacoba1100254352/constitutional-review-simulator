@@ -21,6 +21,18 @@ Run only the JLC formatting check with:
 make paper-check
 ```
 
+Build the supplementary appendix and anonymous submission/replication bundle
+with:
+
+```sh
+make supplement
+make submission-bundle
+```
+
+`make submission-bundle` writes ignored local artifacts under `submission/`:
+an anonymous manuscript PDF, a supplementary appendix PDF, editable source ZIP,
+replication-package ZIP, and a combined review bundle ZIP.
+
 Run a word-count check when `texcount` is installed:
 
 ```sh
@@ -67,6 +79,8 @@ Relevant venue-format constraints now reflected in the manuscript:
 - AI-tool use declaration;
 - explicit directional-score formula and a generated baseline results table;
 - generated calibration target table;
+- generated validation-style diagnostics table;
+- compressed case-level report exports and run-block bootstrap intervals;
 - large scenario matrices, calibration source tables, and sensitivity details
   treated as supplement candidates instead of main-text material.
 
@@ -81,6 +95,12 @@ The paired legislative-input campaign is portable by default. The imported
 Congress simulator output used for the paper is tracked at
 `data/legislative/simulation-campaign-v21-paper.csv`, and the Makefile exposes
 `LEGISLATIVE_INPUT=...` for overriding that source.
+
+Calibration targets are now regenerated from
+`config/calibration-source-observations.csv` with
+`scripts/build_calibration_targets.py`; `make calibration-check` verifies that
+the source-observation matrix, `config/calibration/*.csv`, and the compatibility
+`config/calibration-targets.csv` file remain synchronized.
 
 The submission checklist in `paper/jlc-submission-checklist.md` tracks the
 remaining upload-time tasks, especially anonymous supplementary material,

@@ -58,8 +58,12 @@ public final class Main {
             System.out.println("Wrote " + result.policyDomainCsvPath());
             System.out.println("Wrote " + result.compositionCsvPath());
             System.out.println("Wrote " + result.calibrationCsvPath());
+            System.out.println("Wrote " + result.caseCsvGzPath());
             System.out.println("Wrote " + result.intervalCsvPath());
+            System.out.println("Wrote " + result.periodIntervalCsvPath());
+            System.out.println("Wrote " + result.doctrineIntervalCsvPath());
             System.out.println("Wrote " + result.pipelineIntervalCsvPath());
+            System.out.println("Wrote " + result.policyDomainIntervalCsvPath());
             System.out.println("Wrote " + result.compositionIntervalCsvPath());
             System.out.println("Wrote " + result.calibrationIntervalCsvPath());
             System.out.println("Wrote " + result.markdownPath());
@@ -244,7 +248,7 @@ public final class Main {
         System.out.println("  --format table|csv|bars         output format (default table)");
         System.out.println("  --charts                       add ASCII bars after the table");
         System.out.println("  --legislative-input PATH        import legislative campaign CSV rows as docket signals");
-        System.out.println("  --campaign v0|v1-paired|sensitivity");
+        System.out.println("  --campaign v0|v1-paired|validation|sensitivity");
         System.out.println("                                  write campaign CSV/Markdown/provenance artifacts");
         System.out.println("  --output-dir PATH               report output directory (default reports)");
         System.out.println();

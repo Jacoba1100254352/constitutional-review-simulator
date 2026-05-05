@@ -18,10 +18,14 @@
     {"path": "reports/constitutional-review-sensitivity-v1-policy-domains.csv", "sha256": "4c74a586b6b6d01651c6da02f10280fff241f3092b278cc72312a1b9e705c779"},
     {"path": "reports/constitutional-review-sensitivity-v1-composition.csv", "sha256": "3f6bf334ffab73aa3537886c5c40213b10ee73e1f6b21b91b03094124dc8a614"},
     {"path": "reports/constitutional-review-sensitivity-v1-calibration.csv", "sha256": "0f26938e60f9dab0a495c4682d77c5907873e1fd2bd9cb25b87494e4c248dcc0"},
-    {"path": "reports/constitutional-review-sensitivity-v1-intervals.csv", "sha256": "8396a0f488f17141f91adb9b776b701d497f423b76db0d8a73b2af099cbfddde"},
-    {"path": "reports/constitutional-review-sensitivity-v1-pipeline-intervals.csv", "sha256": "031763e969478de396efa8889fc7eb033fed371b12cd94c0c6d557d44d25fd64"},
+    {"path": "reports/constitutional-review-sensitivity-v1-cases.csv.gz", "sha256": "2ce35b22a31e7486f8fbde3e4dd730f7e77102760cb24c90be117720d2247773"},
+    {"path": "reports/constitutional-review-sensitivity-v1-intervals.csv", "sha256": "eb187924724f8e5f125dbc296888a569594cdea8c0fa969e225efead22f24dd2"},
+    {"path": "reports/constitutional-review-sensitivity-v1-period-intervals.csv", "sha256": "1db0dcdf9b3324b790a499d532839df9aebdddc3a171934be9e4f42dde3709b7"},
+    {"path": "reports/constitutional-review-sensitivity-v1-doctrine-intervals.csv", "sha256": "a9263b95c81a196c8b0354617d194639da7505141e093788886db2aba532826e"},
+    {"path": "reports/constitutional-review-sensitivity-v1-pipeline-intervals.csv", "sha256": "867152461ab3f9c437fd95ba5a45cb13199c14acc23a7e995c55c28bf80bdba1"},
+    {"path": "reports/constitutional-review-sensitivity-v1-policy-domain-intervals.csv", "sha256": "6ff44f7a864bb57e0d601646badb96d2980928908ebdc1783dc02456a7f4d2fe"},
     {"path": "reports/constitutional-review-sensitivity-v1-composition-intervals.csv", "sha256": "f7054a5732253dbb6a08f6e0a308559621caba6a19285ff09e95b9286f298a33"},
     {"path": "reports/constitutional-review-sensitivity-v1-calibration-intervals.csv", "sha256": "c263a2afa54362c59f9309014823d09fd372aaf6bfd7fafec9ec79bff3430d04"},
-    {"path": "reports/constitutional-review-sensitivity-v1.md", "sha256": "8957e3f2cbe889f1974e59d25cdaa1fe3ee4fbc0e4f4e6c9f29e407d2da6fa84"}
+    {"path": "reports/constitutional-review-sensitivity-v1.md", "sha256": "5b7ecdc5f295278d553a0d0a4c5bd25c1c4f2736d25b3cb576c7da671c36d9a9"}
   ]
 }

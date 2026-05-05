@@ -525,7 +525,7 @@ Lower public trust and higher legislature-court conflict.
 
 ## Uncertainty Diagnostics
 
-Campaign, pipeline, composition, and calibration CSV artifacts include 95% uncertainty bands using `conservative-bounded-normal-95`. These bands are conservative approximations from aggregate report denominators; they are not a substitute for raw per-case bootstrap resampling.
+Campaign and segment CSV artifacts include 95% uncertainty bands using `cluster-bootstrap-runs-200-95` from the compressed case-level export. The bootstrap resamples whole generated-world run blocks, preserving within-run case dependence. Composition and calibration interval artifacts still use `conservative-bounded-normal-95` when no case-level analogue exists.
 
 | Scenario | Median score band width | Median cost band width |
 | --- | ---: | ---: |

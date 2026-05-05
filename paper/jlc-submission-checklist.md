@@ -18,6 +18,8 @@ Use this checklist before uploading to Editorial Manager.
 - Directional-score formula and component metrics are disclosed.
 - Main text includes a compact result table and a compact calibration-target
   table.
+- Main text includes a validation-style diagnostics table and makes clear that
+  these checks are not fitted forecasts.
 - Back-matter declarations appear as separate headings before references:
   `Funding Declaration`, `Competing Interests Declaration`,
   `Data Availability Statement`, and `Ethical Statement`.
@@ -38,8 +40,13 @@ Use this checklist before uploading to Editorial Manager.
 - Supplementary material is anonymized for review.
 - `make paired-campaign` uses a portable `LEGISLATIVE_INPUT` path or a
   submitted supplementary CSV, not an author-specific absolute path.
+- `make calibration-check` passes, confirming the source-observation matrix can
+  regenerate the calibration target files.
 - Supplement includes source code, configuration files, calibration targets,
-  generated reports, figure-generation scripts, and reproduction commands.
+  calibration source observations, generated reports, compressed case-level
+  exports, figure/table-generation scripts, and reproduction commands.
+- `make submission-bundle` has generated the local anonymous review bundle
+  under `submission/`.
 - Repository URLs, user paths, commit metadata, and author-identifying file
   names are removed or redacted in the anonymous submission package.
 - Accepted replication materials are deposited in an appropriate public
@@ -52,5 +59,7 @@ Run these commands from the repository root:
 ```sh
 make paper-check
 make paper
+make supplement
+make submission-bundle
 make test
 ```

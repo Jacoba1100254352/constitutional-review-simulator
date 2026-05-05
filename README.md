@@ -37,8 +37,12 @@ This writes:
 - `reports/constitutional-review-campaign-v0-policy-domains.csv`
 - `reports/constitutional-review-campaign-v0-composition.csv`
 - `reports/constitutional-review-campaign-v0-calibration.csv`
+- `reports/constitutional-review-campaign-v0-cases.csv.gz`
 - `reports/constitutional-review-campaign-v0-intervals.csv`
+- `reports/constitutional-review-campaign-v0-period-intervals.csv`
+- `reports/constitutional-review-campaign-v0-doctrine-intervals.csv`
 - `reports/constitutional-review-campaign-v0-pipeline-intervals.csv`
+- `reports/constitutional-review-campaign-v0-policy-domain-intervals.csv`
 - `reports/constitutional-review-campaign-v0-composition-intervals.csv`
 - `reports/constitutional-review-campaign-v0-calibration-intervals.csv`
 - `reports/constitutional-review-campaign-v0.md`
@@ -65,8 +69,12 @@ The paired campaign writes:
 - `reports/constitutional-review-paired-import-v1-policy-domains.csv`
 - `reports/constitutional-review-paired-import-v1-composition.csv`
 - `reports/constitutional-review-paired-import-v1-calibration.csv`
+- `reports/constitutional-review-paired-import-v1-cases.csv.gz`
 - `reports/constitutional-review-paired-import-v1-intervals.csv`
+- `reports/constitutional-review-paired-import-v1-period-intervals.csv`
+- `reports/constitutional-review-paired-import-v1-doctrine-intervals.csv`
 - `reports/constitutional-review-paired-import-v1-pipeline-intervals.csv`
+- `reports/constitutional-review-paired-import-v1-policy-domain-intervals.csv`
 - `reports/constitutional-review-paired-import-v1-composition-intervals.csv`
 - `reports/constitutional-review-paired-import-v1-calibration-intervals.csv`
 - `reports/constitutional-review-paired-import-v1.md`
@@ -87,12 +95,29 @@ This writes high/low assumption sweeps for emergency pressure, appointment polar
 - `reports/constitutional-review-sensitivity-v1-policy-domains.csv`
 - `reports/constitutional-review-sensitivity-v1-composition.csv`
 - `reports/constitutional-review-sensitivity-v1-calibration.csv`
+- `reports/constitutional-review-sensitivity-v1-cases.csv.gz`
 - `reports/constitutional-review-sensitivity-v1-intervals.csv`
+- `reports/constitutional-review-sensitivity-v1-period-intervals.csv`
+- `reports/constitutional-review-sensitivity-v1-doctrine-intervals.csv`
 - `reports/constitutional-review-sensitivity-v1-pipeline-intervals.csv`
+- `reports/constitutional-review-sensitivity-v1-policy-domain-intervals.csv`
 - `reports/constitutional-review-sensitivity-v1-composition-intervals.csv`
 - `reports/constitutional-review-sensitivity-v1-calibration-intervals.csv`
 - `reports/constitutional-review-sensitivity-v1.md`
 - `reports/constitutional-review-sensitivity-v1-manifest.json`
+
+Run the validation-style benchmark campaign:
+
+```sh
+make validation-check
+```
+
+This compares the real-world scenario presets for the U.S. Supreme Court,
+German Federal Constitutional Court, French Constitutional Council, Supreme
+Court of Canada, and South African Constitutional Court against the shared
+benchmark docket. It writes the same aggregate, segment, compressed case-level,
+bootstrap interval, calibration, Markdown, and manifest artifact family under
+the `reports/constitutional-review-validation-v1*` prefix.
 
 Run tests:
 
@@ -100,13 +125,18 @@ Run tests:
 make test
 ```
 
-Build the starter LaTeX paper:
+Build the starter LaTeX paper and supplementary appendix:
 
 ```sh
 make paper
+make supplement
 ```
 
 The paper source is in `paper/main.tex`; the compiled PDF is written to `paper/build/main.pdf`.
+The supplementary appendix source is in `paper/supplementary-appendix.tex`;
+its compiled PDF is written to `paper/build/supplementary-appendix.pdf`.
+Use `make submission-bundle` after building both PDFs to assemble anonymous
+review and replication ZIP archives under `submission/`.
 
 ## Scenario Families
 
@@ -186,7 +216,14 @@ Core metrics:
 
 ## Calibration Targets
 
-Default calibration profiles live in `config/calibration/*.csv`; `config/calibration-targets.csv` mirrors the modern SCDB profile for compatibility. The calibration schema is:
+Default calibration profiles live in `config/calibration/*.csv`; `config/calibration-targets.csv` mirrors the modern SCDB profile for compatibility. The canonical construction input is `config/calibration-source-observations.csv`, which can regenerate the checked-in calibration target files:
+
+```sh
+make calibration-check
+make calibration-build
+```
+
+The calibration schema is:
 
 ```text
 profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl
@@ -204,9 +241,18 @@ Research-derived structured inputs are checked in under `config/`:
 - `config/emergency/scotus-emergency-summary.csv`: universe and curated-sample emergency docket benchmarks
 - `config/cost-benchmarks/institutional-costs.csv`: normalized direct, delay, complexity, and capacity cost profiles
 
-## Uncertainty Bands
+## Case-Level Exports and Uncertainty Bands
 
-Campaign runs write conservative 95% uncertainty bands for aggregate campaign metrics, pipeline segments, composition periods, and calibration targets. The interval files use aggregate denominators already stored in the reports, so they are lightweight confidence bands rather than raw per-case bootstrap resamples.
+Campaign runs write compressed raw outcome files under `reports/*-cases.csv.gz`.
+These files contain one row per generated case outcome, including case inputs,
+review pathway, emergency disposition, merits disposition, compliance outcomes,
+reaction state, and cost metrics. Aggregate campaign and segment interval CSVs
+now use a deterministic 200-sample cluster bootstrap that resamples whole
+generated-world run blocks from these case-level outcomes. Composition and
+calibration intervals remain conservative denominator-based checks where there
+is no direct case-level analogue. The compressed case-level files are generated
+locally and included in submission/replication bundles, but are git-ignored to
+avoid storing large derived artifacts in the source repository.
 
 ## Legislative Import Contract
 

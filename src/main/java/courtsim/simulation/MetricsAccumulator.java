@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class MetricsAccumulator {
+public final class MetricsAccumulator {
     private int totalCases;
     private int reviewedCases;
     private int invalidations;
@@ -78,7 +78,7 @@ final class MetricsAccumulator {
     private final Map<PolicyDomain, SegmentAccumulator> policyDomainAccumulators = new EnumMap<>(PolicyDomain.class);
     private final Map<Integer, CompositionAccumulator> compositionAccumulators = new HashMap<>();
 
-    void add(CaseOutcome outcome) {
+    public void add(CaseOutcome outcome) {
         totalCases++;
         if (outcome.reviewed()) {
             reviewedCases++;
@@ -204,13 +204,13 @@ final class MetricsAccumulator {
                 .add(outcome);
     }
 
-    void addComposition(CompositionSnapshot snapshot) {
+    public void addComposition(CompositionSnapshot snapshot) {
         compositionAccumulators
                 .computeIfAbsent(snapshot.reviewPeriod(), period -> new CompositionAccumulator("period", Integer.toString(period + 1)))
                 .add(snapshot);
     }
 
-    ScenarioReport toReport(String scenarioKey, String scenarioName) {
+    public ScenarioReport toReport(String scenarioKey, String scenarioName) {
         return new ScenarioReport(
                 scenarioKey,
                 scenarioName,

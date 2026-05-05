@@ -23,9 +23,24 @@ public final class Simulator {
             long seed,
             List<LegislativeSignal> importedSignals
     ) {
+        return compareDetailed(scenarios, worldSpec, runs, seed, importedSignals)
+                .stream()
+                .map(ScenarioRunResult::report)
+                .toList();
+    }
+
+    public List<ScenarioRunResult> compareDetailed(
+            List<Scenario> scenarios,
+            WorldSpec worldSpec,
+            int runs,
+            long seed,
+            List<LegislativeSignal> importedSignals
+    ) {
         MetricsAccumulator[] accumulators = new MetricsAccumulator[scenarios.size()];
+        List<List<CaseOutcome>> outcomes = new ArrayList<>();
         for (int i = 0; i < accumulators.length; i++) {
             accumulators[i] = new MetricsAccumulator();
+            outcomes.add(new ArrayList<>());
         }
 
         for (int run = 0; run < runs; run++) {
@@ -50,14 +65,21 @@ public final class Simulator {
                     }
                     CaseOutcome outcome = process.review(caseFile, context);
                     accumulators[scenarioIndex].add(outcome);
+                    outcomes.get(scenarioIndex).add(outcome);
                 }
             }
         }
 
-        List<ScenarioReport> reports = new ArrayList<>();
+        List<ScenarioRunResult> reports = new ArrayList<>();
         for (int i = 0; i < scenarios.size(); i++) {
             Scenario scenario = scenarios.get(i);
-            reports.add(accumulators[i].toReport(scenario.key(), scenario.name()));
+            ScenarioReport report = accumulators[i].toReport(scenario.key(), scenario.name());
+            reports.add(new ScenarioRunResult(
+                    scenario.key(),
+                    scenario.name(),
+                    List.copyOf(outcomes.get(i)),
+                    report
+            ));
         }
         return reports;
     }

@@ -1,0 +1,31 @@
+{
+  "reportName": "Constitutional Review Calibration Validation Campaign v1",
+  "provenanceFormat": "constitutional-review-report-v1",
+  "sourceTree": "tracked project artifact; inspect repository history for commit identity",
+  "javaRelease": "21",
+  "javaCommand": "courtsim.Main --campaign validation --runs 120 --cases 80 --seed 20260501 --output-dir reports",
+  "runs": 120,
+  "casesPerRun": 80,
+  "seed": 20260501,
+  "campaignCaseCount": 1,
+  "scenarioCount": 5,
+  "inputDescription": "synthetic docket",
+  "artifacts": [
+    {"path": "reports/constitutional-review-validation-v1.csv", "sha256": "1433cba579cbfe7822266383b3752f4387dc9303542db9bd2d6243356760b625"},
+    {"path": "reports/constitutional-review-validation-v1-periods.csv", "sha256": "c30c7501d46b7bc7bc04b1df4349496a775d80068f97a9c5ec3dc20495e51331"},
+    {"path": "reports/constitutional-review-validation-v1-doctrines.csv", "sha256": "64fb3f40cc475d924f76fb5a8769af5f657215986d77893e1ae6f3d165b93732"},
+    {"path": "reports/constitutional-review-validation-v1-pipelines.csv", "sha256": "753378ef322038f731f2d7db438563e923e63821a11b433511b37bcaa9959f45"},
+    {"path": "reports/constitutional-review-validation-v1-policy-domains.csv", "sha256": "a5c81e4976bfb7115885fab1eca3a257a89881342693f44b895b3ab1fdf0114e"},
+    {"path": "reports/constitutional-review-validation-v1-composition.csv", "sha256": "18e5a3b5a45f099b726a27a01d11aa7275cfbfb828d7c05e0964f7533976b747"},
+    {"path": "reports/constitutional-review-validation-v1-calibration.csv", "sha256": "cd9144c30cef757b6e836c6c779aeef351a244f8cf914762a37ce3effad62076"},
+    {"path": "reports/constitutional-review-validation-v1-cases.csv.gz", "sha256": "9c3137a6e68e8af83ac96851d401bdf253dc9a455c6a1d45a4aebf5e3c1ab210"},
+    {"path": "reports/constitutional-review-validation-v1-intervals.csv", "sha256": "047ff97a775849020e0aa6555782702800b39777275356c040e11cc312169224"},
+    {"path": "reports/constitutional-review-validation-v1-period-intervals.csv", "sha256": "aa08e19d06178c3126c5653647d6729b012dd015a5d9feeadb3017627272c2bc"},
+    {"path": "reports/constitutional-review-validation-v1-doctrine-intervals.csv", "sha256": "f2dc5adaa4c4e9838db84f2171f0d4e124523e0f9636c72fef78a1df3842403f"},
+    {"path": "reports/constitutional-review-validation-v1-pipeline-intervals.csv", "sha256": "a0accce9363b5175ed2eff908adaf427d0cca1882db30ea476d017de1e5ea06f"},
+    {"path": "reports/constitutional-review-validation-v1-policy-domain-intervals.csv", "sha256": "9be5ed5e10499c83e0a8d55b0c88912ca2002547f6e4f746cd6040c45a441a27"},
+    {"path": "reports/constitutional-review-validation-v1-composition-intervals.csv", "sha256": "c184f3afde30c9abe251c25614963209e12763c7f189bf76153351aa11f3b7fd"},
+    {"path": "reports/constitutional-review-validation-v1-calibration-intervals.csv", "sha256": "e75e3182b17ca0b0df7b35742b7f6406fdfc643892e42e77d3e62046d7afa53f"},
+    {"path": "reports/constitutional-review-validation-v1.md", "sha256": "b2c7a30db29b326af18f6fbafbfd8621683d545d571b8a6946c5268d4b821d6c"}
+  ]
+}
