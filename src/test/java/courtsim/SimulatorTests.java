@@ -11,9 +11,13 @@ import courtsim.simulation.ScenarioReport;
 import courtsim.simulation.Simulator;
 import courtsim.simulation.WorldSpec;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 public final class SimulatorTests {
     private SimulatorTests() {
@@ -138,6 +142,8 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.compositionCsvPath()), "expected composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected calibration CSV artifact");
         assertTrue(Files.exists(result.caseCsvGzPath()), "expected compressed case-level artifact");
+        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("scenarioKey"), "expected case-level CSV header");
+        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("policyDomain"), "expected policy-domain case export");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected interval CSV artifact");
         assertTrue(Files.exists(result.periodIntervalCsvPath()), "expected period interval CSV artifact");
         assertTrue(Files.exists(result.doctrineIntervalCsvPath()), "expected doctrine interval CSV artifact");
@@ -301,10 +307,27 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.csvPath()), "expected validation CSV artifact");
         assertTrue(Files.exists(result.caseCsvGzPath()), "expected validation case-level artifact");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected validation interval artifact");
+        assertTrue(Files.exists(result.calibrationCsvPath()), "expected validation calibration artifact");
+        assertTrue(Files.exists(result.doctrineCsvPath()), "expected validation doctrine artifact");
         String csv = Files.readString(result.csvPath());
         assertTrue(csv.contains("german-constitutional-court"), "expected German validation preset");
         assertTrue(csv.contains("south-african-constitutional-court"), "expected South African validation preset");
+        String calibrationCsv = Files.readString(result.calibrationCsvPath());
+        assertTrue(calibrationCsv.contains("scdb-modern-merits-2000-2024"), "expected U.S. doctrine target profile");
+        assertTrue(calibrationCsv.contains("scotus-emergency-2024-2025"), "expected emergency target profile");
+        assertTrue(calibrationCsv.contains("sourceName"), "expected calibration source metadata");
+        assertTrue(calibrationCsv.contains("targetN"), "expected calibration target sample-size metadata");
+        assertTrue(Files.readString(result.intervalCsvPath()).contains("cluster-bootstrap-runs"), "expected validation bootstrap intervals");
         assertTrue(Files.readString(result.markdownPath()).contains("Calibration Validation Campaign"), "expected validation Markdown title");
+    }
+
+    private static String readGzipHeader(Path path) throws Exception {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new GZIPInputStream(Files.newInputStream(path)),
+                StandardCharsets.UTF_8
+        ))) {
+            return reader.readLine();
+        }
     }
 
     private static void assertBetween(double value, String label) {

@@ -31,7 +31,10 @@ make submission-bundle
 
 `make submission-bundle` writes ignored local artifacts under `submission/`:
 an anonymous manuscript PDF, a supplementary appendix PDF, editable source ZIP,
-replication-package ZIP, and a combined review bundle ZIP.
+replication-package ZIP, and a combined review bundle ZIP. The bundle builder
+also validates the source and replication ZIPs for anonymous-review hygiene,
+rejecting local paths, build logs, generated PDFs, IDE files, and `.DS_Store`
+entries.
 
 Run a word-count check when `texcount` is installed:
 
@@ -60,12 +63,14 @@ therefore keeps that interface in `main.tex`:
 
 The repository includes `paper/cup-journal.cls` as a local compatibility shim
 because the official Cambridge class is not installed in the local TeX
-environment. For final submission, replace the shim with the official Cambridge
-Overleaf template files if Editorial Manager or Cambridge requires the exact
-publisher class bundle. The official template uses `biblatex` with Chicago
-style; the local build keeps `natbib` citation commands but prints the reference
-list manually in Chicago author-date form because `biblatex`/`biber` are not
-installed in the local TeX environment.
+environment. This is acceptable for local drafting and review-PDF production,
+but it should not be treated as the publisher template bundle. Before final
+LaTeX-source submission, replace the shim with the official Cambridge Overleaf
+template files if Editorial Manager or Cambridge requires exact production
+source. The official template uses `biblatex` with Chicago style; the local
+build keeps `natbib` citation commands but prints the reference list manually in
+Chicago author-date form because `biblatex`/`biber` are not installed in the
+local TeX environment.
 
 Relevant venue-format constraints now reflected in the manuscript:
 
@@ -80,6 +85,7 @@ Relevant venue-format constraints now reflected in the manuscript:
 - explicit directional-score formula and a generated baseline results table;
 - generated calibration target table;
 - generated validation-style diagnostics table;
+- generated supplementary calibration source-observation matrix;
 - compressed case-level report exports and run-block bootstrap intervals;
 - large scenario matrices, calibration source tables, and sensitivity details
   treated as supplement candidates instead of main-text material.

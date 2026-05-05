@@ -6,6 +6,9 @@ Use this checklist before uploading to Editorial Manager.
 
 - Main manuscript is anonymous and uses `Anonymous Author`.
 - Main manuscript uses the Cambridge `cup-journal` interface.
+- If submitting editable LaTeX source rather than review PDF only, local
+  `paper/cup-journal.cls` shim has been replaced with the official Cambridge
+  template bundle or intentionally retained with editor approval.
 - Article type is `research-article`.
 - Text is below JLC's 10,000-word ceiling unless extra length is justified.
 - Tables and figures appear near first reference rather than at the end.
@@ -20,6 +23,8 @@ Use this checklist before uploading to Editorial Manager.
   table.
 - Main text includes a validation-style diagnostics table and makes clear that
   these checks are not fitted forecasts.
+- Main text discusses the largest validation misses and does not imply that
+  benchmark presets reproduce named real courts.
 - Back-matter declarations appear as separate headings before references:
   `Funding Declaration`, `Competing Interests Declaration`,
   `Data Availability Statement`, and `Ethical Statement`.
@@ -47,6 +52,9 @@ Use this checklist before uploading to Editorial Manager.
   exports, figure/table-generation scripts, and reproduction commands.
 - `make submission-bundle` has generated the local anonymous review bundle
   under `submission/`.
+- The submission-bundle validator passes, with no `paper/build` logs, local
+  machine paths, IDE files, `.DS_Store`, generated PDFs, or repository metadata
+  in source/replication ZIPs.
 - Repository URLs, user paths, commit metadata, and author-identifying file
   names are removed or redacted in the anonymous submission package.
 - Accepted replication materials are deposited in an appropriate public
@@ -62,4 +70,5 @@ make paper
 make supplement
 make submission-bundle
 make test
+make ci
 ```

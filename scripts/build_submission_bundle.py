@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble anonymous JLC review and replication bundles."""
+"""Assemble and validate anonymous JLC review and replication bundles."""
 
 from __future__ import annotations
 
@@ -29,17 +29,28 @@ REPLICATION_PREFIXES = [
 
 EXCLUDED_SUFFIXES = {
     ".aux",
+    ".class",
+    ".fdb_latexmk",
+    ".fls",
+    ".iml",
     ".log",
     ".out",
+    ".pdf",
+    ".pyc",
     ".synctex.gz",
 }
 
 EXCLUDED_PARTS = {
     ".git",
     ".idea",
+    "build",
     "out",
     "submission",
     "__pycache__",
+}
+
+EXCLUDED_NAMES = {
+    ".DS_Store",
 }
 
 
@@ -54,15 +65,76 @@ def should_include(path: Path) -> bool:
     relative = path.relative_to(ROOT)
     if any(part in EXCLUDED_PARTS for part in relative.parts):
         return False
+    if relative.name in EXCLUDED_NAMES:
+        return False
     if any(str(relative).startswith(prefix) for prefix in REPLICATION_PREFIXES):
         return not any(str(relative).endswith(suffix) for suffix in EXCLUDED_SUFFIXES)
     return False
 
 
-def write_zip(path: Path, files: list[Path]) -> None:
+def write_zip(path: Path, files: list[Path], *, flatten: bool = False) -> None:
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for file_path in files:
-            archive.write(file_path, file_path.relative_to(ROOT))
+            archive_name = file_path.name if flatten else file_path.relative_to(ROOT)
+            archive.write(file_path, archive_name)
+
+
+def leak_markers() -> list[bytes]:
+    home = Path.home()
+    candidates = [
+        "/" + "Users" + "/",
+        home.as_posix(),
+        home.name,
+        "git@" + "github.com",
+    ]
+    return [candidate.encode("utf-8") for candidate in candidates if candidate]
+
+
+def validate_zip(path: Path) -> None:
+    bad_names: list[str] = []
+    leaked: list[str] = []
+    markers = leak_markers()
+    with zipfile.ZipFile(path) as archive:
+        for name in archive.namelist():
+            parts = Path(name).parts
+            if (
+                    any(part in EXCLUDED_PARTS for part in parts)
+                    or Path(name).name in EXCLUDED_NAMES
+                    or any(name.endswith(suffix) for suffix in EXCLUDED_SUFFIXES)
+            ):
+                bad_names.append(name)
+                continue
+            if name.endswith(".zip"):
+                continue
+            data = archive.read(name)
+            if any(marker in data for marker in markers):
+                leaked.append(name)
+    if bad_names or leaked:
+        details = []
+        if bad_names:
+            details.append("excluded archive entries: " + ", ".join(bad_names[:12]))
+        if leaked:
+            details.append("local path or identity markers in: " + ", ".join(leaked[:12]))
+        raise SystemExit(f"{path.relative_to(ROOT)} failed anonymous-bundle validation; " + "; ".join(details))
+
+
+def validate_review_bundle(path: Path) -> None:
+    expected = {
+        "anonymous-manuscript.pdf",
+        "supplementary-appendix.pdf",
+        "source-files.zip",
+        "replication-package.zip",
+        "README.md",
+    }
+    with zipfile.ZipFile(path) as archive:
+        names = set(archive.namelist())
+    if names != expected:
+        missing = sorted(expected - names)
+        extra = sorted(names - expected)
+        raise SystemExit(
+            f"{path.relative_to(ROOT)} has unexpected entries; "
+            f"missing={missing}, extra={extra}"
+        )
 
 
 def replication_files() -> list[Path]:
@@ -114,13 +186,16 @@ def main() -> None:
     ]
     source_zip = SUBMISSION_DIR / "source-files.zip"
     write_zip(source_zip, [path for path in source_files if path.exists()])
+    validate_zip(source_zip)
 
     replication_zip = SUBMISSION_DIR / "replication-package.zip"
     write_zip(replication_zip, replication_files())
+    validate_zip(replication_zip)
 
     readme = write_readme()
     bundle_zip = SUBMISSION_DIR / "jlc-review-bundle.zip"
-    write_zip(bundle_zip, [manuscript_target, supplement_target, source_zip, replication_zip, readme])
+    write_zip(bundle_zip, [manuscript_target, supplement_target, source_zip, replication_zip, readme], flatten=True)
+    validate_review_bundle(bundle_zip)
 
     manifest = SUBMISSION_DIR / "manifest.txt"
     manifest.write_text(

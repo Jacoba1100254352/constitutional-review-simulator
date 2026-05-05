@@ -136,7 +136,9 @@ The paper source is in `paper/main.tex`; the compiled PDF is written to `paper/b
 The supplementary appendix source is in `paper/supplementary-appendix.tex`;
 its compiled PDF is written to `paper/build/supplementary-appendix.pdf`.
 Use `make submission-bundle` after building both PDFs to assemble anonymous
-review and replication ZIP archives under `submission/`.
+review and replication ZIP archives under `submission/`. The bundle builder
+fails if source or replication ZIPs contain build logs, local machine paths, IDE
+files, `.DS_Store`, generated PDFs, or other anonymous-review leakage.
 
 ## Scenario Families
 
@@ -230,6 +232,12 @@ profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,
 ```
 
 Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, and South Africa, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the empirical target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. These are documented external checks, not claims that the synthetic model is empirically validated.
+
+The target-method note in `docs/calibration-target-methods.md` separates
+source-backed targets from provisional synthesis ranges. Rows without a source
+URL, rows marked as synthesis, and low-reliability contextual rows should be
+treated as transparent stress-test assumptions, not as empirical validation
+evidence.
 
 ## Research Configs
 

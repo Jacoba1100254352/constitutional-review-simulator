@@ -29,7 +29,8 @@ Imported legislative outputs are not treated as empirical truth. They become str
 
 The first campaign is meant to expose design tradeoffs, not select a winner. The paired-import campaign uses the sibling legislative simulator's generated rows in four docket modes: all imported rows, high-capture rows, high-volatility rows, and low-mandate rows.
 
-Campaign reports now write six CSV layers:
+Campaign reports now write reproducible CSV layers plus compressed raw case
+exports:
 
 - aggregate scenario/campaign-case averages
 - period-by-period diagnostics for replacement and reaction dynamics
@@ -37,5 +38,18 @@ Campaign reports now write six CSV layers:
 - pipeline scoreboards for state/federal jurisdiction and lower-court hierarchy paths
 - composition diagnostics for each review period
 - calibration diagnostics against `config/calibration-targets.csv`
+- aggregate and segment uncertainty bands
+- compressed case-level outcomes for bootstrap replication
 
-The sensitivity campaign is a calibration check rather than empirical validation. It runs the same scenario catalog over high/low assumption sweeps for emergency pressure, appointment polarization, rights-threat rate, public trust, and legislative conflict so directional scores can be inspected for brittle parameter dependence. The calibration CSV then compares generated doctrine mix, emergency relief frequency, compliance, and legitimacy response against externally editable target ranges.
+The sensitivity campaign is a brittleness check rather than empirical
+validation. It runs the same scenario catalog over high/low assumption sweeps
+for emergency pressure, appointment polarization, rights-threat rate, public
+trust, and legislative conflict so directional scores can be inspected for
+parameter dependence. The validation campaign separately runs real-world
+scenario presets against documented target ranges where an analogue exists. A
+validation miss is useful evidence about model scope or target comparability,
+not a failed forecast.
+
+Calibration targets are documented in `config/calibration-source-observations.csv`
+and `docs/calibration-target-methods.md`. Source-backed rows and provisional
+synthesis rows must remain distinguishable in paper and supplement language.

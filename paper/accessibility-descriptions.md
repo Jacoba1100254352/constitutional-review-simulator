@@ -64,5 +64,10 @@ shadow-docket abuse, legitimacy, and institutional cost.
 stress cases and scenario diagnostics for score, stability, constitutional
 conflict, and trust.
 
+`tab:supp-calibration-sources`: Supplementary long table listing each
+calibration source-observation row by profile, target, method, sample size,
+reliability, and source-status category. Rows without direct URLs or sample
+counts are identified as provisional synthesis targets.
+
 `tab:supp-artifacts`: Supplementary long table inventorying generated report
 artifacts and file sizes.

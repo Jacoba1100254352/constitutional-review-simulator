@@ -13,8 +13,10 @@ from word_count import WORD_LIMIT, count_words
 ROOT = Path(__file__).resolve().parents[2]
 PAPER_DIR = ROOT / "paper"
 MAIN_TEX = PAPER_DIR / "main.tex"
+SUPPLEMENT_TEX = PAPER_DIR / "supplementary-appendix.tex"
 ACCESSIBILITY = PAPER_DIR / "accessibility-descriptions.md"
 REFERENCES_BIB = PAPER_DIR / "references.bib"
+VALIDATION_TABLE = PAPER_DIR / "tables" / "validation_summary.tex"
 
 REQUIRED_BACK_MATTER = [
     "Supplementary Material",
@@ -55,8 +57,10 @@ def expanded_tex(path: Path, seen: set[Path] | None = None) -> str:
 def main() -> None:
     tex = MAIN_TEX.read_text(encoding="utf-8")
     expanded = expanded_tex(MAIN_TEX)
+    supplement_expanded = expanded_tex(SUPPLEMENT_TEX) if SUPPLEMENT_TEX.exists() else ""
     accessibility = ACCESSIBILITY.read_text(encoding="utf-8")
     references = REFERENCES_BIB.read_text(encoding="utf-8")
+    validation_table = VALIDATION_TABLE.read_text(encoding="utf-8") if VALIDATION_TABLE.exists() else ""
 
     if r"\documentclass[" not in tex or "]{cup-journal}" not in tex:
         fail("main.tex should keep the cup-journal document-class interface.")
@@ -89,8 +93,25 @@ def main() -> None:
     if "Directional score construction" not in tex:
         fail("main.tex must explain the directional score construction.")
 
-    figure_labels = label_set(r"\\label\{(fig:[^}]+)\}", expanded)
-    table_labels = label_set(r"\\label\{(tab:[^}]+)\}", expanded)
+    if "OpenAI ChatGPT Deep Research" not in tex or "OpenAI Codex" not in tex or "GPT-5" not in tex:
+        fail("AI Tools Declaration should identify the tools and model/interface family used.")
+
+    for expected in [
+            "U.S. Supreme Court",
+            "U.S. emergency docket",
+            "Germany BVerfG",
+            "Canada SCC",
+            "France Conseil",
+            "South Africa ConstCourt",
+    ]:
+        if expected not in validation_table:
+            fail(f"validation summary table is missing expected profile: {expected}")
+    if "not fitted validation estimates" not in validation_table:
+        fail("validation table should state that checks are not fitted validation estimates.")
+
+    all_expanded = expanded + "\n" + supplement_expanded
+    figure_labels = label_set(r"\\label\{(fig:[^}]+)\}", all_expanded)
+    table_labels = label_set(r"\\label\{(tab:[^}]+)\}", all_expanded)
     if not figure_labels:
         fail("expected at least one figure label.")
     if not table_labels:
@@ -101,8 +122,8 @@ def main() -> None:
         fail("missing accessibility descriptions for " + ", ".join(missing))
 
     for environment in ["figure", "table", "longtable"]:
-        starts = len(re.findall(rf"\\begin\{{{environment}\}}", expanded))
-        captions = len(re.findall(rf"\\begin\{{{environment}\}}.*?\\caption", expanded, flags=re.S))
+        starts = len(re.findall(rf"\\begin\{{{environment}\}}", all_expanded))
+        captions = len(re.findall(rf"\\begin\{{{environment}\}}.*?\\caption", all_expanded, flags=re.S))
         if starts and captions < starts:
             fail(f"each {environment} environment should include a caption.")
 
