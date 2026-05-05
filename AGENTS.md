@@ -9,7 +9,7 @@ Use these commands from this directory:
 - `make campaign`
 - `make paired-campaign`
 - `make sensitivity-check`
-- `make run ARGS="--legislative-input '/Users/jacobanderson/Documents/simulators/Congress Institutional Simulator/reports/simulation-campaign-v21-paper.csv'"`
+- `make run ARGS="--legislative-input data/legislative/simulation-campaign-v21-paper.csv"`
 
 Project constraints:
 

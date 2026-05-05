@@ -19,7 +19,7 @@ make run ARGS="--scenarios current-federal-court,reasoned-emergency-review,dual-
 Import legislative simulator output as the case docket:
 
 ```sh
-make run ARGS="--legislative-input '/Users/jacobanderson/Documents/simulators/Congress Institutional Simulator/reports/simulation-campaign-v21-paper.csv' --scenarios current-federal-court,constitutional-council,legislative-override-court"
+make run ARGS="--legislative-input data/legislative/simulation-campaign-v21-paper.csv --scenarios current-federal-court,constitutional-council,legislative-override-court"
 ```
 
 Run the starter campaign:
@@ -52,7 +52,11 @@ Run the paired imported-legislative campaign:
 make paired-campaign
 ```
 
-This reads the sibling legislative simulator campaign CSV and writes:
+This reads the tracked legislative simulator campaign CSV at
+`data/legislative/simulation-campaign-v21-paper.csv` by default. Override it
+with `LEGISLATIVE_INPUT=/path/to/other.csv make paired-campaign`.
+
+The paired campaign writes:
 
 - `reports/constitutional-review-paired-import-v1.csv`
 - `reports/constitutional-review-paired-import-v1-periods.csv`

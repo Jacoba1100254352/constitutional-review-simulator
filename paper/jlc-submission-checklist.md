@@ -11,8 +11,13 @@ Use this checklist before uploading to Editorial Manager.
 - Tables and figures appear near first reference rather than at the end.
 - Figures and tables are numbered consecutively and have captions.
 - Citations use Chicago author-date style in the text.
+- Reference list text is in Chicago author-date form, not default `plainnat`
+  output.
 - Reference list contains only works cited in the manuscript.
 - Legal cases, if added later, are not placed in the reference list.
+- Directional-score formula and component metrics are disclosed.
+- Main text includes a compact result table and a compact calibration-target
+  table.
 - Back-matter declarations appear as separate headings before references:
   `Funding Declaration`, `Competing Interests Declaration`,
   `Data Availability Statement`, and `Ethical Statement`.
@@ -31,6 +36,8 @@ Use this checklist before uploading to Editorial Manager.
 ## Supplement And Replication Package
 
 - Supplementary material is anonymized for review.
+- `make paired-campaign` uses a portable `LEGISLATIVE_INPUT` path or a
+  submitted supplementary CSV, not an author-specific absolute path.
 - Supplement includes source code, configuration files, calibration targets,
   generated reports, figure-generation scripts, and reproduction commands.
 - Repository URLs, user paths, commit metadata, and author-identifying file

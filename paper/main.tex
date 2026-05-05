@@ -37,7 +37,7 @@ Constitutional review is usually studied through doctrine, case studies, or stra
 
 \section{Introduction}
 
-Constitutional review systems face a recurring design problem: courts need enough independence to enforce constitutional limits, but enough accountability and procedural discipline to avoid becoming unreviewable political actors. The classic countermajoritarian framing emphasizes the difficulty of judicial invalidation in a democracy \citep{bickel1962}, while comparative constitutional scholarship shows that review can be organized through many institutional forms rather than a single supreme-court template \citep{stoneSweet2000,ginsburg2003}. Law-and-courts scholarship also treats courts as institutions whose behavior depends on selection rules, legal hierarchy, compliance expectations, and political context \citep{epsteinKnight1998,helmke2005,vanberg2005,staton2010}.
+Constitutional review systems face a recurring design problem: courts need enough independence to enforce constitutional limits, but enough accountability and procedural discipline to avoid becoming unreviewable political actors. The classic countermajoritarian framing emphasizes the difficulty of judicial invalidation in a democracy \citep{bickel1962}, and court-skeptical accounts press the democratic case for limiting judicial supremacy \citep{tushnet1999}. Comparative constitutional scholarship shows that review can be organized through many institutional forms rather than a single supreme-court template \citep{stoneSweet2000,ginsburg2003}. Law-and-courts scholarship also treats courts as institutions whose behavior depends on selection rules, legal hierarchy, compliance expectations, and political context \citep{epsteinKnight1998,helmke2005,vanberg2005,staton2010}.
 
 The premise of this article is that those institutional choices should be analyzed jointly. Appointment method affects ideological composition, but its effects depend on tenure, removal standards, court size, docket control, voting thresholds, and emergency procedure. A strict supermajority rule may improve stability in ordinary merits cases but weaken rights protection when the docket contains high-risk legislation. A constitutional council may reduce ex post invalidation but shift costs into upstream screening. A reason-giving emergency procedure may reduce shadow-docket abuse while slowing response time. These are system-level interactions.
 
@@ -132,10 +132,20 @@ Institutional cost & administrative load, direct court cost, upstream screening 
 \end{tabular}
 \end{table}
 
+\subsection{Directional score construction}
+
+The directional score is an unweighted diagnostic summary, not an estimated social welfare function. Let $H$ be the set of higher-is-better metrics and $L$ the set of lower-is-better metrics included in the display score. The score is
+\[
+S=\frac{1}{23}\left(\sum_{m\in H}m+\sum_{m\in L}(1-m)\right).
+\]
+The higher-is-better set includes legal stability, rights protection, legitimacy, democratic responsiveness, independence/accountability balance, compliance, executive implementation, local-government compliance, emergency reason-giving, and emergency vote disclosure. The lower-is-better set includes partisan alignment, shadow-docket abuse, reversal rate, emergency relief rate, merits invalidation rate, constitutional conflict, defiance, workarounds, agency nonacquiescence, legislative reenactment, emergency public disagreement, administrative load, and total institutional cost. Diagnostic metrics such as review rate, recusal rate, override rate, lower-court depth, replacement pressure, and public trust remain visible in reports but do not enter $S$.
+
 \section{Calibration, Uncertainty, and Replication}
 \label{sec:calibration}
 
-The model is not empirically validated in the sense of fitting a historical court. It is calibrated as a comparative design instrument. Calibration targets live in structured CSV files and identify the court, time period, target key, target range, observed value when available, sample size, unit, method, reliability, source name, and source URL. Current target files include U.S. Supreme Court merits-docket doctrine shares from the Supreme Court Database \citep{scdb2025,scdbIssueCodebook}, emergency-docket context, public-trust context \citep{gallupCourtApproval2024}, comparative court profiles, lower-court pipeline benchmarks, emergency docket summaries, and normalized institutional cost profiles.
+The model is not empirically validated in the sense of fitting a historical court. It is calibrated as a comparative design instrument. Calibration targets live in structured CSV files and identify the court, time period, target key, target range, observed value when available, sample size, unit, method, reliability, source name, and source URL. Current target files include U.S. Supreme Court merits-docket doctrine shares from the Supreme Court Database \citep{scdb2025,scdbIssueCodebook}, emergency-docket context \citep{scotusblogInterim2024}, public-trust context \citep{gallupCourtApproval2024}, comparative court profiles, lower-court pipeline benchmarks, emergency docket summaries, and normalized institutional cost profiles.
+
+\input{tables/calibration_targets}
 
 Campaign reports include conservative 95 percent uncertainty bands for aggregate campaign metrics, pipeline segments, composition periods, and calibration diagnostics. These intervals are lightweight approximations based on aggregate denominators already stored in the reports. They are not a substitute for a raw per-case bootstrap, but they prevent the reports from presenting point estimates as if they were exact.
 
@@ -146,12 +156,16 @@ The repository also separates source code, configuration inputs, generated repor
 
 The starter campaign compares twelve core scenarios across five stress cases: baseline, polarized appointments, rights-threat surge, emergency-docket stress, and low-trust conflict. The paired-import campaign then compares the same court designs against a synthetic baseline and four imported legislative docket modes: all imported rows, high-capture rows, high-volatility rows, and low-mandate rows. The sensitivity campaign reruns the scenario catalog under high and low assumptions for emergency pressure, appointment polarization, rights-threat rate, public trust, and legislature-court conflict.
 
+Table~\ref{tab:baseline-results} reports the baseline estimates that anchor the graphical summaries. The table deliberately keeps the score beside individual diagnostics so that the reader can see whether a design's score is driven by rights protection, emergency control, legitimacy, responsiveness, or institutional cost.
+
+\input{tables/baseline_results}
+
 Figure~\ref{fig:paired-import} shows the paired-import campaign as a design stress test. Imported legislative outputs can change the relative diagnostic score of each court design, which is the reason the bridge is useful even though the court and legislative simulators remain separate.
 
 \begin{figure}[hbt!]
 \centering
 \input{figures/paired_import_lines}
-\caption{Directional diagnostic scores under synthetic and imported legislative docket sources. The score is a compact display aid, not a welfare function.}
+\caption{Directional diagnostic scores under synthetic and imported legislative docket sources. The score is a compact display aid, not a welfare function. CUR* marks the current-style scenario.}
 \label{fig:paired-import}
 \end{figure}
 
@@ -171,7 +185,7 @@ Figure~\ref{fig:cost-score} displays the same point graphically. The current-sty
 \begin{figure}[hbt!]
 \centering
 \input{figures/cost_score_scatter}
-\caption{Baseline institutional cost versus directional diagnostic score. The diagnostic score summarizes multiple directional metrics for display only; individual metric tables remain the substantive evidence.}
+\caption{Baseline institutional cost versus directional diagnostic score. The diagnostic score summarizes multiple directional metrics for display only; individual metric tables remain the substantive evidence. CUR* marks the current-style scenario.}
 \label{fig:cost-score}
 \end{figure}
 
@@ -200,7 +214,44 @@ This project uses synthetic simulation outputs and public institutional benchmar
 \section*{AI Tools Declaration}
 OpenAI ChatGPT and Codex were used in May 2026 through the ChatGPT and Codex interfaces to assist with source discovery, venue research, code editing, figure preparation, and manuscript drafting. The tools were not listed as authors. All code, source claims, model choices, figures, and manuscript text remain subject to author review and revision.
 
-\bibliographystyle{plainnat}
-\bibliography{references}
+\begin{thebibliography}{}
+
+\bibitem[Bickel(1962)]{bickel1962}
+Bickel, Alexander M. 1962. \textit{The Least Dangerous Branch: The Supreme Court at the Bar of Politics}. New Haven, CT: Yale University Press.
+
+\bibitem[Epstein and Knight(1998)]{epsteinKnight1998}
+Epstein, Lee, and Jack Knight. 1998. \textit{The Choices Justices Make}. Washington, DC: CQ Press.
+
+\bibitem[Gallup(2024)]{gallupCourtApproval2024}
+Gallup. 2024. ``Approval of U.S. Supreme Court Stalled Near Historical Low.'' \url{https://news.gallup.com/poll/647834/approval-supreme-court-stalled-near-historical-low.aspx}.
+
+\bibitem[Ginsburg(2003)]{ginsburg2003}
+Ginsburg, Tom. 2003. \textit{Judicial Review in New Democracies: Constitutional Courts in Asian Cases}. Cambridge: Cambridge University Press.
+
+\bibitem[Helmke(2005)]{helmke2005}
+Helmke, Gretchen. 2005. \textit{Courts under Constraints: Judges, Generals, and Presidents in Argentina}. Cambridge: Cambridge University Press.
+
+\bibitem[SCOTUSblog(2025)]{scotusblogInterim2024}
+SCOTUSblog. 2025. ``Interim Docket 2024.'' \url{https://www.scotusblog.com/cases/interim-docket/2024/}.
+
+\bibitem[Staton(2010)]{staton2010}
+Staton, Jeffrey K. 2010. \textit{Judicial Power and Strategic Communication in Mexico}. Cambridge: Cambridge University Press.
+
+\bibitem[Stone Sweet(2000)]{stoneSweet2000}
+Stone Sweet, Alec. 2000. \textit{Governing with Judges: Constitutional Politics in Europe}. Oxford: Oxford University Press.
+
+\bibitem[Supreme Court Database(2025a)]{scdb2025}
+Supreme Court Database. 2025a. ``Modern Database: 2025 Release 01.'' \url{https://scdb.la.psu.edu/data/2025-release-01/}.
+
+\bibitem[Supreme Court Database(2025b)]{scdbIssueCodebook}
+Supreme Court Database. 2025b. ``Online Codebook: Issue.'' \url{https://scdb.la.psu.edu/online-codebook/issue/}.
+
+\bibitem[Tushnet(1999)]{tushnet1999}
+Tushnet, Mark. 1999. \textit{Taking the Constitution Away from the Courts}. Princeton, NJ: Princeton University Press.
+
+\bibitem[Vanberg(2005)]{vanberg2005}
+Vanberg, Georg. 2005. \textit{The Politics of Constitutional Review in Germany}. Cambridge: Cambridge University Press.
+
+\end{thebibliography}
 
 \end{document}

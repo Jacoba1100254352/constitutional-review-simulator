@@ -7,11 +7,14 @@ import re
 import sys
 from pathlib import Path
 
+from word_count import WORD_LIMIT, count_words
+
 
 ROOT = Path(__file__).resolve().parents[2]
 PAPER_DIR = ROOT / "paper"
 MAIN_TEX = PAPER_DIR / "main.tex"
 ACCESSIBILITY = PAPER_DIR / "accessibility-descriptions.md"
+REFERENCES_BIB = PAPER_DIR / "references.bib"
 
 REQUIRED_BACK_MATTER = [
     "Supplementary Material",
@@ -32,9 +35,28 @@ def label_set(pattern: str, source: str) -> set[str]:
     return set(re.findall(pattern, source))
 
 
+def expanded_tex(path: Path, seen: set[Path] | None = None) -> str:
+    seen = seen or set()
+    if path in seen:
+        return ""
+    seen.add(path)
+    text = path.read_text(encoding="utf-8")
+
+    def replace_input(match: re.Match[str]) -> str:
+        raw = match.group(1)
+        input_path = PAPER_DIR / (raw if raw.endswith(".tex") else f"{raw}.tex")
+        if not input_path.exists():
+            return match.group(0)
+        return expanded_tex(input_path, seen)
+
+    return re.sub(r"\\input\{([^}]+)\}", replace_input, text)
+
+
 def main() -> None:
     tex = MAIN_TEX.read_text(encoding="utf-8")
+    expanded = expanded_tex(MAIN_TEX)
     accessibility = ACCESSIBILITY.read_text(encoding="utf-8")
+    references = REFERENCES_BIB.read_text(encoding="utf-8")
 
     if r"\documentclass[" not in tex or "]{cup-journal}" not in tex:
         fail("main.tex should keep the cup-journal document-class interface.")
@@ -45,9 +67,12 @@ def main() -> None:
     if r"\usepackage[authoryear,round]{natbib}" not in tex:
         fail("main.tex should keep author-date natbib citations for JLC review.")
 
-    bibliography_index = tex.find(r"\bibliography{references}")
+    if r"\bibliographystyle{plainnat}" in tex or r"\bibliography{references}" in tex:
+        fail("main.tex should not use plainnat output for the JLC submission draft.")
+
+    bibliography_index = tex.find(r"\begin{thebibliography}")
     if bibliography_index < 0:
-        fail("main.tex must include the bibliography at the end of the manuscript.")
+        fail("main.tex must include a Chicago-style reference list at the end of the manuscript.")
 
     for heading in REQUIRED_BACK_MATTER:
         marker = rf"\section*{{{heading}}}"
@@ -61,8 +86,11 @@ def main() -> None:
     if appendix_index >= 0 and appendix_index > bibliography_index:
         fail("appendices should not appear after the reference list in the main manuscript.")
 
-    figure_labels = label_set(r"\\label\{(fig:[^}]+)\}", tex)
-    table_labels = label_set(r"\\label\{(tab:[^}]+)\}", tex)
+    if "Directional score construction" not in tex:
+        fail("main.tex must explain the directional score construction.")
+
+    figure_labels = label_set(r"\\label\{(fig:[^}]+)\}", expanded)
+    table_labels = label_set(r"\\label\{(tab:[^}]+)\}", expanded)
     if not figure_labels:
         fail("expected at least one figure label.")
     if not table_labels:
@@ -73,10 +101,37 @@ def main() -> None:
         fail("missing accessibility descriptions for " + ", ".join(missing))
 
     for environment in ["figure", "table", "longtable"]:
-        starts = len(re.findall(rf"\\begin\{{{environment}\}}", tex))
-        captions = len(re.findall(rf"\\begin\{{{environment}\}}.*?\\caption", tex, flags=re.S))
+        starts = len(re.findall(rf"\\begin\{{{environment}\}}", expanded))
+        captions = len(re.findall(rf"\\begin\{{{environment}\}}.*?\\caption", expanded, flags=re.S))
         if starts and captions < starts:
             fail(f"each {environment} environment should include a caption.")
+
+    citation_keys: set[str] = set()
+    for match in re.findall(r"\\cite\w*(?:\[[^]]*\])?\{([^}]+)\}", tex):
+        citation_keys.update(key.strip() for key in match.split(",") if key.strip())
+    bib_keys = set(re.findall(r"@\w+\{([^,]+),", references))
+    missing_keys = sorted(citation_keys - bib_keys)
+    uncited_keys = sorted(bib_keys - citation_keys)
+    if missing_keys:
+        fail("missing BibTeX entries for " + ", ".join(missing_keys))
+    if uncited_keys:
+        fail("references.bib contains uncited entries: " + ", ".join(uncited_keys))
+
+    leaked_path_files = [
+        ROOT / "Makefile",
+        ROOT / "README.md",
+        ROOT / "AGENTS.md",
+        *sorted((ROOT / "reports").glob("*manifest.json")),
+        MAIN_TEX,
+    ]
+    local_home_marker = "/" + "Users/"
+    leaking = [path for path in leaked_path_files if local_home_marker in path.read_text(encoding="utf-8")]
+    if leaking:
+        fail("local absolute path found in " + ", ".join(str(path.relative_to(ROOT)) for path in leaking))
+
+    words = count_words(tex)
+    if words > WORD_LIMIT:
+        fail(f"word count {words} exceeds JLC's ordinary {WORD_LIMIT}-word ceiling.")
 
     print("JLC format check passed.")
 

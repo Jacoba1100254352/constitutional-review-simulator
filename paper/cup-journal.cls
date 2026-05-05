@@ -17,9 +17,8 @@
 \setlength{\headheight}{14pt}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{Journal of Law and Courts target manuscript}
 \fancyhead[R]{\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0pt}
 
 \def\cup@affiliation{}
 \def\cup@empty{}

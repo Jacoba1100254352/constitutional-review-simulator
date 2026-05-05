@@ -3,7 +3,7 @@
   "provenanceFormat": "constitutional-review-report-v1",
   "sourceTree": "tracked project artifact; inspect repository history for commit identity",
   "javaRelease": "21",
-  "javaCommand": "courtsim.Main --campaign v1-paired --runs 120 --cases 80 --seed 20260501 --output-dir reports --legislative-input /Users/jacobanderson/Documents/simulators/Congress Institutional Simulator/reports/simulation-campaign-v21-paper.csv",
+  "javaCommand": "courtsim.Main --campaign v1-paired --runs 120 --cases 80 --seed 20260501 --output-dir reports --legislative-input data/legislative/simulation-campaign-v21-paper.csv",
   "runs": 120,
   "casesPerRun": 80,
   "seed": 20260501,
