@@ -112,9 +112,10 @@ public final class Main {
         System.out.println("Input: " + LegislativeOutputImporter.describeImport(importedSignals));
         System.out.printf(
                 Locale.ROOT,
-                "%-38s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s%n",
+                "%-38s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s %6s%n",
                 "Scenario",
                 "Score",
+                "DemC",
                 "Stable",
                 "Rights",
                 "Part",
@@ -125,14 +126,17 @@ public final class Main {
                 "Conf",
                 "Resp",
                 "Comp",
+                "Veto",
+                "Fit",
                 "Cost"
         );
         for (ScenarioReport report : reports) {
             System.out.printf(
                     Locale.ROOT,
-                    "%-38s %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f%n",
+                    "%-38s %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f %6.3f%n",
                     truncate(report.scenarioKey(), 38),
                     report.directionalScore(),
+                    report.democraticConstitutionalism(),
                     report.legalStability(),
                     report.rightsProtection(),
                     report.partisanAlignment(),
@@ -143,17 +147,21 @@ public final class Main {
                     report.constitutionalConflict(),
                     report.democraticResponsiveness(),
                     report.complianceRate(),
+                    report.vetoRelocationRisk(),
+                    report.legalTransplantFeasibility(),
                     report.totalInstitutionalCost()
             );
         }
     }
 
     private static void printCsv(List<ScenarioReport> reports) {
-        System.out.println("scenarioKey,scenario,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost");
+        System.out.println("scenarioKey,scenario,scenarioKind,reviewMechanism,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,weakFormDeclarationRate,suspendedDeclarationRate,legislativeResponseRate,rightsImpactStatementRate,ombudsmanTriggerRate,publicDefenderParticipationRate,preEnactmentReviewRate,abstractReviewRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost");
         for (ScenarioReport report : reports) {
             System.out.println(String.join(",",
                     csv(report.scenarioKey()),
                     csv(report.scenarioName()),
+                    csv(report.scenarioKind()),
+                    csv(report.reviewMechanism()),
                     Integer.toString(report.totalCases()),
                     Integer.toString(report.reviewedCases()),
                     Integer.toString(report.invalidations()),
@@ -184,6 +192,10 @@ public final class Main {
                     number(report.reversalRate()),
                     number(report.constitutionalConflict()),
                     number(report.democraticResponsiveness()),
+                    number(report.democraticConstitutionalism()),
+                    number(report.vetoRelocationRisk()),
+                    number(report.legalTransplantFeasibility()),
+                    number(report.politicalCultureSensitivity()),
                     number(report.independenceAccountabilityBalance()),
                     number(report.concurrenceFragmentation()),
                     number(report.dissentIntensity()),
@@ -192,6 +204,14 @@ public final class Main {
                     number(report.crossCheckRate()),
                     number(report.councilScreenRate()),
                     number(report.overrideRate()),
+                    number(report.weakFormDeclarationRate()),
+                    number(report.suspendedDeclarationRate()),
+                    number(report.legislativeResponseRate()),
+                    number(report.rightsImpactStatementRate()),
+                    number(report.ombudsmanTriggerRate()),
+                    number(report.publicDefenderParticipationRate()),
+                    number(report.preEnactmentReviewRate()),
+                    number(report.abstractReviewRate()),
                     number(report.lowerCourtConflict()),
                     number(report.averageTimeToReview()),
                     number(report.replacementRate()),

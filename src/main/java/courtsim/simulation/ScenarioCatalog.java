@@ -11,8 +11,10 @@ import courtsim.institution.LegislativeOverrideRule;
 import courtsim.institution.RecusalRule;
 import courtsim.institution.RemovalStandard;
 import courtsim.institution.ReviewArchetype;
+import courtsim.institution.ReviewMechanism;
 import courtsim.institution.ReviewStructure;
 import courtsim.institution.ReviewTiming;
+import courtsim.institution.ScenarioKind;
 import courtsim.institution.TermLimit;
 import courtsim.institution.VotingThreshold;
 import courtsim.model.CourtWorld;
@@ -36,7 +38,16 @@ public final class ScenarioCatalog {
             "constitutional-council",
             "legislative-override-court",
             "accountability-retention-court",
-            "independence-accountability-hybrid"
+            "independence-accountability-hybrid",
+            "weak-form-review",
+            "suspended-declaration-review",
+            "override-clause-review",
+            "pre-enactment-review",
+            "abstract-review-tribunal",
+            "ombudsman-triggered-review",
+            "constitutional-public-defender",
+            "rights-impact-statement-review",
+            "mandatory-legislative-response"
     );
 
     private ScenarioCatalog() {
@@ -304,6 +315,177 @@ public final class ScenarioCatalog {
                         0.68,
                         0.72
                 )),
+                entry("weak-form-review", mechanismConfig(
+                        "Weak-form review with legislative reply",
+                        AppointmentMethod.SUPERMAJORITY_COMMISSION,
+                        9,
+                        TermLimit.NONRENEWABLE_18_YEAR,
+                        RemovalStandard.IMPEACHMENT_ONLY,
+                        RecusalRule.MANDATORY_CONFLICT,
+                        DocketProcedure.REASONED_EMERGENCY_PANEL,
+                        VotingThreshold.SIMPLE_MAJORITY,
+                        ReviewStructure.FULL_COURT,
+                        LegislativeOverrideRule.NONE,
+                        ReviewArchetype.DECLARATION_ONLY_PARLIAMENTARY,
+                        ReviewTiming.POST_ENACTMENT,
+                        DocketControl.LEAVE_TO_APPEAL,
+                        ReviewMechanism.WEAK_FORM_REVIEW,
+                        0.72,
+                        0.74,
+                        0.00, 0.62, 0.58, 0.78, 0.70, 0.58, 0.70
+                )),
+                entry("suspended-declaration-review", mechanismConfig(
+                        "Suspended declarations of invalidity",
+                        AppointmentMethod.SUPERMAJORITY_COMMISSION,
+                        11,
+                        TermLimit.NONRENEWABLE_18_YEAR,
+                        RemovalStandard.MISCONDUCT_COMMISSION,
+                        RecusalRule.MANDATORY_CONFLICT,
+                        DocketProcedure.MERITS_FOLLOW_UP,
+                        VotingThreshold.SIMPLE_MAJORITY,
+                        ReviewStructure.FULL_COURT,
+                        LegislativeOverrideRule.NONE,
+                        ReviewArchetype.DECLARATION_ONLY_PARLIAMENTARY,
+                        ReviewTiming.POST_ENACTMENT,
+                        DocketControl.LEAVE_TO_APPEAL,
+                        ReviewMechanism.SUSPENDED_DECLARATION,
+                        0.62,
+                        0.64,
+                        0.00, 0.68, 0.48, 0.76, 0.66, 0.68, 0.66
+                )),
+                entry("override-clause-review", mechanismConfig(
+                        "Strong-form review with explicit override clause",
+                        AppointmentMethod.PRESIDENTIAL_SENATE,
+                        9,
+                        TermLimit.NONRENEWABLE_18_YEAR,
+                        RemovalStandard.IMPEACHMENT_ONLY,
+                        RecusalRule.MANDATORY_CONFLICT,
+                        DocketProcedure.REASONED_EMERGENCY_PANEL,
+                        VotingThreshold.SIMPLE_MAJORITY,
+                        ReviewStructure.FULL_COURT,
+                        LegislativeOverrideRule.SUPERMAJORITY_OVERRIDE,
+                        ReviewArchetype.DISCRETIONARY_APPELLATE_LEAVE,
+                        ReviewTiming.POST_ENACTMENT,
+                        DocketControl.LEAVE_TO_APPEAL,
+                        ReviewMechanism.LEGISLATIVE_OVERRIDE_CLAUSE,
+                        0.66,
+                        0.62,
+                        0.06, 0.70, 0.52, 0.70, 0.58, 0.60, 0.62
+                )),
+                entry("pre-enactment-review", mechanismConfig(
+                        "Pre-enactment review before laws take effect",
+                        AppointmentMethod.MERIT_SORTITION,
+                        12,
+                        TermLimit.SHORT_RENEWABLE,
+                        RemovalStandard.MISCONDUCT_COMMISSION,
+                        RecusalRule.STRICT_TRANSPARENCY,
+                        DocketProcedure.REASONED_EMERGENCY_PANEL,
+                        VotingThreshold.HIGH_CONSTITUTIONAL_THRESHOLD,
+                        ReviewStructure.CONSTITUTIONAL_COUNCIL,
+                        LegislativeOverrideRule.NONE,
+                        ReviewArchetype.PRE_ENACTMENT_COUNCIL,
+                        ReviewTiming.PRE_ENACTMENT,
+                        DocketControl.REFERRAL_GATED,
+                        ReviewMechanism.PRE_ENACTMENT_REVIEW,
+                        0.52,
+                        0.60,
+                        0.00, 0.56, 0.58, 0.84, 0.74, 0.66, 0.76
+                )),
+                entry("abstract-review-tribunal", mechanismConfig(
+                        "Abstract review tribunal",
+                        AppointmentMethod.SUPERMAJORITY_COMMISSION,
+                        15,
+                        TermLimit.NONRENEWABLE_18_YEAR,
+                        RemovalStandard.MISCONDUCT_COMMISSION,
+                        RecusalRule.STRICT_TRANSPARENCY,
+                        DocketProcedure.FULL_COURT_EMERGENCY,
+                        VotingThreshold.SUPERMAJORITY_TO_INVALIDATE,
+                        ReviewStructure.PANEL_EN_BANC,
+                        LegislativeOverrideRule.NONE,
+                        ReviewArchetype.MIXED_ABSTRACT_CONCRETE,
+                        ReviewTiming.MIXED_TIMING,
+                        DocketControl.REFERRAL_GATED,
+                        ReviewMechanism.ABSTRACT_REVIEW,
+                        0.50,
+                        0.56,
+                        0.00, 0.76, 0.36, 0.78, 0.66, 0.70, 0.72
+                )),
+                entry("ombudsman-triggered-review", mechanismConfig(
+                        "Ombudsman-triggered constitutional review",
+                        AppointmentMethod.MERIT_SORTITION,
+                        11,
+                        TermLimit.NONRENEWABLE_18_YEAR,
+                        RemovalStandard.MISCONDUCT_COMMISSION,
+                        RecusalRule.MANDATORY_CONFLICT,
+                        DocketProcedure.REASONED_EMERGENCY_PANEL,
+                        VotingThreshold.SIMPLE_MAJORITY,
+                        ReviewStructure.FULL_COURT,
+                        LegislativeOverrideRule.NONE,
+                        ReviewArchetype.CONSTITUTIONAL_COMPLAINT,
+                        ReviewTiming.POST_ENACTMENT,
+                        DocketControl.COMPLAINT_ADMISSIBILITY,
+                        ReviewMechanism.OMBUDSMAN_TRIGGERED_REVIEW,
+                        0.58,
+                        0.66,
+                        0.00, 0.66, 0.54, 0.78, 0.66, 0.74, 0.62
+                )),
+                entry("constitutional-public-defender", mechanismConfig(
+                        "Constitutional public defender access model",
+                        AppointmentMethod.MERIT_SORTITION,
+                        11,
+                        TermLimit.NONRENEWABLE_18_YEAR,
+                        RemovalStandard.MISCONDUCT_COMMISSION,
+                        RecusalRule.MANDATORY_CONFLICT,
+                        DocketProcedure.MERITS_FOLLOW_UP,
+                        VotingThreshold.SIMPLE_MAJORITY,
+                        ReviewStructure.FULL_COURT,
+                        LegislativeOverrideRule.NONE,
+                        ReviewArchetype.CONSTITUTIONAL_COMPLAINT,
+                        ReviewTiming.POST_ENACTMENT,
+                        DocketControl.COMPLAINT_ADMISSIBILITY,
+                        ReviewMechanism.CONSTITUTIONAL_PUBLIC_DEFENDER,
+                        0.64,
+                        0.70,
+                        0.00, 0.68, 0.50, 0.76, 0.62, 0.78, 0.60
+                )),
+                entry("rights-impact-statement-review", mechanismConfig(
+                        "Rights-impact statements before review",
+                        AppointmentMethod.LEGISLATIVE_SELECTION,
+                        9,
+                        TermLimit.SHORT_RENEWABLE,
+                        RemovalStandard.MISCONDUCT_COMMISSION,
+                        RecusalRule.STRICT_TRANSPARENCY,
+                        DocketProcedure.REASONED_EMERGENCY_PANEL,
+                        VotingThreshold.HIGH_CONSTITUTIONAL_THRESHOLD,
+                        ReviewStructure.CONSTITUTIONAL_COUNCIL,
+                        LegislativeOverrideRule.NONE,
+                        ReviewArchetype.PRE_ENACTMENT_COUNCIL,
+                        ReviewTiming.PRE_ENACTMENT,
+                        DocketControl.REFERRAL_GATED,
+                        ReviewMechanism.RIGHTS_IMPACT_STATEMENT,
+                        0.78,
+                        0.76,
+                        0.04, 0.46, 0.72, 0.88, 0.76, 0.64, 0.74
+                )),
+                entry("mandatory-legislative-response", mechanismConfig(
+                        "Mandatory legislative response cycles",
+                        AppointmentMethod.SUPERMAJORITY_COMMISSION,
+                        9,
+                        TermLimit.NONRENEWABLE_18_YEAR,
+                        RemovalStandard.MISCONDUCT_COMMISSION,
+                        RecusalRule.MANDATORY_CONFLICT,
+                        DocketProcedure.MERITS_FOLLOW_UP,
+                        VotingThreshold.SIMPLE_MAJORITY,
+                        ReviewStructure.FULL_COURT,
+                        LegislativeOverrideRule.DELAYED_MAJORITY_OVERRIDE,
+                        ReviewArchetype.DECLARATION_ONLY_PARLIAMENTARY,
+                        ReviewTiming.POST_ENACTMENT,
+                        DocketControl.LEAVE_TO_APPEAL,
+                        ReviewMechanism.MANDATORY_LEGISLATIVE_RESPONSE,
+                        0.60,
+                        0.64,
+                        0.00, 0.60, 0.68, 0.82, 0.72, 0.62, 0.68
+                )),
                 entry("dual-supreme-courts", config(
                         "Dual supreme courts with independent agreement requirement",
                         AppointmentMethod.SUPERMAJORITY_COMMISSION,
@@ -550,6 +732,68 @@ public final class ScenarioCatalog {
                 votingThreshold,
                 reviewStructure,
                 overrideRule,
+                ReviewArchetype.DISCRETIONARY_APPELLATE_LEAVE,
+                ReviewTiming.POST_ENACTMENT,
+                DocketControl.DISCRETIONARY_CERTIORARI,
+                CostProfileKey.STYLIZED_INTERNAL,
+                ScenarioKind.COURT_VARIANT,
+                ReviewMechanism.STRONG_FORM_COURT,
+                0.68,
+                0.64,
+                appointmentSkew,
+                independence,
+                accountability,
+                transparency,
+                coalitionNorm,
+                rightsPriority,
+                stabilityPreference
+        );
+    }
+
+    private static DesignConfiguration mechanismConfig(
+            String label,
+            AppointmentMethod appointmentMethod,
+            int courtSize,
+            TermLimit termLimit,
+            RemovalStandard removalStandard,
+            RecusalRule recusalRule,
+            DocketProcedure docketProcedure,
+            VotingThreshold votingThreshold,
+            ReviewStructure reviewStructure,
+            LegislativeOverrideRule overrideRule,
+            ReviewArchetype reviewArchetype,
+            ReviewTiming reviewTiming,
+            DocketControl docketControl,
+            ReviewMechanism reviewMechanism,
+            double legalTransplantFeasibility,
+            double politicalCultureFit,
+            double appointmentSkew,
+            double independence,
+            double accountability,
+            double transparency,
+            double coalitionNorm,
+            double rightsPriority,
+            double stabilityPreference
+    ) {
+        return new DesignConfiguration(
+                label,
+                appointmentMethod,
+                courtSize,
+                termLimit,
+                removalStandard,
+                recusalRule,
+                docketProcedure,
+                votingThreshold,
+                reviewStructure,
+                overrideRule,
+                reviewArchetype,
+                reviewTiming,
+                docketControl,
+                CostProfileKey.STYLIZED_INTERNAL,
+                ScenarioKind.SYNTHETIC_MECHANISM,
+                reviewMechanism,
+                legalTransplantFeasibility,
+                politicalCultureFit,
                 appointmentSkew,
                 independence,
                 accountability,
@@ -598,6 +842,10 @@ public final class ScenarioCatalog {
                 reviewTiming,
                 docketControl,
                 costProfileKey,
+                ScenarioKind.REAL_WORLD_PRESET,
+                mechanismFor(reviewArchetype, overrideRule, reviewTiming, costProfileKey),
+                transplantFeasibilityFor(costProfileKey),
+                politicalCultureFitFor(costProfileKey),
                 appointmentSkew,
                 independence,
                 accountability,
@@ -608,6 +856,62 @@ public final class ScenarioCatalog {
         );
     }
 
+    private static ReviewMechanism mechanismFor(
+            ReviewArchetype reviewArchetype,
+            LegislativeOverrideRule overrideRule,
+            ReviewTiming reviewTiming,
+            CostProfileKey costProfileKey
+    ) {
+        if (costProfileKey == CostProfileKey.ECHR || costProfileKey == CostProfileKey.CJEU) {
+            return ReviewMechanism.SUPRANATIONAL_REVIEW;
+        }
+        if (reviewArchetype == ReviewArchetype.DECLARATION_ONLY_PARLIAMENTARY) {
+            return ReviewMechanism.WEAK_FORM_REVIEW;
+        }
+        if (overrideRule != LegislativeOverrideRule.NONE) {
+            return ReviewMechanism.LEGISLATIVE_OVERRIDE_CLAUSE;
+        }
+        if (reviewArchetype == ReviewArchetype.PRE_ENACTMENT_COUNCIL || reviewTiming == ReviewTiming.PRE_ENACTMENT) {
+            return ReviewMechanism.PRE_ENACTMENT_REVIEW;
+        }
+        if (reviewArchetype == ReviewArchetype.MIXED_ABSTRACT_CONCRETE) {
+            return ReviewMechanism.ABSTRACT_REVIEW;
+        }
+        return ReviewMechanism.STRONG_FORM_COURT;
+    }
+
+    private static double transplantFeasibilityFor(CostProfileKey costProfileKey) {
+        return switch (costProfileKey) {
+            case US_SUPREME_COURT -> 0.72;
+            case US_APPELLATE_SYSTEM -> 0.60;
+            case GERMAN_CONSTITUTIONAL_COURT -> 0.66;
+            case FRENCH_CONSTITUTIONAL_COUNCIL -> 0.58;
+            case CANADIAN_SUPREME_COURT -> 0.70;
+            case SOUTH_AFRICAN_CONSTITUTIONAL_COURT -> 0.54;
+            case UK_SUPREME_COURT -> 0.68;
+            case INDIA_SUPREME_COURT -> 0.44;
+            case BRAZIL_STF -> 0.42;
+            case ECHR, CJEU -> 0.48;
+            case STYLIZED_INTERNAL -> 0.64;
+        };
+    }
+
+    private static double politicalCultureFitFor(CostProfileKey costProfileKey) {
+        return switch (costProfileKey) {
+            case US_SUPREME_COURT -> 0.64;
+            case US_APPELLATE_SYSTEM -> 0.58;
+            case GERMAN_CONSTITUTIONAL_COURT -> 0.78;
+            case FRENCH_CONSTITUTIONAL_COUNCIL -> 0.66;
+            case CANADIAN_SUPREME_COURT -> 0.74;
+            case SOUTH_AFRICAN_CONSTITUTIONAL_COURT -> 0.58;
+            case UK_SUPREME_COURT -> 0.72;
+            case INDIA_SUPREME_COURT -> 0.52;
+            case BRAZIL_STF -> 0.46;
+            case ECHR, CJEU -> 0.56;
+            case STYLIZED_INTERNAL -> 0.62;
+        };
+    }
+
     private record ScenarioEntry(String key, Scenario scenario) {
     }
 
@@ -615,6 +919,16 @@ public final class ScenarioCatalog {
         @Override
         public String name() {
             return configuration.label();
+        }
+
+        @Override
+        public ScenarioKind kind() {
+            return configuration.scenarioKind();
+        }
+
+        @Override
+        public ReviewMechanism mechanism() {
+            return configuration.reviewMechanism();
         }
 
         @Override

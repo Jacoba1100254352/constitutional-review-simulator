@@ -23,9 +23,16 @@ current-style court is marked `CUR*`. The designs move differently as the docket
 legislative outputs are useful stress tests.
 
 `fig:cost-score`: Scatterplot of baseline total institutional cost against
-directional diagnostic score. The current-style court is marked `CUR*` and appears at the lower-cost
-and lower-score end, while cross-checking, council, and hybrid designs appear
-with higher scores and higher institutional costs.
+democratic constitutionalism. The current-style court is marked `CUR*`.
+Court variants and synthetic mechanisms are labeled so readers can compare
+cost against the rights, responsiveness, legitimacy, compliance, feasibility,
+and veto-relocation diagnostic.
+
+`fig:mechanism-tradeoff`: Scatterplot of synthetic mechanisms only. The
+horizontal axis is veto-relocation risk and the vertical axis is democratic
+constitutionalism. Weak-form, suspended-declaration, override-clause,
+pre-enactment, abstract-review, ombudsman, public-defender, rights-impact
+statement, and mandatory legislative-response mechanisms are labeled.
 
 ## Tables
 
@@ -36,9 +43,9 @@ pathways, voting thresholds, review structures, override rules, and benchmark
 presets.
 
 `tab:metrics`: Table grouping the simulator's outcome metrics into legal
-performance, political alignment, emergency docket, legitimacy and conflict,
-pipeline and intake, coalitions and recusals, compliance, and institutional
-cost categories.
+performance, political alignment, democratic constitutionalism, noncourt
+mechanisms, emergency docket, legitimacy and conflict, pipeline and intake,
+coalitions and recusals, compliance, and institutional cost categories.
 
 `tab:calibration-targets`: Table listing selected external calibration targets
 for U.S. Supreme Court doctrine and emergency activity, public trust, and
@@ -51,10 +58,17 @@ German, Canadian, French, and South African benchmark scenario presets. Columns
 show the scenario preset, count of mapped targets falling within documented
 ranges, median target gap, and the largest remaining miss.
 
-`tab:baseline-results`: Table listing baseline estimates for all core scenario
-codes. Columns report directional score and score interval, legal stability,
-rights protection, shadow-docket abuse, legitimacy, democratic responsiveness,
-and institutional cost.
+`tab:baseline-results`: Table listing selected baseline estimates for court
+variant and synthetic mechanism scenario codes. Columns report scenario kind,
+directional score and score interval, democratic constitutionalism, rights
+protection, veto-relocation risk, transplant feasibility, political-culture
+sensitivity, and institutional cost.
+
+`tab:mechanism-results`: Table listing synthetic mechanism diagnostics.
+Columns report democratic constitutionalism, veto-relocation risk, transplant
+feasibility, political-culture sensitivity, weak-form declaration rate,
+suspended declaration rate, legislative response rate, front-end review rate,
+and access-support rate.
 
 `tab:supp-model-weights`: Supplementary long table describing the fixed model
 weights and formulas for core simulated outcomes, including shadow-docket abuse,
@@ -62,12 +76,14 @@ legal stability, legitimacy, rights protection, constitutional conflict,
 compliance, enforcement, institutional cost, and the directional display score.
 
 `tab:supp-scenario-matrix`: Supplementary long table listing all starter
-campaign case-scenario combinations with score, rights protection,
-shadow-docket abuse, legitimacy, and institutional cost.
+campaign case-scenario combinations with mechanism family, score, democratic
+constitutionalism, rights protection, veto-relocation risk, political-culture
+sensitivity, and institutional cost.
 
 `tab:supp-sensitivity`: Supplementary long table listing sensitivity campaign
-stress cases and scenario diagnostics for score, stability, constitutional
-conflict, and trust.
+stress cases and scenario diagnostics for score, democratic constitutionalism,
+veto-relocation risk, transplant feasibility, political-culture sensitivity,
+and trust.
 
 `tab:supp-calibration-sources`: Supplementary long table listing each
 calibration source-observation row by profile, target, method, sample size,

@@ -72,6 +72,18 @@ public final class MetricsAccumulator {
     private double institutionalDelayCostSum;
     private double implementationComplexitySum;
     private double totalInstitutionalCostSum;
+    private double vetoRelocationRiskSum;
+    private double legalTransplantFeasibilitySum;
+    private double politicalCultureSensitivitySum;
+    private double democraticConstitutionalismSum;
+    private int weakFormDeclarations;
+    private int suspendedDeclarations;
+    private int legislativeResponses;
+    private int rightsImpactStatements;
+    private int ombudsmanTriggers;
+    private int publicDefenderParticipations;
+    private int preEnactmentReviews;
+    private int abstractReviews;
     private final Map<Integer, SegmentAccumulator> periodAccumulators = new HashMap<>();
     private final Map<DoctrineArea, SegmentAccumulator> doctrineAccumulators = new EnumMap<>(DoctrineArea.class);
     private final Map<String, SegmentAccumulator> pipelineAccumulators = new HashMap<>();
@@ -190,6 +202,34 @@ public final class MetricsAccumulator {
         institutionalDelayCostSum += outcome.institutionalDelayCost();
         implementationComplexitySum += outcome.implementationComplexity();
         totalInstitutionalCostSum += outcome.totalInstitutionalCost();
+        vetoRelocationRiskSum += outcome.vetoRelocationRisk();
+        legalTransplantFeasibilitySum += outcome.legalTransplantFeasibility();
+        politicalCultureSensitivitySum += outcome.politicalCultureSensitivity();
+        democraticConstitutionalismSum += outcome.democraticConstitutionalism();
+        if (outcome.weakFormDeclaration()) {
+            weakFormDeclarations++;
+        }
+        if (outcome.suspendedDeclaration()) {
+            suspendedDeclarations++;
+        }
+        if (outcome.legislativeResponse()) {
+            legislativeResponses++;
+        }
+        if (outcome.rightsImpactStatement()) {
+            rightsImpactStatements++;
+        }
+        if (outcome.ombudsmanTriggered()) {
+            ombudsmanTriggers++;
+        }
+        if (outcome.publicDefenderParticipation()) {
+            publicDefenderParticipations++;
+        }
+        if (outcome.preEnactmentReview()) {
+            preEnactmentReviews++;
+        }
+        if (outcome.abstractReview()) {
+            abstractReviews++;
+        }
         periodAccumulators
                 .computeIfAbsent(outcome.caseFile().reviewPeriod(), period -> new SegmentAccumulator("period", Integer.toString(period + 1)))
                 .add(outcome);
@@ -210,10 +250,17 @@ public final class MetricsAccumulator {
                 .add(snapshot);
     }
 
-    public ScenarioReport toReport(String scenarioKey, String scenarioName) {
+    public ScenarioReport toReport(
+            String scenarioKey,
+            String scenarioName,
+            String scenarioKind,
+            String reviewMechanism
+    ) {
         return new ScenarioReport(
                 scenarioKey,
                 scenarioName,
+                scenarioKind,
+                reviewMechanism,
                 totalCases,
                 reviewedCases,
                 invalidations,
@@ -278,6 +325,18 @@ public final class MetricsAccumulator {
                 average(institutionalDelayCostSum),
                 average(implementationComplexitySum),
                 average(totalInstitutionalCostSum),
+                average(vetoRelocationRiskSum),
+                average(legalTransplantFeasibilitySum),
+                average(politicalCultureSensitivitySum),
+                average(democraticConstitutionalismSum),
+                Values.ratio(weakFormDeclarations, totalCases),
+                Values.ratio(suspendedDeclarations, totalCases),
+                Values.ratio(legislativeResponses, totalCases),
+                Values.ratio(rightsImpactStatements, totalCases),
+                Values.ratio(ombudsmanTriggers, totalCases),
+                Values.ratio(publicDefenderParticipations, totalCases),
+                Values.ratio(preEnactmentReviews, totalCases),
+                Values.ratio(abstractReviews, totalCases),
                 periodReports(),
                 doctrineReports(),
                 pipelineReports(),
@@ -380,6 +439,10 @@ public final class MetricsAccumulator {
         private double institutionalDelayCostSum;
         private double implementationComplexitySum;
         private double totalInstitutionalCostSum;
+        private double vetoRelocationRiskSum;
+        private double legalTransplantFeasibilitySum;
+        private double politicalCultureSensitivitySum;
+        private double democraticConstitutionalismSum;
 
         private SegmentAccumulator(String segmentType, String segmentKey) {
             this.segmentType = segmentType;
@@ -469,6 +532,10 @@ public final class MetricsAccumulator {
             institutionalDelayCostSum += outcome.institutionalDelayCost();
             implementationComplexitySum += outcome.implementationComplexity();
             totalInstitutionalCostSum += outcome.totalInstitutionalCost();
+            vetoRelocationRiskSum += outcome.vetoRelocationRisk();
+            legalTransplantFeasibilitySum += outcome.legalTransplantFeasibility();
+            politicalCultureSensitivitySum += outcome.politicalCultureSensitivity();
+            democraticConstitutionalismSum += outcome.democraticConstitutionalism();
         }
 
         private SegmentReport toReport() {
@@ -517,7 +584,11 @@ public final class MetricsAccumulator {
                     average(institutionalBudgetCostSum),
                     average(institutionalDelayCostSum),
                     average(implementationComplexitySum),
-                    average(totalInstitutionalCostSum)
+                    average(totalInstitutionalCostSum),
+                    average(vetoRelocationRiskSum),
+                    average(legalTransplantFeasibilitySum),
+                    average(politicalCultureSensitivitySum),
+                    average(democraticConstitutionalismSum)
             );
         }
 

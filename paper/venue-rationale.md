@@ -8,9 +8,10 @@ rather than an ACM venue.
 JLC is the better first target because the paper's central contribution is a
 law-and-courts contribution: it compares constitutional-review institutions,
 judicial independence/accountability, selection and tenure, emergency docket
-procedure, constitutional councils, cross-checking courts, overrides, and
-compliance. The simulator is computational, but the research question is about
-court design.
+procedure, constitutional councils, cross-checking courts, overrides,
+legislative response devices, and compliance. The simulator is computational,
+but the research question is when review improves democratic constitutionalism
+rather than merely relocating veto power.
 
 The Congress Institutional Simulator reasonably used ACM because that paper was
 framed as computational mechanism search for collective decision-making,
@@ -22,7 +23,7 @@ closer to the ACM Collective Intelligence / computational social systems lane.
 | Dimension | Journal of Law and Courts | ACM Route |
 | --- | --- | --- |
 | Primary audience | Law-and-courts scholars, judicial politics, legal institutions, comparative courts | Computing, collective intelligence, HCI/computational social systems, mechanism design |
-| Best fit for this paper | Constitutional-review architecture, judicial selection, court power, rights protection, emergency procedures, legitimacy, compliance | Simulation method, reusable tooling, data/visualization pipeline, computational institutional design |
+| Best fit for this paper | Constitutional-review architecture, judicial selection, court power, noncourt review mechanisms, rights protection, emergency procedures, legitimacy, compliance | Simulation method, reusable tooling, data/visualization pipeline, computational institutional design |
 | Template | Cambridge/JLC `cup-journal` template | ACM `acmart` template |
 | Review framing | Theoretical and empirical legal-institution scholarship, with rigorous qualitative or quantitative methods | Conference/proceedings contribution to computing or collective intelligence |
 | Citation style | Chicago author-date | ACM format; author-year only if configured |

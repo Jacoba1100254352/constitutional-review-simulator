@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from word_count import WORD_LIMIT, count_words
@@ -30,6 +32,15 @@ SCENARIO_POINT_LABELS = {
     "OVR",
     "RET",
     "HYB",
+    "WFR",
+    "SUS",
+    "OVC",
+    "PRE",
+    "ABS",
+    "OMB",
+    "DEF",
+    "RIS",
+    "MLR",
 }
 
 REQUIRED_BACK_MATTER = [
@@ -114,6 +125,91 @@ def validate_figure_point_labels() -> None:
                         f"{path.relative_to(PAPER_DIR)} has overlapping point labels "
                         f"{current_label} and {other_label}"
                     )
+        validate_rendered_figure_labels(path)
+
+
+def validate_rendered_figure_labels(path: Path) -> None:
+    source = path.read_text(encoding="utf-8")
+    if not any(label in source for label in SCENARIO_POINT_LABELS):
+        return
+    with tempfile.TemporaryDirectory(prefix="jlc-figure-check-") as temp_raw:
+        temp = Path(temp_raw)
+        fragment = temp / "fragment.tex"
+        fragment.write_text(source, encoding="utf-8")
+        document = temp / "figure-check.tex"
+        document.write_text(
+            "\n".join(
+                [
+                    r"\documentclass{article}",
+                    r"\usepackage{xcolor}",
+                    r"\usepackage{graphicx}",
+                    r"\pagestyle{empty}",
+                    r"\begin{document}",
+                    r"\input{fragment.tex}",
+                    r"\end{document}",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+        subprocess.run(
+            [
+                "latexmk",
+                "-pdf",
+                "-interaction=nonstopmode",
+                "-halt-on-error",
+                "figure-check.tex",
+            ],
+            cwd=temp,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+        bbox = subprocess.run(
+            ["pdftotext", "-bbox", "figure-check.pdf", "-"],
+            cwd=temp,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
+        ).stdout
+    page_match = re.search(r"<page[^>]*width=\"([\d.]+)\"[^>]*height=\"([\d.]+)\"", bbox)
+    if not page_match:
+        fail(f"could not inspect rendered figure labels for {path.relative_to(PAPER_DIR)}")
+    page_width = float(page_match.group(1))
+    page_height = float(page_match.group(2))
+    rendered_boxes: list[tuple[str, float, float, float, float]] = []
+    word_pattern = re.compile(
+        r"<word[^>]*xMin=\"([\d.]+)\"[^>]*yMin=\"([\d.]+)\"[^>]*xMax=\"([\d.]+)\"[^>]*yMax=\"([\d.]+)\"[^>]*>([^<]+)</word>"
+    )
+    for match in word_pattern.finditer(bbox):
+        text = (
+            match.group(5)
+            .replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+        )
+        if text not in SCENARIO_POINT_LABELS:
+            continue
+        left, top, right, bottom = map(float, match.groups()[:4])
+        if left < 0.5 or top < 0.5 or right > page_width - 0.5 or bottom > page_height - 0.5:
+            fail(f"{path.relative_to(PAPER_DIR)} has clipped rendered point label {text}")
+        rendered_boxes.append((text, left, top, right, bottom))
+    expected_labels = {label for label in SCENARIO_POINT_LABELS if label in source}
+    rendered_labels = {label for label, *_ in rendered_boxes}
+    missing = expected_labels - rendered_labels
+    if missing:
+        fail(f"{path.relative_to(PAPER_DIR)} missing rendered point labels: {', '.join(sorted(missing))}")
+    for index, current in enumerate(rendered_boxes):
+        current_label, left, top, right, bottom = current
+        for other_label, other_left, other_top, other_right, other_bottom in rendered_boxes[index + 1:]:
+            horizontal = min(right, other_right) - max(left, other_left)
+            vertical = min(bottom, other_bottom) - max(top, other_top)
+            if horizontal > 0.5 and vertical > 0.5:
+                fail(
+                    f"{path.relative_to(PAPER_DIR)} has overlapping rendered point labels "
+                    f"{current_label} and {other_label}"
+                )
 
 
 def main() -> None:

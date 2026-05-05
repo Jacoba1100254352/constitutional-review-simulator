@@ -69,17 +69,22 @@ def validate_source_rows(rows: list[dict[str, str]]) -> None:
         reliability = row.get("reliability", "").strip().lower()
         source_name = row.get("sourceName", "").strip()
         method = row.get("method", "").strip().lower()
+        unit = row.get("unit", "").strip().lower()
         n = row.get("n", "").strip()
         has_n = bool(n and n != "0")
 
         if not source_url:
             errors.append(f"{label}: validation row is missing sourceUrl")
+        if not has_n:
+            errors.append(f"{label}: validation row is missing a nonzero denominator")
         if reliability == "low":
             errors.append(f"{label}: low-reliability row cannot be validation evidence")
-        if source_name in WEAK_SOURCE_NAMES:
+        if source_name in WEAK_SOURCE_NAMES or "synthesis" in source_name.lower():
             errors.append(f"{label}: synthesis source cannot be validation evidence")
-        if "synthesis" in method and not has_n:
-            errors.append(f"{label}: synthesis method without denominator cannot be validation evidence")
+        if "synthesis" in method:
+            errors.append(f"{label}: synthesis method cannot be validation evidence")
+        if "normalized" in unit or "benchmark cost" in method or "public-trust" in method:
+            errors.append(f"{label}: contextual trust or normalized-cost proxy cannot be validation evidence")
 
     if errors:
         for error in errors:

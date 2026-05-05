@@ -44,9 +44,14 @@ validation counts.
 
 Only rows with `useForValidation=true` are counted in the manuscript's
 validation-style table. The source-matrix builder rejects validation rows that
-lack a source URL, have low reliability, use broad comparative or institutional
-cost synthesis as the source, or use a synthesis method without a stored
-denominator.
+lack a source URL, lack a nonzero denominator, have low reliability, use any
+synthesis source or synthesis method label, use contextual public-trust
+proxies, or use normalized-cost/benchmark-cost construction. Under this stricter
+rule, the current source-specific validation surface is intentionally narrow:
+the retained validation rows are emergency-docket diagnostics with a documented
+application denominator. Comparative court intake, doctrine mix without stored
+SCDB denominators, trust, merits-outcome synthesis, and normalized cost rows are
+stress-test context only.
 
 The validation campaign intentionally reports misses. A failed target should be
 read as one of three things:
@@ -57,7 +62,8 @@ read as one of three things:
 - the real-world preset needs refinement.
 
 Before final empirical submission, replace provisional synthesis rows with
-documented source-specific datasets where possible, especially public trust,
-normalized cost, and merits-invalidation proxies outside the U.S. doctrine
-targets. Once those datasets include denominators and construction formulas, set
+documented source-specific datasets where possible, especially doctrine mix
+denominators, comparative intake/throughput rows, public trust, normalized cost,
+and merits-invalidation proxies outside the emergency-docket context. Once
+those datasets include URLs, denominators, and construction formulas, set
 `useForValidation=true` and regenerate the calibration target files.

@@ -73,7 +73,12 @@ public final class Simulator {
         List<ScenarioRunResult> reports = new ArrayList<>();
         for (int i = 0; i < scenarios.size(); i++) {
             Scenario scenario = scenarios.get(i);
-            ScenarioReport report = accumulators[i].toReport(scenario.key(), scenario.name());
+            ScenarioReport report = accumulators[i].toReport(
+                    scenario.key(),
+                    scenario.name(),
+                    scenario.kind().name().toLowerCase(),
+                    scenario.mechanism().name().toLowerCase()
+            );
             reports.add(new ScenarioRunResult(
                     scenario.key(),
                     scenario.name(),

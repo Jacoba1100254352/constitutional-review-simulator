@@ -45,6 +45,10 @@ public record SegmentReport(
         double institutionalBudgetCost,
         double institutionalDelayCost,
         double implementationComplexity,
-        double totalInstitutionalCost
+        double totalInstitutionalCost,
+        double vetoRelocationRisk,
+        double legalTransplantFeasibility,
+        double politicalCultureSensitivity,
+        double democraticConstitutionalism
 ) {
 }

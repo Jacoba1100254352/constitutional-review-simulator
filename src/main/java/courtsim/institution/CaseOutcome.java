@@ -61,6 +61,18 @@ public record CaseOutcome(
         double institutionalBudgetCost,
         double institutionalDelayCost,
         double implementationComplexity,
-        double totalInstitutionalCost
+        double totalInstitutionalCost,
+        boolean weakFormDeclaration,
+        boolean suspendedDeclaration,
+        boolean legislativeResponse,
+        boolean rightsImpactStatement,
+        boolean ombudsmanTriggered,
+        boolean publicDefenderParticipation,
+        boolean preEnactmentReview,
+        boolean abstractReview,
+        double vetoRelocationRisk,
+        double legalTransplantFeasibility,
+        double politicalCultureSensitivity,
+        double democraticConstitutionalism
 ) {
 }

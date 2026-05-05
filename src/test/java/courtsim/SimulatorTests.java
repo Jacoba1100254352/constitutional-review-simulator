@@ -28,6 +28,7 @@ public final class SimulatorTests {
     public static void main(String[] args) throws Exception {
         scenarioCatalogSelectsKnownKeys();
         simulatorProducesReports();
+        mechanismScenariosProduceDiagnostics();
         legislativeImporterToleratesCampaignCsv();
         campaignWritesArtifacts();
         pairedCampaignWritesArtifacts();
@@ -42,11 +43,18 @@ public final class SimulatorTests {
                 "constitutional-council",
                 "dual-cross-checking-courts",
                 "german-constitutional-court",
-                "uk-supreme-court"
+                "uk-supreme-court",
+                "weak-form-review",
+                "mandatory-legislative-response"
         ));
-        assertTrue(scenarios.size() == 5, "expected selected scenarios");
+        assertTrue(scenarios.size() == 7, "expected selected scenarios");
         assertTrue(scenarios.get(1).name().contains("constitutional council"), "expected council scenario name");
+        assertTrue(scenarios.get(3).kind().name().equals("REAL_WORLD_PRESET"), "expected real-world preset kind");
+        assertTrue(scenarios.get(4).mechanism().name().equals("WEAK_FORM_REVIEW"), "expected UK weak-form mechanism");
+        assertTrue(scenarios.get(5).kind().name().equals("SYNTHETIC_MECHANISM"), "expected synthetic mechanism kind");
+        assertTrue(scenarios.get(6).mechanism().name().equals("MANDATORY_LEGISLATIVE_RESPONSE"), "expected mandatory response mechanism");
         assertTrue(ScenarioCatalog.scenarioKeys().contains("canadian-supreme-court"), "expected real-world preset");
+        assertTrue(ScenarioCatalog.scenarioKeys().contains("rights-impact-statement-review"), "expected rights-impact mechanism");
         assertTrue(PolicyDomain.fromKey("speech").equals(PolicyDomain.SPEECH_RELIGION), "expected speech domain alias");
         assertTrue(PolicyDomain.fromKey("preemption").equals(PolicyDomain.FEDERALISM), "expected federalism domain alias");
     }
@@ -98,12 +106,53 @@ public final class SimulatorTests {
             assertBetween(report.institutionalDelayCost(), "institutional delay cost");
             assertBetween(report.implementationComplexity(), "implementation complexity");
             assertBetween(report.totalInstitutionalCost(), "total institutional cost");
+            assertBetween(report.democraticConstitutionalism(), "democratic constitutionalism");
+            assertBetween(report.vetoRelocationRisk(), "veto relocation risk");
+            assertBetween(report.legalTransplantFeasibility(), "legal transplant feasibility");
+            assertBetween(report.politicalCultureSensitivity(), "political culture sensitivity");
             assertTrue(!report.periodReports().isEmpty(), "expected period diagnostics");
             assertTrue(!report.doctrineReports().isEmpty(), "expected doctrine diagnostics");
             assertTrue(!report.pipelineReports().isEmpty(), "expected pipeline diagnostics");
             assertTrue(!report.policyDomainReports().isEmpty(), "expected policy-domain diagnostics");
             assertTrue(!report.compositionReports().isEmpty(), "expected composition diagnostics");
         }
+    }
+
+    private static void mechanismScenariosProduceDiagnostics() {
+        List<ScenarioReport> reports = new Simulator().compare(
+                ScenarioCatalog.scenariosForKeys(List.of(
+                        "weak-form-review",
+                        "suspended-declaration-review",
+                        "pre-enactment-review",
+                        "abstract-review-tribunal",
+                        "ombudsman-triggered-review",
+                        "constitutional-public-defender",
+                        "rights-impact-statement-review",
+                        "mandatory-legislative-response"
+                )),
+                WorldSpec.baseline(24),
+                8,
+                20260501L,
+                List.of()
+        );
+        assertTrue(reports.size() == 8, "expected mechanism reports");
+        Map<String, ScenarioReport> byKey = new HashMap<>();
+        for (ScenarioReport report : reports) {
+            byKey.put(report.scenarioKey(), report);
+            assertTrue(report.scenarioKind().equals("synthetic_mechanism"), "expected synthetic mechanism report kind");
+            assertBetween(report.democraticConstitutionalism(), "mechanism democratic constitutionalism");
+            assertBetween(report.vetoRelocationRisk(), "mechanism veto relocation risk");
+            assertBetween(report.legalTransplantFeasibility(), "mechanism transplant feasibility");
+            assertBetween(report.politicalCultureSensitivity(), "mechanism political culture sensitivity");
+        }
+        assertTrue(byKey.get("weak-form-review").weakFormDeclarationRate() > 0.0, "expected weak-form declarations");
+        assertTrue(byKey.get("suspended-declaration-review").suspendedDeclarationRate() > 0.0, "expected suspended declarations");
+        assertTrue(byKey.get("pre-enactment-review").preEnactmentReviewRate() > 0.0, "expected pre-enactment review");
+        assertTrue(byKey.get("abstract-review-tribunal").abstractReviewRate() > 0.0, "expected abstract review");
+        assertTrue(byKey.get("ombudsman-triggered-review").ombudsmanTriggerRate() > 0.0, "expected ombudsman triggers");
+        assertTrue(byKey.get("constitutional-public-defender").publicDefenderParticipationRate() > 0.0, "expected public-defender participation");
+        assertTrue(byKey.get("rights-impact-statement-review").rightsImpactStatementRate() > 0.0, "expected rights-impact statements");
+        assertTrue(byKey.get("mandatory-legislative-response").legislativeResponseRate() > 0.0, "expected legislative response cycles");
     }
 
     private static void legislativeImporterToleratesCampaignCsv() throws Exception {
@@ -145,6 +194,8 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected calibration CSV artifact");
         assertTrue(Files.exists(result.caseCsvGzPath()), "expected compressed case-level artifact");
         assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("scenarioKey"), "expected case-level CSV header");
+        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("reviewMechanism"), "expected mechanism case export");
+        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("weakFormDeclaration"), "expected weak-form case export");
         assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("policyDomain"), "expected policy-domain case export");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected interval CSV artifact");
         assertTrue(Files.exists(result.periodIntervalCsvPath()), "expected period interval CSV artifact");
@@ -164,6 +215,13 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.csvPath()).contains("executiveImplementationRate"), "expected enforcement metric");
         assertTrue(Files.readString(result.csvPath()).contains("stateFederalTension"), "expected hierarchy metric");
         assertTrue(Files.readString(result.csvPath()).contains("totalInstitutionalCost"), "expected institutional cost metric");
+        assertTrue(Files.readString(result.csvPath()).contains("scenarioKind"), "expected scenario-kind metadata");
+        assertTrue(Files.readString(result.csvPath()).contains("reviewMechanism"), "expected review-mechanism metadata");
+        assertTrue(Files.readString(result.csvPath()).contains("democraticConstitutionalism"), "expected democratic constitutionalism metric");
+        assertTrue(Files.readString(result.csvPath()).contains("vetoRelocationRisk"), "expected veto-relocation metric");
+        assertTrue(Files.readString(result.csvPath()).contains("legalTransplantFeasibility"), "expected transplant feasibility metric");
+        assertTrue(Files.readString(result.csvPath()).contains("politicalCultureSensitivity"), "expected political-culture sensitivity metric");
+        assertTrue(Files.readString(result.csvPath()).contains("weakFormDeclarationRate"), "expected weak-form mechanism metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("period"), "expected period report rows");
         assertTrue(Files.readString(result.doctrineCsvPath()).contains("doctrine"), "expected doctrine report rows");
         assertTrue(Files.readString(result.pipelineCsvPath()).contains("pipeline"), "expected pipeline report rows");
@@ -183,6 +241,7 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.compositionIntervalCsvPath()).contains("lower95"), "expected composition uncertainty bands");
         assertTrue(Files.readString(result.calibrationIntervalCsvPath()).contains("lower95"), "expected calibration uncertainty bands");
         assertTrue(Files.readString(result.markdownPath()).contains("Scenario Averages"), "expected Markdown summary");
+        assertTrue(Files.readString(result.markdownPath()).contains("Mechanism Diagnostics"), "expected mechanism diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Period Diagnostics"), "expected period diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Doctrine Diagnostics"), "expected doctrine diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Pipeline Diagnostics"), "expected pipeline diagnostics");
@@ -191,6 +250,7 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.markdownPath()).contains("Uncertainty Diagnostics"), "expected uncertainty diagnostics");
         assertTrue(Files.readString(result.markdownPath()).contains("Calibration Diagnostics"), "expected calibration diagnostics");
         assertTrue(Files.exists(Path.of("config/comparative/constitutional-review-designs.csv")), "expected comparative design config");
+        assertTrue(Files.exists(Path.of("config/comparative/synthetic-review-mechanisms.csv")), "expected synthetic mechanism config");
         assertTrue(Files.exists(Path.of("config/pipeline/us-scotus-pipeline.csv")), "expected pipeline config");
         assertTrue(Files.exists(Path.of("config/emergency/scotus-emergency-schema.csv")), "expected emergency schema config");
         assertTrue(Files.exists(Path.of("config/cost-benchmarks/institutional-costs.csv")), "expected cost benchmark config");
@@ -334,6 +394,8 @@ public final class SimulatorTests {
         int reliability = column(header, "reliability");
         int useForValidation = column(header, "useForValidation");
         int modelObservedValue = column(header, "modelObservedValue");
+        int lowerBound = column(header, "lowerBound");
+        int upperBound = column(header, "upperBound");
         int lower95 = column(header, "lower95");
         int upper95 = column(header, "upper95");
         int withinTarget = column(header, "withinTarget");
@@ -347,17 +409,19 @@ public final class SimulatorTests {
             assertTrue(!"low".equalsIgnoreCase(row[reliability]), "low reliability row used for validation: " + row[profileKey]);
             assertTrue(!row[sourceName].equals("Comparative calibration research synthesis"), "comparative synthesis used for validation");
             assertTrue(!row[sourceName].equals("Institutional cost benchmark synthesis"), "cost synthesis used for validation");
+            assertTrue(!row[sourceName].toLowerCase().contains("synthesis"), "synthesis source used for validation");
             assertTrue(!row[modelObservedValue].isBlank(), "validation row missing model observed value");
             assertTrue(Double.parseDouble(row[lower95]) <= Double.parseDouble(row[upper95]), "invalid interval bounds");
             assertTrue(row[withinTarget].equals("true") || row[withinTarget].equals("false"), "invalid withinTarget flag");
+            double model = Double.parseDouble(row[modelObservedValue]);
+            double lower = Double.parseDouble(row[lowerBound]);
+            double upper = Double.parseDouble(row[upperBound]);
+            boolean expectedWithin = lower <= model && model <= upper;
+            assertTrue(Boolean.parseBoolean(row[withinTarget]) == expectedWithin, "withinTarget inconsistent with target range");
             validationCounts.merge(row[profileKey], 1, Integer::sum);
         }
-        assertTrue(validationCounts.getOrDefault("scdb-modern-merits-2000-2024", 0) == 7, "expected seven U.S. doctrine validation targets");
-        assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 4, "expected four emergency validation targets");
-        assertTrue(validationCounts.getOrDefault("germany-bverfg-2024", 0) == 1, "expected one German validation target");
-        assertTrue(validationCounts.getOrDefault("canada-scc-recent", 0) == 1, "expected one Canadian validation target");
-        assertTrue(validationCounts.getOrDefault("france-conseil-qpc", 0) == 1, "expected one French validation target");
-        assertTrue(validationCounts.getOrDefault("south-africa-constcourt-recent", 0) == 1, "expected one South African validation target");
+        assertTrue(validationCounts.size() == 1, "expected only source-specific emergency validation targets");
+        assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 3, "expected three emergency validation targets");
     }
 
     private static String readGzipHeader(Path path) throws Exception {

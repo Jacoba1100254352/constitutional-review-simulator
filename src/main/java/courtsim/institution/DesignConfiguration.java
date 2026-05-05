@@ -17,6 +17,10 @@ public record DesignConfiguration(
         ReviewTiming reviewTiming,
         DocketControl docketControl,
         CostProfileKey costProfileKey,
+        ScenarioKind scenarioKind,
+        ReviewMechanism reviewMechanism,
+        double legalTransplantFeasibility,
+        double politicalCultureFit,
         double appointmentSkew,
         double independence,
         double accountability,
@@ -59,6 +63,10 @@ public record DesignConfiguration(
                 ReviewTiming.POST_ENACTMENT,
                 DocketControl.DISCRETIONARY_CERTIORARI,
                 CostProfileKey.STYLIZED_INTERNAL,
+                ScenarioKind.COURT_VARIANT,
+                ReviewMechanism.STRONG_FORM_COURT,
+                0.68,
+                0.64,
                 appointmentSkew,
                 independence,
                 accountability,
@@ -85,6 +93,14 @@ public record DesignConfiguration(
         if (costProfileKey == null) {
             costProfileKey = CostProfileKey.STYLIZED_INTERNAL;
         }
+        if (scenarioKind == null) {
+            scenarioKind = ScenarioKind.COURT_VARIANT;
+        }
+        if (reviewMechanism == null) {
+            reviewMechanism = ReviewMechanism.STRONG_FORM_COURT;
+        }
+        legalTransplantFeasibility = Values.clamp01(legalTransplantFeasibility);
+        politicalCultureFit = Values.clamp01(politicalCultureFit);
         appointmentSkew = Values.signedClamp(appointmentSkew);
         independence = Values.clamp01(independence);
         accountability = Values.clamp01(accountability);
@@ -152,7 +168,53 @@ public record DesignConfiguration(
     public boolean preEnactmentReview() {
         return reviewTiming == ReviewTiming.PRE_ENACTMENT
                 || reviewTiming == ReviewTiming.MIXED_TIMING
+                || reviewArchetype == ReviewArchetype.PRE_ENACTMENT_COUNCIL
+                || reviewMechanism == ReviewMechanism.PRE_ENACTMENT_REVIEW
+                || reviewMechanism == ReviewMechanism.RIGHTS_IMPACT_STATEMENT;
+    }
+
+    public boolean syntheticMechanism() {
+        return scenarioKind == ScenarioKind.SYNTHETIC_MECHANISM;
+    }
+
+    public boolean realWorldPreset() {
+        return scenarioKind == ScenarioKind.REAL_WORLD_PRESET;
+    }
+
+    public boolean weakFormReview() {
+        return reviewMechanism == ReviewMechanism.WEAK_FORM_REVIEW
+                || reviewMechanism == ReviewMechanism.MANDATORY_LEGISLATIVE_RESPONSE;
+    }
+
+    public boolean declarationOrDialogueMechanism() {
+        return reviewMechanism == ReviewMechanism.WEAK_FORM_REVIEW
+                || reviewMechanism == ReviewMechanism.SUSPENDED_DECLARATION
+                || reviewMechanism == ReviewMechanism.MANDATORY_LEGISLATIVE_RESPONSE
+                || reviewMechanism == ReviewMechanism.LEGISLATIVE_OVERRIDE_CLAUSE;
+    }
+
+    public boolean abstractReviewMechanism() {
+        return reviewMechanism == ReviewMechanism.ABSTRACT_REVIEW
+                || reviewArchetype == ReviewArchetype.MIXED_ABSTRACT_CONCRETE
                 || reviewArchetype == ReviewArchetype.PRE_ENACTMENT_COUNCIL;
+    }
+
+    public boolean ombudsmanAccessMechanism() {
+        return reviewMechanism == ReviewMechanism.OMBUDSMAN_TRIGGERED_REVIEW;
+    }
+
+    public boolean publicDefenderMechanism() {
+        return reviewMechanism == ReviewMechanism.CONSTITUTIONAL_PUBLIC_DEFENDER;
+    }
+
+    public boolean rightsImpactStatementMechanism() {
+        return reviewMechanism == ReviewMechanism.RIGHTS_IMPACT_STATEMENT;
+    }
+
+    public boolean mandatoryLegislativeResponseMechanism() {
+        return reviewMechanism == ReviewMechanism.MANDATORY_LEGISLATIVE_RESPONSE
+                || reviewMechanism == ReviewMechanism.SUSPENDED_DECLARATION
+                || reviewMechanism == ReviewMechanism.WEAK_FORM_REVIEW;
     }
 
     public double baseIntakeAcceptanceRate() {
@@ -171,7 +233,18 @@ public record DesignConfiguration(
             case REFERRAL_GATED -> 2.80;
             case MANDATORY_WITH_FILTERS -> 6.50;
         };
-        return Values.clamp(archetypeBase * controlMultiplier, 0.003, 0.72);
+        double mechanismMultiplier = switch (reviewMechanism) {
+            case STRONG_FORM_COURT, LEGISLATIVE_OVERRIDE_CLAUSE, SUSPENDED_DECLARATION -> 1.00;
+            case WEAK_FORM_REVIEW -> 1.18;
+            case PRE_ENACTMENT_REVIEW -> 1.42;
+            case ABSTRACT_REVIEW -> 1.36;
+            case OMBUDSMAN_TRIGGERED_REVIEW -> 1.28;
+            case CONSTITUTIONAL_PUBLIC_DEFENDER -> 1.16;
+            case RIGHTS_IMPACT_STATEMENT -> 1.10;
+            case MANDATORY_LEGISLATIVE_RESPONSE -> 1.22;
+            case SUPRANATIONAL_REVIEW -> 0.88;
+        };
+        return Values.clamp(archetypeBase * controlMultiplier * mechanismMultiplier, 0.003, 0.72);
     }
 
     public double intakeScreeningIntensity() {
@@ -190,7 +263,19 @@ public record DesignConfiguration(
             case SUPRANATIONAL_TREATY -> 0.76;
             case DISCRETIONARY_APPELLATE_LEAVE -> 0.68;
         };
-        return Values.clamp01((control + archetype) / 2.0);
+        double mechanism = switch (reviewMechanism) {
+            case STRONG_FORM_COURT, LEGISLATIVE_OVERRIDE_CLAUSE -> 0.00;
+            case WEAK_FORM_REVIEW -> -0.08;
+            case SUSPENDED_DECLARATION -> 0.06;
+            case PRE_ENACTMENT_REVIEW -> 0.12;
+            case ABSTRACT_REVIEW -> 0.10;
+            case OMBUDSMAN_TRIGGERED_REVIEW -> 0.14;
+            case CONSTITUTIONAL_PUBLIC_DEFENDER -> 0.08;
+            case RIGHTS_IMPACT_STATEMENT -> 0.10;
+            case MANDATORY_LEGISLATIVE_RESPONSE -> 0.12;
+            case SUPRANATIONAL_REVIEW -> 0.16;
+        };
+        return Values.clamp01(((control + archetype) / 2.0) + mechanism);
     }
 
     public double benchmarkedDirectCourtCost() {

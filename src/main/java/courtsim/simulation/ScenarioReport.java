@@ -7,6 +7,8 @@ import java.util.List;
 public record ScenarioReport(
         String scenarioKey,
         String scenarioName,
+        String scenarioKind,
+        String reviewMechanism,
         int totalCases,
         int reviewedCases,
         int invalidations,
@@ -71,6 +73,18 @@ public record ScenarioReport(
         double institutionalDelayCost,
         double implementationComplexity,
         double totalInstitutionalCost,
+        double vetoRelocationRisk,
+        double legalTransplantFeasibility,
+        double politicalCultureSensitivity,
+        double democraticConstitutionalism,
+        double weakFormDeclarationRate,
+        double suspendedDeclarationRate,
+        double legislativeResponseRate,
+        double rightsImpactStatementRate,
+        double ombudsmanTriggerRate,
+        double publicDefenderParticipationRate,
+        double preEnactmentReviewRate,
+        double abstractReviewRate,
         List<SegmentReport> periodReports,
         List<SegmentReport> doctrineReports,
         List<SegmentReport> pipelineReports,
@@ -102,7 +116,13 @@ public record ScenarioReport(
                 emergencyReasonGivingRate,
                 emergencyVoteDisclosureRate,
                 Values.lowerIsBetter(administrativeLoad),
-                Values.lowerIsBetter(totalInstitutionalCost)
+                Values.lowerIsBetter(totalInstitutionalCost),
+                Values.lowerIsBetter(vetoRelocationRisk),
+                legalTransplantFeasibility,
+                Values.lowerIsBetter(politicalCultureSensitivity),
+                democraticConstitutionalism,
+                legislativeResponseRate,
+                rightsImpactStatementRate
         );
     }
 }
