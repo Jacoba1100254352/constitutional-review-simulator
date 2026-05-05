@@ -17,10 +17,11 @@ specific court.
 Rows with a source URL and nonzero `n` are the strongest targets. Rows with a
 source URL but `n=0` may still be source-backed ratio or codebook targets, but
 they lack a stored denominator and should not support precision claims until the
-denominator is added. Rows with no source URL, low reliability, or a
-`sourceName` ending in `synthesis` are provisional stress-test ranges. They
-remain in the repository so that weak assumptions are visible, editable, and
-excluded from stronger empirical claims.
+denominator is added. Rows with no source URL, low reliability, contextual
+public-trust proxies, normalized cost benchmarks, or broad comparative
+synthesis labels are provisional stress-test ranges. They remain in the
+repository so that weak assumptions are visible, editable, and excluded from
+validation counts.
 
 ## Current Target Families
 
@@ -41,6 +42,12 @@ excluded from stronger empirical claims.
 
 ## Validation Use
 
+Only rows with `useForValidation=true` are counted in the manuscript's
+validation-style table. The source-matrix builder rejects validation rows that
+lack a source URL, have low reliability, use broad comparative or institutional
+cost synthesis as the source, or use a synthesis method without a stored
+denominator.
+
 The validation campaign intentionally reports misses. A failed target should be
 read as one of three things:
 
@@ -52,4 +59,5 @@ read as one of three things:
 Before final empirical submission, replace provisional synthesis rows with
 documented source-specific datasets where possible, especially public trust,
 normalized cost, and merits-invalidation proxies outside the U.S. doctrine
-targets.
+targets. Once those datasets include denominators and construction formulas, set
+`useForValidation=true` and regenerate the calibration target files.

@@ -56,6 +56,11 @@ codes. Columns report directional score and score interval, legal stability,
 rights protection, shadow-docket abuse, legitimacy, democratic responsiveness,
 and institutional cost.
 
+`tab:supp-model-weights`: Supplementary long table describing the fixed model
+weights and formulas for core simulated outcomes, including shadow-docket abuse,
+legal stability, legitimacy, rights protection, constitutional conflict,
+compliance, enforcement, institutional cost, and the directional display score.
+
 `tab:supp-scenario-matrix`: Supplementary long table listing all starter
 campaign case-scenario combinations with score, rights protection,
 shadow-docket abuse, legitimacy, and institutional cost.

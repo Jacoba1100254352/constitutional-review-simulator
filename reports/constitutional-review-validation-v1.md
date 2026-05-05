@@ -244,25 +244,25 @@ Campaign and segment CSV artifacts include 95% uncertainty bands using `cluster-
 | Profile | Target | Model | Empirical | 95% band | Range | Reliability | Validation | Gap | Status |
 | --- | --- | ---: | ---: | ---: | ---: | --- | ---: | ---: | --- |
 | canada-scc-recent | Leave application grant rate | 0.023 | 0.089 | 0.023-0.024 | 0.075-0.105 | high | true | 0.052 | outside |
-| canada-scc-recent | Charter invalidation proxy | 0.414 | 0.565 | 0.409-0.419 | 0.510-0.620 | medium | true | 0.096 | outside |
-| canada-scc-recent | Public trust proxy | 0.038 | 0.490 | 0.036-0.040 | 0.430-0.550 | medium | true | 0.392 | outside |
-| canada-scc-recent | Normalized direct court cost | 0.491 | 0.550 | 0.487-0.496 | 0.490-0.610 | medium | true | 0.000 | within |
+| canada-scc-recent | Charter invalidation proxy | 0.414 | 0.565 | 0.409-0.419 | 0.510-0.620 | medium | false | 0.096 | outside |
+| canada-scc-recent | Public trust proxy | 0.038 | 0.490 | 0.036-0.040 | 0.430-0.550 | medium | false | 0.392 | outside |
+| canada-scc-recent | Normalized direct court cost | 0.491 | 0.550 | 0.487-0.496 | 0.490-0.610 | medium | false | 0.000 | within |
 | france-conseil-qpc | QPC invalidation rate | 0.414 | 0.315 | 0.409-0.419 | 0.260-0.360 | medium | true | 0.054 | outside |
 | france-conseil-qpc | Public trust proxy | 0.038 | 0.500 | 0.036-0.040 | 0.430-0.570 | low | false | 0.392 | outside |
-| france-conseil-qpc | Normalized direct court cost | 0.491 | 0.340 | 0.487-0.496 | 0.280-0.400 | medium | true | 0.091 | outside |
-| france-conseil-qpc | Normalized upstream screening cost | 0.589 | 0.590 | 0.584-0.593 | 0.520-0.660 | medium | true | 0.000 | within |
+| france-conseil-qpc | Normalized direct court cost | 0.491 | 0.340 | 0.487-0.496 | 0.280-0.400 | medium | false | 0.091 | outside |
+| france-conseil-qpc | Normalized upstream screening cost | 0.589 | 0.590 | 0.584-0.593 | 0.520-0.660 | medium | false | 0.000 | within |
 | germany-bverfg-2024 | Constitutional complaint success and admission proxy | 0.023 | 0.009 | 0.023-0.024 | 0.006-0.012 | medium | true | 0.011 | outside |
-| germany-bverfg-2024 | Public trust proxy | 0.038 | 0.740 | 0.036-0.040 | 0.680-0.800 | medium | true | 0.642 | outside |
-| germany-bverfg-2024 | Normalized direct court cost | 0.491 | 0.620 | 0.487-0.496 | 0.560-0.680 | medium | true | 0.069 | outside |
-| germany-bverfg-2024 | Normalized capacity strain | 0.490 | 0.560 | 0.486-0.495 | 0.500-0.640 | medium | true | 0.010 | outside |
-| cost-us-supreme-court | Normalized direct court cost | 0.491 | 0.740 | 0.487-0.496 | 0.690-0.790 | medium | true | 0.199 | outside |
-| cost-us-supreme-court | Normalized capacity strain | 0.490 | 0.480 | 0.486-0.495 | 0.420-0.540 | medium | true | 0.000 | within |
-| cost-uk-supreme-court | Normalized direct court cost | 0.491 | 0.430 | 0.487-0.496 | 0.370-0.490 | medium | true | 0.001 | outside |
-| cost-france-conseil | Normalized direct court cost | 0.491 | 0.340 | 0.487-0.496 | 0.280-0.400 | medium | true | 0.091 | outside |
-| south-africa-constcourt-recent | Merits invalidation proxy | 0.414 | 0.532 | 0.409-0.419 | 0.470-0.590 | medium | true | 0.056 | outside |
+| germany-bverfg-2024 | Public trust proxy | 0.038 | 0.740 | 0.036-0.040 | 0.680-0.800 | medium | false | 0.642 | outside |
+| germany-bverfg-2024 | Normalized direct court cost | 0.491 | 0.620 | 0.487-0.496 | 0.560-0.680 | medium | false | 0.069 | outside |
+| germany-bverfg-2024 | Normalized capacity strain | 0.490 | 0.560 | 0.486-0.495 | 0.500-0.640 | medium | false | 0.010 | outside |
+| cost-us-supreme-court | Normalized direct court cost | 0.491 | 0.740 | 0.487-0.496 | 0.690-0.790 | medium | false | 0.199 | outside |
+| cost-us-supreme-court | Normalized capacity strain | 0.490 | 0.480 | 0.486-0.495 | 0.420-0.540 | medium | false | 0.000 | within |
+| cost-uk-supreme-court | Normalized direct court cost | 0.491 | 0.430 | 0.487-0.496 | 0.370-0.490 | medium | false | 0.001 | outside |
+| cost-france-conseil | Normalized direct court cost | 0.491 | 0.340 | 0.487-0.496 | 0.280-0.400 | medium | false | 0.091 | outside |
+| south-africa-constcourt-recent | Merits invalidation proxy | 0.414 | 0.532 | 0.409-0.419 | 0.470-0.590 | medium | false | 0.056 | outside |
 | south-africa-constcourt-recent | Petition-to-judgment throughput proxy | 1.000 | 0.141 | 0.998-1.000 | 0.110-0.170 | medium | true | 0.830 | outside |
-| south-africa-constcourt-recent | Public trust proxy | 0.038 | 0.430 | 0.036-0.040 | 0.360-0.500 | medium | true | 0.322 | outside |
-| south-africa-constcourt-recent | Normalized capacity strain | 0.490 | 0.680 | 0.486-0.495 | 0.610-0.750 | medium | true | 0.120 | outside |
+| south-africa-constcourt-recent | Public trust proxy | 0.038 | 0.430 | 0.036-0.040 | 0.360-0.500 | medium | false | 0.322 | outside |
+| south-africa-constcourt-recent | Normalized capacity strain | 0.490 | 0.680 | 0.486-0.495 | 0.610-0.750 | medium | false | 0.120 | outside |
 | scdb-postwar-merits-1946-2024 | Speech docket share | 0.140 | 0.076 | 0.137-0.143 | 0.060-0.091 | high | true | 0.049 | outside |
 | scdb-postwar-merits-1946-2024 | Civil-rights and privacy docket share | 0.141 | 0.152 | 0.138-0.144 | 0.135-0.169 | high | true | 0.000 | within |
 | scdb-postwar-merits-1946-2024 | Criminal procedure docket share | 0.148 | 0.226 | 0.144-0.151 | 0.207-0.244 | high | true | 0.059 | outside |
@@ -281,4 +281,4 @@ Campaign and segment CSV artifacts include 95% uncertainty bands using `cluster-
 | scotus-emergency-2024-2025 | Written explanation share | 0.601 | 0.279 | 0.592-0.609 | 0.200-0.360 | medium | true | 0.241 | outside |
 | scotus-emergency-2024-2025 | Public disagreement share | 0.291 | 0.670 | 0.283-0.298 | 0.570-0.760 | medium | true | 0.279 | outside |
 | scotus-emergency-2024-2025 | Certiorari or emergency screening acceptance proxy | 0.023 | 0.018 | 0.023-0.024 | 0.013-0.018 | medium | true | 0.005 | outside |
-| gallup-court-confidence-2024 | Public court trust and approval | 0.038 | 0.420 | 0.036-0.040 | 0.350-0.490 | medium | true | 0.312 | outside |
+| gallup-court-confidence-2024 | Public court trust and approval | 0.038 | 0.420 | 0.036-0.040 | 0.350-0.490 | medium | false | 0.312 | outside |

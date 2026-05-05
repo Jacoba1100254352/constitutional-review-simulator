@@ -17,6 +17,20 @@ SUPPLEMENT_TEX = PAPER_DIR / "supplementary-appendix.tex"
 ACCESSIBILITY = PAPER_DIR / "accessibility-descriptions.md"
 REFERENCES_BIB = PAPER_DIR / "references.bib"
 VALIDATION_TABLE = PAPER_DIR / "tables" / "validation_summary.tex"
+SCENARIO_POINT_LABELS = {
+    "CUR*",
+    "18Y",
+    "15J",
+    "SUP",
+    "REC",
+    "EMR",
+    "PAN",
+    "DUAL",
+    "COUNC",
+    "OVR",
+    "RET",
+    "HYB",
+}
 
 REQUIRED_BACK_MATTER = [
     "Supplementary Material",
@@ -52,6 +66,54 @@ def expanded_tex(path: Path, seen: set[Path] | None = None) -> str:
         return expanded_tex(input_path, seen)
 
     return re.sub(r"\\input\{([^}]+)\}", replace_input, text)
+
+
+def figure_label_boxes(path: Path) -> list[tuple[str, float, float, float, float]]:
+    source = path.read_text(encoding="utf-8")
+    picture = re.search(r"\\begin\{picture\}\(([\d.]+),([\d.]+)\)", source)
+    if not picture:
+        return []
+    width = float(picture.group(1))
+    height = float(picture.group(2))
+    boxes: list[tuple[str, float, float, float, float]] = []
+    label_pattern = re.compile(
+        r"\\put\(([-\d.]+),([-\d.]+)\)\{\\makebox\(0,0\)(?:\[(\w)\])?\{(?:\\color\{[^}]+\})?([^{}]+)\}\}"
+    )
+    for match in label_pattern.finditer(source):
+        label = match.group(4).strip()
+        if label not in SCENARIO_POINT_LABELS:
+            continue
+        x = float(match.group(1))
+        y = float(match.group(2))
+        align = match.group(3) or "c"
+        label_width = max(3.2, len(label) * 1.55)
+        label_height = 3.4
+        if align == "l":
+            left, right = x, x + label_width
+        elif align == "r":
+            left, right = x - label_width, x
+        else:
+            left, right = x - (label_width / 2.0), x + (label_width / 2.0)
+        bottom, top = y - (label_height / 2.0), y + (label_height / 2.0)
+        if left < 0.0 or right > width or bottom < 0.0 or top > height:
+            fail(f"{path.relative_to(PAPER_DIR)} has clipped point label {label}")
+        boxes.append((label, left, bottom, right, top))
+    return boxes
+
+
+def validate_figure_point_labels() -> None:
+    for path in sorted((PAPER_DIR / "figures").glob("*.tex")):
+        boxes = figure_label_boxes(path)
+        for index, current in enumerate(boxes):
+            current_label, left, bottom, right, top = current
+            for other_label, other_left, other_bottom, other_right, other_top in boxes[index + 1:]:
+                horizontal = min(right, other_right) - max(left, other_left)
+                vertical = min(top, other_top) - max(bottom, other_bottom)
+                if horizontal > 0.25 and vertical > 0.25:
+                    fail(
+                        f"{path.relative_to(PAPER_DIR)} has overlapping point labels "
+                        f"{current_label} and {other_label}"
+                    )
 
 
 def main() -> None:
@@ -131,12 +193,21 @@ def main() -> None:
     for match in re.findall(r"\\cite\w*(?:\[[^]]*\])?\{([^}]+)\}", tex):
         citation_keys.update(key.strip() for key in match.split(",") if key.strip())
     bib_keys = set(re.findall(r"@\w+\{([^,]+),", references))
+    bibitem_keys = set(re.findall(r"\\bibitem(?:\[[^]]+\])?\{([^}]+)\}", expanded))
     missing_keys = sorted(citation_keys - bib_keys)
     uncited_keys = sorted(bib_keys - citation_keys)
+    missing_bibitems = sorted(citation_keys - bibitem_keys)
+    extra_bibitems = sorted(bibitem_keys - citation_keys)
     if missing_keys:
         fail("missing BibTeX entries for " + ", ".join(missing_keys))
     if uncited_keys:
         fail("references.bib contains uncited entries: " + ", ".join(uncited_keys))
+    if missing_bibitems:
+        fail("compiled reference list is missing cited keys: " + ", ".join(missing_bibitems))
+    if extra_bibitems:
+        fail("compiled reference list contains uncited keys: " + ", ".join(extra_bibitems))
+
+    validate_figure_point_labels()
 
     leaked_path_files = [
         ROOT / "Makefile",

@@ -32,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-Constitutional review is usually studied through doctrine, case studies, or strategic models of judicial behavior. This article instead models constitutional review as an institutional system whose performance depends on interacting design choices: appointment method, court size, tenure, recusal, decision thresholds, emergency procedures, panel structure, legislative override rules, lower-court pipelines, and compliance pathways. I introduce a comparative simulation framework that treats apex adjudication as review infrastructure rather than a single court-centered variable. The model generates counterfactual comparisons across supreme-court, constitutional-court, council, and cross-checking designs, and it is calibrated against observable institutional features and benchmark patterns in comparative constitutional practice. The results are not predictions about any real court. They show how design bundles trace different tradeoffs among independence, accountability, speed, consistency, rights protection, emergency control, and implementation capacity. The article contributes to law-and-courts scholarship by integrating comparative constitutional design with computational institutional analysis and by offering a reusable framework for evaluating court architecture beyond case-level outcomes.
+Constitutional review is usually studied through doctrine, case studies, or strategic models of judicial behavior. This article instead models constitutional review as an institutional system whose performance depends on interacting design choices: appointment method, court size, tenure, recusal, decision thresholds, emergency procedures, panel structure, legislative override rules, lower-court pipelines, and compliance pathways. I introduce a comparative simulation framework that treats apex adjudication as review infrastructure rather than a single court-centered variable. The model generates counterfactual comparisons across supreme-court, constitutional-court, council, and cross-checking designs, and it checks those comparisons against documented benchmark ranges where a source-backed analogue exists. The benchmark checks are stress tests rather than fitted validation estimates, and several fail in ways that bound the article's claims. The results are not predictions about any real court. They show how design bundles trace different tradeoffs among independence, accountability, speed, consistency, rights protection, emergency control, and implementation capacity. The article contributes to law-and-courts scholarship by integrating comparative constitutional design with computational institutional analysis and by offering a reusable framework for evaluating court architecture beyond case-level outcomes.
 \end{abstract}
 
 \section{Introduction}
@@ -97,7 +97,7 @@ Figure~\ref{fig:model-pipeline} summarizes the model pipeline. The legislative s
 \label{fig:model-pipeline}
 \end{figure}
 
-Each court scenario creates justices from appointment method, court size, term and removal structure, independence level, accountability pressure, transparency level, coalition norm, rights priority, stability preference, review archetype, docket-control mechanism, review timing, and cost profile. The review process then models intake selection, emergency handling, recusals, panel or en banc review, voting thresholds, cross-checking court agreement, constitutional-council screening, legislative override, and opinion fragmentation.
+Each court scenario creates justices from appointment method, court size, term and removal structure, independence level, accountability pressure, transparency level, coalition norm, rights priority, stability preference, review archetype, docket-control mechanism, review timing, and cost profile. The review process then models intake selection, emergency handling, recusals, panel or en banc review, voting thresholds, cross-checking court agreement, constitutional-council screening, legislative override, and opinion fragmentation. The reported campaigns use fixed weights rather than fitted parameters. The supplementary appendix discloses the core formulas for shadow-docket abuse, stability, legitimacy, rights protection, constitutional conflict, compliance, institutional cost, and the directional display score.
 
 Emergency orders are modeled separately from merits invalidation. The simulator tracks interim relief, reason-giving, vote disclosure, public disagreement, government applicants, government wins, and merits follow-up. This distinction matters because an institution can be restrained on the merits while still aggressive on emergency relief, or transparent in merits decisions while opaque on emergency orders.
 
@@ -145,7 +145,7 @@ The higher-is-better set includes legal stability, rights protection, legitimacy
 \section{Calibration, Uncertainty, and Replication}
 \label{sec:calibration}
 
-The model is not empirically validated in the sense of fitting a historical court. It is calibrated as a comparative design instrument and then checked against external ranges where a plausible analogue exists. Calibration targets live in structured CSV files and identify the court, time period, target key, target range, observed value when available, sample size, unit, method, reliability, source name, and source URL. Current target files include U.S. Supreme Court merits-docket doctrine shares from the Supreme Court Database \citep{scdb2025,scdbIssueCodebook}, emergency-docket context \citep{scotusblogInterim2024}, public-trust context \citep{gallupCourtApproval2024}, comparative court profiles, lower-court pipeline benchmarks, emergency docket summaries, and normalized institutional cost profiles. Rows marked as synthesis or proxy targets are intentionally retained as transparent stress-test assumptions; they should not be read as source-backed validation evidence until replaced by source-specific datasets.
+The model is not empirically validated in the sense of fitting a historical court. It is calibrated as a comparative design instrument and then checked against external ranges where a source-backed analogue exists. Calibration targets live in structured CSV files and identify the court, time period, target key, target range, observed value when available, sample size, unit, method, reliability, source name, source URL, validation-use flag, and construction note. Current target files include U.S. Supreme Court merits-docket doctrine shares from the Supreme Court Database \citep{scdb2025,scdbIssueCodebook}, emergency-docket context \citep{scotusblogInterim2024}, comparative court intake and throughput proxies, public-trust context \citep{gallupCourtApproval2024}, and normalized institutional cost profiles. Rows marked as synthesis, public-trust context, or normalized cost benchmarks are retained as transparent stress-test assumptions but are excluded from validation counts unless a specific source trail and denominator support that use.
 
 \input{tables/calibration_targets}
 
@@ -157,10 +157,10 @@ The validation campaign runs real-world scenario presets against a shared benchm
 
 \input{tables/validation_summary}
 
-The misses are substantively useful. The U.S. benchmark misses most doctrine-mix targets, which means the generated benchmark docket is not yet a historical merits-docket emulator. The emergency-docket profile misses all mapped emergency targets, suggesting that the model needs a more explicit emergency-application universe before claims about shadow-docket frequency become empirical. The South African profile misses the petition-to-judgment throughput proxy because the current validation setup routes all generated benchmark cases through review rather than modeling litigant selection and jurisdictional screening as separate stages. For this version, these failures bound the paper's claims: the framework is ready for comparative design stress testing, not for estimating the behavior of named courts.
+The misses are substantively useful. The U.S. benchmark misses most doctrine-mix targets, which means the generated benchmark docket is not yet a historical merits-docket emulator. The emergency-docket profile misses all mapped emergency targets, suggesting that the model needs a more explicit emergency-application universe before claims about shadow-docket frequency become empirical. The South African throughput proxy still misses because the current validation setup routes generated benchmark cases through review rather than modeling litigant selection, filing incentives, jurisdictional screening, and local docket reporting as separate stages. The one-target comparative checks that fall in range should also be read narrowly because the weaker public-trust and normalized-cost rows have been excluded from the validation count. For this version, these failures bound the paper's claims: the framework is ready for comparative design stress testing, not for estimating the behavior of named courts.
 \clearpage
 
-The repository also separates source code, configuration inputs, generated reports, paper source, and provenance manifests. This is meant to support the replication-material expectations of Journal of Law and Courts. For anonymous review, the manuscript should be submitted without author-identifying repository links; at acceptance, an archived replication package should include the Java source, Makefile, calibration/configuration CSVs, generated reports, and instructions for reproducing the campaign outputs.
+The repository also separates source code, configuration inputs, generated reports, paper source, and provenance manifests. This is meant to support the replication-material expectations of Journal of Law and Courts. For anonymous review, the manuscript should be submitted without author-identifying repository links. To keep review upload practical, the review replication archive can omit the largest compressed case-level outputs while retaining the code, configuration, aggregate reports, manifests, and reproduction commands. At acceptance, the public replication deposit should include the Java source, Makefile, calibration/configuration CSVs, generated aggregate reports, full case-level outputs or scripts that regenerate them, and instructions for reproducing the campaign outputs.
 
 \section{Comparative Experiments}
 \label{sec:experiments}
@@ -210,7 +210,7 @@ The simulator is intentionally abstract. It compresses doctrinal variation, lega
 The next research increment should add richer case-flow validation against specific courts and periods, distinguish litigant selection from judicial selection more explicitly, and replace synthesized calibration targets with source-specific datasets. A Journal of Law and Courts submission should keep the main text compact and move large scenario tables, source matrices, raw case records, and sensitivity reports to supplementary materials.
 
 \section*{Supplementary Material}
-The supplementary replication package is designed to include source code and tests in \path{src/main/java} and \path{src/test/java}; calibration and benchmark inputs in \path{config/calibration}, \path{config/comparative}, \path{config/pipeline}, \path{config/emergency}, and \path{config/cost-benchmarks}; the normalized calibration source-observation matrix; generated reports; compressed case-level exports; figure- and table-generation scripts; and reproducibility commands including \texttt{make test}, \texttt{make campaign}, \texttt{make paired-campaign}, \texttt{make validation-check}, \texttt{make sensitivity-check}, \texttt{make paper}, and \texttt{make supplement}. For anonymous review, any repository metadata or file paths that identify the author should be removed or redacted from the submitted archive.
+The supplementary replication package is designed to include source code and tests in \path{src/main/java} and \path{src/test/java}; calibration and benchmark inputs in \path{config/calibration}, \path{config/comparative}, \path{config/pipeline}, \path{config/emergency}, and \path{config/cost-benchmarks}; the normalized calibration source-observation matrix; generated aggregate reports; figure- and table-generation scripts; and reproducibility commands including \texttt{make test}, \texttt{make campaign}, \texttt{make paired-campaign}, \texttt{make validation-check}, \texttt{make sensitivity-check}, \texttt{make paper}, and \texttt{make supplement}. Full compressed case-level exports are reproducible from those commands and should be included in the final public deposit or supplied separately if requested. For anonymous review, any repository metadata or file paths that identify the author should be removed or redacted from the submitted archive.
 
 \section*{Funding Declaration}
 No external funding is reported for this manuscript.
@@ -219,52 +219,16 @@ No external funding is reported for this manuscript.
 Competing interests: The author declares none.
 
 \section*{Data Availability Statement}
-An anonymized replication archive will be supplied with the submitted manuscript and, if accepted, deposited in an appropriate public repository. The archive will include Java source code, configuration files, calibration target-construction inputs, generated campaign reports, compressed case-level outputs, paper source, and commands needed to reproduce the reported outputs.
+An anonymized replication archive will be supplied with the submitted manuscript and, if accepted, deposited in an appropriate public repository. The review archive will include Java source code, configuration files, calibration target-construction inputs, generated aggregate campaign reports, paper source, and commands needed to reproduce the reported outputs. Full compressed case-level outputs are reproducible from the same commands and should be included in the final public repository or supplied separately if requested during review.
 
 \section*{Ethical Statement}
 This project uses synthetic simulation outputs and public institutional benchmarks. It does not involve human-subjects data.
 
 \section*{AI Tools Declaration}
-OpenAI ChatGPT Deep Research and OpenAI Codex were used in May 2026 through the ChatGPT web interface and the Codex desktop interface. Codex used GPT-5 family coding assistance as exposed by the local Codex application. The tools assisted with source discovery, venue research, code editing, figure and table generation, replication-bundle checks, and manuscript drafting. They were not trained or modified for this project and were not listed as authors. All code, source claims, model choices, figures, and manuscript text remain subject to author review and revision.
+OpenAI ChatGPT Deep Research and OpenAI Codex were used from May 1--5, 2026 through the ChatGPT web interface and the Codex desktop interface. ChatGPT Deep Research was used for source-discovery prompts and venue-format research; the exact underlying Deep Research model version was not exposed in the product interface. Codex used GPT-5-family coding assistance as exposed by the local Codex application for code editing, LaTeX drafting, figure and table generation, replication-bundle checks, and manuscript revision. The tools were not trained or modified for this project and were not listed as authors. AI outputs were not treated as sources; cited source claims, model choices, figures, code, and manuscript text remain subject to author review and revision.
 
 \begin{thebibliography}{}
-
-\bibitem[Bickel(1962)]{bickel1962}
-Bickel, Alexander M. 1962. \textit{The Least Dangerous Branch: The Supreme Court at the Bar of Politics}. New Haven, CT: Yale University Press.
-
-\bibitem[Epstein and Knight(1998)]{epsteinKnight1998}
-Epstein, Lee, and Jack Knight. 1998. \textit{The Choices Justices Make}. Washington, DC: CQ Press.
-
-\bibitem[Gallup(2024)]{gallupCourtApproval2024}
-Gallup. 2024. ``Approval of U.S. Supreme Court Stalled Near Historical Low.'' \url{https://news.gallup.com/poll/647834/approval-supreme-court-stalled-near-historical-low.aspx}.
-
-\bibitem[Ginsburg(2003)]{ginsburg2003}
-Ginsburg, Tom. 2003. \textit{Judicial Review in New Democracies: Constitutional Courts in Asian Cases}. Cambridge: Cambridge University Press.
-
-\bibitem[Helmke(2005)]{helmke2005}
-Helmke, Gretchen. 2005. \textit{Courts under Constraints: Judges, Generals, and Presidents in Argentina}. Cambridge: Cambridge University Press.
-
-\bibitem[SCOTUSblog(2025)]{scotusblogInterim2024}
-SCOTUSblog. 2025. ``Interim Docket 2024.'' \url{https://www.scotusblog.com/cases/interim-docket/2024/}.
-
-\bibitem[Staton(2010)]{staton2010}
-Staton, Jeffrey K. 2010. \textit{Judicial Power and Strategic Communication in Mexico}. Cambridge: Cambridge University Press.
-
-\bibitem[Stone Sweet(2000)]{stoneSweet2000}
-Stone Sweet, Alec. 2000. \textit{Governing with Judges: Constitutional Politics in Europe}. Oxford: Oxford University Press.
-
-\bibitem[Supreme Court Database(2025a)]{scdb2025}
-Supreme Court Database. 2025a. ``Modern Database: 2025 Release 01.'' \url{https://scdb.la.psu.edu/data/2025-release-01/}.
-
-\bibitem[Supreme Court Database(2025b)]{scdbIssueCodebook}
-Supreme Court Database. 2025b. ``Online Codebook: Issue.'' \url{https://scdb.la.psu.edu/online-codebook/issue/}.
-
-\bibitem[Tushnet(1999)]{tushnet1999}
-Tushnet, Mark. 1999. \textit{Taking the Constitution Away from the Courts}. Princeton, NJ: Princeton University Press.
-
-\bibitem[Vanberg(2005)]{vanberg2005}
-Vanberg, Georg. 2005. \textit{The Politics of Constitutional Review in Germany}. Cambridge: Cambridge University Press.
-
+\input{tables/reference_items}
 \end{thebibliography}
 
 \end{document}

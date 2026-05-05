@@ -54,6 +54,8 @@ paper-word-count:
 paper-clean:
 	cd paper && latexmk -C -outdir=build main.tex
 	rm -rf paper/build
+	rm -rf paper/scripts/__pycache__
+	rm -f paper/*.aux paper/*.log paper/*.out paper/*.pdf paper/*.synctex.gz paper/.DS_Store config/.DS_Store
 
 supplement:
 	python3 paper/scripts/generate_supplement.py

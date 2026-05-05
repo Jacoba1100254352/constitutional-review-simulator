@@ -16,7 +16,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class SimulatorTests {
@@ -317,8 +319,45 @@ public final class SimulatorTests {
         assertTrue(calibrationCsv.contains("scotus-emergency-2024-2025"), "expected emergency target profile");
         assertTrue(calibrationCsv.contains("sourceName"), "expected calibration source metadata");
         assertTrue(calibrationCsv.contains("targetN"), "expected calibration target sample-size metadata");
+        assertValidationRowsAreSourceBacked(result.calibrationCsvPath());
         assertTrue(Files.readString(result.intervalCsvPath()).contains("cluster-bootstrap-runs"), "expected validation bootstrap intervals");
         assertTrue(Files.readString(result.markdownPath()).contains("Calibration Validation Campaign"), "expected validation Markdown title");
+    }
+
+    private static void assertValidationRowsAreSourceBacked(Path calibrationCsvPath) throws Exception {
+        List<String[]> rows = readCsv(calibrationCsvPath);
+        assertTrue(rows.size() > 1, "expected calibration rows");
+        String[] header = rows.get(0);
+        int profileKey = column(header, "profileKey");
+        int sourceName = column(header, "sourceName");
+        int sourceUrl = column(header, "sourceUrl");
+        int reliability = column(header, "reliability");
+        int useForValidation = column(header, "useForValidation");
+        int modelObservedValue = column(header, "modelObservedValue");
+        int lower95 = column(header, "lower95");
+        int upper95 = column(header, "upper95");
+        int withinTarget = column(header, "withinTarget");
+        Map<String, Integer> validationCounts = new HashMap<>();
+        for (int i = 1; i < rows.size(); i++) {
+            String[] row = rows.get(i);
+            if (!"true".equalsIgnoreCase(row[useForValidation])) {
+                continue;
+            }
+            assertTrue(!row[sourceUrl].isBlank(), "validation row missing source URL: " + row[profileKey]);
+            assertTrue(!"low".equalsIgnoreCase(row[reliability]), "low reliability row used for validation: " + row[profileKey]);
+            assertTrue(!row[sourceName].equals("Comparative calibration research synthesis"), "comparative synthesis used for validation");
+            assertTrue(!row[sourceName].equals("Institutional cost benchmark synthesis"), "cost synthesis used for validation");
+            assertTrue(!row[modelObservedValue].isBlank(), "validation row missing model observed value");
+            assertTrue(Double.parseDouble(row[lower95]) <= Double.parseDouble(row[upper95]), "invalid interval bounds");
+            assertTrue(row[withinTarget].equals("true") || row[withinTarget].equals("false"), "invalid withinTarget flag");
+            validationCounts.merge(row[profileKey], 1, Integer::sum);
+        }
+        assertTrue(validationCounts.getOrDefault("scdb-modern-merits-2000-2024", 0) == 7, "expected seven U.S. doctrine validation targets");
+        assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 4, "expected four emergency validation targets");
+        assertTrue(validationCounts.getOrDefault("germany-bverfg-2024", 0) == 1, "expected one German validation target");
+        assertTrue(validationCounts.getOrDefault("canada-scc-recent", 0) == 1, "expected one Canadian validation target");
+        assertTrue(validationCounts.getOrDefault("france-conseil-qpc", 0) == 1, "expected one French validation target");
+        assertTrue(validationCounts.getOrDefault("south-africa-constcourt-recent", 0) == 1, "expected one South African validation target");
     }
 
     private static String readGzipHeader(Path path) throws Exception {
@@ -328,6 +367,45 @@ public final class SimulatorTests {
         ))) {
             return reader.readLine();
         }
+    }
+
+    private static List<String[]> readCsv(Path path) throws Exception {
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            return reader.lines().map(SimulatorTests::parseCsvLine).toList();
+        }
+    }
+
+    private static String[] parseCsvLine(String line) {
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean quoted = false;
+        for (int i = 0; i < line.length(); i++) {
+            char ch = line.charAt(i);
+            if (ch == '"') {
+                if (quoted && i + 1 < line.length() && line.charAt(i + 1) == '"') {
+                    current.append('"');
+                    i++;
+                } else {
+                    quoted = !quoted;
+                }
+            } else if (ch == ',' && !quoted) {
+                values.add(current.toString());
+                current.setLength(0);
+            } else {
+                current.append(ch);
+            }
+        }
+        values.add(current.toString());
+        return values.toArray(String[]::new);
+    }
+
+    private static int column(String[] header, String name) {
+        for (int i = 0; i < header.length; i++) {
+            if (header[i].equals(name)) {
+                return i;
+            }
+        }
+        throw new AssertionError("missing column: " + name);
     }
 
     private static void assertBetween(double value, String label) {
