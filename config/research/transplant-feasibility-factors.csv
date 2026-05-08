@@ -1,0 +1,11 @@
+factor,simulatorField,expectedDirection,measurementCandidates,notes
+legal tradition fit,legalTraditionCompatibility,higher improves feasibility,common-law/civil-law/mixed tradition; constitutional-court tradition; abstract-review history,Use as a compatibility prior rather than a claim that traditions determine outcomes.
+implementation capacity,implementationCapacity,higher improves feasibility,World Bank government effectiveness; court budget per case; median implementation delay,Keep separate from formal rule design so transplant diagnostics do not overclaim institutional capacity.
+civil society capacity,civilSocietyCapacity,higher improves access and compliance,legal-aid coverage; NGO litigation capacity; bar density; rights-commission activity,Feeds litigantCapacity and publicInterestSupport.
+party fragmentation,partyFragmentation,higher increases sensitivity,legislative effective number of parties; coalition turnover; government seat share,Fragmentation can improve pluralism but may lower response credibility in this model.
+government control,governmentControl,higher has mixed effect,governing majority size; upper/lower chamber alignment; coalition discipline,Can increase implementation when cooperative or veto relocation when captured.
+electoral time pressure,electoralTimePressure,higher lowers response credibility,election proximity; electoral volatility; campaign-period conflict,Used for sensitivity rather than country ranking unless period-specific.
+public trust,publicTrust,higher improves legitimacy and feasibility,court confidence surveys; judicial trust surveys; institutional trust indices,Survey rows remain contextual unless linked to model target construction.
+polarization,partisanPressure,higher worsens transplantability,party polarization indices; ideological distance; judicial appointment conflict,Needed for cross-system sensitivity checks.
+institutional cost,totalInstitutionalCost,higher lowers feasibility,court budget; staffing; duplicated court bodies; median disposition delay,Must include explicit normalization denominator before calibration use.
+review mechanism familiarity,reviewMechanism,higher improves feasibility,existing constitutional council; weak-form tradition; override history,Should be coded as scenario metadata or profile-specific prior.

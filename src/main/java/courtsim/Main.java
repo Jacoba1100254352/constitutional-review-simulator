@@ -31,16 +31,20 @@ public final class Main {
         List<LegislativeSignal> importedSignals = options.legislativeInput == null
                 ? List.of()
                 : LegislativeOutputImporter.read(options.legislativeInput);
-        WorldSpec worldSpec = new WorldSpec(
-                options.caseCount,
-                options.reviewPeriods,
-                options.appointmentPolarization,
-                options.rightsThreatRate,
-                options.emergencyPressure,
-                options.legislativeConflict,
-                options.publicTrust,
-                options.partisanPressure
-        );
+        WorldSpec worldSpec = WorldSpec.baseline(options.caseCount)
+                .withReviewPeriods(options.reviewPeriods)
+                .withAppointmentPolarization(options.appointmentPolarization)
+                .withRightsThreatRate(options.rightsThreatRate)
+                .withEmergencyPressure(options.emergencyPressure)
+                .withLegislativeConflict(options.legislativeConflict)
+                .withPublicTrust(options.publicTrust)
+                .withPartisanPressure(options.partisanPressure)
+                .withPartyFragmentation(options.partyFragmentation)
+                .withGovernmentControl(options.governmentControl)
+                .withElectoralTimePressure(options.electoralTimePressure)
+                .withCivilSocietyCapacity(options.civilSocietyCapacity)
+                .withImplementationCapacity(options.implementationCapacity)
+                .withLegalTraditionCompatibility(options.legalTraditionCompatibility);
 
         if (options.campaign != null) {
             CampaignResult result = new CampaignRunner().run(
@@ -155,7 +159,7 @@ public final class Main {
     }
 
     private static void printCsv(List<ScenarioReport> reports) {
-        System.out.println("scenarioKey,scenario,scenarioKind,reviewMechanism,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,weakFormDeclarationRate,suspendedDeclarationRate,legislativeResponseRate,rightsImpactStatementRate,ombudsmanTriggerRate,publicDefenderParticipationRate,preEnactmentReviewRate,abstractReviewRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost");
+        System.out.println("scenarioKey,scenario,scenarioKind,reviewMechanism,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,legislativeResponseCredibility,caseSelectionAccess,governmentRepeatPlayerAdvantage,implementationCapacity,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,weakFormDeclarationRate,suspendedDeclarationRate,legislativeResponseRate,rightsImpactStatementRate,ombudsmanTriggerRate,publicDefenderParticipationRate,preEnactmentReviewRate,abstractReviewRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost");
         for (ScenarioReport report : reports) {
             System.out.println(String.join(",",
                     csv(report.scenarioKey()),
@@ -192,6 +196,10 @@ public final class Main {
                     number(report.reversalRate()),
                     number(report.constitutionalConflict()),
                     number(report.democraticResponsiveness()),
+                    number(report.legislativeResponseCredibility()),
+                    number(report.caseSelectionAccess()),
+                    number(report.governmentRepeatPlayerAdvantage()),
+                    number(report.implementationCapacity()),
                     number(report.democraticConstitutionalism()),
                     number(report.vetoRelocationRisk()),
                     number(report.legalTransplantFeasibility()),
@@ -279,6 +287,12 @@ public final class Main {
         System.out.println("  --legislative-conflict X        legislature-court conflict pressure 0..1");
         System.out.println("  --public-trust X                public trust 0..1");
         System.out.println("  --partisan-pressure X           partisan pressure 0..1");
+        System.out.println("  --party-fragmentation X         party-system fragmentation 0..1");
+        System.out.println("  --government-control X          governing coalition control 0..1");
+        System.out.println("  --electoral-time-pressure X     electoral time pressure 0..1");
+        System.out.println("  --civil-society-capacity X      litigant and NGO support capacity 0..1");
+        System.out.println("  --implementation-capacity X     public implementation capacity 0..1");
+        System.out.println("  --legal-tradition-compatibility X legal transplant compatibility 0..1");
         System.out.println();
         System.out.println("Scenario keys:");
         for (String key : ScenarioCatalog.scenarioKeys()) {
@@ -333,6 +347,12 @@ public final class Main {
         private double legislativeConflict = 0.42;
         private double publicTrust = 0.58;
         private double partisanPressure = 0.55;
+        private double partyFragmentation = 0.46;
+        private double governmentControl = 0.54;
+        private double electoralTimePressure = 0.42;
+        private double civilSocietyCapacity = 0.58;
+        private double implementationCapacity = 0.62;
+        private double legalTraditionCompatibility = 0.68;
 
         static Options parse(String[] args) {
             Options options = new Options();
@@ -364,6 +384,12 @@ public final class Main {
                     case "--legislative-conflict" -> options.legislativeConflict = decimal(next(args, ++i, arg), arg);
                     case "--public-trust" -> options.publicTrust = decimal(next(args, ++i, arg), arg);
                     case "--partisan-pressure" -> options.partisanPressure = decimal(next(args, ++i, arg), arg);
+                    case "--party-fragmentation" -> options.partyFragmentation = decimal(next(args, ++i, arg), arg);
+                    case "--government-control" -> options.governmentControl = decimal(next(args, ++i, arg), arg);
+                    case "--electoral-time-pressure" -> options.electoralTimePressure = decimal(next(args, ++i, arg), arg);
+                    case "--civil-society-capacity" -> options.civilSocietyCapacity = decimal(next(args, ++i, arg), arg);
+                    case "--implementation-capacity" -> options.implementationCapacity = decimal(next(args, ++i, arg), arg);
+                    case "--legal-tradition-compatibility" -> options.legalTraditionCompatibility = decimal(next(args, ++i, arg), arg);
                     default -> throw new IllegalArgumentException("Unknown option: " + arg);
                 }
             }

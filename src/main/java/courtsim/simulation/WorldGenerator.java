@@ -69,6 +69,16 @@ public final class WorldGenerator {
         double timeToReview = timeToReview(urgency, lowerConflict, ambiguity, certiorariPressure, lowerCourtPath, random);
         double executivePressure = Values.clamp01(spec.partisanPressure() * 0.20 + urgency * 0.18 + random.nextDouble() * 0.22);
         double conflictRisk = Values.clamp01(Math.abs(policyPosition) * 0.20 + executivePressure * 0.18 + random.nextDouble() * 0.22);
+        double litigantCapacity = litigantCapacity(spec, rightsThreat, salience, publicSupport, policyDomain, random);
+        double publicInterestSupport = publicInterestSupport(spec, rightsThreat, salience, policyDomain, random);
+        double governmentRepeatPlayerAdvantage = governmentRepeatPlayerAdvantage(
+                spec,
+                publicSupport,
+                executivePressure,
+                governmentWin,
+                policyDomain,
+                random
+        );
         CaseType type = typeFor(rightsThreat, urgency, salience, lowerConflict, random);
         return new CaseFile(
                 "synthetic-" + (index + 1),
@@ -95,6 +105,9 @@ public final class WorldGenerator {
                 executivePressure,
                 conflictRisk,
                 spec.publicTrust(),
+                litigantCapacity,
+                publicInterestSupport,
+                governmentRepeatPlayerAdvantage,
                 "synthetic"
         );
     }
@@ -199,6 +212,31 @@ public final class WorldGenerator {
                         + executivePressure * 0.14
                         + random.nextDouble() * 0.12
         );
+        double litigantCapacity = Values.clamp01(
+                spec.civilSocietyCapacity() * 0.28
+                        + signal.challengeRate() * 0.28
+                        + signal.publicAlignment() * 0.12
+                        + signal.legitimacy() * 0.10
+                        + rightsThreat * 0.12
+                        + random.nextGaussian() * 0.05
+        );
+        double publicInterestSupport = Values.clamp01(
+                spec.civilSocietyCapacity() * 0.34
+                        + signal.minorityHarm() * 0.22
+                        + signal.concentratedHarmPassage() * 0.16
+                        + signal.highRiskLaneRate() * 0.12
+                        + domainRightsPressure(policyDomain) * 0.10
+                        + random.nextGaussian() * 0.05
+        );
+        double governmentRepeatPlayerAdvantage = Values.clamp01(
+                signal.proposerGain() * 0.22
+                        + signal.lobbyCapture() * 0.18
+                        + publicSupport * 0.16
+                        + executivePressure * 0.18
+                        + (governmentWin ? 0.12 : 0.0)
+                        + governmentRepeatDomainAdvantage(policyDomain) * 0.12
+                        + random.nextGaussian() * 0.04
+        );
         CaseType type = typeFor(rightsThreat, urgency, salience, lowerConflict, random);
         return new CaseFile(
                 "leg-" + (index + 1) + "-" + signal.scenarioKey(),
@@ -225,6 +263,9 @@ public final class WorldGenerator {
                 executivePressure,
                 conflictRisk,
                 spec.publicTrust(),
+                litigantCapacity,
+                publicInterestSupport,
+                governmentRepeatPlayerAdvantage,
                 signal.scenarioKey()
         );
     }
@@ -428,6 +469,72 @@ public final class WorldGenerator {
             case ADMINISTRATION -> 0.22;
             case ECONOMIC_REGULATION -> 0.20;
             case GOVERNANCE -> 0.18;
+        };
+    }
+
+    private static double litigantCapacity(
+            WorldSpec spec,
+            double rightsThreat,
+            double salience,
+            double publicSupport,
+            PolicyDomain policyDomain,
+            Random random
+    ) {
+        return Values.clamp01(
+                spec.civilSocietyCapacity() * 0.34
+                        + spec.publicTrust() * 0.12
+                        + rightsThreat * 0.16
+                        + salience * 0.14
+                        + publicSupport * 0.10
+                        + domainRightsPressure(policyDomain) * 0.08
+                        + random.nextGaussian() * 0.06
+        );
+    }
+
+    private static double publicInterestSupport(
+            WorldSpec spec,
+            double rightsThreat,
+            double salience,
+            PolicyDomain policyDomain,
+            Random random
+    ) {
+        return Values.clamp01(
+                spec.civilSocietyCapacity() * 0.42
+                        + rightsThreat * 0.20
+                        + salience * 0.14
+                        + domainRightsPressure(policyDomain) * 0.16
+                        + random.nextGaussian() * 0.06
+        );
+    }
+
+    private static double governmentRepeatPlayerAdvantage(
+            WorldSpec spec,
+            double publicSupport,
+            double executivePressure,
+            boolean governmentWin,
+            PolicyDomain policyDomain,
+            Random random
+    ) {
+        return Values.clamp01(
+                spec.governmentControl() * 0.20
+                        + publicSupport * 0.14
+                        + executivePressure * 0.24
+                        + (governmentWin ? 0.14 : 0.0)
+                        + governmentRepeatDomainAdvantage(policyDomain) * 0.18
+                        + random.nextGaussian() * 0.05
+        );
+    }
+
+    private static double governmentRepeatDomainAdvantage(PolicyDomain policyDomain) {
+        return switch (policyDomain) {
+            case ADMINISTRATION -> 0.48;
+            case EMERGENCY_SECURITY -> 0.44;
+            case ECONOMIC_REGULATION -> 0.34;
+            case FEDERALISM -> 0.30;
+            case CRIMINAL_JUSTICE -> 0.26;
+            case ELECTIONS -> 0.24;
+            case GOVERNANCE -> 0.22;
+            case CIVIL_RIGHTS, SPEECH_RELIGION -> 0.16;
         };
     }
 

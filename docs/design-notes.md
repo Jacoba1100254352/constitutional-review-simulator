@@ -16,13 +16,17 @@ Scenario outputs now distinguish `scenarioKind` and `reviewMechanism`. Real-worl
 
 Cases now carry doctrine, jurisdiction, and lower-court pipeline structure. Doctrine areas are speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state. Jurisdiction distinguishes federal, state, and mixed state-federal disputes. The lower-court pipeline distinguishes district-only, circuit panel, circuit en banc, state high-court, and state-federal split paths, contributing panel skew, government win/loss, state-federal tension, intercourt conflict, certiorari pressure, and time-to-review. These inputs affect review selection, deference, rights sensitivity, delay costs, and partisan-alignment risk.
 
+Cases also carry access and repeat-player variables. `litigantCapacity` approximates claimant resources and legal-aid support, `publicInterestSupport` approximates NGO/amicus/rights-commission backing, and `governmentRepeatPlayerAdvantage` approximates the procedural advantage of repeat government litigants. These are synthetic until source-backed case-selection datasets are added, but they now affect review probability, intake acceptance, veto-relocation risk, and democratic constitutionalism.
+
 Emergency review is split into interim relief and merits invalidation. A case can receive emergency relief without a merits decision, receive a merits decision without emergency relief, or move through both stages. This lets the shadow-docket metric track unexplained or non-merits emergency action instead of treating every emergency order as a final reversal.
 
 Court composition now changes across review periods. `WorldSpec.reviewPeriods` partitions each run's docket, and scenario term/removal/accountability settings control replacement pressure between periods. Life-tenure scenarios drift slowly; renewable or retention-election designs turn over faster. Composition reports expose period-level court size, median ideology, ideological spread, mean partisan attachment, rights sensitivity, institutionalism, replacement pressure, and estimated replacement events.
 
 Outcomes now update public and legislative reaction state. Each decision changes public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and a compliance norm. Those state variables feed later cases in the same run, so emergency relief, merits invalidation, override use, defiance, workaround behavior, and repeated litigation can compound instead of appearing as isolated case-level events. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance.
 
-Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central diagnostic is whether review improves rights, responsiveness, legitimacy, and compliance without merely hiding veto power in a less accountable location.
+Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central diagnostic is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
+
+The world specification now separates formal review design from political and administrative context. Party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility feed response credibility, transplant feasibility, political-culture sensitivity, and compliance channels. These inputs are sensitivity levers unless source-specific research promotes them into documented calibration targets.
 
 Imported legislative outputs are not treated as empirical truth. They become stress signals for generated cases:
 
@@ -45,6 +49,7 @@ exports:
 - aggregate and segment uncertainty bands
 - compressed case-level outcomes for bootstrap replication
 - mechanism diagnostics and scenario-kind metadata in aggregate, segment, composition, and case-level exports
+- research-roadmap inputs under `config/research/` for empirical court packs, legislative response evidence, transplant factors, enforcement channels, and case-selection access
 
 The sensitivity campaign is a brittleness check rather than empirical
 validation. It runs the same scenario catalog over high/low assumption sweeps
@@ -63,3 +68,8 @@ provisional synthesis rows must remain distinguishable in paper and supplement
 language. Rows with synthesis labels, missing denominators, public-trust
 proxies, or normalized-cost construction are stress-test context, not
 validation evidence.
+
+Deep-research prompts for the next empirical pass are maintained in
+`docs/deep-research-prompts.md`. Their requested outputs should be treated as
+source-discovery material until denominators, URLs, coding rules, and target
+analogues are checked into the calibration source matrix.

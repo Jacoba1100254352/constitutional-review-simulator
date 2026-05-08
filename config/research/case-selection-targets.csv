@@ -1,0 +1,10 @@
+targetKey,simulatorFieldOrMetric,unit,preferredSystems,neededDenominator,codingNotes
+litigant_capacity,litigantCapacity,normalized score,systems with legal-aid or public-interest litigation data,total candidate constitutional claims,Construct from legal aid, repeat-player representation, NGO participation, and claimant resources.
+public_interest_support,publicInterestSupport,normalized score,systems with amicus/NGO intervention records,total constitutional cases or applications,Can be proxied by amicus filings, civil-society intervention, rights-commission involvement.
+government_repeat_player_advantage,governmentRepeatPlayerAdvantage,normalized score,systems with party/outcome datasets,total government-involved constitutional cases,Estimate from government win rates after controlling for doctrine, lower-court posture, and urgency.
+intake_acceptance_rate,intakeAcceptanceRate,share,United States; Canada; Germany; France; South Africa,total filings or petitions,Keep filing denominators system-specific; do not compare raw rates without docket-category alignment.
+public_defender_access,publicDefenderParticipationRate,share,systems with constitutional public defender/legal-aid programs,total accepted or candidate constitutional cases,Use to calibrate public-defender mechanism and access gains.
+ombudsman_trigger_access,ombudsmanTriggerRate,share,systems with ombudsman or rights-commission referral powers,total constitutional review matters or ombudsman referrals,Separate access expansion from merits success.
+lower_court_conflict_creation,lowerCourtConflict,share or normalized score,appellate systems with circuit/split coding,total lower-court constitutional cases,Measures pipeline conflict that raises final review probability.
+certiorari_pressure,caseSelectionAccess,normalized score,discretionary appellate systems,total petitions,Construct from lower-court conflict, salience, government loss, and rights threat.
+time_to_review,averageTimeToReview,time,all target systems,total cases with filing and disposition dates,Needed to separate delay cost from access probability.

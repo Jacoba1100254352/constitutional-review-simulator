@@ -90,7 +90,7 @@ The project therefore separates three evidentiary categories. Real-world presets
 \section{Simulation Framework}
 \label{sec:framework}
 
-The simulator uses named scenarios, randomized worlds, shared dockets, campaign sweeps, directional metrics, CSV and Markdown reports, and provenance manifests. Each case has a generated policy position, doctrine area, policy domain, jurisdiction, lower-court path, rights-threat signal, public support, legislative mandate, urgency, legal ambiguity, constitutional salience, lower-court conflict, lower-court panel skew, state-federal tension, intercourt conflict, certiorari pressure, time-to-review, executive pressure, conflict-of-interest risk, and public-trust context.
+The simulator uses named scenarios, randomized worlds, shared dockets, campaign sweeps, directional metrics, CSV and Markdown reports, and provenance manifests. Each case has a generated policy position, doctrine area, policy domain, jurisdiction, lower-court path, rights-threat signal, public support, legislative mandate, urgency, legal ambiguity, constitutional salience, lower-court conflict, lower-court panel skew, state-federal tension, intercourt conflict, certiorari pressure, time-to-review, executive pressure, conflict-of-interest risk, public-trust context, litigant capacity, public-interest support, and government repeat-player advantage.
 
 Figure~\ref{fig:model-pipeline} summarizes the model pipeline. The legislative simulator remains separate: imported legislative outputs enter only as CSV stress signals that alter the generated constitutional-review docket.
 
@@ -105,9 +105,12 @@ Each scenario creates justices or review actors from appointment method, court s
 
 The main model equations are intentionally simple enough to audit. Review propensity is a weighted score:
 \[
-R = A_s+.26T_r+.22S_c+.16L_c+.22C_p+.12I_c+.18E+.16O+.13D+.10P+.12B-.05U,
+\begin{aligned}
+R={}&A_s+.26T_r+.22S_c+.16L_c+.22C_p+.12I_c+.18E\\
+&+.16O+.13D+.10P+.12B+.09L_a+.12P_i+.05G_r-.05U,
+\end{aligned}
 \]
-where $A_s$ is structural access, $T_r$ rights threat, $S_c$ constitutional salience, $L_c$ lower-court conflict, $C_p$ certiorari or intake pressure, $I_c$ intercourt conflict, $E$ emergency status, $O$ ombudsman trigger, $D$ public-defender participation, $P$ pre-enactment review, $B$ abstract review, and $U$ legal ambiguity. The case is reviewed when $R$ multiplied by jurisdictional access plus random docket noise exceeds the review threshold.
+where $A_s$ is structural access, $T_r$ rights threat, $S_c$ constitutional salience, $L_c$ lower-court conflict, $C_p$ certiorari or intake pressure, $I_c$ intercourt conflict, $E$ emergency status, $O$ ombudsman trigger, $D$ public-defender participation, $P$ pre-enactment review, $B$ abstract review, $L_a$ litigant capacity, $P_i$ public-interest support, $G_r$ government repeat-player advantage, and $U$ legal ambiguity. The case is reviewed when $R$ multiplied by jurisdictional access plus random docket noise exceeds the review threshold. Government repeat-player advantage can raise case salience and review probability while still lowering case-selection access and democratic-constitutionalism scores when it reflects asymmetric litigating capacity.
 
 The review vote uses justice-level rights sensitivity, partisan pressure, legal ambiguity, lower-court signal, mandate restraint, and mechanism adjustments. Mechanism adjustments are deliberately directional rather than fitted: rights-impact statements slightly reduce unnecessary invalidation while increasing attention to high-rights-threat cases; ombudsman and public-defender participation increase access and rights salience; pre-enactment and abstract review increase salience screening; weak-form review lowers the threshold for a declaration without automatically invalidating the law.
 
@@ -122,13 +125,16 @@ Figure~\ref{fig:emergency-docket} illustrates why that separation matters. The c
 \label{fig:emergency-docket}
 \end{figure}
 
-Runs are partitioned into review periods so term limits and removal or retention rules can change court composition over time. Decision outcomes also update an institutional reaction state: public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and compliance norms feed later cases in the same run. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance.
+Runs are partitioned into review periods so term limits and removal or retention rules can change court composition over time. Decision outcomes also update an institutional reaction state: public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and compliance norms feed later cases in the same run. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance. World assumptions now include party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility. These variables are sensitivity levers unless separately documented in the calibration matrix.
 
-The main outcome metrics are listed in Table~\ref{tab:metrics}. The new constitutional-design diagnostics are synthetic constructs. Veto-relocation risk rises when a design shifts blocking power into courts, councils, cross-checks, or upstream admissibility screens without a rights-threat justification or legislative response. Legal-transplant feasibility combines scenario transplant score, political-culture fit, trust, inverse institutional demand, and inverse political mismatch. Political-culture sensitivity increases when a mechanism depends heavily on cooperative legislative response, high public trust, low polarization, or strong compliance norms. Democratic constitutionalism combines the values most central to the paper's question:
+The main outcome metrics are listed in Table~\ref{tab:metrics}. The new constitutional-design diagnostics are synthetic constructs. Veto-relocation risk rises when a design shifts blocking power into courts, councils, cross-checks, or upstream admissibility screens without a rights-threat justification or legislative response. Legal-transplant feasibility combines scenario transplant score, political-culture fit, trust, inverse institutional demand, legal-tradition compatibility, implementation capacity, civil-society capacity, and inverse political mismatch. Political-culture sensitivity increases when a mechanism depends heavily on cooperative legislative response, high public trust, low polarization, low fragmentation, or strong compliance norms. Democratic constitutionalism combines the values most central to the paper's question:
 \[
-D_c=.13S+.20R_p+.14L+.18D_r+.11C+.09(1-K)+.07(1-V)+.05F+.03(1-P_c),
+\begin{aligned}
+D_c={}&.11S+.18R_p+.12L+.15D_r+.09C+.08(1-K)+.07(1-V)+.05F\\
+&+.03(1-P_c)+.03Q+.03A_c+.03(1-G_r)+.03I_m,
+\end{aligned}
 \]
-where $S$ is legal stability, $R_p$ rights protection, $L$ legitimacy, $D_r$ democratic responsiveness, $C$ compliance, $K$ constitutional conflict, $V$ veto-relocation risk, $F$ transplant feasibility, and $P_c$ political-culture sensitivity. The directional score remains only a display aid. It combines directional metrics after inverting lower-is-better values; it should not be treated as a final welfare function.
+where $S$ is legal stability, $R_p$ rights protection, $L$ legitimacy, $D_r$ democratic responsiveness, $C$ compliance, $K$ constitutional conflict, $V$ veto-relocation risk, $F$ transplant feasibility, $P_c$ political-culture sensitivity, $Q$ legislative-response credibility, $A_c$ case-selection access, $G_r$ government repeat-player advantage, and $I_m$ implementation capacity. The directional score remains only a display aid. It combines directional metrics after inverting lower-is-better values; it should not be treated as a final welfare function.
 
 \begin{table}[hbt!]
 \centering
@@ -140,11 +146,11 @@ Metric family & Examples & Direction \\
 \midrule
 Legal performance & legal stability, rights protection, reversal rate, merits invalidation rate & mixed \\
 Political alignment & partisan alignment, democratic responsiveness, independence/accountability balance & mixed \\
-Democratic constitutionalism & democratic constitutionalism, veto-relocation risk, transplant feasibility, political-culture sensitivity & mixed \\
+Democratic constitutionalism & democratic constitutionalism, legislative-response credibility, case-selection access, government repeat-player advantage, implementation capacity, veto-relocation risk, transplant feasibility, political-culture sensitivity & mixed \\
 Noncourt mechanisms & weak-form declarations, suspended declarations, legislative response cycles, rights-impact statements, ombudsman triggers, public-defender participation, abstract review & diagnostic \\
 Emergency docket & emergency relief, reason-giving, vote disclosure, public disagreement, merits follow-up & mixed \\
 Legitimacy and conflict & legitimacy, public trust, constitutional conflict, court-curbing pressure, amendment pressure & mixed \\
-Pipeline and intake & review rate, intake acceptance, lower-court depth, state-federal tension, intercourt conflict & diagnostic \\
+Pipeline and intake & review rate, intake acceptance, case-selection access, litigant capacity, public-interest support, lower-court depth, state-federal tension, intercourt conflict & diagnostic \\
 Coalitions and recusals & concurrence fragmentation, dissent intensity, recusal rate, en banc rate, cross-check rate & mixed \\
 Compliance & compliance, defiance, workarounds, executive implementation, agency nonacquiescence, reenactment, local compliance & mixed \\
 Institutional cost & administrative load, direct court cost, upstream screening cost, capacity strain, delay, implementation complexity & lower \\
@@ -156,9 +162,9 @@ Institutional cost & administrative load, direct court cost, upstream screening 
 
 The directional score is an unweighted diagnostic summary, not an estimated social welfare function. Let $H$ be the set of higher-is-better metrics and $L$ the set of lower-is-better metrics included in the display score. The score is
 \[
-S=\frac{1}{29}\left(\sum_{m\in H}m+\sum_{m\in L}(1-m)\right).
+S=\frac{1}{33}\left(\sum_{m\in H}m+\sum_{m\in L}(1-m)\right).
 \]
-The higher-is-better set includes legal stability, rights protection, legitimacy, democratic responsiveness, democratic constitutionalism, independence/accountability balance, compliance, executive implementation, local-government compliance, emergency reason-giving, emergency vote disclosure, legal-transplant feasibility, legislative response, and rights-impact statements. The lower-is-better set includes partisan alignment, shadow-docket abuse, reversal rate, emergency relief rate, merits invalidation rate, constitutional conflict, veto-relocation risk, political-culture sensitivity, defiance, workarounds, agency nonacquiescence, legislative reenactment, emergency public disagreement, administrative load, and total institutional cost. Diagnostic metrics such as review rate, recusal rate, override rate, weak-form declaration rate, abstract-review rate, lower-court depth, replacement pressure, and public trust remain visible in reports but do not enter $S$.
+The higher-is-better set includes legal stability, rights protection, legitimacy, democratic responsiveness, legislative-response credibility, case-selection access, implementation capacity, democratic constitutionalism, independence/accountability balance, compliance, executive implementation, local-government compliance, emergency reason-giving, emergency vote disclosure, legal-transplant feasibility, legislative response, and rights-impact statements. The lower-is-better set includes partisan alignment, shadow-docket abuse, reversal rate, emergency relief rate, merits invalidation rate, constitutional conflict, government repeat-player advantage, veto-relocation risk, political-culture sensitivity, defiance, workarounds, agency nonacquiescence, legislative reenactment, emergency public disagreement, administrative load, and total institutional cost. Diagnostic metrics such as review rate, recusal rate, override rate, weak-form declaration rate, abstract-review rate, lower-court depth, replacement pressure, and public trust remain visible in reports but do not enter $S$.
 
 \section{Calibration, Uncertainty, and Replication}
 \label{sec:calibration}
@@ -224,7 +230,7 @@ Figure~\ref{fig:cost-score} displays the same point graphically. The current-sty
 \begin{figure}[hbt!]
 \centering
 \input{figures/cost_score_scatter}
-\caption{Baseline institutional cost versus democratic constitutionalism. The vertical axis is a synthetic diagnostic combining rights, responsiveness, legitimacy, compliance, conflict, veto-relocation risk, feasibility, and culture sensitivity. CUR* marks the current-style scenario.}
+\caption{Baseline institutional cost versus democratic constitutionalism. The vertical axis is a synthetic diagnostic combining rights, responsiveness, legitimacy, compliance, implementation, access, response credibility, conflict, veto-relocation risk, feasibility, and culture sensitivity. CUR* marks the current-style scenario.}
 \label{fig:cost-score}
 \end{figure}
 
@@ -240,12 +246,12 @@ Figure~\ref{fig:mechanism-tradeoff} focuses only on synthetic mechanisms. The de
 \section{Limitations and Next Steps}
 \label{sec:limits}
 
-The simulator is intentionally abstract. It compresses doctrinal variation, legal culture, party systems, federal design, and executive implementation into variables that can be compared across institutional scenarios. It does not yet model litigant strategy, judicial opinion assignment, actual precedent networks, budget appropriations, media framing, or reform backlash as independently strategic actors. Legal-transplant feasibility and political-culture sensitivity are diagnostic constructs, not measured country-level estimates. Implementation cost is normalized to the simulator scale and should not be read as a budget forecast. The source-specific validation surface is narrow; most comparative rows remain stress-test assumptions until paired with reproducible empirical datasets.
+The simulator is intentionally abstract. It compresses doctrinal variation, legal culture, party systems, federal design, and executive implementation into variables that can be compared across institutional scenarios. It does not yet model litigant strategy, judicial opinion assignment, actual precedent networks, budget appropriations, media framing, or reform backlash as independently strategic actors. Case-selection access, legislative-response credibility, government repeat-player advantage, implementation capacity, legal-transplant feasibility, and political-culture sensitivity are diagnostic constructs, not measured country-level estimates. Implementation cost is normalized to the simulator scale and should not be read as a budget forecast. The source-specific validation surface is narrow; most comparative rows remain stress-test assumptions until paired with reproducible empirical datasets.
 
-The next research increment should add richer case-flow validation against specific courts and periods, distinguish litigant selection from judicial selection more explicitly, and replace synthesized calibration targets with source-specific datasets. It should also model political-culture variables with external indicators rather than internal assumptions, add explicit implementation budgets for access institutions, and test whether legislative response cycles are credible under different party-system and compliance conditions. A Journal of Law and Courts submission should keep the main text compact and move large scenario tables, source matrices, raw case records, and sensitivity reports to supplementary materials.
+The next research increment should add court-specific calibration packs, richer case-flow validation against specific courts and periods, and source-backed evidence for legislative response, compliance, enforcement, transplant feasibility, political culture, and case-selection access. The repository now separates those tasks into research-roadmap CSV files rather than treating starter assumptions as calibration targets. Future empirical work should replace synthesized targets with denominator-backed datasets, model political-culture variables with external indicators rather than internal assumptions, add explicit implementation budgets for access institutions, and test whether legislative response cycles are credible under different party-system and compliance conditions. A Journal of Law and Courts submission should keep the main text compact and move large scenario tables, source matrices, raw case records, and sensitivity reports to supplementary materials.
 
 \section*{Supplementary Material}
-The supplementary replication package is designed to include source code and tests in \path{src/main/java} and \path{src/test/java}; calibration and benchmark inputs in \path{config/calibration}, \path{config/comparative}, \path{config/pipeline}, \path{config/emergency}, and \path{config/cost-benchmarks}; the normalized calibration source-observation matrix; compact generated reports; figure- and table-generation scripts; and reproducibility commands including \texttt{make test}, \texttt{make campaign}, \texttt{make paired-campaign}, \texttt{make validation-check}, \texttt{make sensitivity-check}, \texttt{make paper}, and \texttt{make supplement}. Full compressed case-level and interval exports are reproducible from those commands and should be included in the final public deposit or supplied separately if requested. For anonymous review, any repository metadata or file paths that identify the author should be removed or redacted from the submitted archive.
+The supplementary replication package is designed to include source code and tests in \path{src/main/java} and \path{src/test/java}; calibration, research-roadmap, and benchmark inputs in \path{config/calibration}, \path{config/research}, \path{config/comparative}, \path{config/pipeline}, \path{config/emergency}, and \path{config/cost-benchmarks}; the normalized calibration source-observation matrix; compact generated reports; figure- and table-generation scripts; and the Makefile commands listed in the repository README. Full compressed case-level and interval exports are reproducible from those commands and should be included in the final public deposit or supplied separately if requested. For anonymous review, any repository metadata or file paths that identify the author should be removed or redacted from the submitted archive.
 
 \section*{Funding Declaration}
 No external funding is reported for this manuscript.

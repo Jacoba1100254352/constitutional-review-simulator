@@ -26,7 +26,8 @@ legislative outputs are useful stress tests.
 democratic constitutionalism. The current-style court is marked `CUR*`.
 Court variants and synthetic mechanisms are labeled so readers can compare
 cost against the rights, responsiveness, legitimacy, compliance, feasibility,
-and veto-relocation diagnostic.
+implementation, access, response credibility, feasibility, and veto-relocation
+diagnostic.
 
 `fig:mechanism-tradeoff`: Scatterplot of synthetic mechanisms only. The
 horizontal axis is veto-relocation risk and the vertical axis is democratic
@@ -68,12 +69,14 @@ sensitivity, and institutional cost.
 Columns report democratic constitutionalism, veto-relocation risk, transplant
 feasibility, political-culture sensitivity, weak-form declaration rate,
 suspended declaration rate, legislative response rate, front-end review rate,
-and access-support rate.
+and case-selection access diagnostic.
 
 `tab:supp-model-weights`: Supplementary long table describing the fixed model
 weights and formulas for core simulated outcomes, including shadow-docket abuse,
 legal stability, legitimacy, rights protection, constitutional conflict,
-compliance, enforcement, institutional cost, and the directional display score.
+compliance, enforcement, case-selection access, legislative-response
+credibility, implementation capacity, institutional cost, and the directional
+display score.
 
 `tab:supp-scenario-matrix`: Supplementary long table listing all starter
 campaign case-scenario combinations with mechanism family, score, democratic
@@ -89,6 +92,10 @@ and trust.
 calibration source-observation row by profile, target, method, sample size,
 reliability, and source-status category. Rows without direct URLs or sample
 counts are identified as provisional synthesis targets.
+
+`tab:supp-research-roadmap`: Supplementary long table listing the empirical
+research-roadmap files, row counts, and the purpose of each file. It
+distinguishes source-gathering tasks from calibration targets.
 
 `tab:supp-artifacts`: Supplementary long table inventorying generated report
 artifacts and file sizes.

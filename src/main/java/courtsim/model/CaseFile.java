@@ -25,6 +25,9 @@ public record CaseFile(
         double executivePressure,
         double conflictOfInterestRisk,
         double publicTrust,
+        double litigantCapacity,
+        double publicInterestSupport,
+        double governmentRepeatPlayerAdvantage,
         String source
 ) {
 }

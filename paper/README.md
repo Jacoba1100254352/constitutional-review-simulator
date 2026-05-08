@@ -98,6 +98,7 @@ Relevant venue-format constraints now reflected in the manuscript:
 - generated calibration target table;
 - generated validation-style diagnostics table;
 - generated supplementary calibration source-observation matrix;
+- generated supplementary empirical research-roadmap matrix;
 - generated aggregate reports and a manifest of omitted case-level and interval
   exports for review upload;
 - large scenario matrices, calibration source tables, and sensitivity details
@@ -120,6 +121,12 @@ Calibration targets are now regenerated from
 `scripts/build_calibration_targets.py`; `make calibration-check` verifies that
 the source-observation matrix, `config/calibration/*.csv`, and the compatibility
 `config/calibration-targets.csv` file remain synchronized.
+
+The empirical roadmap files under `config/research/` are deliberately separated
+from calibration targets. They identify source-gathering tasks for court packs,
+legislative response, compliance/enforcement, legal-transplant factors, and
+case-selection access before any new row is promoted into the calibration
+source matrix.
 
 The submission checklist in `paper/jlc-submission-checklist.md` tracks the
 remaining upload-time tasks, especially anonymous supplementary material,

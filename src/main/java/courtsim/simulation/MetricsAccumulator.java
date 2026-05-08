@@ -41,6 +41,10 @@ public final class MetricsAccumulator {
     private double legitimacySum;
     private double constitutionalConflictSum;
     private double democraticResponsivenessSum;
+    private double legislativeResponseCredibilitySum;
+    private double caseSelectionAccessSum;
+    private double governmentRepeatPlayerAdvantageSum;
+    private double implementationCapacitySum;
     private double independenceAccountabilityBalanceSum;
     private double concurrenceFragmentationSum;
     private double dissentIntensitySum;
@@ -151,6 +155,10 @@ public final class MetricsAccumulator {
         legitimacySum += outcome.legitimacy();
         constitutionalConflictSum += outcome.constitutionalConflict();
         democraticResponsivenessSum += outcome.democraticResponsiveness();
+        legislativeResponseCredibilitySum += outcome.legislativeResponseCredibility();
+        caseSelectionAccessSum += outcome.caseSelectionAccess();
+        governmentRepeatPlayerAdvantageSum += outcome.governmentRepeatPlayerAdvantage();
+        implementationCapacitySum += outcome.implementationCapacity();
         independenceAccountabilityBalanceSum += outcome.independenceAccountabilityBalance();
         concurrenceFragmentationSum += outcome.concurrenceFragmentation();
         dissentIntensitySum += outcome.dissentIntensity();
@@ -290,6 +298,10 @@ public final class MetricsAccumulator {
                 Values.ratio(invalidations, Math.max(reviewedCases, 1)),
                 average(constitutionalConflictSum),
                 average(democraticResponsivenessSum),
+                average(legislativeResponseCredibilitySum),
+                average(caseSelectionAccessSum),
+                average(governmentRepeatPlayerAdvantageSum),
+                average(implementationCapacitySum),
                 average(independenceAccountabilityBalanceSum),
                 average(concurrenceFragmentationSum),
                 average(dissentIntensitySum),
@@ -428,6 +440,10 @@ public final class MetricsAccumulator {
         private double legitimacySum;
         private double constitutionalConflictSum;
         private double democraticResponsivenessSum;
+        private double legislativeResponseCredibilitySum;
+        private double caseSelectionAccessSum;
+        private double governmentRepeatPlayerAdvantageSum;
+        private double implementationCapacitySum;
         private double publicTrustSum;
         private double legislativeConflictSum;
         private double courtCurbingPressureSum;
@@ -521,6 +537,10 @@ public final class MetricsAccumulator {
             legitimacySum += outcome.legitimacy();
             constitutionalConflictSum += outcome.constitutionalConflict();
             democraticResponsivenessSum += outcome.democraticResponsiveness();
+            legislativeResponseCredibilitySum += outcome.legislativeResponseCredibility();
+            caseSelectionAccessSum += outcome.caseSelectionAccess();
+            governmentRepeatPlayerAdvantageSum += outcome.governmentRepeatPlayerAdvantage();
+            implementationCapacitySum += outcome.implementationCapacity();
             publicTrustSum += outcome.publicTrustAfter();
             legislativeConflictSum += outcome.legislativeConflictAfter();
             courtCurbingPressureSum += outcome.courtCurbingPressure();
@@ -566,6 +586,10 @@ public final class MetricsAccumulator {
                     average(legitimacySum),
                     average(constitutionalConflictSum),
                     average(democraticResponsivenessSum),
+                    average(legislativeResponseCredibilitySum),
+                    average(caseSelectionAccessSum),
+                    average(governmentRepeatPlayerAdvantageSum),
+                    average(implementationCapacitySum),
                     Values.ratio(compliedCases, totalCases),
                     Values.ratio(defiedCases, totalCases),
                     Values.ratio(workaroundCases, totalCases),

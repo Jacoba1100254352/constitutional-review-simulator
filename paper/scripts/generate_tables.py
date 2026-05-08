@@ -296,7 +296,7 @@ def generate_baseline_results() -> None:
             r"\bottomrule",
             r"\end{tabular}",
             r"\begin{minipage}{0.96\linewidth}",
-            r"\footnotesize Notes: Values are baseline campaign estimates. C denotes court-variant scenarios and S denotes synthetic mechanism scenarios. The score column reports the equally weighted directional diagnostic score; the interval column reports the 95\% run-block bootstrap interval for that score. Democratic constitutionalism, veto-relocation risk, transplant feasibility, and political-culture sensitivity are synthetic diagnostic constructs, not empirical estimates.",
+            r"\footnotesize Notes: Values are baseline campaign estimates. C denotes court-variant scenarios and S denotes synthetic mechanism scenarios. The score column reports the equally weighted directional diagnostic score; the interval column reports the 95\% run-block bootstrap interval for that score. Democratic constitutionalism, veto-relocation risk, transplant feasibility, political-culture sensitivity, case-selection access, response credibility, repeat-player advantage, and implementation capacity are synthetic diagnostic constructs, not empirical estimates.",
             r"\end{minipage}",
             r"\end{table}",
             "",
@@ -327,7 +327,7 @@ def generate_mechanism_results() -> None:
     for scenario in MECHANISM_ORDER:
         row = baseline_rows[scenario]
         front_end = max(float(row["rightsImpactStatementRate"]), float(row["preEnactmentReviewRate"]), float(row["abstractReviewRate"]))
-        access = max(float(row["ombudsmanTriggerRate"]), float(row["publicDefenderParticipationRate"]))
+        access = float(row["caseSelectionAccess"])
         lines.append(
             " & ".join(
                 [
@@ -350,7 +350,7 @@ def generate_mechanism_results() -> None:
             r"\bottomrule",
             r"\end{tabular}",
             r"\begin{minipage}{0.96\linewidth}",
-            r"\footnotesize Notes: These are synthetic mechanism tests, not claims about named legal systems. Front-end is the maximum of rights-impact statement, pre-enactment review, and abstract review rates. Access is the maximum of ombudsman-triggered and constitutional-public-defender participation rates.",
+            r"\footnotesize Notes: These are synthetic mechanism tests, not claims about named legal systems. Front-end is the maximum of rights-impact statement, pre-enactment review, and abstract review rates. Access is the synthetic case-selection access diagnostic, which combines litigant capacity, public-interest support, repeat-player advantage, and intake filtering.",
             r"\end{minipage}",
             r"\end{table}",
             "",

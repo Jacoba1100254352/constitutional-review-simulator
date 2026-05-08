@@ -110,6 +110,10 @@ public final class SimulatorTests {
             assertBetween(report.vetoRelocationRisk(), "veto relocation risk");
             assertBetween(report.legalTransplantFeasibility(), "legal transplant feasibility");
             assertBetween(report.politicalCultureSensitivity(), "political culture sensitivity");
+            assertBetween(report.legislativeResponseCredibility(), "legislative response credibility");
+            assertBetween(report.caseSelectionAccess(), "case-selection access");
+            assertBetween(report.governmentRepeatPlayerAdvantage(), "government repeat-player advantage");
+            assertBetween(report.implementationCapacity(), "implementation capacity");
             assertTrue(!report.periodReports().isEmpty(), "expected period diagnostics");
             assertTrue(!report.doctrineReports().isEmpty(), "expected doctrine diagnostics");
             assertTrue(!report.pipelineReports().isEmpty(), "expected pipeline diagnostics");
@@ -144,6 +148,9 @@ public final class SimulatorTests {
             assertBetween(report.vetoRelocationRisk(), "mechanism veto relocation risk");
             assertBetween(report.legalTransplantFeasibility(), "mechanism transplant feasibility");
             assertBetween(report.politicalCultureSensitivity(), "mechanism political culture sensitivity");
+            assertBetween(report.legislativeResponseCredibility(), "mechanism legislative response credibility");
+            assertBetween(report.caseSelectionAccess(), "mechanism case-selection access");
+            assertBetween(report.implementationCapacity(), "mechanism implementation capacity");
         }
         assertTrue(byKey.get("weak-form-review").weakFormDeclarationRate() > 0.0, "expected weak-form declarations");
         assertTrue(byKey.get("suspended-declaration-review").suspendedDeclarationRate() > 0.0, "expected suspended declarations");
@@ -197,6 +204,9 @@ public final class SimulatorTests {
         assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("reviewMechanism"), "expected mechanism case export");
         assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("weakFormDeclaration"), "expected weak-form case export");
         assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("policyDomain"), "expected policy-domain case export");
+        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("litigantCapacity"), "expected case-selection input export");
+        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("caseSelectionAccess"), "expected case-selection outcome export");
+        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("legislativeResponseCredibility"), "expected response credibility export");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected interval CSV artifact");
         assertTrue(Files.exists(result.periodIntervalCsvPath()), "expected period interval CSV artifact");
         assertTrue(Files.exists(result.doctrineIntervalCsvPath()), "expected doctrine interval CSV artifact");
@@ -221,7 +231,13 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.csvPath()).contains("vetoRelocationRisk"), "expected veto-relocation metric");
         assertTrue(Files.readString(result.csvPath()).contains("legalTransplantFeasibility"), "expected transplant feasibility metric");
         assertTrue(Files.readString(result.csvPath()).contains("politicalCultureSensitivity"), "expected political-culture sensitivity metric");
+        assertTrue(Files.readString(result.csvPath()).contains("legislativeResponseCredibility"), "expected response credibility metric");
+        assertTrue(Files.readString(result.csvPath()).contains("caseSelectionAccess"), "expected case-selection access metric");
+        assertTrue(Files.readString(result.csvPath()).contains("governmentRepeatPlayerAdvantage"), "expected government repeat-player metric");
+        assertTrue(Files.readString(result.csvPath()).contains("implementationCapacity"), "expected implementation capacity metric");
         assertTrue(Files.readString(result.csvPath()).contains("weakFormDeclarationRate"), "expected weak-form mechanism metric");
+        assertTrue(Files.readString(result.periodCsvPath()).contains("caseSelectionAccess"), "expected period access metric");
+        assertTrue(Files.readString(result.doctrineCsvPath()).contains("implementationCapacity"), "expected doctrine implementation metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("period"), "expected period report rows");
         assertTrue(Files.readString(result.doctrineCsvPath()).contains("doctrine"), "expected doctrine report rows");
         assertTrue(Files.readString(result.pipelineCsvPath()).contains("pipeline"), "expected pipeline report rows");
@@ -234,6 +250,8 @@ public final class SimulatorTests {
         assertTrue(calibrationCsv.contains("useForValidation"), "expected validation-use column");
         assertTrue(calibrationCsv.contains("germany-bverfg-2024"), "expected comparative calibration profile");
         assertTrue(Files.readString(result.intervalCsvPath()).contains("cluster-bootstrap-runs"), "expected campaign bootstrap uncertainty bands");
+        assertTrue(Files.readString(result.intervalCsvPath()).contains("legislativeResponseCredibility"), "expected response credibility uncertainty bands");
+        assertTrue(Files.readString(result.intervalCsvPath()).contains("caseSelectionAccess"), "expected access uncertainty bands");
         assertTrue(Files.readString(result.periodIntervalCsvPath()).contains("cluster-bootstrap-runs"), "expected period bootstrap bands");
         assertTrue(Files.readString(result.doctrineIntervalCsvPath()).contains("cluster-bootstrap-runs"), "expected doctrine bootstrap bands");
         assertTrue(Files.readString(result.pipelineIntervalCsvPath()).contains("lower95"), "expected pipeline uncertainty bands");

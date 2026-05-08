@@ -1,0 +1,10 @@
+targetKey,simulatorMetric,unit,preferredSystems,neededDenominator,codingNotes
+executive_implementation_rate,executiveImplementationRate,share,United States; Canada; Germany; South Africa,total cases requiring executive implementation,Count affirmative executive steps after adverse review or remedial order.
+agency_nonacquiescence_rate,agencyNonacquiescenceRate,share,United States administrative agencies; EU/member-state contexts,total agency-relevant review losses,Separate formal nonacquiescence from delay and narrow implementation.
+legislative_reenactment_rate,legislativeReenactmentRate,share,United States; Canada; Germany; South Africa,total adverse review decisions affecting statutes,Code good-faith correction separately from circumvention.
+local_government_compliance_rate,localGovernmentComplianceRate,share,South Africa; federal systems; municipal-rights litigation,total local-government or subnational compliance orders,Use a fixed time window for compliance.
+direct_defiance_rate,defianceRate,share,all target systems,total review outcomes requiring action,Restrict to clear refusal or open noncompliance, not ambiguous delay.
+workaround_rate,workaroundRate,share,all target systems,total invalidations or adverse declarations,Code executive workaround, statutory workaround, and administrative recoding separately.
+repeated_litigation_rate,repeatedLitigationRate,share,all target systems,total reviewed cases or remedial orders,Measure follow-on litigation over the same policy or remedial failure.
+implementation_delay,implementationCapacity,time or normalized score,all target systems,total implementation events,Convert to implementationCapacity only with documented delay-to-score formula.
+structural_remedy_monitoring,implementationCapacity,share,South Africa; India; Colombia; United States,total structural or supervisory remedies,Useful for distinguishing implementation capacity from mere formal compliance.

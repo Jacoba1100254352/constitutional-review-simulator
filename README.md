@@ -48,7 +48,7 @@ This writes:
 - `reports/constitutional-review-campaign-v0.md`
 - `reports/constitutional-review-campaign-v0-manifest.json`
 
-The aggregate CSVs include scenario kind, review mechanism, intake filings, screened filings, intake acceptance rate, emergency reason-giving, emergency vote disclosure, public emergency disagreement, government emergency applicant/win diagnostics, emergency merits follow-up, mechanism rates, democratic constitutionalism, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, direct court cost, upstream screening cost, capacity strain cost, and aggregate budget/delay/complexity cost fields.
+The aggregate CSVs include scenario kind, review mechanism, intake filings, screened filings, intake acceptance rate, emergency reason-giving, emergency vote disclosure, public emergency disagreement, government emergency applicant/win diagnostics, emergency merits follow-up, mechanism rates, legislative-response credibility, case-selection access, government repeat-player advantage, implementation capacity, democratic constitutionalism, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, direct court cost, upstream screening cost, capacity strain cost, and aggregate budget/delay/complexity cost fields.
 
 Run the paired imported-legislative campaign:
 
@@ -161,6 +161,7 @@ The starter catalog covers:
 - court-system archetypes: discretionary appellate leave, constitutional complaint, pre-enactment council, mixed abstract/concrete review, declaration-only parliamentary review, and supranational treaty review
 - real-world presets: U.S. Supreme Court, German Federal Constitutional Court, French Constitutional Council, Supreme Court of Canada, South African Constitutional Court, UK Supreme Court, India Supreme Court, Brazil STF, ECHR, and CJEU
 - public and legislative reaction dynamics: compliance, defiance, workarounds, repeated litigation, court-curbing pressure, amendment pressure, trust shifts, executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance
+- political-system and implementation assumptions: party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility
 - voting thresholds: simple majority, supermajority invalidation, concurrent-majority logic, and high constitutional thresholds
 - concurring/dissenting coalitions: modeled as fragmentation and dissent intensity metrics
 - panel vs en banc review
@@ -192,7 +193,11 @@ Core metrics:
 - `meritsInvalidationRate` `↓/diag.`: merits reviews that invalidate a law or action
 - `constitutionalConflict` `↓`: clashes among court, legislature, executive, public mandate, and cross-checking bodies
 - `democraticResponsiveness` `↑`: respect for public mandate unless rights-threat signals justify countermajoritarian action
-- `democraticConstitutionalism` `↑`: synthetic diagnostic combining rights protection, responsiveness, legitimacy, compliance, low conflict, low veto relocation, feasibility, and political-culture robustness
+- `legislativeResponseCredibility` `↑`: modeled capacity and incentive for constructive legislative response to review
+- `caseSelectionAccess` `↑`: modeled access to constitutional review after litigant capacity, public-interest support, repeat-player advantage, and intake filtering
+- `governmentRepeatPlayerAdvantage` `↓`: modeled procedural or capacity advantage for repeat government litigants
+- `implementationCapacity` `↑`: modeled ability of public institutions to implement review outcomes despite cost and conflict
+- `democraticConstitutionalism` `↑`: synthetic diagnostic combining rights protection, responsiveness, legitimacy, compliance, implementation, review access, low conflict, low veto relocation, feasibility, and political-culture robustness
 - `vetoRelocationRisk` `↓`: risk that review merely shifts veto power into courts, councils, screeners, cross-checking bodies, or response stages
 - `legalTransplantFeasibility` `↑`: modeled fit between a design, institutional capacity, and portability outside its home context
 - `politicalCultureSensitivity` `↓`: modeled dependence on trust, low polarization, compliance norms, and cooperative legislative response
@@ -251,6 +256,8 @@ profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,
 ```
 
 Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, and South Africa, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. Other rows are documented stress-test assumptions, not empirical validation evidence.
+
+Research-roadmap CSVs live in `config/research/`. They are not calibration targets yet. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap row into `config/calibration-source-observations.csv`.
 
 The target-method note in `docs/calibration-target-methods.md` separates
 source-specific targets from provisional synthesis ranges. Rows without a source
