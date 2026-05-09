@@ -29,6 +29,8 @@ public final class SimulatorTests {
         scenarioCatalogSelectsKnownKeys();
         simulatorProducesReports();
         mechanismScenariosProduceDiagnostics();
+        cjeuRouteMixDiagnosticsAreExposed();
+        contextProfileFileIsWellFormed();
         legislativeImporterToleratesCampaignCsv();
         campaignWritesArtifacts();
         pairedCampaignWritesArtifacts();
@@ -114,6 +116,9 @@ public final class SimulatorTests {
             assertBetween(report.caseSelectionAccess(), "case-selection access");
             assertBetween(report.governmentRepeatPlayerAdvantage(), "government repeat-player advantage");
             assertBetween(report.implementationCapacity(), "implementation capacity");
+            assertBetween(report.preliminaryReferenceRate(), "preliminary-reference route rate");
+            assertBetween(report.appealRouteRate(), "appeal route rate");
+            assertBetween(report.directActionRate(), "direct-action route rate");
             assertTrue(!report.periodReports().isEmpty(), "expected period diagnostics");
             assertTrue(!report.doctrineReports().isEmpty(), "expected doctrine diagnostics");
             assertTrue(!report.pipelineReports().isEmpty(), "expected pipeline diagnostics");
@@ -162,6 +167,58 @@ public final class SimulatorTests {
         assertTrue(byKey.get("mandatory-legislative-response").legislativeResponseRate() > 0.0, "expected legislative response cycles");
     }
 
+    private static void cjeuRouteMixDiagnosticsAreExposed() {
+        List<ScenarioReport> reports = new Simulator().compare(
+                ScenarioCatalog.scenariosForKeys(List.of("cjeu-court-of-justice")),
+                WorldSpec.baseline(120),
+                10,
+                20260509L,
+                List.of()
+        );
+        ScenarioReport report = reports.get(0);
+        assertTrue(report.preliminaryReferenceRate() > 0.45, "expected visible preliminary-reference route share");
+        assertTrue(report.appealRouteRate() > 0.18, "expected visible appeal route share");
+        assertTrue(report.directActionRate() > 0.02, "expected visible direct-action route share");
+        assertTrue(
+                report.preliminaryReferenceRate() + report.appealRouteRate() + report.directActionRate() <= 1.0,
+                "route shares should not exceed docket total"
+        );
+    }
+
+    private static void contextProfileFileIsWellFormed() throws Exception {
+        Path path = Path.of("config/context/country-year-context.csv");
+        assertTrue(Files.exists(path), "expected validation context profile file");
+        List<String[]> rows = readCsv(path);
+        assertTrue(rows.size() == 9, "expected one header plus eight validation context rows");
+        String[] header = rows.get(0);
+        int scenarioKey = column(header, "scenarioKey");
+        int publicTrust = column(header, "publicTrust");
+        int implementationCapacity = column(header, "implementationCapacity");
+        int legalTraditionCompatibility = column(header, "legalTraditionCompatibility");
+        int applyInValidation = column(header, "applyInValidation");
+        Map<String, Boolean> seen = new HashMap<>();
+        for (int i = 1; i < rows.size(); i++) {
+            String[] row = rows.get(i);
+            seen.put(row[scenarioKey], true);
+            assertBetween(Double.parseDouble(row[publicTrust]), "context publicTrust");
+            assertBetween(Double.parseDouble(row[implementationCapacity]), "context implementationCapacity");
+            assertBetween(Double.parseDouble(row[legalTraditionCompatibility]), "context legalTraditionCompatibility");
+            assertTrue("true".equals(row[applyInValidation]), "context rows should be enabled for validation");
+        }
+        for (String key : List.of(
+                "us-supreme-court-benchmark",
+                "german-constitutional-court",
+                "french-constitutional-council",
+                "canadian-supreme-court",
+                "south-african-constitutional-court",
+                "uk-supreme-court",
+                "echr-treaty-court",
+                "cjeu-court-of-justice"
+        )) {
+            assertTrue(seen.containsKey(key), "missing validation context profile: " + key);
+        }
+    }
+
     private static void legislativeImporterToleratesCampaignCsv() throws Exception {
         Path temp = Files.createTempFile("legislative-signals", ".csv");
         Files.writeString(temp, """
@@ -205,6 +262,8 @@ public final class SimulatorTests {
         assertTrue(caseHeader.contains("reviewMechanism"), "expected mechanism case export");
         assertTrue(caseHeader.contains("weakFormDeclaration"), "expected weak-form case export");
         assertTrue(caseHeader.contains("legislativeResponseDelay"), "expected response-timing case export");
+        assertTrue(caseHeader.contains("supranationalRoute"), "expected supranational route case export");
+        assertTrue(caseHeader.contains("directActionRoute"), "expected direct-action case export");
         assertTrue(caseHeader.contains("policyDomain"), "expected policy-domain case export");
         assertTrue(caseHeader.contains("litigantCapacity"), "expected case-selection input export");
         assertTrue(caseHeader.contains("caseSelectionAccess"), "expected case-selection outcome export");
@@ -239,6 +298,7 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.csvPath()).contains("implementationCapacity"), "expected implementation capacity metric");
         assertTrue(Files.readString(result.csvPath()).contains("weakFormDeclarationRate"), "expected weak-form mechanism metric");
         assertTrue(Files.readString(result.csvPath()).contains("timelyLegislativeResponseRate"), "expected response-timing metric");
+        assertTrue(Files.readString(result.csvPath()).contains("preliminaryReferenceRate"), "expected CJEU route metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("caseSelectionAccess"), "expected period access metric");
         assertTrue(Files.readString(result.doctrineCsvPath()).contains("implementationCapacity"), "expected doctrine implementation metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("period"), "expected period report rows");
@@ -398,16 +458,21 @@ public final class SimulatorTests {
         assertTrue(csv.contains("uk-supreme-court"), "expected UK validation preset");
         assertTrue(csv.contains("echr-treaty-court"), "expected ECHR validation preset");
         assertTrue(csv.contains("cjeu-court-of-justice"), "expected CJEU validation preset");
+        assertTrue(csv.contains("preliminaryReferenceRate"), "expected CJEU route metric");
         String calibrationCsv = Files.readString(result.calibrationCsvPath());
         assertTrue(calibrationCsv.contains("scdb-modern-merits-2000-2024"), "expected U.S. doctrine target profile");
         assertTrue(calibrationCsv.contains("scotus-emergency-2024-2025"), "expected emergency target profile");
         assertTrue(calibrationCsv.contains("uk-human-rights-doi-2025"), "expected verified UK declaration response target profile");
         assertTrue(calibrationCsv.contains("echr-2024"), "expected verified ECHR target profile");
+        assertTrue(calibrationCsv.contains("france-conseil-qpc"), "expected verified France QPC target profile");
+        assertTrue(calibrationCsv.contains("preliminary_reference_rate"), "expected verified CJEU route target");
         assertTrue(calibrationCsv.contains("sourceName"), "expected calibration source metadata");
         assertTrue(calibrationCsv.contains("targetN"), "expected calibration target sample-size metadata");
         assertValidationRowsAreSourceBacked(result.calibrationCsvPath());
         assertTrue(Files.readString(result.intervalCsvPath()).contains("cluster-bootstrap-runs"), "expected validation bootstrap intervals");
         assertTrue(Files.readString(result.markdownPath()).contains("Calibration Validation Campaign"), "expected validation Markdown title");
+        assertTrue(Files.readString(result.markdownPath()).contains("config/context/country-year-context.csv"), "expected validation context provenance");
+        assertTrue(Files.readString(result.manifestPath()).contains("config/context/country-year-context.csv"), "expected context provenance in manifest");
     }
 
     private static void assertValidationRowsAreSourceBacked(Path calibrationCsvPath) throws Exception {
@@ -415,6 +480,7 @@ public final class SimulatorTests {
         assertTrue(rows.size() > 1, "expected calibration rows");
         String[] header = rows.get(0);
         int profileKey = column(header, "profileKey");
+        int targetKey = column(header, "targetKey");
         int sourceName = column(header, "sourceName");
         int sourceUrl = column(header, "sourceUrl");
         int reliability = column(header, "reliability");
@@ -426,6 +492,7 @@ public final class SimulatorTests {
         int upper95 = column(header, "upper95");
         int withinTarget = column(header, "withinTarget");
         Map<String, Integer> validationCounts = new HashMap<>();
+        Map<String, Boolean> validationTargets = new HashMap<>();
         for (int i = 1; i < rows.size(); i++) {
             String[] row = rows.get(i);
             if (!"true".equalsIgnoreCase(row[useForValidation])) {
@@ -445,13 +512,19 @@ public final class SimulatorTests {
             boolean expectedWithin = lower <= model && model <= upper;
             assertTrue(Boolean.parseBoolean(row[withinTarget]) == expectedWithin, "withinTarget inconsistent with target range");
             validationCounts.merge(row[profileKey], 1, Integer::sum);
+            validationTargets.put(row[profileKey] + "/" + row[targetKey], true);
         }
-        assertTrue(validationCounts.size() == 5, "expected verified source-specific validation target families");
+        assertTrue(validationCounts.size() == 7, "expected verified source-specific validation target families");
         assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 3, "expected three emergency validation targets");
         assertTrue(validationCounts.getOrDefault("canada-scc-2024", 0) == 1, "expected Canada 2024 validation target");
+        assertTrue(validationCounts.getOrDefault("france-conseil-qpc", 0) == 2, "expected France QPC validation targets");
         assertTrue(validationCounts.getOrDefault("uk-human-rights-doi-2025", 0) == 1, "expected UK declaration-response validation target");
         assertTrue(validationCounts.getOrDefault("uk-supreme-court-2024-2025", 0) == 1, "expected UKSC intake validation target");
         assertTrue(validationCounts.getOrDefault("echr-2024", 0) == 2, "expected two ECHR validation targets");
+        assertTrue(validationCounts.getOrDefault("cjeu-2024", 0) == 3, "expected three CJEU route validation targets");
+        assertTrue(validationTargets.containsKey("cjeu-2024/preliminary_reference_rate"), "missing CJEU preliminary-reference target");
+        assertTrue(validationTargets.containsKey("cjeu-2024/appeal_route_rate"), "missing CJEU appeal-route target");
+        assertTrue(validationTargets.containsKey("cjeu-2024/direct_action_rate"), "missing CJEU direct-action target");
     }
 
     private static String readGzipHeader(Path path) throws Exception {

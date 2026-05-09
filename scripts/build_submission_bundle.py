@@ -209,6 +209,9 @@ Files:
 - `anonymous-manuscript.pdf`: main manuscript for anonymous review.
 - `supplementary-appendix.pdf`: compact technical appendix for review.
 - `source-files.zip`: editable LaTeX source for the manuscript and appendix.
+  It includes a local `cup-journal.cls` compatibility shim for reproducible
+  review builds plus `TEMPLATE-SHIM-NOTICE.md`; it is not represented as the
+  official Cambridge production template bundle.
 - `replication-package.zip`: Java source, configuration, calibration source observations, compact aggregate reports, provenance manifests, and reproduction commands.
 - `excluded-large-artifacts.txt`: raw case-level and interval outputs omitted from the review ZIP to keep the upload practical; regenerate with the listed `make` commands.
 - `jlc-review-bundle.zip`: single upload bundle containing the PDFs and the two ZIP archives.
@@ -247,7 +250,9 @@ def main() -> None:
     source_files = [
         ROOT / "paper" / "main.tex",
         ROOT / "paper" / "supplementary-appendix.tex",
+        ROOT / "paper" / "model-appendix.tex",
         ROOT / "paper" / "cup-journal.cls",
+        ROOT / "paper" / "TEMPLATE-SHIM-NOTICE.md",
         ROOT / "paper" / "README.md",
         ROOT / "paper" / "jlc-submission-checklist.md",
         *sorted((ROOT / "paper" / "figures").glob("*.tex")),

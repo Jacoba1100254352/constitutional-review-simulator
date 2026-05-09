@@ -10,7 +10,9 @@ import courtsim.model.CourtWorld;
 import courtsim.model.LegislativeSignal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public final class Simulator {
@@ -36,6 +38,17 @@ public final class Simulator {
             long seed,
             List<LegislativeSignal> importedSignals
     ) {
+        return compareDetailed(scenarios, worldSpec, runs, seed, importedSignals, Map.of());
+    }
+
+    public List<ScenarioRunResult> compareDetailed(
+            List<Scenario> scenarios,
+            WorldSpec worldSpec,
+            int runs,
+            long seed,
+            List<LegislativeSignal> importedSignals,
+            Map<String, WorldSpec> scenarioSpecs
+    ) {
         MetricsAccumulator[] accumulators = new MetricsAccumulator[scenarios.size()];
         List<List<CaseOutcome>> outcomes = new ArrayList<>();
         for (int i = 0; i < accumulators.length; i++) {
@@ -44,13 +57,19 @@ public final class Simulator {
         }
 
         for (int run = 0; run < runs; run++) {
-            CourtWorld world = worldGenerator.generate(worldSpec, mix(seed, run, 17), importedSignals);
+            int runIndex = run;
+            Map<WorldSpec, CourtWorld> worlds = new HashMap<>();
             for (int scenarioIndex = 0; scenarioIndex < scenarios.size(); scenarioIndex++) {
                 Scenario scenario = scenarios.get(scenarioIndex);
+                WorldSpec scenarioSpec = scenarioSpecs.getOrDefault(scenario.key(), worldSpec);
+                CourtWorld world = worlds.computeIfAbsent(
+                        scenarioSpec,
+                        spec -> worldGenerator.generate(spec, mix(seed ^ spec.hashCode(), runIndex, 17), importedSignals)
+                );
                 int currentPeriod = -1;
                 ReviewProcess process = null;
                 ReviewContext context = null;
-                ReactionState reactionState = ReactionState.from(worldSpec);
+                ReactionState reactionState = ReactionState.from(scenarioSpec);
                 for (CaseFile caseFile : world.docket()) {
                     if (caseFile.reviewPeriod() != currentPeriod) {
                         currentPeriod = caseFile.reviewPeriod();

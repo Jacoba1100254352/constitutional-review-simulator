@@ -90,6 +90,9 @@ public final class MetricsAccumulator {
     private int publicDefenderParticipations;
     private int preEnactmentReviews;
     private int abstractReviews;
+    private int preliminaryReferenceRoutes;
+    private int appealRoutes;
+    private int directActionRoutes;
     private final Map<Integer, SegmentAccumulator> periodAccumulators = new HashMap<>();
     private final Map<DoctrineArea, SegmentAccumulator> doctrineAccumulators = new EnumMap<>(DoctrineArea.class);
     private final Map<String, SegmentAccumulator> pipelineAccumulators = new HashMap<>();
@@ -244,6 +247,15 @@ public final class MetricsAccumulator {
         if (outcome.abstractReview()) {
             abstractReviews++;
         }
+        if (outcome.preliminaryReferenceRoute()) {
+            preliminaryReferenceRoutes++;
+        }
+        if (outcome.appealRoute()) {
+            appealRoutes++;
+        }
+        if (outcome.directActionRoute()) {
+            directActionRoutes++;
+        }
         periodAccumulators
                 .computeIfAbsent(outcome.caseFile().reviewPeriod(), period -> new SegmentAccumulator("period", Integer.toString(period + 1)))
                 .add(outcome);
@@ -357,6 +369,9 @@ public final class MetricsAccumulator {
                 Values.ratio(publicDefenderParticipations, totalCases),
                 Values.ratio(preEnactmentReviews, totalCases),
                 Values.ratio(abstractReviews, totalCases),
+                Values.ratio(preliminaryReferenceRoutes, totalCases),
+                Values.ratio(appealRoutes, totalCases),
+                Values.ratio(directActionRoutes, totalCases),
                 periodReports(),
                 doctrineReports(),
                 pipelineReports(),

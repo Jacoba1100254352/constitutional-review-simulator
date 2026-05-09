@@ -114,10 +114,13 @@ make validation-check
 
 This compares the real-world scenario presets for the U.S. Supreme Court,
 German Federal Constitutional Court, French Constitutional Council, Supreme
-Court of Canada, and South African Constitutional Court against the shared
-benchmark docket. It writes the same aggregate, segment, compressed case-level,
-bootstrap interval, calibration, Markdown, and manifest artifact family under
-the `reports/constitutional-review-validation-v1*` prefix.
+Court of Canada, South African Constitutional Court, UK Supreme Court, ECHR,
+and CJEU against a validation benchmark. The campaign applies country/context
+modifiers from `config/context/country-year-context.csv` while keeping empirical
+validation claims limited to source-backed calibration rows. It writes the same
+aggregate, segment, compressed case-level, bootstrap interval, calibration,
+Markdown, and manifest artifact family under the
+`reports/constitutional-review-validation-v1*` prefix.
 
 Run tests:
 
@@ -224,6 +227,9 @@ Core metrics:
 - `publicDefenderParticipationRate` `diag.`: share of cases with constitutional public-defender participation
 - `preEnactmentReviewRate` `diag.`: share of cases routed through pre-enactment review
 - `abstractReviewRate` `diag.`: share of cases routed through abstract review
+- `preliminaryReferenceRate` `diag.`: share of CJEU-style docket entering through preliminary reference
+- `appealRouteRate` `diag.`: share of CJEU-style docket entering through appeal route
+- `directActionRate` `diag.`: share of CJEU-style docket entering through direct action
 - `concurrenceFragmentation` `↓/diag.`: fractured majority/opinion structure
 - `dissentIntensity` `↓/diag.`: close, polarized dissent pressure
 - `stateCaseShare` `diag.`: share of docket originating primarily in state-law or state-court settings
@@ -258,7 +264,7 @@ The calibration schema is:
 targetFile,profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl,constructionNote
 ```
 
-Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, and the ECHR, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. `make promotion-check` enforces those promotion rules and rejects validation rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
+Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The promoted France QPC rows cover all-QPC nonconformity and deferred-effect rates; the promoted CJEU rows cover preliminary-reference, appeal, and direct-action route mix. `make promotion-check` enforces those promotion rules and rejects validation rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
 
 Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets by default. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Rows marked `promoted` have been moved into `config/calibration-source-observations.csv`; rows marked `verified-context-only` have primary-source URLs but are not direct simulator analogues; rows still marked `pending-url-verification` remain research leads. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row.
 

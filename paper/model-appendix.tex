@@ -1,0 +1,87 @@
+\section*{Formal Model Appendix}
+
+This appendix states the model in compact notation so the simulation can be evaluated without first reading the Java source. The implementation remains deterministic conditional on the random seed, scenario configuration, world specification, and imported legislative signals.
+
+\subsection*{Units and Inputs}
+
+Each simulated observation is a case $i$ in review period $t$ under institutional design $d$. The generated case vector is
+\[
+x_i = (r_i, u_i, a_i, s_i, p_i, m_i, e_i, \ell_i, q_i, z_i),
+\]
+where $r_i$ is rights threat, $u_i$ urgency, $a_i$ legal ambiguity, $s_i$ constitutional salience, $p_i$ public support, $m_i$ legislative mandate, $e_i$ executive pressure, $\ell_i$ lower-court conflict, $q_i$ state-federal tension, and $z_i$ policy-domain position. A world context $w$ supplies public trust, legislative conflict, partisan pressure, party fragmentation, government control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility. For validation presets, those context inputs are read from \texttt{config/context/country-year-context.csv}; for synthetic campaigns, they are stress-case parameters.
+
+\subsection*{Intake and Case Selection}
+
+The intake universe expands each generated case into expected filings $F_i$ and screened filings $S_i$:
+\[
+F_i = 1 + \lfloor 7A_d + 3r_i + 2s_i + 2\ell_i + H_i \rfloor,
+\quad
+S_i = \max(1, \lfloor F_i \alpha_i \rfloor),
+\]
+where $A_d$ is the scenario's structural access level, $H_i$ is an emergency or high-salience increment, and $\alpha_i$ is the intake acceptance probability after docket-control screening. Review occurs when a weighted access score exceeds the design-specific threshold:
+\[
+\Pr(R_i = 1) = g(A_d, r_i, s_i, a_i, \ell_i, u_i, \text{ombudsman}_i, \text{public-defender}_i, \text{rights-statement}_i).
+\]
+The reported \texttt{reviewRate} is $\sum R_i/N$ and \texttt{intakeAcceptanceRate} is $\sum R_i/\sum F_i$.
+
+\subsection*{Merits and Emergency Decisions}
+
+The primary vote share for invalidation is generated from justice ideology, rights sensitivity, institutionalism, case facts, and design thresholds. In compact form:
+\[
+V_i = h(J_{dt}, r_i, a_i, s_i, e_i, z_i, \tau_d, \rho_d),
+\]
+where $J_{dt}$ is the period-specific court composition, $\tau_d$ is the invalidation threshold, and $\rho_d$ captures recusal, panel, en banc, cross-checking, and council-screening rules. Merits invalidation occurs when $V_i \geq \tau_d$ and the case has reached merits review. Emergency relief is modeled separately from merits invalidation:
+\[
+E_i = 1[u_i + \eta_w > \theta_d], \quad
+\text{Relief}_i = k(E_i, r_i, u_i, e_i, \text{procedure}_d, \text{reasons}_i, \text{vote-disclosure}_i).
+\]
+This separation is why emergency relief, reason-giving, vote disclosure, public disagreement, merits review, and merits invalidation are distinct report columns.
+
+\subsection*{Mechanism Flags}
+
+Design-specific mechanisms are observed rather than folded into a single court-variant label. The model records weak-form declarations, suspended declarations, formal overrides, rights-impact statements, ombudsman-triggered access, constitutional public-defender participation, pre-enactment review, abstract review, panel/en banc review, cross-checking, and constitutional-council screening. For supranational review, the CJEU-style route vector is
+\[
+(P_i,A_i,D_i,O_i) \sim \text{Categorical}(\pi_P(x_i), \pi_A(x_i), \pi_D(x_i), 1-\pi_P-\pi_A-\pi_D),
+\]
+with preliminary-reference, appeal, and direct-action probabilities bounded around the official 2024 route mix used in calibration diagnostics.
+
+\subsection*{Legislative Response}
+
+A legislative-response opportunity is triggered by weak-form declarations, suspended declarations, mandatory response cycles, formal override structures, or high-salience invalidations. Response credibility is
+\[
+\begin{aligned}
+C_i={}&c_0+c_1r_i+c_2p_i+c_3m_i
++c_4\text{civil-society}_w+c_5\text{implementation}_w\\
+&-c_6\text{fragmentation}_w-c_7\text{electoral-pressure}_w.
+\end{aligned}
+\]
+The reported response rate is the share of cases with a response; delay is normalized to the $[0,1]$ review-period scale; timely response is the share of responses completed before the scenario deadline.
+
+\subsection*{Compliance and Enforcement}
+
+Compliance is drawn after the decision and political reaction update:
+\[
+\begin{aligned}
+\Pr(\text{comply}_i)={}&b_0+b_1\text{legitimacy}_i
++b_2\text{implementation}_w+b_3\text{independence}_d\\
+&-b_4\text{conflict}_t-b_5e_i-b_6\text{shadow-abuse}_i.
+\end{aligned}
+\]
+The simulator separately records executive implementation, agency nonacquiescence, legislative reenactment, local-government compliance, defiance, workaround behavior, and repeated litigation. These channels prevent a high rights-protection score from being treated as automatically implemented law.
+
+\subsection*{Composite Diagnostics}
+
+The principal composite diagnostic is democratic constitutionalism:
+\[
+\begin{aligned}
+DC_i ={}& .11\,LS_i + .18\,RP_i + .12\,LG_i + .15\,DR_i + .09\,CP_i
++ .08(1-CC_i) + .07(1-VR_i) \\
+&+ .05\,TF_i + .03(1-PC_i) + .03\,LC_i + .03\,CA_i
++ .03(1-GR_i) + .03\,IC_i.
+\end{aligned}
+\]
+Here $LS$ is legal stability, $RP$ rights protection, $LG$ legitimacy, $DR$ democratic responsiveness, $CP$ compliance, $CC$ constitutional conflict, $VR$ veto-relocation risk, $TF$ transplant feasibility, $PC$ political-culture sensitivity, $LC$ legislative-response credibility, $CA$ case-selection access, $GR$ government repeat-player advantage, and $IC$ implementation capacity. The directional score shown in campaign tables is an unweighted display average after reversing lower-is-better metrics. It is not a fitted welfare function.
+
+\subsection*{Uncertainty and Calibration}
+
+Campaign uncertainty bands use a cluster bootstrap over run-level outputs. Validation-style diagnostics compare simulated columns to source-backed calibration rows only when a row has a public URL, nonzero denominator, construction note, and direct simulator analogue. Context rows, public-trust proxies, normalized cost estimates, and unverified source candidates remain visible in the supplement but are not counted as empirical validation evidence.

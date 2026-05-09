@@ -8,7 +8,8 @@ Use this checklist before uploading to Editorial Manager.
 - Main manuscript uses the Cambridge `cup-journal` interface.
 - If submitting editable LaTeX source rather than review PDF only, local
   `paper/cup-journal.cls` shim has been replaced with the official Cambridge
-  template bundle or intentionally retained with editor approval.
+  template bundle or intentionally retained with editor approval and the
+  `paper/TEMPLATE-SHIM-NOTICE.md` disclosure.
 - Article type is `research-article`.
 - Text is below JLC's 10,000-word ceiling unless extra length is justified.
 - Tables and figures appear near first reference rather than at the end.

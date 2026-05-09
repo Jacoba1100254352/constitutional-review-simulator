@@ -119,6 +119,9 @@ METRIC_TARGETS = {
     "legislative_response_credibility": "legislativeResponseCredibility",
     "pre_enactment_review_rate": "preEnactmentReviewRate",
     "abstract_review_rate": "abstractReviewRate",
+    "preliminary_reference_rate": "preliminaryReferenceRate",
+    "appeal_route_rate": "appealRouteRate",
+    "direct_action_rate": "directActionRate",
     "rights_impact_statement_rate": "rightsImpactStatementRate",
     "ombudsman_trigger_rate": "ombudsmanTriggerRate",
     "public_defender_participation_rate": "publicDefenderParticipationRate",
@@ -497,7 +500,7 @@ def generate_validation_summary() -> None:
             else:
                 misses.append((gap, target["label"]))
         median_gap = sorted(gaps)[len(gaps) // 2] if gaps else 0.0
-        largest = max(misses, default=(0.0, "not counted"))[1]
+        largest = max(misses, default=(0.0, "none" if gaps else "not counted"))[1]
         in_range = f"{within}/{len(gaps)}" if gaps else "--"
         median_text = f"{median_gap:.3f}" if gaps else "--"
         lines.append(

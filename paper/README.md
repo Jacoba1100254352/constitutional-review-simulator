@@ -78,7 +78,9 @@ environment. This is acceptable for local drafting and review-PDF production,
 but it should not be treated as the publisher template bundle. Before final
 LaTeX-source submission, replace the shim with the official Cambridge Overleaf
 template files if Editorial Manager or Cambridge requires exact production
-source. The official template uses `biblatex` with Chicago style; the local
+source. `paper/TEMPLATE-SHIM-NOTICE.md` is included in the source ZIP so this
+distinction remains visible to editors or reviewers. The official template uses
+`biblatex` with Chicago style; the local
 build keeps `natbib` citation commands because `biblatex`/`biber` are not
 installed in the local TeX environment. The printed reference items are generated
 from `paper/references.bib` during `make paper-check` so the manuscript source

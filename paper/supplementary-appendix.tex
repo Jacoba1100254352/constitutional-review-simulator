@@ -7,6 +7,7 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{amsmath}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 
@@ -28,6 +29,8 @@ This appendix preserves technical detail that is too large for the main Journal 
 \section*{Core Model Weights}
 This table is the reader-facing bridge between the prose methods section and the Java implementation. It lists the fixed weights behind the major synthetic diagnostics so that the appendix is not just a dump of output matrices.
 \input{tables/supplement_model_weights}
+
+\input{model-appendix}
 
 \section*{Starter Campaign Matrix}
 The starter campaign matrix is a complete audit trail for the baseline and stress-case rows summarized in the main manuscript. It is not a ranking table; it shows how the same scenario catalog moves across shared docket stresses. Mechanism labels make clear which rows are real court-variant comparisons and which rows are synthetic devices such as weak-form review, rights-impact statements, or mandatory legislative response cycles.

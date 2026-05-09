@@ -64,6 +64,10 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         boolean publicDefenderParticipation = publicDefenderParticipation(caseFile);
         boolean preEnactmentReview = preEnactmentReview(caseFile);
         boolean abstractReview = abstractReview(caseFile);
+        String supranationalRoute = supranationalRoute(caseFile, random);
+        boolean preliminaryReferenceRoute = "preliminary_reference".equals(supranationalRoute);
+        boolean appealRoute = "appeal".equals(supranationalRoute);
+        boolean directActionRoute = "direct_action".equals(supranationalRoute);
         IntakeEstimate intake = intakeEstimate(caseFile, emergency, reviewed);
         int recused = recusedJustices(caseFile, random);
         int participating = configuration.substitutesRecusedJustices()
@@ -83,7 +87,11 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                     ombudsmanTriggered,
                     publicDefenderParticipation,
                     preEnactmentReview,
-                    abstractReview
+                    abstractReview,
+                    supranationalRoute,
+                    preliminaryReferenceRoute,
+                    appealRoute,
+                    directActionRoute
             );
         }
 
@@ -421,6 +429,10 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 publicDefenderParticipation,
                 preEnactmentReview,
                 abstractReview,
+                supranationalRoute,
+                preliminaryReferenceRoute,
+                appealRoute,
+                directActionRoute,
                 legislativeResponseCredibility,
                 caseSelectionAccess,
                 caseFile.governmentRepeatPlayerAdvantage(),
@@ -739,6 +751,58 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 || caseFile.intercourtConflict() > 0.46);
     }
 
+    private String supranationalRoute(CaseFile caseFile, Random random) {
+        if (configuration.costProfileKey() == CostProfileKey.ECHR) {
+            return "individual_application";
+        }
+        if (configuration.costProfileKey() != CostProfileKey.CJEU) {
+            return "none";
+        }
+
+        double preliminary = Values.clamp(
+                0.61
+                        + caseFile.legalAmbiguity() * 0.05
+                        + caseFile.intercourtConflict() * 0.04
+                        - caseFile.urgency() * 0.03,
+                0.54,
+                0.70
+        );
+        double appeal = Values.clamp(
+                0.28
+                        + (caseFile.lowerCourtGovernmentWin() ? 0.03 : 0.0)
+                        + caseFile.lowerCourtConflict() * 0.04
+                        - caseFile.stateFederalTension() * 0.02,
+                0.22,
+                0.36
+        );
+        double direct = Values.clamp(
+                0.045
+                        + caseFile.executivePressure() * 0.02
+                        + caseFile.constitutionalSalience() * 0.015,
+                0.035,
+                0.095
+        );
+        double total = preliminary + appeal + direct;
+        if (total > 0.995) {
+            double scale = 0.995 / total;
+            preliminary *= scale;
+            appeal *= scale;
+            direct *= scale;
+        }
+
+        double draw = random.nextDouble();
+        if (draw < preliminary) {
+            return "preliminary_reference";
+        }
+        if (draw < preliminary + appeal) {
+            return "appeal";
+        }
+        if (draw < preliminary + appeal + direct) {
+            return "direct_action";
+        }
+        return "other";
+    }
+
     private boolean overrideUsed(CaseFile caseFile, boolean invalidated, Random random) {
         if (!invalidated || configuration.overrideRule() == LegislativeOverrideRule.NONE) {
             return false;
@@ -937,7 +1001,11 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             boolean ombudsmanTriggered,
             boolean publicDefenderParticipation,
             boolean preEnactmentReview,
-            boolean abstractReview
+            boolean abstractReview,
+            String supranationalRoute,
+            boolean preliminaryReferenceRoute,
+            boolean appealRoute,
+            boolean directActionRoute
     ) {
         double rightsProtection = Values.clamp01(
                 1.0
@@ -1103,6 +1171,10 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 publicDefenderParticipation,
                 preEnactmentReview,
                 abstractReview,
+                supranationalRoute,
+                preliminaryReferenceRoute,
+                appealRoute,
+                directActionRoute,
                 legislativeResponseCredibility,
                 caseSelectionAccess,
                 caseFile.governmentRepeatPlayerAdvantage(),

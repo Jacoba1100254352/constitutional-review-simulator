@@ -60,11 +60,13 @@ checker also rejects validation rows whose target keys are not exposed by the
 simulator's calibration observation mapping. Under this stricter rule, the
 current source-specific validation surface remains intentionally narrow, but it
 now includes official-source checks for U.S. emergency procedure, Canada SCC
-leave grants, UK Supreme Court permission grants, UK declarations of
-incompatibility responses, and ECHR intake/interim-measure measures.
+leave grants, France QPC nonconformity and deferred-effect rates, UK Supreme
+Court permission grants, UK declarations of incompatibility responses, ECHR
+intake/interim-measure measures, and CJEU preliminary-reference, appeal, and
+direct-action route mix.
 Comparative doctrine mix without stored SCDB denominators, trust,
-merits-outcome synthesis, route-mix statistics without simulator analogues, and
-normalized cost rows are stress-test context only.
+merits-outcome synthesis, unsupported route-mix statistics, and normalized cost
+rows are stress-test context only.
 
 The validation campaign intentionally reports misses. A failed target should be
 read as one of three things:
@@ -83,8 +85,8 @@ those datasets include URLs, denominators, and construction formulas, set
 
 The current post-research candidate files identify the most promising remaining
 promotion targets: Canadian Charter legislative sequels, French QPC invalidation
-and deferred-effect rates, CJEU route-mix statistics that still need simulator
-metric mapping, and transplant-feasibility indicators from V-Dem, ParlGov, PPEG,
-DPI, WGI, CEPEJ, OECD, WVS, and related source families. Rows already marked
+and conditional deferred-effect rates, pre-enactment review frequency evidence,
+and transplant-feasibility indicators from V-Dem, ParlGov, PPEG, DPI, WGI,
+CEPEJ, OECD, WVS, and related source families. Rows already marked
 `promoted` have been added to the calibration source matrix; rows marked
 `verified-context-only` have source support but are not validation results.
