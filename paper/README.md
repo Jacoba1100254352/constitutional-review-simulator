@@ -13,13 +13,24 @@ make paper
 
 `make paper` regenerates the LaTeX figure fragments in `paper/figures/` and
 the LaTeX table fragments in `paper/tables/` from tracked CSV artifacts, runs
-the repository JLC formatting check, and then compiles the PDF.
+the repository JLC formatting check, compiles the PDF, refreshes
+`paper/main.pdf`, and updates `paper/figure-placement-audit.md`.
 
 Run only the JLC formatting check with:
 
 ```sh
 make paper-check
 ```
+
+Re-run only the rendered figure/table placement audit with:
+
+```sh
+make figure-placement-audit
+```
+
+The audit maps each rendered page containing a figure or table caption, records
+top and bottom blank-space percentages after margin trimming, and fails on a
+figure/table page that leaves excessive vertical whitespace.
 
 Build the supplementary appendix and anonymous submission/replication bundle
 with:
@@ -111,7 +122,8 @@ reports. They are kept inline for review because JLC asks tables and figures to
 appear near first reference; if accepted, the figures should also be exported as
 separate high-resolution artwork files for production. Accessibility
 descriptions for all current figures and tables are maintained in
-`paper/accessibility-descriptions.md`.
+`paper/accessibility-descriptions.md`. Rendered placement and white-space checks
+are maintained in `paper/figure-placement-audit.md`.
 
 The paired legislative-input campaign is portable by default. The imported
 Congress simulator output used for the paper is tracked at

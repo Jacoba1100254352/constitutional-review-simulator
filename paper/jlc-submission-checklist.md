@@ -13,6 +13,8 @@ Use this checklist before uploading to Editorial Manager.
 - Article type is `research-article`.
 - Text is below JLC's 10,000-word ceiling unless extra length is justified.
 - Tables and figures appear near first reference rather than at the end.
+- Rendered figure/table placement has been audited for excessive float-driven
+  whitespace with `make figure-placement-audit`.
 - Figures and tables are numbered consecutively and have captions.
 - Citations use Chicago author-date style in the text.
 - Reference list text is in Chicago author-date form, not default `plainnat`
@@ -36,6 +38,8 @@ Use this checklist before uploading to Editorial Manager.
 
 - `paper/accessibility-descriptions.md` has one description for every figure
   and table label in `paper/main.tex`.
+- `paper/figure-placement-audit.md` shows no severe figure/table white-space
+  findings or placement warnings in the compiled manuscript PDF.
 - Final accepted figures are exported as separate high-resolution files if
   Cambridge requests production artwork.
 - Color and contrast remain legible without relying on color alone.
@@ -77,6 +81,7 @@ Run these commands from the repository root:
 ```sh
 make paper-check
 make paper
+make figure-placement-audit
 make supplement
 make paper-pdf-check
 make submission-bundle

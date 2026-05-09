@@ -135,7 +135,10 @@ make paper
 make supplement
 ```
 
-The paper source is in `paper/main.tex`; the compiled PDF is written to `paper/build/main.pdf`.
+The paper source is in `paper/main.tex`; the compiled PDF is written to
+`paper/build/main.pdf` and refreshed at `paper/main.pdf`. `make paper` also
+updates `paper/figure-placement-audit.md`, which maps rendered figure and table
+pages and flags figure-driven white-space problems.
 The supplementary appendix source is in `paper/supplementary-appendix.tex`;
 its compiled PDF is written to `paper/build/supplementary-appendix.pdf`.
 Use `make submission-bundle` to refresh the generated LaTeX inputs, rebuild both

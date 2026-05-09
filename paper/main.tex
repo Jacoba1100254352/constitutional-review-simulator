@@ -21,6 +21,15 @@
 \usepackage[hidelinks]{hyperref}
 
 \makeatletter
+\newenvironment{inlinefigureblock}{%
+  \par\smallskip
+  \begingroup
+  \centering
+}{%
+  \par\smallskip
+  \endgroup
+}
+
 \newcommand{\inlinefigurecaption}[2]{%
   \refstepcounter{figure}%
   \label{#2}%
@@ -197,6 +206,7 @@ The validation campaign runs real-world scenario presets against a shared benchm
 \input{tables/validation_summary}
 
 The narrowness of the table is itself a result. Earlier drafts allowed more comparative rows into the validation count, but those rows mixed synthesis labels, missing denominators, public-trust proxies, unsupported target keys, and normalized-cost assumptions. The current version excludes them while adding only those France QPC and CJEU route-mix rows that have source-specific denominators and direct simulator columns. That leaves a smaller validation-style surface and makes the limitation explicit: the framework is ready for comparative design stress testing, not for estimating the behavior of named courts. A future empirical version should replace each contextual row with a source-specific dataset before using the word validation for country profiles.
+
 The repository also separates source code, configuration inputs, generated reports, paper source, and provenance manifests. This is meant to support the replication-material expectations of Journal of Law and Courts. For anonymous review, the manuscript should be submitted without author-identifying repository links. To keep review upload practical, the review replication archive can omit the largest compressed case-level outputs and run-block interval CSVs while retaining the code, configuration, aggregate reports, manifests, and reproduction commands. At acceptance, the public replication deposit should include the Java source, Makefile, calibration/configuration CSVs, generated aggregate reports, full case-level and interval outputs or scripts that regenerate them, and instructions for reproducing the campaign outputs.
 
 \section{Comparative Experiments}
@@ -238,19 +248,17 @@ The model also makes administrative externalities visible. A small council may l
 
 Figure~\ref{fig:cost-score} displays the same point graphically. The current-style court is low cost but has a lower directional diagnostic score in the baseline campaign, while cross-checking, council, and hybrid designs move upward at the price of higher institutional cost. This is the kind of tradeoff the paper should emphasize rather than burying in CSV columns.
 
-\begin{center}
-\centering
+\begin{inlinefigureblock}
 \input{figures/cost_score_scatter}
 \inlinefigurecaption{Baseline institutional cost versus democratic constitutionalism. The vertical axis is a synthetic diagnostic combining rights, responsiveness, legitimacy, compliance, implementation, access, response credibility, conflict, veto-relocation risk, feasibility, and culture sensitivity. CUR* marks the current-style scenario.}{fig:cost-score}
-\end{center}
+\end{inlinefigureblock}
 
 Figure~\ref{fig:mechanism-tradeoff} focuses only on synthetic mechanisms. The desired quadrant is high democratic constitutionalism and low veto-relocation risk. This figure is not a ranking of legal systems; it is a stress test of whether a proposed device protects rights and preserves democratic response without hiding final policy control in a less accountable stage.
 
-\begin{center}
-\centering
+\begin{inlinefigureblock}
 \input{figures/mechanism_tradeoff_scatter}
 \inlinefigurecaption{Synthetic mechanism tradeoff: democratic constitutionalism versus veto-relocation risk.}{fig:mechanism-tradeoff}
-\end{center}
+\end{inlinefigureblock}
 
 \section{Limitations and Next Steps}
 \label{sec:limits}

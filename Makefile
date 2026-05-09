@@ -4,7 +4,7 @@ JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 
-.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check promotion-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
+.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check promotion-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -52,6 +52,10 @@ paper-check: paper-artifacts
 paper: paper-artifacts paper-check
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
 	cp paper/build/main.pdf paper/main.pdf
+	python3 paper/scripts/audit_float_placement.py --write
+
+figure-placement-audit:
+	python3 paper/scripts/audit_float_placement.py --write
 
 paper-word-count:
 	if command -v texcount >/dev/null 2>&1; then cd paper && texcount -inc -total main.tex; else python3 paper/scripts/word_count.py; fi
