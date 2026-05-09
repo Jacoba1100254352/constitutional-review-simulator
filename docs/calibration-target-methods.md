@@ -23,6 +23,15 @@ synthesis labels are provisional stress-test ranges. They remain in the
 repository so that weak assumptions are visible, editable, and excluded from
 validation counts.
 
+Deep Research outputs and other secondary research notes can produce useful
+candidate rows before they are ready for calibration. Those rows belong in
+`config/research/*-source-candidates.csv` or an operationalization file, not in
+the validation-counted calibration matrix. A candidate row may preserve a
+numerator, denominator, period, and plausible simulator mapping, but it should
+remain a source-candidate until the original source URL, denominator
+construction, category coding, and direct analogue to a simulator metric are
+verified from the primary source.
+
 ## Current Target Families
 
 - U.S. doctrine mix targets use Supreme Court Database issue-area and issue-code
@@ -67,3 +76,11 @@ denominators, comparative intake/throughput rows, public trust, normalized cost,
 and merits-invalidation proxies outside the emergency-docket context. Once
 those datasets include URLs, denominators, and construction formulas, set
 `useForValidation=true` and regenerate the calibration target files.
+
+The current post-research candidate files identify the most promising promotion
+targets: United Kingdom section 4 declaration responses, Canadian Charter
+legislative sequels, French QPC invalidation and deferred-effect rates, UK and
+Canadian leave/permission rates, ECHR Rule 39 and inadmissibility denominators,
+CJEU route-mix statistics, and transplant-feasibility indicators from V-Dem,
+ParlGov, PPEG, DPI, WGI, CEPEJ, OECD, WVS, and related source families. These
+are evidence leads, not validation results.

@@ -72,4 +72,11 @@ validation evidence.
 Deep-research prompts for the next empirical pass are maintained in
 `docs/deep-research-prompts.md`. Their requested outputs should be treated as
 source-discovery material until denominators, URLs, coding rules, and target
-analogues are checked into the calibration source matrix.
+analogues are checked into the calibration source matrix. When a research pass
+returns useful denominator-backed findings but not enough source trail for
+validation, preserve them in `config/research/*-source-candidates.csv` or in an
+operationalization file. Candidate rows should record the reported numerator,
+denominator, period, source family, URL-verification status, and whether the
+row is a direct simulator analogue. They should not be promoted into
+`config/calibration-source-observations.csv` until the original source URL and
+coding rule have been independently verified.
