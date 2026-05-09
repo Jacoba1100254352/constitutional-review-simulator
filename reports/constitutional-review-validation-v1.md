@@ -395,6 +395,7 @@ Campaign and segment CSV artifacts include 95% uncertainty bands using `cluster-
 | south-africa-constcourt-recent | Public trust proxy | 0.024 | 0.430 | 0.020-0.028 | 0.360-0.500 | medium | false | 0.336 | outside |
 | south-africa-constcourt-recent | Normalized capacity strain | 0.482 | 0.680 | 0.472-0.492 | 0.610-0.750 | medium | false | 0.128 | outside |
 | uk-human-rights-doi-2025 | Strict response after declarations of incompatibility | 0.367 | 0.444 | 0.357-0.376 | 0.430-0.460 | medium | true | 0.063 | outside |
+| uk-human-rights-doi-2025 | Statutory amendment or repeal after declarations of incompatibility | 0.665 | 0.429 | 0.656-0.674 | 0.410-0.450 | medium | true | 0.215 | outside |
 | uk-supreme-court-2024-2025 | Permission-to-appeal grant rate | 0.829 | 0.361 | 0.822-0.836 | 0.345-0.375 | high | true | 0.454 | outside |
 | scdb-postwar-merits-1946-2024 | Speech docket share | 0.139 | 0.076 | 0.132-0.146 | 0.060-0.091 | high | false | 0.048 | outside |
 | scdb-postwar-merits-1946-2024 | Civil-rights and privacy docket share | 0.144 | 0.152 | 0.137-0.151 | 0.135-0.169 | high | false | 0.000 | within |

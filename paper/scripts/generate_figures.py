@@ -182,11 +182,11 @@ def generate_model_pipeline() -> None:
 \put(68,8){\framebox(24,10){\shortstack[c]{compliance\\reaction\\cost}}}
 \put(80,34){\vector(0,-1){4}}
 \put(80,20){\vector(0,-1){2}}
-\put(34,8){\framebox(28,10){\shortstack[c]{legislative\\CSV outputs}}}
+\put(34,8){\framebox(28,10){\shortstack[c]{legislative\\outputs}}}
 \put(62,13){\vector(1,0){6}}
 \put(50,18){\vector(0,1){16}}
 \put(20,27){\makebox(0,0){\shortstack[c]{appointment, size, tenure,\\thresholds, councils, overrides}}}
-\put(112,27){\makebox(0,0){\shortstack[c]{CSV, Markdown,\\provenance, paper figures}}}
+\put(112,27){\makebox(0,0){\shortstack[c]{diagnostic tables,\\provenance, figures}}}
 \put(80,3){\makebox(0,0){\shortstack[c]{Dynamic replacement, lower-court routing,\\emergency relief, merits review, enforcement}}}
 \end{picture}
 \endgroup

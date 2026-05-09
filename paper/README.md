@@ -72,8 +72,10 @@ ordinary 10,000-word ceiling.
 
 JLC is published by Cambridge University Press. Cambridge's JLC preparation
 instructions point LaTeX authors to the Cambridge small-template Overleaf
-package, whose main file uses the `cup-journal` document class. The manuscript
-therefore keeps that interface in `main.tex`:
+package. The official Overleaf template page, reviewed on May 9, 2026, lists
+Journal of Law and Courts among the supported journals and uses the
+`cup-journal` document-class interface. The manuscript therefore keeps that
+interface in `main.tex`:
 
 ```tex
 \documentclass[
@@ -88,9 +90,10 @@ because the official Cambridge class is not installed in the local TeX
 environment. This is acceptable for local drafting and review-PDF production,
 but it should not be treated as the publisher template bundle. Before final
 LaTeX-source submission, replace the shim with the official Cambridge Overleaf
-template files if Editorial Manager or Cambridge requires exact production
-source. `paper/TEMPLATE-SHIM-NOTICE.md` is included in the source ZIP so this
-distinction remains visible to editors or reviewers. The official template uses
+template files exported from Overleaf if Editorial Manager or Cambridge requires
+exact production source. `paper/TEMPLATE-SHIM-NOTICE.md` is included in the
+source ZIP so this distinction remains visible to editors or reviewers. The
+official template uses
 `biblatex` with Chicago style; the local
 build keeps `natbib` citation commands because `biblatex`/`biber` are not
 installed in the local TeX environment. The printed reference items are generated
@@ -106,7 +109,8 @@ Relevant venue-format constraints now reflected in the manuscript:
 - tables and figures placed near their first discussion;
 - back-matter declarations placed under separate headings before references;
 - data availability and replication-package statements;
-- AI-tool use declaration;
+- AI-tool use declaration with tool names, available model/interface details,
+  dates, access method, modification status, and use description;
 - explicit directional-score formula and a generated baseline results table;
 - generated calibration target table;
 - generated validation-style diagnostics table;

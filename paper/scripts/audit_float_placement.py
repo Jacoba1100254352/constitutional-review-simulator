@@ -196,7 +196,7 @@ def build_report(audits: list[PageAudit], pdf: Path) -> str:
             "",
             "- The design-space longtable begins near its first textual reference and continues naturally onto the next page without creating a float-only page.",
             "- The paired-import figure moves to the next page after its first reference, but the preceding page is already densely filled with tables and text, so this is not a blank-page float problem.",
-            "- The cost-score and mechanism-tradeoff plots are intentionally inline rather than floating so they remain with the design-implications discussion and do not force separate figure pages.",
+            "- The cost-score plot remains inline with the design-implications discussion; the mechanism-tradeoff plot is allowed to float to the next page so the limitations text can fill the preceding page instead of leaving a large blank area.",
             "- Re-run `make figure-placement-audit` after changing generated figures, captions, table widths, or float placement.",
         ]
     )

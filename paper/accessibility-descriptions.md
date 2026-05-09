@@ -8,8 +8,8 @@ in the article.
 
 `fig:model-pipeline`: Flow diagram showing the simulator pipeline. Scenario
 catalog rules produce shared worlds and dockets, which pass through a review
-pipeline and generate metrics and reports. A separate legislative-output CSV
-box feeds into the docket stage as stress-signal input.
+pipeline and generate metrics and reports. A separate legislative-output box
+feeds into the docket stage as stress-signal input.
 
 `fig:emergency-docket`: Horizontal grouped bar chart comparing six court-design
 scenarios on shadow-docket abuse, emergency reason-giving, and merits
@@ -78,8 +78,8 @@ compliance, enforcement, case-selection access, legislative-response
 credibility, implementation capacity, institutional cost, and the directional
 display score.
 
-`tab:supp-scenario-matrix`: Supplementary long table listing all starter
-campaign case-scenario combinations with mechanism family, score, democratic
+`tab:supp-scenario-matrix`: Supplementary long table listing all main-campaign
+case-scenario combinations with mechanism family, score, democratic
 constitutionalism, rights protection, veto-relocation risk, political-culture
 sensitivity, and institutional cost.
 
@@ -94,8 +94,10 @@ reliability, and source-status category. Rows without direct URLs or sample
 counts are identified as provisional synthesis targets.
 
 `tab:supp-research-roadmap`: Supplementary long table listing the empirical
-research-roadmap files, row counts, and the purpose of each file. It
+data-development files, row counts, and the purpose of each file. It
 distinguishes source-gathering tasks from calibration targets.
 
-`tab:supp-artifacts`: Supplementary long table inventorying generated report
-artifacts and file sizes.
+`tab:supp-artifacts`: Supplementary long table inventorying generated
+aggregate report artifacts and file sizes. A note explains that compressed
+case-level exports are reproducible from the campaign commands but omitted
+from the tracked size table because they are local large artifacts.

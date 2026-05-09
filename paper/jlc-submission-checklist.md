@@ -32,7 +32,9 @@ Use this checklist before uploading to Editorial Manager.
 - Back-matter declarations appear as separate headings before references:
   `Funding Declaration`, `Competing Interests Declaration`,
   `Data Availability Statement`, and `Ethical Statement`.
-- AI use is declared under `AI Tools Declaration`.
+- AI use is declared under `AI Tools Declaration`, including tool names,
+  available model/interface details, dates, access method, modification status,
+  and a concrete use description.
 
 ## Figures, Tables, And Accessibility
 

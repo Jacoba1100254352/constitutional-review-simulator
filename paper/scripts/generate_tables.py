@@ -421,7 +421,7 @@ def generate_calibration_targets() -> None:
             r"\bottomrule",
             r"\end{tabular}",
             r"\begin{minipage}{0.96\linewidth}",
-            r"\footnotesize Notes: The table reports selected calibration targets from the repository's CSV files. Ranges are target intervals, not estimated model effects. Source names, URLs, construction notes, and validation flags are retained in the replication files. Contextual trust proxies and normalized cost benchmarks are not counted as validation evidence unless separately source-denominated.",
+            r"\footnotesize Notes: The table reports selected external calibration targets used for source-range diagnostics. Ranges are target intervals, not estimated model effects. Source names, URLs, construction notes, and validation flags are retained in the replication materials. Contextual trust proxies and normalized cost benchmarks are not counted as validation evidence unless separately source-denominated.",
             r"\end{minipage}",
             r"\end{table}",
             "",

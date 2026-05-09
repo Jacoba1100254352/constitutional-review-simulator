@@ -253,6 +253,17 @@ def main() -> None:
 
     if "OpenAI ChatGPT Deep Research" not in tex or "OpenAI Codex" not in tex or "GPT-5" not in tex:
         fail("AI Tools Declaration should identify the tools and model/interface family used.")
+    for required_ai_detail in [
+            "May 1--9, 2026",
+            "ChatGPT web interface",
+            "Codex desktop interface",
+            "not expose a more specific model version",
+            "not trained, fine-tuned, or otherwise modified",
+    ]:
+        if required_ai_detail not in tex:
+            fail(f"AI Tools Declaration is missing required detail: {required_ai_detail}")
+    if "AI outputs were not treated as sources" not in tex:
+        fail("AI Tools Declaration should state how AI outputs were handled.")
 
     for expected in [
             "U.S. Supreme Court",
