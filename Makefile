@@ -51,6 +51,7 @@ paper-check: paper-artifacts
 
 paper: paper-artifacts paper-check
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
+	cp paper/build/main.pdf paper/main.pdf
 
 paper-word-count:
 	if command -v texcount >/dev/null 2>&1; then cd paper && texcount -inc -total main.tex; else python3 paper/scripts/word_count.py; fi

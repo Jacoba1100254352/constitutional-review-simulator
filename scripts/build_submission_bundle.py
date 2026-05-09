@@ -87,6 +87,7 @@ def refresh_pdfs() -> None:
         ["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", "-outdir=build", "main.tex"],
         cwd=PAPER_DIR,
     )
+    shutil.copy2(MANUSCRIPT_PDF, PAPER_DIR / "main.pdf")
     run(["python3", "paper/scripts/generate_supplement.py"])
     run(
         [
