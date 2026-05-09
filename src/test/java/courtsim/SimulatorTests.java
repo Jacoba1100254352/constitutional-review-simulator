@@ -200,13 +200,15 @@ public final class SimulatorTests {
         assertTrue(Files.exists(result.compositionCsvPath()), "expected composition CSV artifact");
         assertTrue(Files.exists(result.calibrationCsvPath()), "expected calibration CSV artifact");
         assertTrue(Files.exists(result.caseCsvGzPath()), "expected compressed case-level artifact");
-        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("scenarioKey"), "expected case-level CSV header");
-        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("reviewMechanism"), "expected mechanism case export");
-        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("weakFormDeclaration"), "expected weak-form case export");
-        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("policyDomain"), "expected policy-domain case export");
-        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("litigantCapacity"), "expected case-selection input export");
-        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("caseSelectionAccess"), "expected case-selection outcome export");
-        assertTrue(readGzipHeader(result.caseCsvGzPath()).contains("legislativeResponseCredibility"), "expected response credibility export");
+        String caseHeader = readGzipHeader(result.caseCsvGzPath());
+        assertTrue(caseHeader.contains("scenarioKey"), "expected case-level CSV header");
+        assertTrue(caseHeader.contains("reviewMechanism"), "expected mechanism case export");
+        assertTrue(caseHeader.contains("weakFormDeclaration"), "expected weak-form case export");
+        assertTrue(caseHeader.contains("legislativeResponseDelay"), "expected response-timing case export");
+        assertTrue(caseHeader.contains("policyDomain"), "expected policy-domain case export");
+        assertTrue(caseHeader.contains("litigantCapacity"), "expected case-selection input export");
+        assertTrue(caseHeader.contains("caseSelectionAccess"), "expected case-selection outcome export");
+        assertTrue(caseHeader.contains("legislativeResponseCredibility"), "expected response credibility export");
         assertTrue(Files.exists(result.intervalCsvPath()), "expected interval CSV artifact");
         assertTrue(Files.exists(result.periodIntervalCsvPath()), "expected period interval CSV artifact");
         assertTrue(Files.exists(result.doctrineIntervalCsvPath()), "expected doctrine interval CSV artifact");
@@ -236,6 +238,7 @@ public final class SimulatorTests {
         assertTrue(Files.readString(result.csvPath()).contains("governmentRepeatPlayerAdvantage"), "expected government repeat-player metric");
         assertTrue(Files.readString(result.csvPath()).contains("implementationCapacity"), "expected implementation capacity metric");
         assertTrue(Files.readString(result.csvPath()).contains("weakFormDeclarationRate"), "expected weak-form mechanism metric");
+        assertTrue(Files.readString(result.csvPath()).contains("timelyLegislativeResponseRate"), "expected response-timing metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("caseSelectionAccess"), "expected period access metric");
         assertTrue(Files.readString(result.doctrineCsvPath()).contains("implementationCapacity"), "expected doctrine implementation metric");
         assertTrue(Files.readString(result.periodCsvPath()).contains("period"), "expected period report rows");
@@ -392,9 +395,14 @@ public final class SimulatorTests {
         String csv = Files.readString(result.csvPath());
         assertTrue(csv.contains("german-constitutional-court"), "expected German validation preset");
         assertTrue(csv.contains("south-african-constitutional-court"), "expected South African validation preset");
+        assertTrue(csv.contains("uk-supreme-court"), "expected UK validation preset");
+        assertTrue(csv.contains("echr-treaty-court"), "expected ECHR validation preset");
+        assertTrue(csv.contains("cjeu-court-of-justice"), "expected CJEU validation preset");
         String calibrationCsv = Files.readString(result.calibrationCsvPath());
         assertTrue(calibrationCsv.contains("scdb-modern-merits-2000-2024"), "expected U.S. doctrine target profile");
         assertTrue(calibrationCsv.contains("scotus-emergency-2024-2025"), "expected emergency target profile");
+        assertTrue(calibrationCsv.contains("uk-human-rights-doi-2025"), "expected verified UK declaration response target profile");
+        assertTrue(calibrationCsv.contains("echr-2024"), "expected verified ECHR target profile");
         assertTrue(calibrationCsv.contains("sourceName"), "expected calibration source metadata");
         assertTrue(calibrationCsv.contains("targetN"), "expected calibration target sample-size metadata");
         assertValidationRowsAreSourceBacked(result.calibrationCsvPath());
@@ -438,8 +446,12 @@ public final class SimulatorTests {
             assertTrue(Boolean.parseBoolean(row[withinTarget]) == expectedWithin, "withinTarget inconsistent with target range");
             validationCounts.merge(row[profileKey], 1, Integer::sum);
         }
-        assertTrue(validationCounts.size() == 1, "expected only source-specific emergency validation targets");
+        assertTrue(validationCounts.size() == 5, "expected verified source-specific validation target families");
         assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 3, "expected three emergency validation targets");
+        assertTrue(validationCounts.getOrDefault("canada-scc-2024", 0) == 1, "expected Canada 2024 validation target");
+        assertTrue(validationCounts.getOrDefault("uk-human-rights-doi-2025", 0) == 1, "expected UK declaration-response validation target");
+        assertTrue(validationCounts.getOrDefault("uk-supreme-court-2024-2025", 0) == 1, "expected UKSC intake validation target");
+        assertTrue(validationCounts.getOrDefault("echr-2024", 0) == 2, "expected two ECHR validation targets");
     }
 
     private static String readGzipHeader(Path path) throws Exception {

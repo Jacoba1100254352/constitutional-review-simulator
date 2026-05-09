@@ -4,7 +4,7 @@ JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 
-.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
+.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check promotion-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -30,6 +30,10 @@ calibration-build:
 
 calibration-check:
 	python3 scripts/build_calibration_targets.py --check
+	python3 scripts/check_calibration_promotions.py
+
+promotion-check:
+	python3 scripts/check_calibration_promotions.py
 
 paper-figures:
 	python3 paper/scripts/generate_figures.py

@@ -84,6 +84,8 @@ public record ScenarioReport(
         double weakFormDeclarationRate,
         double suspendedDeclarationRate,
         double legislativeResponseRate,
+        double averageLegislativeResponseDelay,
+        double timelyLegislativeResponseRate,
         double rightsImpactStatementRate,
         double ombudsmanTriggerRate,
         double publicDefenderParticipationRate,
@@ -130,6 +132,8 @@ public record ScenarioReport(
                 implementationCapacity,
                 democraticConstitutionalism,
                 legislativeResponseRate,
+                Values.lowerIsBetter(averageLegislativeResponseDelay),
+                timelyLegislativeResponseRate,
                 rightsImpactStatementRate
         );
     }

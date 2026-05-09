@@ -11,6 +11,7 @@ import courtsim.simulation.WorldSpec;
 import courtsim.util.Values;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -153,12 +154,25 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 legislativeResponseCredibility,
                 random
         );
+        double legislativeResponseDeadline = legislativeResponseDeadline(
+                caseFile,
+                weakFormDeclaration,
+                suspendedDeclaration,
+                overrideUsed,
+                constitutionalConcernFound
+        );
+        double legislativeResponseDelay = legislativeResponse
+                ? legislativeResponseDelay(caseFile, legislativeResponseDeadline, legislativeResponseCredibility, suspendedDeclaration, random)
+                : 0.0;
+        boolean timelyLegislativeResponse = legislativeResponse
+                && legislativeResponseDeadline > 0.0
+                && legislativeResponseDelay <= legislativeResponseDeadline;
         boolean lawEffective = (!meritsInvalidated || overrideUsed) && !(emergencyReliefGranted && !meritsReview);
         if (weakFormDeclaration) {
             lawEffective = !legislativeResponse;
         }
         if (suspendedDeclaration) {
-            lawEffective = !legislativeResponse;
+            lawEffective = !timelyLegislativeResponse;
         }
         double majorityShare = meritsInvalidated || emergencyReliefGranted
                 ? finalVote.strikeVoteShare()
@@ -193,6 +207,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 weakFormDeclaration,
                 suspendedDeclaration,
                 legislativeResponse,
+                legislativeResponseDelay,
+                legislativeResponseDeadline,
+                timelyLegislativeResponse,
                 rightsImpactStatement,
                 publicDefenderParticipation
         );
@@ -246,6 +263,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 overrideUsed,
                 reactionState
         );
+        if (legislativeResponse) {
+            complianceRate = Values.clamp01(complianceRate + (timelyLegislativeResponse ? 0.05 : -0.05));
+        }
         boolean complied = random.nextDouble() < complianceRate;
         boolean defied = !complied && random.nextDouble() < defianceRisk(caseFile, constitutionalConflict, reactionState);
         boolean workaround = !complied && !defied && random.nextDouble() < workaroundRisk(caseFile, meritsInvalidated, emergencyReliefGranted, reactionState);
@@ -393,6 +413,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 weakFormDeclaration,
                 suspendedDeclaration,
                 legislativeResponse,
+                legislativeResponseDelay,
+                legislativeResponseDeadline,
+                timelyLegislativeResponse,
                 rightsImpactStatement,
                 ombudsmanTriggered,
                 publicDefenderParticipation,
@@ -572,7 +595,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
 
     private List<Justice> panelJustices(int participating, Random random) {
         List<Justice> active = new ArrayList<>(activeJustices(participating));
-        active.sort(Comparator.comparingDouble(justice -> random.nextDouble()));
+        Collections.shuffle(active, random);
         int panelSize = Math.min(active.size(), Math.max(3, Math.min(5, participating / 2)));
         return active.subList(0, panelSize);
     }
@@ -814,6 +837,64 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         return responseScore + random.nextDouble() * 0.20 > 0.55;
     }
 
+    private double legislativeResponseDeadline(
+            CaseFile caseFile,
+            boolean weakFormDeclaration,
+            boolean suspendedDeclaration,
+            boolean overrideUsed,
+            boolean constitutionalConcernFound
+    ) {
+        if (!weakFormDeclaration
+                && !suspendedDeclaration
+                && !overrideUsed
+                && !(configuration.mandatoryLegislativeResponseMechanism() && constitutionalConcernFound)) {
+            return 0.0;
+        }
+        double base = 0.58;
+        if (suspendedDeclaration) {
+            base = 0.42;
+        } else if (configuration.mandatoryLegislativeResponseMechanism()) {
+            base = 0.36;
+        } else if (weakFormDeclaration) {
+            base = 0.52;
+        } else if (overrideUsed) {
+            base = 0.46;
+        }
+        return Values.clamp01(
+                base
+                        - caseFile.urgency() * 0.08
+                        - caseFile.rightsThreat() * 0.06
+                        + configuration.transparency() * 0.04
+        );
+    }
+
+    private double legislativeResponseDelay(
+            CaseFile caseFile,
+            double deadline,
+            double legislativeResponseCredibility,
+            boolean suspendedDeclaration,
+            Random random
+    ) {
+        double procedureDiscipline = configuration.mandatoryLegislativeResponseMechanism() ? 0.14 : 0.0;
+        double suspensionDiscipline = suspendedDeclaration ? 0.10 : 0.0;
+        double delay = 0.54
+                + worldSpec.partyFragmentation() * 0.18
+                + worldSpec.electoralTimePressure() * 0.12
+                + worldSpec.legislativeConflict() * 0.10
+                + caseFile.legalAmbiguity() * 0.08
+                + caseFile.stateFederalTension() * 0.05
+                - legislativeResponseCredibility * 0.22
+                - worldSpec.implementationCapacity() * 0.12
+                - worldSpec.governmentControl() * 0.08
+                - procedureDiscipline
+                - suspensionDiscipline
+                + random.nextDouble() * 0.18;
+        if (deadline > 0.0 && deadline < 0.45) {
+            delay -= 0.04;
+        }
+        return Values.clamp01(delay);
+    }
+
     private boolean meritsReview(boolean emergency, CaseFile caseFile) {
         if (!emergency) {
             return true;
@@ -1014,6 +1095,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 false,
                 false,
                 false,
+                0.0,
+                0.0,
+                false,
                 rightsImpactStatement,
                 ombudsmanTriggered,
                 publicDefenderParticipation,
@@ -1082,6 +1166,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             boolean weakFormDeclaration,
             boolean suspendedDeclaration,
             boolean legislativeResponse,
+            double legislativeResponseDelay,
+            double legislativeResponseDeadline,
+            boolean timelyLegislativeResponse,
             boolean rightsImpactStatement,
             boolean publicDefenderParticipation
     ) {
@@ -1096,7 +1183,10 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             score = 1.0 - caseFile.rightsThreat() * 0.72 + caseFile.legislativeMandate() * 0.06 - caseFile.timeToReview() * caseFile.rightsThreat() * 0.08;
         }
         if (suspendedDeclaration) {
-            score -= legislativeResponse ? 0.02 : 0.12 + caseFile.timeToReview() * 0.06;
+            score -= timelyLegislativeResponse ? 0.02 : 0.12 + caseFile.timeToReview() * 0.06;
+        }
+        if (legislativeResponse && legislativeResponseDeadline > 0.0 && legislativeResponseDelay > legislativeResponseDeadline) {
+            score -= 0.06 + (legislativeResponseDelay - legislativeResponseDeadline) * 0.08;
         }
         if (rightsImpactStatement) {
             score += 0.05 + caseFile.rightsThreat() * 0.04;

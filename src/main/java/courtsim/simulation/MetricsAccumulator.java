@@ -83,6 +83,8 @@ public final class MetricsAccumulator {
     private int weakFormDeclarations;
     private int suspendedDeclarations;
     private int legislativeResponses;
+    private int timelyLegislativeResponses;
+    private double legislativeResponseDelaySum;
     private int rightsImpactStatements;
     private int ombudsmanTriggers;
     private int publicDefenderParticipations;
@@ -222,6 +224,10 @@ public final class MetricsAccumulator {
         }
         if (outcome.legislativeResponse()) {
             legislativeResponses++;
+            legislativeResponseDelaySum += outcome.legislativeResponseDelay();
+        }
+        if (outcome.timelyLegislativeResponse()) {
+            timelyLegislativeResponses++;
         }
         if (outcome.rightsImpactStatement()) {
             rightsImpactStatements++;
@@ -344,6 +350,8 @@ public final class MetricsAccumulator {
                 Values.ratio(weakFormDeclarations, totalCases),
                 Values.ratio(suspendedDeclarations, totalCases),
                 Values.ratio(legislativeResponses, totalCases),
+                average(legislativeResponseDelaySum, legislativeResponses),
+                Values.ratio(timelyLegislativeResponses, legislativeResponses),
                 Values.ratio(rightsImpactStatements, totalCases),
                 Values.ratio(ombudsmanTriggers, totalCases),
                 Values.ratio(publicDefenderParticipations, totalCases),
@@ -402,6 +410,13 @@ public final class MetricsAccumulator {
             return 0.0;
         }
         return sum / totalCases;
+    }
+
+    private double average(double sum, int observations) {
+        if (observations == 0) {
+            return 0.0;
+        }
+        return sum / observations;
     }
 
     private static final class SegmentAccumulator {

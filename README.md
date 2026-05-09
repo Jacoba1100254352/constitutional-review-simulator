@@ -217,6 +217,8 @@ Core metrics:
 - `weakFormDeclarationRate` `diag.`: share of cases producing weak-form declarations rather than automatic invalidation
 - `suspendedDeclarationRate` `diag.`: share of cases with delayed-effect invalidity declarations
 - `legislativeResponseRate` `↑/diag.`: share of declarations, overrides, or mandatory response triggers receiving legislative response
+- `averageLegislativeResponseDelay` `↓/diag.`: normalized delay among legislative responses after declarations, overrides, or mandatory response triggers
+- `timelyLegislativeResponseRate` `↑`: share of legislative responses occurring before the modeled response deadline
 - `rightsImpactStatementRate` `diag.`: share of cases with front-end rights-impact statement review
 - `ombudsmanTriggerRate` `diag.`: share of cases receiving ombudsman-triggered review access
 - `publicDefenderParticipationRate` `diag.`: share of cases with constitutional public-defender participation
@@ -247,6 +249,7 @@ Default calibration profiles live in `config/calibration/*.csv`; `config/calibra
 ```sh
 make calibration-check
 make calibration-build
+make promotion-check
 ```
 
 The calibration schema is:
@@ -255,9 +258,9 @@ The calibration schema is:
 targetFile,profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl,constructionNote
 ```
 
-Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, and South Africa, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. Other rows are documented stress-test assumptions, not empirical validation evidence.
+Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, and the ECHR, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. `make promotion-check` enforces those promotion rules and rejects validation rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
 
-Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets yet. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. The `*-source-candidates.csv` files preserve denominator-backed findings from the research pass, but keep them out of validation until source URLs, coding rules, and direct simulator analogues are verified. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row into `config/calibration-source-observations.csv`.
+Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets by default. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Rows marked `promoted` have been moved into `config/calibration-source-observations.csv`; rows marked `verified-context-only` have primary-source URLs but are not direct simulator analogues; rows still marked `pending-url-verification` remain research leads. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row.
 
 The target-method note in `docs/calibration-target-methods.md` separates
 source-specific targets from provisional synthesis ranges. Rows without a source
@@ -269,8 +272,8 @@ Research-derived structured inputs are checked in under `config/`:
 
 - `config/comparative/constitutional-review-designs.csv`: court-system design matrix and simulator scenario mapping
 - `config/comparative/synthetic-review-mechanisms.csv`: synthetic mechanism matrix with transplant, culture-fit, and implementation-cost notes
-- `config/research/legislative-response-source-candidates.csv`: denominator-backed weak-form, suspended-declaration, override, and mandatory-response findings awaiting source-URL verification
-- `config/research/comparative-calibration-source-candidates.csv`: comparative court intake, route-mix, timing, emergency, and nonunanimity targets awaiting source-URL and mapping verification
+- `config/research/legislative-response-source-candidates.csv`: denominator-backed weak-form, suspended-declaration, override, and mandatory-response findings with promotion status
+- `config/research/comparative-calibration-source-candidates.csv`: comparative court intake, route-mix, timing, emergency, and nonunanimity targets with source and mapping status
 - `config/research/transplant-indicator-operationalization.csv`: transplant-feasibility indicators, source families, ranges, and simulator-field mappings
 - `config/pipeline/us-scotus-pipeline.csv`: filings, certiorari, lower-court conflict, state-court origin, en banc, and timing benchmarks
 - `config/emergency/scotus-emergency-schema.csv`: row schema for future emergency/shadow-docket datasets

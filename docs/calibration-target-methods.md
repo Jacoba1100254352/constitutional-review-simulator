@@ -55,12 +55,16 @@ Only rows with `useForValidation=true` are counted in the manuscript's
 validation-style table. The source-matrix builder rejects validation rows that
 lack a source URL, lack a nonzero denominator, have low reliability, use any
 synthesis source or synthesis method label, use contextual public-trust
-proxies, or use normalized-cost/benchmark-cost construction. Under this stricter
-rule, the current source-specific validation surface is intentionally narrow:
-the retained validation rows are emergency-docket diagnostics with a documented
-application denominator. Comparative court intake, doctrine mix without stored
-SCDB denominators, trust, merits-outcome synthesis, and normalized cost rows are
-stress-test context only.
+proxies, or use normalized-cost/benchmark-cost construction. The promotion
+checker also rejects validation rows whose target keys are not exposed by the
+simulator's calibration observation mapping. Under this stricter rule, the
+current source-specific validation surface remains intentionally narrow, but it
+now includes official-source checks for U.S. emergency procedure, Canada SCC
+leave grants, UK Supreme Court permission grants, UK declarations of
+incompatibility responses, and ECHR intake/interim-measure measures.
+Comparative doctrine mix without stored SCDB denominators, trust,
+merits-outcome synthesis, route-mix statistics without simulator analogues, and
+normalized cost rows are stress-test context only.
 
 The validation campaign intentionally reports misses. A failed target should be
 read as one of three things:
@@ -77,10 +81,10 @@ and merits-invalidation proxies outside the emergency-docket context. Once
 those datasets include URLs, denominators, and construction formulas, set
 `useForValidation=true` and regenerate the calibration target files.
 
-The current post-research candidate files identify the most promising promotion
-targets: United Kingdom section 4 declaration responses, Canadian Charter
-legislative sequels, French QPC invalidation and deferred-effect rates, UK and
-Canadian leave/permission rates, ECHR Rule 39 and inadmissibility denominators,
-CJEU route-mix statistics, and transplant-feasibility indicators from V-Dem,
-ParlGov, PPEG, DPI, WGI, CEPEJ, OECD, WVS, and related source families. These
-are evidence leads, not validation results.
+The current post-research candidate files identify the most promising remaining
+promotion targets: Canadian Charter legislative sequels, French QPC invalidation
+and deferred-effect rates, CJEU route-mix statistics that still need simulator
+metric mapping, and transplant-feasibility indicators from V-Dem, ParlGov, PPEG,
+DPI, WGI, CEPEJ, OECD, WVS, and related source families. Rows already marked
+`promoted` have been added to the calibration source matrix; rows marked
+`verified-context-only` have source support but are not validation results.

@@ -1,0 +1,2 @@
+profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl
+canada-scc-2024,Supreme Court of Canada,2024,intake_acceptance_rate,Leave application grant rate,0.060,0.075,0.0665,526,share,official annual leave applications and grants,high,true,The 2024 Year in Review reports 526 applications filed and 35 applications granted; this is a top-court leave-to-appeal intake proxy.,Supreme Court of Canada Year in Review 2024,https://scc-csc.gc.ca/pdf/YIR_2024_EN.pdf

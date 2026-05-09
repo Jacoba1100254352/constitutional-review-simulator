@@ -24,7 +24,7 @@ Court composition now changes across review periods. `WorldSpec.reviewPeriods` p
 
 Outcomes now update public and legislative reaction state. Each decision changes public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and a compliance norm. Those state variables feed later cases in the same run, so emergency relief, merits invalidation, override use, defiance, workaround behavior, and repeated litigation can compound instead of appearing as isolated case-level events. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance.
 
-Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central diagnostic is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
+Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, legislative-response delay, timely legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central diagnostic is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
 
 The world specification now separates formal review design from political and administrative context. Party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility feed response credibility, transplant feasibility, political-culture sensitivity, and compliance channels. These inputs are sensitivity levers unless source-specific research promotes them into documented calibration targets.
 
@@ -48,7 +48,7 @@ exports:
 - calibration diagnostics against `config/calibration-targets.csv`
 - aggregate and segment uncertainty bands
 - compressed case-level outcomes for bootstrap replication
-- mechanism diagnostics and scenario-kind metadata in aggregate, segment, composition, and case-level exports
+- mechanism diagnostics, legislative-response timing fields, and scenario-kind metadata in aggregate, segment, composition, and case-level exports
 - research-roadmap inputs under `config/research/` for empirical court packs, legislative response evidence, transplant factors, enforcement channels, and case-selection access
 
 The sensitivity campaign is a brittleness check rather than empirical
@@ -79,4 +79,5 @@ operationalization file. Candidate rows should record the reported numerator,
 denominator, period, source family, URL-verification status, and whether the
 row is a direct simulator analogue. They should not be promoted into
 `config/calibration-source-observations.csv` until the original source URL and
-coding rule have been independently verified.
+coding rule have been independently verified. `make promotion-check` enforces
+the current promotion gate for validation rows and promoted candidate rows.
