@@ -956,6 +956,7 @@ Campaign and segment CSV artifacts include 95% uncertainty bands using `cluster-
 | uk-human-rights-doi-2025 | Strict response after declarations of incompatibility | 0.034 | 0.444 | 0.034-0.035 | 0.430-0.460 | medium | true | 0.396 | outside |
 | uk-human-rights-doi-2025 | Statutory amendment or repeal after declarations of incompatibility | 0.567 | 0.429 | 0.566-0.568 | 0.410-0.450 | medium | true | 0.117 | outside |
 | uk-supreme-court-2024-2025 | Permission-to-appeal grant rate | 0.026 | 0.361 | 0.026-0.026 | 0.345-0.375 | high | true | 0.319 | outside |
+| uk-supreme-court-2024-2025 | Permission-to-appeal case-selection access proxy | 0.394 | 0.361 | 0.394-0.395 | 0.345-0.375 | high | true | 0.019 | outside |
 | scdb-postwar-merits-1946-2024 | Speech docket share | 0.351 | 0.076 | 0.350-0.352 | 0.060-0.091 | high | false | 0.260 | outside |
 | scdb-postwar-merits-1946-2024 | Civil-rights and privacy docket share | 0.161 | 0.152 | 0.160-0.161 | 0.135-0.169 | high | false | 0.000 | within |
 | scdb-postwar-merits-1946-2024 | Criminal procedure docket share | 0.066 | 0.226 | 0.065-0.066 | 0.207-0.244 | high | false | 0.141 | outside |
