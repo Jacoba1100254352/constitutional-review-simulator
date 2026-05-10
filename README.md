@@ -120,7 +120,11 @@ modifiers from `config/context/country-year-context.csv` while keeping empirical
 validation claims limited to source-backed calibration rows. It writes the same
 aggregate, segment, compressed case-level, bootstrap interval, calibration,
 Markdown, and manifest artifact family under the
-`reports/constitutional-review-validation-v1*` prefix.
+`reports/constitutional-review-validation-v1*` prefix. It also writes
+`reports/constitutional-review-validation-v1-misses.csv` and
+`reports/constitutional-review-validation-v1-misses.md`, which interpret
+out-of-range source-specific checks as denominator, emergency-procedure,
+weak-form response, remedy-timing, merits-outcome, or route-mix diagnostics.
 
 Run tests:
 
@@ -267,7 +271,7 @@ The calibration schema is:
 targetFile,profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl,constructionNote
 ```
 
-Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The promoted France QPC rows cover all-QPC nonconformity and deferred-effect rates; the promoted CJEU rows cover preliminary-reference, appeal, and direct-action route mix. `make promotion-check` enforces those promotion rules and rejects validation rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
+Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The denominator-backed validation pack currently includes Canada SCC leave grants, France QPC nonconformity and deferred-effect remedies, UK Supreme Court permission-to-appeal grants, UK declaration-of-incompatibility legislative responses, ECHR allocated-application and Rule 39 interim-measure targets, CJEU route mix, and U.S. Supreme Court emergency-docket relief, reason-giving, and public-disagreement rows. `make promotion-check` enforces those promotion rules and rejects validation rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
 
 Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets by default. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Rows marked `promoted` have been moved into `config/calibration-source-observations.csv`; rows marked `verified-context-only` have primary-source URLs but are not direct simulator analogues; rows still marked `pending-url-verification` remain research leads. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row.
 

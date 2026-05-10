@@ -4,7 +4,7 @@ JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 
-.PHONY: build run campaign paired-campaign validation-check sensitivity-check calibration-build calibration-check promotion-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
+.PHONY: build run campaign paired-campaign validation-check validation-miss-report sensitivity-check calibration-build calibration-check promotion-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -21,6 +21,10 @@ paired-campaign: build
 
 validation-check: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign validation --runs 120 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
+	python3 scripts/build_validation_miss_report.py
+
+validation-miss-report:
+	python3 scripts/build_validation_miss_report.py
 
 sensitivity-check: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign sensitivity --runs 80 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
@@ -39,6 +43,7 @@ paper-figures:
 	python3 paper/scripts/generate_figures.py
 
 paper-tables:
+	python3 scripts/build_validation_miss_report.py
 	python3 paper/scripts/generate_tables.py
 
 paper-supplement-tables:

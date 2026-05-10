@@ -3,8 +3,10 @@ package courtsim;
 import courtsim.experiment.CampaignResult;
 import courtsim.experiment.CampaignRunner;
 import courtsim.importer.LegislativeOutputImporter;
+import courtsim.institution.InstitutionModelTests;
 import courtsim.model.LegislativeSignal;
 import courtsim.model.PolicyDomain;
+import courtsim.simulation.DirectionalScoreModelTests;
 import courtsim.simulation.Scenario;
 import courtsim.simulation.ScenarioCatalog;
 import courtsim.simulation.ScenarioReport;
@@ -27,6 +29,8 @@ public final class SimulatorTests {
 
     public static void main(String[] args) throws Exception {
         scenarioCatalogSelectsKnownKeys();
+        InstitutionModelTests.runAll();
+        DirectionalScoreModelTests.runAll();
         simulatorProducesReports();
         mechanismScenariosProduceDiagnostics();
         cjeuRouteMixDiagnosticsAreExposed();
@@ -519,13 +523,14 @@ public final class SimulatorTests {
         assertTrue(validationCounts.getOrDefault("canada-scc-2024", 0) == 1, "expected Canada 2024 validation target");
         assertTrue(validationCounts.getOrDefault("france-conseil-qpc", 0) == 2, "expected France QPC validation targets");
         assertTrue(validationCounts.getOrDefault("uk-human-rights-doi-2025", 0) == 2, "expected two UK declaration-response validation targets");
-        assertTrue(validationCounts.getOrDefault("uk-supreme-court-2024-2025", 0) == 1, "expected UKSC intake validation target");
+        assertTrue(validationCounts.getOrDefault("uk-supreme-court-2024-2025", 0) == 2, "expected UKSC intake and case-selection validation targets");
         assertTrue(validationCounts.getOrDefault("echr-2024", 0) == 2, "expected two ECHR validation targets");
         assertTrue(validationCounts.getOrDefault("cjeu-2024", 0) == 3, "expected three CJEU route validation targets");
         assertTrue(validationTargets.containsKey("cjeu-2024/preliminary_reference_rate"), "missing CJEU preliminary-reference target");
         assertTrue(validationTargets.containsKey("cjeu-2024/appeal_route_rate"), "missing CJEU appeal-route target");
         assertTrue(validationTargets.containsKey("cjeu-2024/direct_action_rate"), "missing CJEU direct-action target");
         assertTrue(validationTargets.containsKey("uk-human-rights-doi-2025/legislative_response_credibility"), "missing UK legislative-response-credibility target");
+        assertTrue(validationTargets.containsKey("uk-supreme-court-2024-2025/case_selection_access"), "missing UKSC case-selection-access proxy target");
     }
 
     private static String readGzipHeader(Path path) throws Exception {

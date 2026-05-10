@@ -87,12 +87,14 @@ interface in `main.tex`:
 
 The repository includes `paper/cup-journal.cls` as a local compatibility shim
 because the official Cambridge class is not installed in the local TeX
-environment. This is acceptable for local drafting and review-PDF production,
-but it should not be treated as the publisher template bundle. Before final
-LaTeX-source submission, replace the shim with the official Cambridge Overleaf
-template files exported from Overleaf if Editorial Manager or Cambridge requires
-exact production source. `paper/TEMPLATE-SHIM-NOTICE.md` is included in the
-source ZIP so this distinction remains visible to editors or reviewers. The
+environment; `kpsewhich cup-journal.cls` resolves no official class unless the
+local shim is on the build path. This is acceptable for local drafting and
+review-PDF production, but it should not be treated as the publisher template
+bundle. Before final LaTeX-source submission, replace the shim with the official
+Cambridge Overleaf template files exported from Overleaf if Editorial Manager or
+Cambridge requires exact production source. `paper/TEMPLATE-SHIM-NOTICE.md` is
+included in the source ZIP so this distinction remains visible to editors or
+reviewers. The
 official template uses
 `biblatex` with Chicago style; the local
 build keeps `natbib` citation commands because `biblatex`/`biber` are not
@@ -114,6 +116,8 @@ Relevant venue-format constraints now reflected in the manuscript:
 - explicit directional-score formula and a generated baseline results table;
 - generated calibration target table;
 - generated validation-style diagnostics table;
+- generated validation-miss interpretation table, backed by
+  `reports/constitutional-review-validation-v1-misses.csv` and `.md`;
 - generated supplementary calibration source-observation matrix;
 - generated supplementary empirical research-roadmap matrix;
 - generated aggregate reports and a manifest of omitted case-level and interval

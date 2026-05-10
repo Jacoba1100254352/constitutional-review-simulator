@@ -1,7 +1,5 @@
 package courtsim.simulation;
 
-import courtsim.util.Values;
-
 import java.util.List;
 
 public record ScenarioReport(
@@ -102,42 +100,6 @@ public record ScenarioReport(
         double administrativeLoad
 ) {
     public double directionalScore() {
-        return Values.average(
-                legalStability,
-                rightsProtection,
-                Values.lowerIsBetter(partisanAlignment),
-                Values.lowerIsBetter(shadowDocketAbuse),
-                legitimacy,
-                Values.lowerIsBetter(reversalRate),
-                Values.lowerIsBetter(emergencyReliefRate),
-                Values.lowerIsBetter(meritsInvalidationRate),
-                Values.lowerIsBetter(constitutionalConflict),
-                democraticResponsiveness,
-                independenceAccountabilityBalance,
-                complianceRate,
-                Values.lowerIsBetter(defianceRate),
-                Values.lowerIsBetter(workaroundRate),
-                executiveImplementationRate,
-                Values.lowerIsBetter(agencyNonacquiescenceRate),
-                Values.lowerIsBetter(legislativeReenactmentRate),
-                localGovernmentComplianceRate,
-                Values.lowerIsBetter(emergencyPublicDisagreementRate),
-                emergencyReasonGivingRate,
-                emergencyVoteDisclosureRate,
-                Values.lowerIsBetter(administrativeLoad),
-                Values.lowerIsBetter(totalInstitutionalCost),
-                Values.lowerIsBetter(vetoRelocationRisk),
-                legalTransplantFeasibility,
-                Values.lowerIsBetter(politicalCultureSensitivity),
-                legislativeResponseCredibility,
-                caseSelectionAccess,
-                Values.lowerIsBetter(governmentRepeatPlayerAdvantage),
-                implementationCapacity,
-                democraticConstitutionalism,
-                legislativeResponseRate,
-                Values.lowerIsBetter(averageLegislativeResponseDelay),
-                timelyLegislativeResponseRate,
-                rightsImpactStatementRate
-        );
+        return DirectionalScoreModel.score(this);
     }
 }

@@ -29,6 +29,7 @@ SUPPORTED_VALIDATION_KEYS = {
     "doctrine_mix.administrative_state",
     "review_rate",
     "intake_acceptance_rate",
+    "case_selection_access",
     "emergency_relief_rate",
     "emergency_reason_giving_rate",
     "emergency_vote_disclosure_rate",

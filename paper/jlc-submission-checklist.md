@@ -29,6 +29,9 @@ Use this checklist before uploading to Editorial Manager.
   these checks are not fitted forecasts.
 - Main text discusses the largest validation misses and does not imply that
   benchmark presets reproduce named real courts.
+- Generated validation-miss CSV/Markdown artifacts are current and separate
+  denominator, emergency-procedure, weak-form response, remedy-timing,
+  merits-outcome, and route-mix diagnostics.
 - Back-matter declarations appear as separate headings before references:
   `Funding Declaration`, `Competing Interests Declaration`,
   `Data Availability Statement`, and `Ethical Statement`.
@@ -55,6 +58,8 @@ Use this checklist before uploading to Editorial Manager.
   submitted supplementary CSV, not an author-specific absolute path.
 - `make calibration-check` passes, confirming the source-observation matrix can
   regenerate the calibration target files.
+- `make validation-miss-report` has refreshed the generated miss diagnostics
+  after the latest validation campaign.
 - Supplement includes source code, configuration files, calibration targets,
   calibration source observations, compact generated reports, a manifest of
   omitted large outputs, figure/table-generation scripts, and reproduction

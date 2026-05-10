@@ -19,6 +19,7 @@ SUPPLEMENT_TEX = PAPER_DIR / "supplementary-appendix.tex"
 ACCESSIBILITY = PAPER_DIR / "accessibility-descriptions.md"
 REFERENCES_BIB = PAPER_DIR / "references.bib"
 VALIDATION_TABLE = PAPER_DIR / "tables" / "validation_summary.tex"
+VALIDATION_MISS_TABLE = PAPER_DIR / "tables" / "validation_miss_interpretation.tex"
 SCENARIO_POINT_LABELS = {
     "CUR*",
     "18Y",
@@ -219,6 +220,7 @@ def main() -> None:
     accessibility = ACCESSIBILITY.read_text(encoding="utf-8")
     references = REFERENCES_BIB.read_text(encoding="utf-8")
     validation_table = VALIDATION_TABLE.read_text(encoding="utf-8") if VALIDATION_TABLE.exists() else ""
+    validation_miss_table = VALIDATION_MISS_TABLE.read_text(encoding="utf-8") if VALIDATION_MISS_TABLE.exists() else ""
 
     if r"\documentclass[" not in tex or "]{cup-journal}" not in tex:
         fail("main.tex should keep the cup-journal document-class interface.")
@@ -250,6 +252,12 @@ def main() -> None:
 
     if "Directional score construction" not in tex:
         fail("main.tex must explain the directional score construction.")
+    if "score differences below about one percentage point should be treated as tied" not in tex:
+        fail("main.tex must warn that close directional-score differences are not meaningful.")
+    if "What the diagnostics still miss" not in tex:
+        fail("main.tex must include a diagnostic-misses subsection.")
+    if "case-selection-access proxy" not in tex:
+        fail("main.tex must flag case-selection-access proxy limitations.")
 
     if "OpenAI ChatGPT Deep Research" not in tex or "OpenAI Codex" not in tex or "GPT-5" not in tex:
         fail("AI Tools Declaration should identify the tools and model/interface family used.")
@@ -277,6 +285,17 @@ def main() -> None:
             fail(f"validation summary table is missing expected profile: {expected}")
     if "not fitted validation estimates" not in validation_table:
         fail("validation table should state that checks are not fitted validation estimates.")
+    for expected in [
+            "intake denominator alignment",
+            "emergency-procedure calibration",
+            "weak-form response mechanism",
+            "case-selection access proxy",
+            "not evidence that a country profile has been predicted incorrectly",
+    ]:
+        if expected not in validation_miss_table:
+            fail(f"validation miss table is missing required interpretive language: {expected}")
+    if "tab:supp-model-crosswalk" not in supplement_expanded:
+        fail("supplement must include the model-to-code crosswalk table.")
 
     all_expanded = expanded + "\n" + supplement_expanded
     figure_labels = label_set(r"\\label\{(fig:[^}]+)\}", all_expanded)

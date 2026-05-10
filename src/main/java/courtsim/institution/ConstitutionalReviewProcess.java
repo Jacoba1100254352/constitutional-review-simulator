@@ -1,11 +1,9 @@
 package courtsim.institution;
 
 import courtsim.model.CaseFile;
-import courtsim.model.CaseType;
 import courtsim.model.Jurisdiction;
 import courtsim.model.Justice;
 import courtsim.model.LowerCourtPath;
-import courtsim.model.PolicyDomain;
 import courtsim.simulation.CompositionSnapshot;
 import courtsim.simulation.WorldSpec;
 import courtsim.util.Values;
@@ -21,6 +19,13 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
     private final WorldSpec worldSpec;
     private final List<Justice> court;
     private final double replacementPressure;
+    private final DecisionMechanismModel mechanismModel;
+    private final IntakeModel intakeModel;
+    private final EmergencyDocketModel emergencyDocketModel;
+    private final PostDecisionResponseModel responseModel;
+    private final ComplianceModel complianceModel;
+    private final InstitutionalCostModel costModel;
+    private final OutcomeScoreModel scoreModel;
 
     public ConstitutionalReviewProcess(
             DesignConfiguration configuration,
@@ -32,6 +37,13 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         this.worldSpec = worldSpec;
         this.court = court;
         this.replacementPressure = replacementPressure;
+        this.mechanismModel = new DecisionMechanismModel(configuration);
+        this.intakeModel = new IntakeModel(configuration, worldSpec);
+        this.emergencyDocketModel = new EmergencyDocketModel(configuration);
+        this.responseModel = new PostDecisionResponseModel(configuration, worldSpec);
+        this.complianceModel = new ComplianceModel(configuration, worldSpec);
+        this.costModel = new InstitutionalCostModel(configuration, worldSpec, replacementPressure);
+        this.scoreModel = new OutcomeScoreModel(configuration, worldSpec);
     }
 
     public CompositionSnapshot compositionSnapshot(int reviewPeriod) {
@@ -57,18 +69,34 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
     public CaseOutcome review(CaseFile caseFile, ReviewContext context) {
         Random random = context.random();
         ReactionState reactionState = context.reactionState();
-        boolean emergency = isEmergency(caseFile, random);
-        boolean reviewed = shouldReview(caseFile, emergency, random);
-        boolean rightsImpactStatement = rightsImpactStatementUsed(caseFile);
-        boolean ombudsmanTriggered = ombudsmanTriggered(caseFile);
-        boolean publicDefenderParticipation = publicDefenderParticipation(caseFile);
-        boolean preEnactmentReview = preEnactmentReview(caseFile);
-        boolean abstractReview = abstractReview(caseFile);
-        String supranationalRoute = supranationalRoute(caseFile, random);
+        boolean emergency = intakeModel.isEmergency(caseFile, random);
+        boolean rightsImpactStatement = mechanismModel.rightsImpactStatementUsed(caseFile);
+        boolean ombudsmanTriggered = mechanismModel.ombudsmanTriggered(caseFile);
+        boolean publicDefenderParticipation = mechanismModel.publicDefenderParticipation(caseFile);
+        boolean preEnactmentReview = mechanismModel.preEnactmentReview(caseFile);
+        boolean abstractReview = mechanismModel.abstractReview(caseFile);
+        boolean reviewed = intakeModel.shouldReview(
+                caseFile,
+                emergency,
+                rightsImpactStatement,
+                ombudsmanTriggered,
+                publicDefenderParticipation,
+                preEnactmentReview,
+                abstractReview,
+                random
+        );
+        String supranationalRoute = mechanismModel.supranationalRoute(caseFile, random);
         boolean preliminaryReferenceRoute = "preliminary_reference".equals(supranationalRoute);
         boolean appealRoute = "appeal".equals(supranationalRoute);
         boolean directActionRoute = "direct_action".equals(supranationalRoute);
-        IntakeEstimate intake = intakeEstimate(caseFile, emergency, reviewed);
+        IntakeEstimate intake = intakeModel.estimate(
+                caseFile,
+                emergency,
+                reviewed,
+                ombudsmanTriggered,
+                publicDefenderParticipation,
+                abstractReview
+        );
         int recused = recusedJustices(caseFile, random);
         int participating = configuration.substitutesRecusedJustices()
                 ? configuration.courtSize()
@@ -134,8 +162,8 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             meritsEligibleInvalidation = finalVote.invalidates() && (caseFile.rightsThreat() > 0.40 || caseFile.constitutionalSalience() > 0.56);
         }
 
-        boolean meritsReview = meritsReview(emergency, caseFile);
-        boolean emergencyReliefGranted = emergencyReliefGranted(caseFile, emergency, finalVote, random);
+        boolean meritsReview = emergencyDocketModel.meritsReview(emergency, caseFile);
+        boolean emergencyReliefGranted = emergencyDocketModel.reliefGranted(caseFile, emergency, finalVote, random);
         boolean dialogueConcernFound = (configuration.weakFormReview()
                 || configuration.reviewMechanism() == ReviewMechanism.SUSPENDED_DECLARATION)
                 && finalVote.strikeVoteShare() >= Math.max(0.40, configuration.invalidationThreshold() - 0.10);
@@ -145,15 +173,15 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         boolean suspendedDeclaration = configuration.reviewMechanism() == ReviewMechanism.SUSPENDED_DECLARATION
                 && constitutionalConcernFound;
         boolean meritsInvalidated = constitutionalConcernFound && !weakFormDeclaration;
-        boolean overrideUsed = overrideUsed(caseFile, meritsInvalidated, random);
-        double legislativeResponseCredibility = legislativeResponseCredibility(
+        boolean overrideUsed = responseModel.overrideUsed(caseFile, meritsInvalidated, random);
+        double legislativeResponseCredibility = responseModel.legislativeResponseCredibility(
                 caseFile,
                 weakFormDeclaration,
                 suspendedDeclaration,
                 meritsInvalidated,
                 overrideUsed
         );
-        boolean legislativeResponse = legislativeResponse(
+        boolean legislativeResponse = responseModel.legislativeResponse(
                 caseFile,
                 weakFormDeclaration,
                 suspendedDeclaration,
@@ -162,7 +190,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 legislativeResponseCredibility,
                 random
         );
-        double legislativeResponseDeadline = legislativeResponseDeadline(
+        double legislativeResponseDeadline = responseModel.legislativeResponseDeadline(
                 caseFile,
                 weakFormDeclaration,
                 suspendedDeclaration,
@@ -170,7 +198,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 constitutionalConcernFound
         );
         double legislativeResponseDelay = legislativeResponse
-                ? legislativeResponseDelay(caseFile, legislativeResponseDeadline, legislativeResponseCredibility, suspendedDeclaration, random)
+                ? responseModel.legislativeResponseDelay(caseFile, legislativeResponseDeadline, legislativeResponseCredibility, suspendedDeclaration, random)
                 : 0.0;
         boolean timelyLegislativeResponse = legislativeResponse
                 && legislativeResponseDeadline > 0.0
@@ -198,16 +226,16 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 : weakFormDeclaration
                 ? Values.clamp01(caseFile.constitutionalSalience() * 0.20)
                 : 0.0;
-        double partisanAlignment = partisanAlignment(caseFile, finalVote.strikeVoteShare(), meritsInvalidated || emergencyReliefGranted);
-        double shadowAbuse = shadowDocketAbuse(caseFile, emergency, meritsReview, emergencyReliefGranted, meritsInvalidated);
-        String emergencyApplicantType = emergencyApplicantType(caseFile, emergency);
-        boolean governmentEmergencyApplicant = emergency && isGovernmentApplicant(emergencyApplicantType);
+        double partisanAlignment = scoreModel.partisanAlignment(caseFile, finalVote.strikeVoteShare(), meritsInvalidated || emergencyReliefGranted);
+        double shadowAbuse = emergencyDocketModel.shadowDocketAbuse(caseFile, emergency, meritsReview, emergencyReliefGranted, meritsInvalidated);
+        String emergencyApplicantType = emergencyDocketModel.applicantType(caseFile, emergency);
+        boolean governmentEmergencyApplicant = emergency && emergencyDocketModel.isGovernmentApplicant(emergencyApplicantType);
         boolean governmentEmergencyWin = governmentEmergencyApplicant && emergencyReliefGranted;
-        boolean reasonsGiven = !emergency || random.nextDouble() < emergencyReasonsProbability(caseFile, emergencyReliefGranted, meritsReview);
-        boolean voteDisclosed = !emergency || random.nextDouble() < emergencyVoteDisclosureProbability(caseFile, emergencyReliefGranted, reasonsGiven);
-        boolean publicDisagreement = emergency && random.nextDouble() < publicDisagreementProbability(caseFile, dissentIntensity, shadowAbuse, reasonsGiven);
+        boolean reasonsGiven = !emergency || random.nextDouble() < emergencyDocketModel.reasonsProbability(caseFile, emergencyReliefGranted, meritsReview);
+        boolean voteDisclosed = !emergency || random.nextDouble() < emergencyDocketModel.voteDisclosureProbability(caseFile, emergencyReliefGranted, reasonsGiven);
+        boolean publicDisagreement = emergency && random.nextDouble() < emergencyDocketModel.publicDisagreementProbability(caseFile, dissentIntensity, shadowAbuse, reasonsGiven);
         boolean meritsFollowUp = emergency && meritsReview;
-        double rightsProtection = rightsProtection(
+        double rightsProtection = scoreModel.rightsProtection(
                 caseFile,
                 meritsInvalidated,
                 emergencyReliefGranted,
@@ -221,7 +249,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 rightsImpactStatement,
                 publicDefenderParticipation
         );
-        double constitutionalConflict = constitutionalConflict(
+        double constitutionalConflict = scoreModel.constitutionalConflict(
                 caseFile,
                 meritsInvalidated,
                 emergencyReliefGranted,
@@ -232,7 +260,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 suspendedDeclaration,
                 legislativeResponse
         );
-        double democraticResponsiveness = democraticResponsiveness(
+        double democraticResponsiveness = scoreModel.democraticResponsiveness(
                 caseFile,
                 meritsInvalidated,
                 emergencyReliefGranted,
@@ -241,7 +269,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 suspendedDeclaration,
                 legislativeResponse
         );
-        double independenceBalance = independenceAccountabilityBalance(caseFile);
+        double independenceBalance = scoreModel.independenceAccountabilityBalance(caseFile);
         double legalStability = Values.clamp01(
                 1.0
                         - reversalMagnitude * 0.32
@@ -262,7 +290,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                         + (legislativeResponse ? 0.06 : 0.0)
                         - constitutionalConflict * 0.18
         );
-        double complianceRate = complianceRate(
+        double complianceRate = complianceModel.complianceRate(
                 caseFile,
                 legitimacy,
                 constitutionalConflict,
@@ -275,11 +303,11 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
             complianceRate = Values.clamp01(complianceRate + (timelyLegislativeResponse ? 0.05 : -0.05));
         }
         boolean complied = random.nextDouble() < complianceRate;
-        boolean defied = !complied && random.nextDouble() < defianceRisk(caseFile, constitutionalConflict, reactionState);
-        boolean workaround = !complied && !defied && random.nextDouble() < workaroundRisk(caseFile, meritsInvalidated, emergencyReliefGranted, reactionState);
+        boolean defied = !complied && random.nextDouble() < complianceModel.defianceRisk(caseFile, constitutionalConflict, reactionState);
+        boolean workaround = !complied && !defied && random.nextDouble() < complianceModel.workaroundRisk(caseFile, meritsInvalidated, emergencyReliefGranted, reactionState);
         boolean repeatedLitigation = (!complied || workaround)
-                && random.nextDouble() < repeatedLitigationRisk(caseFile, meritsInvalidated, emergencyReliefGranted);
-        boolean executiveImplementation = random.nextDouble() < executiveImplementationRate(
+                && random.nextDouble() < complianceModel.repeatedLitigationRisk(caseFile, meritsInvalidated, emergencyReliefGranted);
+        boolean executiveImplementation = random.nextDouble() < complianceModel.executiveImplementationRate(
                 caseFile,
                 complianceRate,
                 legitimacy,
@@ -287,10 +315,10 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 reactionState
         );
         boolean agencyNonacquiescence = !executiveImplementation
-                && random.nextDouble() < agencyNonacquiescenceRisk(caseFile, meritsInvalidated, emergencyReliefGranted, reactionState);
+                && random.nextDouble() < complianceModel.agencyNonacquiescenceRisk(caseFile, meritsInvalidated, emergencyReliefGranted, reactionState);
         boolean legislativeReenactment = workaround
-                && random.nextDouble() < legislativeReenactmentRisk(caseFile, meritsInvalidated, overrideUsed, reactionState);
-        boolean localGovernmentCompliance = random.nextDouble() < localGovernmentComplianceRate(
+                && random.nextDouble() < complianceModel.legislativeReenactmentRisk(caseFile, meritsInvalidated, overrideUsed, reactionState);
+        boolean localGovernmentCompliance = random.nextDouble() < complianceModel.localGovernmentComplianceRate(
                 caseFile,
                 complianceRate,
                 constitutionalConflict,
@@ -309,8 +337,8 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 agencyNonacquiescence,
                 legislativeReenactment
         );
-        double administrativeLoad = administrativeLoad(caseFile, emergency, enBanc, crossChecked, councilScreen, recused);
-        CostEstimate institutionalCosts = institutionalCosts(
+        double administrativeLoad = costModel.administrativeLoad(caseFile, emergency, enBanc, crossChecked, councilScreen, recused);
+        CostEstimate institutionalCosts = costModel.institutionalCosts(
                 caseFile,
                 emergency,
                 enBanc,
@@ -326,11 +354,11 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 abstractReview,
                 legislativeResponse
         );
-        double caseSelectionAccess = caseSelectionAccess(caseFile, intake);
-        double implementationCapacity = implementationCapacity(caseFile, constitutionalConflict, institutionalCosts);
-        double legalTransplantFeasibility = legalTransplantFeasibility(caseFile, institutionalCosts);
-        double politicalCultureSensitivity = politicalCultureSensitivity(caseFile, constitutionalConflict, institutionalCosts);
-        double vetoRelocationRisk = vetoRelocationRisk(
+        double caseSelectionAccess = intakeModel.caseSelectionAccess(caseFile, intake);
+        double implementationCapacity = costModel.implementationCapacity(caseFile, constitutionalConflict, institutionalCosts);
+        double legalTransplantFeasibility = costModel.legalTransplantFeasibility(caseFile, institutionalCosts);
+        double politicalCultureSensitivity = costModel.politicalCultureSensitivity(caseFile, constitutionalConflict, institutionalCosts);
+        double vetoRelocationRisk = scoreModel.vetoRelocationRisk(
                 caseFile,
                 meritsInvalidated,
                 weakFormDeclaration,
@@ -342,7 +370,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 institutionalCosts,
                 caseSelectionAccess
         );
-        double democraticConstitutionalism = democraticConstitutionalism(
+        double democraticConstitutionalism = scoreModel.democraticConstitutionalism(
                 legalStability,
                 rightsProtection,
                 legitimacy,
@@ -441,146 +469,6 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 legalTransplantFeasibility,
                 politicalCultureSensitivity,
                 democraticConstitutionalism
-        );
-    }
-
-    private boolean isEmergency(CaseFile caseFile, Random random) {
-        double pressure = caseFile.urgency() * 0.72 + worldSpec.emergencyPressure() * 0.28;
-        double threshold = switch (configuration.docketProcedure()) {
-            case FAST_SHADOW_DOCKET -> 0.46;
-            case REASONED_EMERGENCY_PANEL -> 0.55;
-            case FULL_COURT_EMERGENCY -> 0.60;
-            case MERITS_FOLLOW_UP -> 0.58;
-        };
-        return caseFile.type() == CaseType.EMERGENCY || pressure + random.nextDouble() * 0.18 > threshold;
-    }
-
-    private boolean shouldReview(CaseFile caseFile, boolean emergency, Random random) {
-        double structuralAccess = switch (configuration.reviewStructure()) {
-            case FULL_COURT -> 0.25;
-            case PANEL_EN_BANC -> 0.35;
-            case DUAL_SUPREME_COURTS -> 0.30;
-            case CROSS_CHECKING_COURTS -> 0.34;
-            case CONSTITUTIONAL_COUNCIL -> 0.48;
-        };
-        double reviewScore = structuralAccess
-                + caseFile.rightsThreat() * 0.26
-                + caseFile.constitutionalSalience() * 0.22
-                + caseFile.lowerCourtConflict() * 0.16
-                + caseFile.certiorariPressure() * 0.22
-                + Math.abs(caseFile.lowerCourtPanelSkew()) * 0.08
-                + caseFile.stateFederalTension() * 0.08
-                + caseFile.intercourtConflict() * 0.12
-                + caseFile.lowerCourtPath().certiorariBoost() * 0.30
-                + (emergency ? 0.18 : 0.0)
-                + (rightsImpactStatementUsed(caseFile) ? 0.05 : 0.0)
-                + (ombudsmanTriggered(caseFile) ? 0.16 : 0.0)
-                + (publicDefenderParticipation(caseFile) ? 0.13 : 0.0)
-                + (preEnactmentReview(caseFile) ? 0.10 : 0.0)
-                + (abstractReview(caseFile) ? 0.12 : 0.0)
-                + caseFile.litigantCapacity() * 0.09
-                + caseFile.publicInterestSupport() * 0.12
-                + caseFile.governmentRepeatPlayerAdvantage() * 0.05
-                - caseFile.legalAmbiguity() * 0.05;
-        return reviewScore * caseFile.jurisdiction().reviewAccessWeight() + random.nextDouble() * 0.24 > 0.48;
-    }
-
-    private IntakeEstimate intakeEstimate(CaseFile caseFile, boolean emergency, boolean reviewed) {
-        double acceptance = configuration.baseIntakeAcceptanceRate()
-                * (0.64
-                + caseFile.certiorariPressure() * 0.52
-                + caseFile.constitutionalSalience() * 0.34
-                + caseFile.lowerCourtConflict() * 0.24
-                + caseFile.stateFederalTension() * 0.10
-                + caseFile.intercourtConflict() * 0.12
-                + (emergency ? 0.55 : 0.0)
-                + (configuration.preEnactmentReview() ? 0.34 : 0.0)
-                + (ombudsmanTriggered(caseFile) ? 0.22 : 0.0)
-                + (publicDefenderParticipation(caseFile) ? 0.18 : 0.0)
-                + (abstractReview(caseFile) ? 0.20 : 0.0)
-                + caseFile.litigantCapacity() * 0.18
-                + caseFile.publicInterestSupport() * 0.16
-                + caseFile.governmentRepeatPlayerAdvantage() * 0.08);
-        if (configuration.docketControl() == DocketControl.MANDATORY_WITH_FILTERS) {
-            acceptance *= 1.55;
-        }
-        if (configuration.docketControl() == DocketControl.COMPLAINT_ADMISSIBILITY) {
-            acceptance *= 0.76 + caseFile.rightsThreat() * 0.28;
-        }
-        acceptance = Values.clamp(acceptance, 0.003, 0.82);
-        int representedFilings = Math.max(1, (int) Math.round(1.0 / acceptance));
-        int pressureFilings = (int) Math.round(
-                representedFilings
-                        * (1.0
-                        + caseFile.legalAmbiguity() * 0.20
-                        + caseFile.lowerCourtConflict() * 0.18
-                        + (emergency ? 0.24 : 0.0)
-                        + configuration.intakeScreeningIntensity() * 0.18)
-        );
-        int intakeFilings = Math.max(1, pressureFilings);
-        int acceptedFilings = reviewed ? 1 : 0;
-        int screenedFilings = Math.max(0, intakeFilings - acceptedFilings);
-        return new IntakeEstimate(intakeFilings, screenedFilings, Values.ratio(acceptedFilings, intakeFilings));
-    }
-
-    private String emergencyApplicantType(CaseFile caseFile, boolean emergency) {
-        if (!emergency) {
-            return "not-emergency";
-        }
-        PolicyDomain domain = caseFile.policyDomain();
-        if (domain == PolicyDomain.ADMINISTRATION || domain == PolicyDomain.EMERGENCY_SECURITY) {
-            return caseFile.executivePressure() > 0.45 ? "federal-government" : "agency";
-        }
-        if (domain == PolicyDomain.FEDERALISM || domain == PolicyDomain.ELECTIONS
-                || caseFile.jurisdiction() == Jurisdiction.STATE
-                || caseFile.jurisdiction() == Jurisdiction.MIXED_STATE_FEDERAL) {
-            return "state-government";
-        }
-        if (domain == PolicyDomain.CRIMINAL_JUSTICE) {
-            return "criminal-defendant";
-        }
-        if (domain == PolicyDomain.ECONOMIC_REGULATION) {
-            return caseFile.publicSupport() > 0.58 ? "federal-government" : "regulated-party";
-        }
-        return "private-party";
-    }
-
-    private boolean isGovernmentApplicant(String applicantType) {
-        return applicantType.contains("government") || applicantType.equals("agency");
-    }
-
-    private double emergencyReasonsProbability(CaseFile caseFile, boolean emergencyReliefGranted, boolean meritsReview) {
-        return Values.clamp01(
-                configuration.emergencyReasonGiving() * 0.62
-                        + configuration.transparency() * 0.18
-                        + (meritsReview ? 0.12 : 0.0)
-                        + (emergencyReliefGranted ? caseFile.constitutionalSalience() * 0.08 : 0.03)
-                        - (configuration.docketProcedure() == DocketProcedure.FAST_SHADOW_DOCKET ? 0.18 : 0.0)
-        );
-    }
-
-    private double emergencyVoteDisclosureProbability(CaseFile caseFile, boolean emergencyReliefGranted, boolean reasonsGiven) {
-        return Values.clamp01(
-                configuration.transparency() * 0.52
-                        + configuration.coalitionNorm() * 0.14
-                        + (reasonsGiven ? 0.14 : 0.0)
-                        + (emergencyReliefGranted ? 0.08 : 0.0)
-                        + caseFile.constitutionalSalience() * 0.08
-        );
-    }
-
-    private double publicDisagreementProbability(
-            CaseFile caseFile,
-            double dissentIntensity,
-            double shadowAbuse,
-            boolean reasonsGiven
-    ) {
-        return Values.clamp01(
-                shadowAbuse * 0.42
-                        + dissentIntensity * 0.32
-                        + caseFile.constitutionalSalience() * 0.18
-                        + caseFile.executivePressure() * 0.08
-                        - (reasonsGiven ? 0.12 : 0.0)
         );
     }
 
@@ -716,279 +604,6 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         return new VoteResult(share, share >= configuration.invalidationThreshold());
     }
 
-    private boolean rightsImpactStatementUsed(CaseFile caseFile) {
-        return configuration.rightsImpactStatementMechanism()
-                || (configuration.preEnactmentReview()
-                && caseFile.constitutionalSalience() > 0.46
-                && caseFile.legislativeMandate() > 0.38);
-    }
-
-    private boolean ombudsmanTriggered(CaseFile caseFile) {
-        return configuration.ombudsmanAccessMechanism()
-                && (caseFile.rightsThreat() * 0.58
-                + caseFile.constitutionalSalience() * 0.24
-                + (1.0 - caseFile.publicSupport()) * 0.18) > 0.54;
-    }
-
-    private boolean publicDefenderParticipation(CaseFile caseFile) {
-        return configuration.publicDefenderMechanism()
-                && (caseFile.rightsThreat() * 0.66
-                + caseFile.legalAmbiguity() * 0.16
-                + (1.0 - caseFile.publicSupport()) * 0.18) > 0.52;
-    }
-
-    private boolean preEnactmentReview(CaseFile caseFile) {
-        return configuration.preEnactmentReview()
-                && (caseFile.reviewPeriod() == 0
-                || caseFile.legislativeMandate() > 0.44
-                || caseFile.constitutionalSalience() > 0.50);
-    }
-
-    private boolean abstractReview(CaseFile caseFile) {
-        return configuration.abstractReviewMechanism()
-                && (caseFile.constitutionalSalience() > 0.52
-                || caseFile.stateFederalTension() > 0.46
-                || caseFile.intercourtConflict() > 0.46);
-    }
-
-    private String supranationalRoute(CaseFile caseFile, Random random) {
-        if (configuration.costProfileKey() == CostProfileKey.ECHR) {
-            return "individual_application";
-        }
-        if (configuration.costProfileKey() != CostProfileKey.CJEU) {
-            return "none";
-        }
-
-        double preliminary = Values.clamp(
-                0.61
-                        + caseFile.legalAmbiguity() * 0.05
-                        + caseFile.intercourtConflict() * 0.04
-                        - caseFile.urgency() * 0.03,
-                0.54,
-                0.70
-        );
-        double appeal = Values.clamp(
-                0.28
-                        + (caseFile.lowerCourtGovernmentWin() ? 0.03 : 0.0)
-                        + caseFile.lowerCourtConflict() * 0.04
-                        - caseFile.stateFederalTension() * 0.02,
-                0.22,
-                0.36
-        );
-        double direct = Values.clamp(
-                0.045
-                        + caseFile.executivePressure() * 0.02
-                        + caseFile.constitutionalSalience() * 0.015,
-                0.035,
-                0.095
-        );
-        double total = preliminary + appeal + direct;
-        if (total > 0.995) {
-            double scale = 0.995 / total;
-            preliminary *= scale;
-            appeal *= scale;
-            direct *= scale;
-        }
-
-        double draw = random.nextDouble();
-        if (draw < preliminary) {
-            return "preliminary_reference";
-        }
-        if (draw < preliminary + appeal) {
-            return "appeal";
-        }
-        if (draw < preliminary + appeal + direct) {
-            return "direct_action";
-        }
-        return "other";
-    }
-
-    private boolean overrideUsed(CaseFile caseFile, boolean invalidated, Random random) {
-        if (!invalidated || configuration.overrideRule() == LegislativeOverrideRule.NONE) {
-            return false;
-        }
-        double base = switch (configuration.overrideRule()) {
-            case NONE -> 0.0;
-            case SUPERMAJORITY_OVERRIDE -> 0.18;
-            case DELAYED_MAJORITY_OVERRIDE -> 0.32;
-            case REFERENDUM_OVERRIDE -> 0.25 + caseFile.publicSupport() * 0.22;
-        };
-        double overrideScore = base
-                + caseFile.legislativeMandate() * 0.34
-                + worldSpec.legislativeConflict() * 0.10
-                - caseFile.rightsThreat() * 0.22
-                - configuration.independence() * 0.08;
-        return overrideScore + random.nextDouble() * 0.18 > 0.55;
-    }
-
-    private double legislativeResponseCredibility(
-            CaseFile caseFile,
-            boolean weakFormDeclaration,
-            boolean suspendedDeclaration,
-            boolean meritsInvalidated,
-            boolean overrideUsed
-    ) {
-        double triggerClarity = (weakFormDeclaration || suspendedDeclaration || overrideUsed)
-                ? 0.18
-                : (meritsInvalidated ? 0.08 : 0.0);
-        return Values.clamp01(
-                0.18
-                        + worldSpec.governmentControl() * 0.18
-                        + Values.lowerIsBetter(worldSpec.partyFragmentation()) * 0.14
-                        + worldSpec.implementationCapacity() * 0.16
-                        + worldSpec.civilSocietyCapacity() * 0.08
-                        + configuration.transparency() * 0.08
-                        + caseFile.legislativeMandate() * 0.13
-                        + reactionCompatibility(caseFile) * 0.10
-                        + triggerClarity
-                        - worldSpec.legislativeConflict() * 0.13
-                        - worldSpec.partisanPressure() * 0.08
-                        - worldSpec.electoralTimePressure() * caseFile.rightsThreat() * 0.08
-        );
-    }
-
-    private double reactionCompatibility(CaseFile caseFile) {
-        return Values.clamp01(
-                caseFile.publicSupport() * 0.36
-                        + caseFile.publicTrust() * 0.28
-                        + Values.lowerIsBetter(caseFile.legalAmbiguity()) * 0.18
-                        + Values.lowerIsBetter(caseFile.stateFederalTension()) * 0.18
-        );
-    }
-
-    private boolean legislativeResponse(
-            CaseFile caseFile,
-            boolean weakFormDeclaration,
-            boolean suspendedDeclaration,
-            boolean meritsInvalidated,
-            boolean overrideUsed,
-            double legislativeResponseCredibility,
-            Random random
-    ) {
-        boolean responseTrigger = weakFormDeclaration
-                || suspendedDeclaration
-                || meritsInvalidated
-                || overrideUsed
-                || (configuration.mandatoryLegislativeResponseMechanism()
-                && caseFile.constitutionalSalience() * caseFile.rightsThreat() > 0.32);
-        if (!responseTrigger
-                || (!configuration.mandatoryLegislativeResponseMechanism()
-                && !weakFormDeclaration
-                && !suspendedDeclaration
-                && !overrideUsed)) {
-            return false;
-        }
-        double base = configuration.mandatoryLegislativeResponseMechanism() ? 0.52 : 0.30;
-        if (weakFormDeclaration) {
-            base += 0.12;
-        }
-        if (suspendedDeclaration) {
-            base += 0.10;
-        }
-        double responseScore = base
-                + caseFile.legislativeMandate() * 0.24
-                + configuration.accountabilityPressure() * 0.16
-                + configuration.transparency() * 0.08
-                + legislativeResponseCredibility * 0.22
-                + worldSpec.governmentControl() * 0.08
-                + worldSpec.implementationCapacity() * 0.08
-                - worldSpec.partyFragmentation() * 0.10
-                - worldSpec.electoralTimePressure() * caseFile.rightsThreat() * 0.06
-                - caseFile.rightsThreat() * 0.12
-                - worldSpec.legislativeConflict() * 0.10
-                - (meritsInvalidated && !suspendedDeclaration ? 0.08 : 0.0)
-                + (overrideUsed ? 0.05 : 0.0);
-        return responseScore + random.nextDouble() * 0.20 > 0.55;
-    }
-
-    private double legislativeResponseDeadline(
-            CaseFile caseFile,
-            boolean weakFormDeclaration,
-            boolean suspendedDeclaration,
-            boolean overrideUsed,
-            boolean constitutionalConcernFound
-    ) {
-        if (!weakFormDeclaration
-                && !suspendedDeclaration
-                && !overrideUsed
-                && !(configuration.mandatoryLegislativeResponseMechanism() && constitutionalConcernFound)) {
-            return 0.0;
-        }
-        double base = 0.58;
-        if (suspendedDeclaration) {
-            base = 0.42;
-        } else if (configuration.mandatoryLegislativeResponseMechanism()) {
-            base = 0.36;
-        } else if (weakFormDeclaration) {
-            base = 0.52;
-        } else if (overrideUsed) {
-            base = 0.46;
-        }
-        return Values.clamp01(
-                base
-                        - caseFile.urgency() * 0.08
-                        - caseFile.rightsThreat() * 0.06
-                        + configuration.transparency() * 0.04
-        );
-    }
-
-    private double legislativeResponseDelay(
-            CaseFile caseFile,
-            double deadline,
-            double legislativeResponseCredibility,
-            boolean suspendedDeclaration,
-            Random random
-    ) {
-        double procedureDiscipline = configuration.mandatoryLegislativeResponseMechanism() ? 0.14 : 0.0;
-        double suspensionDiscipline = suspendedDeclaration ? 0.10 : 0.0;
-        double delay = 0.54
-                + worldSpec.partyFragmentation() * 0.18
-                + worldSpec.electoralTimePressure() * 0.12
-                + worldSpec.legislativeConflict() * 0.10
-                + caseFile.legalAmbiguity() * 0.08
-                + caseFile.stateFederalTension() * 0.05
-                - legislativeResponseCredibility * 0.22
-                - worldSpec.implementationCapacity() * 0.12
-                - worldSpec.governmentControl() * 0.08
-                - procedureDiscipline
-                - suspensionDiscipline
-                + random.nextDouble() * 0.18;
-        if (deadline > 0.0 && deadline < 0.45) {
-            delay -= 0.04;
-        }
-        return Values.clamp01(delay);
-    }
-
-    private boolean meritsReview(boolean emergency, CaseFile caseFile) {
-        if (!emergency) {
-            return true;
-        }
-        return switch (configuration.docketProcedure()) {
-            case FAST_SHADOW_DOCKET -> false;
-            case REASONED_EMERGENCY_PANEL -> caseFile.constitutionalSalience() > 0.60;
-            case FULL_COURT_EMERGENCY, MERITS_FOLLOW_UP -> true;
-        };
-    }
-
-    private boolean emergencyReliefGranted(CaseFile caseFile, boolean emergency, VoteResult vote, Random random) {
-        if (!emergency) {
-            return false;
-        }
-        double threshold = switch (configuration.docketProcedure()) {
-            case FAST_SHADOW_DOCKET -> 0.44;
-            case REASONED_EMERGENCY_PANEL -> 0.50;
-            case FULL_COURT_EMERGENCY -> 0.54;
-            case MERITS_FOLLOW_UP -> 0.55;
-        };
-        double reliefScore = vote.strikeVoteShare()
-                + caseFile.urgency() * 0.14
-                + caseFile.rightsThreat() * 0.08
-                + caseFile.executivePressure() * 0.05
-                - configuration.emergencyReasonGiving() * 0.04
-                + random.nextGaussian() * 0.035;
-        return reliefScore >= threshold;
-    }
-
     private CaseOutcome declinedOutcome(
             CaseFile caseFile,
             boolean emergency,
@@ -1042,7 +657,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         );
         double legalStability = Values.clamp01(0.82 - constitutionalConflict * 0.20 + configuration.stabilityPreference() * 0.10);
         double administrativeLoad = 0.08 + (emergency ? 0.06 : 0.0);
-        CostEstimate institutionalCosts = institutionalCosts(
+        CostEstimate institutionalCosts = costModel.institutionalCosts(
                 caseFile,
                 emergency,
                 false,
@@ -1058,12 +673,12 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 abstractReview,
                 false
         );
-        double legislativeResponseCredibility = legislativeResponseCredibility(caseFile, false, false, false, false);
-        double caseSelectionAccess = caseSelectionAccess(caseFile, intake);
-        double implementationCapacity = implementationCapacity(caseFile, constitutionalConflict, institutionalCosts);
-        double legalTransplantFeasibility = legalTransplantFeasibility(caseFile, institutionalCosts);
-        double politicalCultureSensitivity = politicalCultureSensitivity(caseFile, constitutionalConflict, institutionalCosts);
-        double vetoRelocationRisk = vetoRelocationRisk(
+        double legislativeResponseCredibility = responseModel.legislativeResponseCredibility(caseFile, false, false, false, false);
+        double caseSelectionAccess = intakeModel.caseSelectionAccess(caseFile, intake);
+        double implementationCapacity = costModel.implementationCapacity(caseFile, constitutionalConflict, institutionalCosts);
+        double legalTransplantFeasibility = costModel.legalTransplantFeasibility(caseFile, institutionalCosts);
+        double politicalCultureSensitivity = costModel.politicalCultureSensitivity(caseFile, constitutionalConflict, institutionalCosts);
+        double vetoRelocationRisk = scoreModel.vetoRelocationRisk(
                 caseFile,
                 false,
                 false,
@@ -1075,7 +690,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 institutionalCosts,
                 caseSelectionAccess
         );
-        double democraticConstitutionalism = democraticConstitutionalism(
+        double democraticConstitutionalism = scoreModel.democraticConstitutionalism(
                 legalStability,
                 rightsProtection,
                 legitimacy,
@@ -1090,14 +705,14 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 caseFile.governmentRepeatPlayerAdvantage(),
                 implementationCapacity
         );
-        String emergencyApplicantType = emergencyApplicantType(caseFile, emergency);
-        boolean governmentEmergencyApplicant = emergency && isGovernmentApplicant(emergencyApplicantType);
-        boolean reasonsGiven = !emergency || random.nextDouble() < emergencyReasonsProbability(caseFile, false, false) * 0.55;
-        boolean voteDisclosed = !emergency || random.nextDouble() < emergencyVoteDisclosureProbability(caseFile, false, reasonsGiven) * 0.40;
-        boolean publicDisagreement = emergency && random.nextDouble() < publicDisagreementProbability(
+        String emergencyApplicantType = emergencyDocketModel.applicantType(caseFile, emergency);
+        boolean governmentEmergencyApplicant = emergency && emergencyDocketModel.isGovernmentApplicant(emergencyApplicantType);
+        boolean reasonsGiven = !emergency || random.nextDouble() < emergencyDocketModel.reasonsProbability(caseFile, false, false) * 0.55;
+        boolean voteDisclosed = !emergency || random.nextDouble() < emergencyDocketModel.voteDisclosureProbability(caseFile, false, reasonsGiven) * 0.40;
+        boolean publicDisagreement = emergency && random.nextDouble() < emergencyDocketModel.publicDisagreementProbability(
                 caseFile,
                 0.0,
-                shadowDocketAbuse(caseFile, true, false, false, false) * 0.45,
+                emergencyDocketModel.shadowDocketAbuse(caseFile, true, false, false, false) * 0.45,
                 reasonsGiven
         );
         return new CaseOutcome(
@@ -1130,12 +745,12 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
                 legalStability,
                 rightsProtection,
                 0.0,
-                emergency ? shadowDocketAbuse(caseFile, true, false, false, false) * 0.45 : 0.0,
+                emergency ? emergencyDocketModel.shadowDocketAbuse(caseFile, true, false, false, false) * 0.45 : 0.0,
                 legitimacy,
                 0.0,
                 constitutionalConflict,
                 democraticResponsiveness,
-                independenceAccountabilityBalance(caseFile),
+                scoreModel.independenceAccountabilityBalance(caseFile),
                 1.0,
                 true,
                 false,
@@ -1186,641 +801,6 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         );
     }
 
-    private double partisanAlignment(CaseFile caseFile, double strikeShare, boolean invalidated) {
-        double rightsJustifiedStrike = caseFile.rightsThreat();
-        double partisanGap = Math.max(0.0, strikeShare - rightsJustifiedStrike);
-        double lawPolarity = Math.abs(caseFile.policyPosition());
-        double decisionBoost = invalidated ? 0.12 : 0.02;
-        return Values.clamp01(
-                partisanGap * lawPolarity * 0.70
-                        + caseFile.executivePressure() * 0.15
-                        + worldSpec.partisanPressure() * (1.0 - configuration.coalitionNorm()) * 0.18
-                        + decisionBoost * lawPolarity
-        );
-    }
-
-    private double shadowDocketAbuse(
-            CaseFile caseFile,
-            boolean emergency,
-            boolean meritsReview,
-            boolean emergencyReliefGranted,
-            boolean meritsInvalidated
-    ) {
-        if (!emergency) {
-            return 0.0;
-        }
-        double procedureRisk = switch (configuration.docketProcedure()) {
-            case FAST_SHADOW_DOCKET -> 0.72;
-            case REASONED_EMERGENCY_PANEL -> 0.34;
-            case FULL_COURT_EMERGENCY -> 0.20;
-            case MERITS_FOLLOW_UP -> 0.16;
-        };
-        double meritsPenalty = meritsReview ? 0.0 : 0.26;
-        double reliefPenalty = emergencyReliefGranted && !meritsReview ? 0.18 : 0.0;
-        double impact = meritsInvalidated || emergencyReliefGranted
-                ? caseFile.constitutionalSalience() * 0.22
-                : caseFile.rightsThreat() * 0.12;
-        return Values.clamp01(
-                procedureRisk * caseFile.urgency()
-                        + meritsPenalty
-                        + reliefPenalty
-                        + impact
-                        + caseFile.executivePressure() * 0.12
-                        - configuration.emergencyReasonGiving() * 0.22
-        );
-    }
-
-    private double rightsProtection(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean emergencyReliefGranted,
-            boolean overrideUsed,
-            boolean weakFormDeclaration,
-            boolean suspendedDeclaration,
-            boolean legislativeResponse,
-            double legislativeResponseDelay,
-            double legislativeResponseDeadline,
-            boolean timelyLegislativeResponse,
-            boolean rightsImpactStatement,
-            boolean publicDefenderParticipation
-    ) {
-        double score;
-        if (meritsInvalidated) {
-            score = 0.44 + caseFile.rightsThreat() * 0.54 - caseFile.legalAmbiguity() * 0.08;
-        } else if (emergencyReliefGranted) {
-            score = 0.38 + caseFile.rightsThreat() * 0.40 - caseFile.timeToReview() * 0.08;
-        } else if (weakFormDeclaration) {
-            score = 0.34 + caseFile.rightsThreat() * 0.40 + (legislativeResponse ? 0.16 : 0.02);
-        } else {
-            score = 1.0 - caseFile.rightsThreat() * 0.72 + caseFile.legislativeMandate() * 0.06 - caseFile.timeToReview() * caseFile.rightsThreat() * 0.08;
-        }
-        if (suspendedDeclaration) {
-            score -= timelyLegislativeResponse ? 0.02 : 0.12 + caseFile.timeToReview() * 0.06;
-        }
-        if (legislativeResponse && legislativeResponseDeadline > 0.0 && legislativeResponseDelay > legislativeResponseDeadline) {
-            score -= 0.06 + (legislativeResponseDelay - legislativeResponseDeadline) * 0.08;
-        }
-        if (rightsImpactStatement) {
-            score += 0.05 + caseFile.rightsThreat() * 0.04;
-        }
-        if (publicDefenderParticipation) {
-            score += 0.07 + caseFile.rightsThreat() * 0.06;
-        }
-        if (overrideUsed && caseFile.rightsThreat() > 0.55) {
-            score -= 0.24 + caseFile.rightsThreat() * 0.14;
-        }
-        return Values.clamp01(score);
-    }
-
-    private double constitutionalConflict(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean emergencyReliefGranted,
-            boolean overrideUsed,
-            double shadowAbuse,
-            double crossCheckConflict,
-            boolean weakFormDeclaration,
-            boolean suspendedDeclaration,
-            boolean legislativeResponse
-    ) {
-        double countermajoritarianClash = meritsInvalidated
-                ? caseFile.legislativeMandate() * (0.22 + worldSpec.legislativeConflict() * 0.24)
-                : emergencyReliefGranted
-                ? caseFile.legislativeMandate() * 0.18
-                : caseFile.rightsThreat() * caseFile.constitutionalSalience() * 0.18;
-        return Values.clamp01(
-                countermajoritarianClash
-                        + (overrideUsed ? 0.36 : 0.0)
-                        + (weakFormDeclaration ? 0.08 : 0.0)
-                        + (suspendedDeclaration ? 0.12 : 0.0)
-                        - (legislativeResponse ? 0.10 : 0.0)
-                        + shadowAbuse * 0.30
-                        + crossCheckConflict * 0.24
-                        + caseFile.executivePressure() * 0.10
-                        + Math.abs(caseFile.lowerCourtPanelSkew()) * 0.05
-                        + caseFile.stateFederalTension() * 0.12
-                        + caseFile.intercourtConflict() * 0.10
-        );
-    }
-
-    private double democraticResponsiveness(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean emergencyReliefGranted,
-            boolean overrideUsed,
-            boolean weakFormDeclaration,
-            boolean suspendedDeclaration,
-            boolean legislativeResponse
-    ) {
-        if (weakFormDeclaration || suspendedDeclaration) {
-            return Values.clamp01(
-                    caseFile.legislativeMandate() * 0.36
-                            + caseFile.rightsThreat() * 0.26
-                            + caseFile.publicSupport() * 0.18
-                            + (legislativeResponse ? 0.16 : 0.0)
-                            - stateDeferencePenalty(caseFile) * 0.50
-            );
-        }
-        if (overrideUsed) {
-            return Values.clamp01(0.48
-                    + caseFile.legislativeMandate() * 0.34
-                    - caseFile.rightsThreat() * 0.18
-                    - caseFile.stateFederalTension() * 0.04);
-        }
-        if (meritsInvalidated) {
-            return Values.clamp01(
-                    (1.0 - caseFile.legislativeMandate()) * 0.26
-                            + caseFile.rightsThreat() * 0.44
-                            + caseFile.publicSupport() * 0.10
-                            - stateDeferencePenalty(caseFile)
-            );
-        }
-        if (emergencyReliefGranted) {
-            return Values.clamp01(
-                    (1.0 - caseFile.legislativeMandate()) * 0.16
-                            + caseFile.rightsThreat() * 0.30
-                            + caseFile.publicSupport() * 0.08
-                            - stateDeferencePenalty(caseFile) * 0.55
-            );
-        }
-        return Values.clamp01(
-                caseFile.legislativeMandate() * 0.56
-                        + caseFile.publicSupport() * 0.22
-                        + (1.0 - caseFile.rightsThreat()) * 0.16
-                        + (caseFile.jurisdiction() == Jurisdiction.STATE ? 0.04 : 0.0)
-        );
-    }
-
-    private double independenceAccountabilityBalance(CaseFile caseFile) {
-        double desiredIndependence = Values.clamp01(
-                0.42
-                        + caseFile.rightsThreat() * 0.32
-                        + caseFile.constitutionalSalience() * 0.10
-                        - caseFile.legislativeMandate() * 0.16
-                        + caseFile.certiorariPressure() * 0.08
-        );
-        double desiredAccountability = 1.0 - desiredIndependence;
-        return Values.clamp01(
-                1.0
-                        - Math.abs(configuration.independence() - desiredIndependence) * 0.62
-                        - Math.abs(configuration.accountabilityPressure() - desiredAccountability) * 0.34
-        );
-    }
-
-    private double administrativeLoad(
-            CaseFile caseFile,
-            boolean emergency,
-            boolean enBanc,
-            boolean crossChecked,
-            boolean councilScreen,
-            int recused
-    ) {
-        double structureCost = switch (configuration.reviewStructure()) {
-            case FULL_COURT -> 0.20;
-            case PANEL_EN_BANC -> 0.24 + (enBanc ? 0.20 : 0.0);
-            case DUAL_SUPREME_COURTS -> 0.48;
-            case CROSS_CHECKING_COURTS -> 0.42;
-            case CONSTITUTIONAL_COUNCIL -> 0.34;
-        };
-        return Values.clamp01(
-                structureCost
-                        + (emergency ? 0.10 : 0.0)
-                        + (crossChecked ? 0.16 : 0.0)
-                        + (councilScreen ? 0.10 : 0.0)
-                        + recused * 0.018
-                        + caseFile.legalAmbiguity() * 0.12
-                        + caseFile.timeToReview() * 0.08
-                        + caseFile.lowerCourtPath().depth() * 0.025
-                        + caseFile.stateFederalTension() * 0.06
-                        + caseFile.intercourtConflict() * 0.05
-                        + (caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure * 0.05)
-        );
-    }
-
-    private CostEstimate institutionalCosts(
-            CaseFile caseFile,
-            boolean emergency,
-            boolean enBanc,
-            boolean crossChecked,
-            boolean councilScreen,
-            int recused,
-            double administrativeLoad,
-            IntakeEstimate intake,
-            boolean rightsImpactStatement,
-            boolean ombudsmanTriggered,
-            boolean publicDefenderParticipation,
-            boolean preEnactmentReview,
-            boolean abstractReview,
-            boolean legislativeResponse
-    ) {
-        double sizeCost = Values.clamp01(0.10 + Math.max(0, configuration.courtSize() - 9) * 0.028);
-        double structureBudget = switch (configuration.reviewStructure()) {
-            case FULL_COURT -> 0.08;
-            case PANEL_EN_BANC -> 0.20 + (enBanc ? 0.08 : 0.0);
-            case DUAL_SUPREME_COURTS -> 0.46;
-            case CROSS_CHECKING_COURTS -> 0.40;
-            case CONSTITUTIONAL_COUNCIL -> 0.34;
-        };
-        double stylizedBudget = Values.clamp01(
-                sizeCost
-                        + structureBudget
-                        + (configuration.substitutesRecusedJustices() ? 0.08 : 0.0)
-                        + recused * 0.012
-                        + (ombudsmanTriggered ? 0.035 : 0.0)
-                        + (publicDefenderParticipation ? 0.045 : 0.0)
-                        + (caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure * 0.08)
-        );
-
-        double structureDelay = switch (configuration.reviewStructure()) {
-            case FULL_COURT -> 0.08;
-            case PANEL_EN_BANC -> 0.14 + (enBanc ? 0.18 : 0.0);
-            case DUAL_SUPREME_COURTS -> 0.30;
-            case CROSS_CHECKING_COURTS -> 0.26;
-            case CONSTITUTIONAL_COUNCIL -> 0.20;
-        };
-        double stylizedDelay = Values.clamp01(
-                caseFile.timeToReview() * 0.42
-                        + caseFile.lowerCourtPath().delayWeight() * 0.10
-                        + caseFile.lowerCourtPath().depth() * 0.035
-                        + structureDelay
-                        + (crossChecked ? 0.14 : 0.0)
-                        + (councilScreen ? 0.06 : 0.0)
-                        + (abstractReview ? 0.05 : 0.0)
-                        + (legislativeResponse ? 0.08 : 0.0)
-                        - (emergency ? 0.08 : 0.0)
-                        - (preEnactmentReview ? 0.05 : 0.0)
-        );
-
-        double thresholdComplexity = switch (configuration.votingThreshold()) {
-            case SIMPLE_MAJORITY -> 0.06;
-            case SUPERMAJORITY_TO_INVALIDATE -> 0.18;
-            case CONCURRENT_MAJORITY -> 0.24;
-            case HIGH_CONSTITUTIONAL_THRESHOLD -> 0.20;
-        };
-        double overrideComplexity = switch (configuration.overrideRule()) {
-            case NONE -> 0.00;
-            case SUPERMAJORITY_OVERRIDE -> 0.14;
-            case DELAYED_MAJORITY_OVERRIDE -> 0.18;
-            case REFERENDUM_OVERRIDE -> 0.24;
-        };
-        double procedureComplexity = switch (configuration.docketProcedure()) {
-            case FAST_SHADOW_DOCKET -> 0.08;
-            case REASONED_EMERGENCY_PANEL -> 0.14;
-            case FULL_COURT_EMERGENCY -> 0.20;
-            case MERITS_FOLLOW_UP -> 0.24;
-        };
-        double stylizedComplexity = Values.clamp01(
-                administrativeLoad * 0.34
-                        + thresholdComplexity
-                        + overrideComplexity
-                        + procedureComplexity
-                        + (configuration.recusalRule() == RecusalRule.STRICT_TRANSPARENCY ? 0.08 : 0.0)
-                        + (configuration.recusalRule() == RecusalRule.RANDOM_SUBSTITUTION ? 0.10 : 0.0)
-                        + (rightsImpactStatement ? 0.06 : 0.0)
-                        + (ombudsmanTriggered ? 0.05 : 0.0)
-                        + (publicDefenderParticipation ? 0.07 : 0.0)
-                        + (legislativeResponse ? 0.08 : 0.0)
-                        + caseFile.legalAmbiguity() * 0.08
-        );
-        double directCourt = Values.clamp01(
-                configuration.benchmarkedDirectCourtCost() * 0.62
-                        + stylizedBudget * 0.30
-                        + administrativeLoad * 0.08
-        );
-        double intakePressure = Values.clamp01(Math.log1p(intake.intakeFilings()) / Math.log(140.0));
-        double upstreamScreening = Values.clamp01(
-                configuration.intakeScreeningIntensity() * 0.38
-                        + intakePressure * 0.30
-                        + caseFile.lowerCourtPath().depth() * 0.035
-                        + caseFile.lowerCourtConflict() * 0.10
-                        + caseFile.intercourtConflict() * 0.08
-                        + (ombudsmanTriggered ? 0.07 : 0.0)
-                        + (publicDefenderParticipation ? 0.05 : 0.0)
-                        + (rightsImpactStatement ? 0.04 : 0.0)
-                        + (configuration.preEnactmentReview() ? -0.08 : 0.0)
-        );
-        double capacityStrain = Values.clamp01(
-                configuration.benchmarkedCapacityStrain() * 0.48
-                        + intakePressure * 0.20
-                        + administrativeLoad * 0.18
-                        + (emergency ? 0.06 : 0.0)
-                        + (crossChecked ? 0.08 : 0.0)
-                        + (caseFile.reviewPeriod() == 0 ? 0.0 : replacementPressure * 0.08)
-        );
-        double budget = Values.clamp01(directCourt * 0.68 + upstreamScreening * 0.22 + stylizedBudget * 0.10);
-        double delay = Values.clamp01(
-                configuration.benchmarkedDelayCost() * 0.45
-                        + stylizedDelay * 0.34
-                        + upstreamScreening * 0.10
-                        + capacityStrain * 0.11
-        );
-        double complexity = Values.clamp01(
-                configuration.benchmarkedComplexityCost() * 0.42
-                        + stylizedComplexity * 0.34
-                        + upstreamScreening * 0.14
-                        + capacityStrain * 0.10
-        );
-        double total = Values.clamp01(directCourt * 0.25 + upstreamScreening * 0.20 + capacityStrain * 0.20 + delay * 0.18 + complexity * 0.17);
-        return new CostEstimate(directCourt, upstreamScreening, capacityStrain, budget, delay, complexity, total);
-    }
-
-    private double legalTransplantFeasibility(CaseFile caseFile, CostEstimate institutionalCosts) {
-        double institutionalDemand = Values.clamp01(
-                institutionalCosts.total() * 0.38
-                        + institutionalCosts.upstreamScreening() * 0.18
-                        + institutionalCosts.complexity() * 0.22
-                        + configuration.intakeScreeningIntensity() * 0.10
-                        + (configuration.syntheticMechanism() ? 0.08 : 0.0)
-        );
-        double politicalMismatch = Values.clamp01(
-                worldSpec.legislativeConflict() * 0.24
-                        + worldSpec.partisanPressure() * 0.20
-                        + (1.0 - worldSpec.publicTrust()) * 0.18
-                        + Math.abs(configuration.independence() - configuration.accountabilityPressure()) * 0.10
-        );
-        return Values.clamp01(
-                configuration.legalTransplantFeasibility() * 0.36
-                        + configuration.politicalCultureFit() * 0.16
-                        + worldSpec.legalTraditionCompatibility() * 0.14
-                        + worldSpec.implementationCapacity() * 0.12
-                        + worldSpec.civilSocietyCapacity() * 0.08
-                        + caseFile.publicTrust() * 0.06
-                        + Values.lowerIsBetter(institutionalDemand) * 0.05
-                        + Values.lowerIsBetter(politicalMismatch) * 0.03
-        );
-    }
-
-    private double politicalCultureSensitivity(
-            CaseFile caseFile,
-            double constitutionalConflict,
-            CostEstimate institutionalCosts
-    ) {
-        double mechanismFragility = switch (configuration.reviewMechanism()) {
-            case STRONG_FORM_COURT -> 0.22;
-            case WEAK_FORM_REVIEW -> 0.30;
-            case SUSPENDED_DECLARATION -> 0.34;
-            case LEGISLATIVE_OVERRIDE_CLAUSE -> 0.36;
-            case PRE_ENACTMENT_REVIEW -> 0.32;
-            case ABSTRACT_REVIEW -> 0.38;
-            case OMBUDSMAN_TRIGGERED_REVIEW -> 0.28;
-            case CONSTITUTIONAL_PUBLIC_DEFENDER -> 0.26;
-            case RIGHTS_IMPACT_STATEMENT -> 0.24;
-            case MANDATORY_LEGISLATIVE_RESPONSE -> 0.42;
-            case SUPRANATIONAL_REVIEW -> 0.46;
-        };
-        return Values.clamp01(
-                mechanismFragility
-                        + (1.0 - configuration.politicalCultureFit()) * 0.28
-                        + worldSpec.legislativeConflict() * 0.18
-                        + worldSpec.partisanPressure() * 0.16
-                        + worldSpec.partyFragmentation() * 0.10
-                        + worldSpec.electoralTimePressure() * 0.06
-                        + Values.lowerIsBetter(worldSpec.civilSocietyCapacity()) * 0.06
-                        + Values.lowerIsBetter(worldSpec.implementationCapacity()) * 0.06
-                        + constitutionalConflict * 0.14
-                        + institutionalCosts.complexity() * 0.10
-                        + caseFile.stateFederalTension() * 0.06
-        );
-    }
-
-    private double caseSelectionAccess(CaseFile caseFile, IntakeEstimate intake) {
-        return Values.clamp01(
-                caseFile.litigantCapacity() * 0.38
-                        + caseFile.publicInterestSupport() * 0.32
-                        + intake.acceptanceRate() * 0.12
-                        + worldSpec.civilSocietyCapacity() * 0.10
-                        + Values.lowerIsBetter(caseFile.governmentRepeatPlayerAdvantage()) * 0.08
-        );
-    }
-
-    private double implementationCapacity(
-            CaseFile caseFile,
-            double constitutionalConflict,
-            CostEstimate institutionalCosts
-    ) {
-        return Values.clamp01(
-                worldSpec.implementationCapacity() * 0.48
-                        + worldSpec.legalTraditionCompatibility() * 0.10
-                        + caseFile.publicTrust() * 0.10
-                        + Values.lowerIsBetter(institutionalCosts.total()) * 0.14
-                        + Values.lowerIsBetter(institutionalCosts.complexity()) * 0.08
-                        + Values.lowerIsBetter(constitutionalConflict) * 0.10
-        );
-    }
-
-    private double vetoRelocationRisk(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean weakFormDeclaration,
-            boolean suspendedDeclaration,
-            boolean legislativeResponse,
-            boolean councilScreen,
-            boolean crossChecked,
-            IntakeEstimate intake,
-            CostEstimate institutionalCosts,
-            double caseSelectionAccess
-    ) {
-        double lowRightsIntervention = (meritsInvalidated || weakFormDeclaration || suspendedDeclaration)
-                ? Math.max(0.0, 0.56 - caseFile.rightsThreat()) * 0.34
-                : 0.0;
-        double upstreamVeto = Values.clamp01(
-                (councilScreen ? 0.24 : 0.0)
-                        + (crossChecked ? 0.16 : 0.0)
-                        + configuration.intakeScreeningIntensity() * 0.20
-                        + institutionalCosts.upstreamScreening() * 0.18
-                        + (1.0 - intake.acceptanceRate()) * 0.08
-        );
-        double dialogueOffset = legislativeResponse ? 0.16 : 0.0;
-        return Values.clamp01(
-                lowRightsIntervention
-                        + upstreamVeto
-                        + configuration.independence() * 0.08
-                        + caseFile.governmentRepeatPlayerAdvantage() * 0.08
-                        + Values.lowerIsBetter(caseSelectionAccess) * 0.08
-                        + (configuration.transparency() < 0.55 ? 0.08 : 0.0)
-                        - caseFile.rightsThreat() * 0.10
-                        - dialogueOffset
-        );
-    }
-
-    private double democraticConstitutionalism(
-            double legalStability,
-            double rightsProtection,
-            double legitimacy,
-            double democraticResponsiveness,
-            double complianceRate,
-            double constitutionalConflict,
-            double vetoRelocationRisk,
-            double legalTransplantFeasibility,
-            double politicalCultureSensitivity,
-            double legislativeResponseCredibility,
-            double caseSelectionAccess,
-            double governmentRepeatPlayerAdvantage,
-            double implementationCapacity
-    ) {
-        return Values.clamp01(
-                legalStability * 0.11
-                        + rightsProtection * 0.18
-                        + legitimacy * 0.12
-                        + democraticResponsiveness * 0.15
-                        + complianceRate * 0.09
-                        + Values.lowerIsBetter(constitutionalConflict) * 0.08
-                        + Values.lowerIsBetter(vetoRelocationRisk) * 0.07
-                        + legalTransplantFeasibility * 0.05
-                        + Values.lowerIsBetter(politicalCultureSensitivity) * 0.03
-                        + legislativeResponseCredibility * 0.03
-                        + caseSelectionAccess * 0.03
-                        + Values.lowerIsBetter(governmentRepeatPlayerAdvantage) * 0.03
-                        + implementationCapacity * 0.03
-        );
-    }
-
-    private double complianceRate(
-            CaseFile caseFile,
-            double legitimacy,
-            double constitutionalConflict,
-            boolean meritsInvalidated,
-            boolean emergencyReliefGranted,
-            boolean overrideUsed,
-            ReactionState reactionState
-    ) {
-        double compliancePressure = 0.46
-                + legitimacy * 0.24
-                + reactionState.complianceNorm() * 0.22
-                + worldSpec.implementationCapacity() * 0.10
-                + configuration.independence() * 0.06
-                - constitutionalConflict * 0.18
-                - reactionState.legislativeConflict() * 0.12
-                - reactionState.courtCurbingPressure() * 0.10
-                - caseFile.stateFederalTension() * 0.04
-                - caseFile.intercourtConflict() * 0.05
-                - (emergencyReliefGranted && !meritsInvalidated ? 0.08 : 0.0)
-                - (overrideUsed ? 0.10 : 0.0)
-                - caseFile.executivePressure() * 0.08;
-        return Values.clamp01(compliancePressure);
-    }
-
-    private double defianceRisk(CaseFile caseFile, double constitutionalConflict, ReactionState reactionState) {
-        return Values.clamp01(
-                0.08
-                + constitutionalConflict * 0.30
-                + reactionState.legislativeConflict() * 0.24
-                + caseFile.executivePressure() * 0.18
-                + caseFile.stateFederalTension() * 0.10
-                - worldSpec.implementationCapacity() * 0.10
-                - reactionState.publicTrust() * 0.12
-        );
-    }
-
-    private double workaroundRisk(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean emergencyReliefGranted,
-            ReactionState reactionState
-    ) {
-        return Values.clamp01(
-                0.12
-                        + (meritsInvalidated ? 0.18 : 0.0)
-                        + (emergencyReliefGranted ? 0.10 : 0.0)
-                        + reactionState.overridePressure() * 0.22
-                        + caseFile.legislativeMandate() * 0.12
-                        + caseFile.stateFederalTension() * 0.08
-                        + worldSpec.electoralTimePressure() * 0.06
-                        - worldSpec.implementationCapacity() * 0.06
-        );
-    }
-
-    private double repeatedLitigationRisk(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean emergencyReliefGranted
-    ) {
-        return Values.clamp01(
-                0.10
-                        + caseFile.legalAmbiguity() * 0.24
-                        + caseFile.lowerCourtConflict() * 0.18
-                        + caseFile.intercourtConflict() * 0.16
-                        + (emergencyReliefGranted && !meritsInvalidated ? 0.18 : 0.0)
-        );
-    }
-
-    private double executiveImplementationRate(
-            CaseFile caseFile,
-            double complianceRate,
-            double legitimacy,
-            double constitutionalConflict,
-            ReactionState reactionState
-    ) {
-        return Values.clamp01(
-                complianceRate * 0.62
-                        + legitimacy * 0.16
-                        + worldSpec.implementationCapacity() * 0.16
-                        + reactionState.complianceNorm() * 0.14
-                        - constitutionalConflict * 0.10
-                        - caseFile.executivePressure() * 0.10
-        );
-    }
-
-    private double agencyNonacquiescenceRisk(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean emergencyReliefGranted,
-            ReactionState reactionState
-    ) {
-        double agencyDoctrineRisk = caseFile.doctrineArea() == courtsim.model.DoctrineArea.ADMINISTRATIVE_STATE ? 0.16 : 0.04;
-        return Values.clamp01(
-                agencyDoctrineRisk
-                        + caseFile.executivePressure() * 0.18
-                        + caseFile.legalAmbiguity() * 0.14
-                        + reactionState.courtCurbingPressure() * 0.16
-                        - worldSpec.implementationCapacity() * 0.10
-                        + (meritsInvalidated ? 0.08 : 0.0)
-                        + (emergencyReliefGranted ? 0.06 : 0.0)
-        );
-    }
-
-    private double legislativeReenactmentRisk(
-            CaseFile caseFile,
-            boolean meritsInvalidated,
-            boolean overrideUsed,
-            ReactionState reactionState
-    ) {
-        return Values.clamp01(
-                0.06
-                        + caseFile.legislativeMandate() * 0.20
-                        + reactionState.overridePressure() * 0.22
-                        + caseFile.stateFederalTension() * 0.08
-                        + worldSpec.governmentControl() * 0.06
-                        + worldSpec.electoralTimePressure() * 0.04
-                        + (meritsInvalidated ? 0.14 : 0.0)
-                        - (overrideUsed ? 0.08 : 0.0)
-                        - caseFile.rightsThreat() * 0.08
-        );
-    }
-
-    private double localGovernmentComplianceRate(
-            CaseFile caseFile,
-            double complianceRate,
-            double constitutionalConflict,
-            ReactionState reactionState
-    ) {
-        double localExposure = caseFile.jurisdiction() == Jurisdiction.FEDERAL ? 0.08 : 0.22;
-        return Values.clamp01(
-                complianceRate * 0.58
-                        + reactionState.complianceNorm() * 0.20
-                        + worldSpec.implementationCapacity() * 0.10
-                        + caseFile.publicSupport() * 0.08
-                        - constitutionalConflict * 0.10
-                        - caseFile.stateFederalTension() * localExposure
-        );
-    }
-
-    private double stateDeferencePenalty(CaseFile caseFile) {
-        return caseFile.jurisdiction() == Jurisdiction.STATE
-                ? caseFile.legislativeMandate() * caseFile.doctrineArea().deferenceWeight() * 0.08
-                : 0.0;
-    }
-
     private double medianIdeology() {
         if (court.isEmpty()) {
             return 0.0;
@@ -1832,20 +812,4 @@ public final class ConstitutionalReviewProcess implements ReviewProcess {
         return (court.get(middle - 1).ideology() + court.get(middle).ideology()) / 2.0;
     }
 
-    private record VoteResult(double strikeVoteShare, boolean invalidates) {
-    }
-
-    private record IntakeEstimate(int intakeFilings, int screenedFilings, double acceptanceRate) {
-    }
-
-    private record CostEstimate(
-            double directCourt,
-            double upstreamScreening,
-            double capacityStrain,
-            double budget,
-            double delay,
-            double complexity,
-            double total
-    ) {
-    }
 }

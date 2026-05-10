@@ -59,6 +59,10 @@ German, Canadian, French, and South African benchmark scenario presets. Columns
 show the scenario preset, count of mapped targets falling within documented
 ranges, median target gap, and the largest remaining miss.
 
+`tab:validation-miss-interpretation`: Table listing the largest out-of-range
+source-specific validation diagnostics. Columns show the target, model value
+versus source range, miss category, interpretation, and next calibration step.
+
 `tab:baseline-results`: Table listing selected baseline estimates for court
 variant and synthetic mechanism scenario codes. Columns report scenario kind,
 directional score and score interval, democratic constitutionalism, rights
@@ -77,6 +81,12 @@ legal stability, legitimacy, rights protection, constitutional conflict,
 compliance, enforcement, case-selection access, legislative-response
 credibility, implementation capacity, institutional cost, and the directional
 display score.
+
+`tab:supp-model-crosswalk`: Supplementary long table mapping manuscript model
+stages to implementation modules. Columns identify each stage, the main code
+module, principal inputs, principal outputs, and whether the component is an
+institutional mapping, synthetic mechanism, normalized diagnostic, or
+source-range diagnostic.
 
 `tab:supp-scenario-matrix`: Supplementary long table listing all main-campaign
 case-scenario combinations with mechanism family, score, democratic
