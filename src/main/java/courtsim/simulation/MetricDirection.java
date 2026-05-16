@@ -1,8 +1,10 @@
 package courtsim.simulation;
 
-public enum MetricDirection {
-    HIGHER_IS_BETTER,
-    LOWER_IS_BETTER,
-    DIAGNOSTIC
+
+public enum MetricDirection
+{
+	HIGHER_IS_BETTER,
+	LOWER_IS_BETTER,
+	DIAGNOSTIC
 }
 
