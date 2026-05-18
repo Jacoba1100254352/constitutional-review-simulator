@@ -1,6 +1,6 @@
 # Design Notes
 
-The simulator treats constitutional review as a second-stage institutional process over laws or government actions. Inputs can be synthetic or imported from the legislative simulator's campaign reports. This workspace is now positioned as the comparative-design companion to any narrower Supreme Court simulator, not as a deprecated predecessor or a codebase to merge into a single-court project.
+The simulator treats constitutional review as a second-stage institutional process over laws or government actions. Inputs can be synthetic or imported from the legislative simulator's campaign reports. This workspace is the primary Constitutional Review implementation. The sibling `Supreme Court Simulator Design` workspace is an earlier related artifact; consult it only for deliberately imported design notes, source trails, or historical comparison, not as an authoritative upstream or a codebase to merge by default.
 
 The core abstraction mirrors the legislative simulator without sharing code:
 
