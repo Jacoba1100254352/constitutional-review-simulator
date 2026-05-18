@@ -21,12 +21,12 @@ denominator is added. Rows with no source URL, low reliability, contextual
 public-trust proxies, normalized cost benchmarks, or broad comparative
 synthesis labels are provisional stress-test ranges. They remain in the
 repository so that weak assumptions are visible, editable, and excluded from
-validation counts.
+source-specific diagnostic counts.
 
 Deep Research outputs and other secondary research notes can produce useful
 candidate rows before they are ready for calibration. Those rows belong in
 `config/research/*-source-candidates.csv` or an operationalization file, not in
-the validation-counted calibration matrix. A candidate row may preserve a
+the source-counted calibration matrix. A candidate row may preserve a
 numerator, denominator, period, and plausible simulator mapping, but it should
 remain a source-candidate until the original source URL, denominator
 construction, category coding, and direct analogue to a simulator metric are
@@ -49,16 +49,16 @@ verified from the primary source.
 - Cost rows are normalized institutional-cost benchmarks. They are appropriate
   for stress-testing relative burden, not for estimating actual budgets.
 
-## Validation Use
+## External Diagnostic Use
 
 Only rows with `useForValidation=true` are counted in the manuscript's
-validation-style table. The source-matrix builder rejects validation rows that
+external diagnostic table. The source-matrix builder rejects counted rows that
 lack a source URL, lack a nonzero denominator, have low reliability, use any
 synthesis source or synthesis method label, use contextual public-trust
 proxies, or use normalized-cost/benchmark-cost construction. The promotion
-checker also rejects validation rows whose target keys are not exposed by the
+checker also rejects counted rows whose target keys are not exposed by the
 simulator's calibration observation mapping. Under this stricter rule, the
-current source-specific validation surface remains intentionally narrow, but it
+current source-specific diagnostic surface remains intentionally narrow, but it
 now includes official-source checks for U.S. emergency procedure, Canada SCC
 leave grants, France QPC nonconformity and deferred-effect rates, UK Supreme
 Court permission grants, UK declarations of incompatibility responses, ECHR
@@ -68,13 +68,13 @@ Comparative doctrine mix without stored SCDB denominators, trust,
 merits-outcome synthesis, unsupported route-mix statistics, and normalized cost
 rows are stress-test context only.
 
-The validation campaign intentionally reports misses. A failed target should be
+The external diagnostic campaign intentionally reports misses. A failed target should be
 read as one of three things:
 
 - the simulator lacks a case-flow mechanism needed for that court or period;
 - the target is contextual rather than directly comparable to a simulator
   metric;
-- the real-world preset needs refinement.
+- the stylized archetype preset needs refinement.
 
 Before final empirical submission, replace provisional synthesis rows with
 documented source-specific datasets where possible, especially doctrine mix
@@ -89,4 +89,4 @@ and conditional deferred-effect rates, pre-enactment review frequency evidence,
 and transplant-feasibility indicators from V-Dem, ParlGov, PPEG, DPI, WGI,
 CEPEJ, OECD, WVS, and related source families. Rows already marked
 `promoted` have been added to the calibration source matrix; rows marked
-`verified-context-only` have source support but are not validation results.
+`verified-context-only` have source support but are not external diagnostic results.

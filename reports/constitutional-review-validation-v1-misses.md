@@ -1,7 +1,7 @@
 # Validation Miss Interpretation
 
 This file is generated from `constitutional-review-validation-v1-calibration.csv`.
-It includes only source-specific validation rows with documented denominators and direct simulator analogues.
+It includes only source-specific diagnostic rows with documented denominators and direct simulator analogues.
 A miss is a calibration diagnostic, not a failed forecast.
 
 | Profile | Target | Source range | Model | Gap | Category | Interpretation | Next action |

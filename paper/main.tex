@@ -12,6 +12,7 @@
 
 \usepackage{amsmath}
 \usepackage[nopatch]{microtype}
+\usepackage{array}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{longtable}
@@ -21,6 +22,7 @@
 \usepackage[hidelinks]{hyperref}
 
 \makeatletter
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newenvironment{inlinefigureblock}{%
   \par\smallskip
   \begingroup
@@ -39,7 +41,7 @@
 }
 \makeatother
 
-\title{Emergency Review and Democratic Constitutionalism: A Comparative Simulation Framework}
+\title{Stress-Testing Constitutional Review Design Bundles: A Comparative Simulation Framework}
 
 \author{Anonymous Author}
 \affiliation{Affiliation withheld for review}
@@ -51,60 +53,55 @@
 \maketitle
 
 \begin{abstract}
-Emergency constitutional review is where many court-reform debates become most concrete: interim relief can protect rights before merits review, but it can also produce opaque, merits-displacing vetoes. This article uses a comparative simulation framework to study emergency-review design, with appointment systems, councils, overrides, weak-form review, suspended declarations, pre-enactment review, abstract review, ombudsman access, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles included as comparison infrastructure rather than equal empirical targets. The empirical contribution is limited to source-specific diagnostic checks with documented sources, denominators, and direct target analogues; broader comparative rows remain transparent stress-test assumptions. The synthetic finding is narrower: rules requiring written emergency reasons, merits follow-through, or no relief without merits connection reduce modeled emergency-process irregularity more directly than broad appointment or size reforms, but the relevant evaluation depends on rights-claimant success, compliance, public-legitimacy proxies, implementation cost, legal-transplant feasibility, political-culture sensitivity, and veto-relocation risk. The design recommendations are therefore conditional. Emergency review improves democratic constitutionalism only when it protects urgent rights without hiding final policy control in opaque or weakly accountable institutional stages.
+This article introduces a transparent simulation framework for stress-testing constitutional-review design bundles under shared synthetic dockets. The framework does not predict the behavior of existing courts. It is a structured implication engine: if institutional mechanisms are modeled through stated access, routing, emergency, decision, response, compliance, cost, and political-culture assumptions, the simulator shows the tradeoff maps those assumptions imply. The paper's conceptual focus is veto-relocation risk, or the possibility that review protects rights while moving final policy control into less visible courts, councils, screeners, emergency orders, or legislative-response stages. Named-system-inspired presets are treated as stylized archetypes and external diagnostic comparators, not fitted country models. The empirical contribution is limited to source-specific diagnostic checks with documented sources, denominators, and direct target analogues; broader comparative rows remain stress-test assumptions. Under the baseline assumptions, mechanisms perform best when they preserve rights-sensitive review while making veto relocation visible and requiring credible democratic response. The design recommendations are therefore conditional, assumption-sensitive, and separable from the synthetic outputs that generate them.
 \end{abstract}
 
 \section{Introduction}
 
 Constitutional review systems face a recurring design problem: courts need enough independence to enforce constitutional limits, but enough accountability and procedural discipline to avoid becoming unreviewable political actors. The classic countermajoritarian framing emphasizes the difficulty of judicial invalidation in a democracy \citep{bickel1962}, and court-skeptical accounts press the democratic case for limiting judicial supremacy \citep{tushnet1999}. Comparative constitutional scholarship shows that review can be organized through many institutional forms rather than a single supreme-court template \citep{stoneSweet2000,ginsburg2003}. Law-and-courts scholarship also treats courts as institutions whose behavior depends on selection rules, legal hierarchy, compliance expectations, and political context \citep{epsteinKnight1998,helmke2005,vanberg2005,staton2010}.
 
-The premise of this article is that those institutional choices should be analyzed jointly, but the paper's substantive focus is narrower than the full simulator. Emergency review provides the clearest test case because it combines urgent rights protection, interim policy control, procedural opacity, and weak merits follow-through in the same institutional setting. Appointment method affects ideological composition, but its effects depend on tenure, removal standards, court size, docket control, voting thresholds, and emergency procedure. A strict supermajority rule may improve stability in ordinary merits cases but weaken claimant success when the docket contains high-risk legislation. A constitutional council may reduce ex post invalidation but shift costs into upstream screening. A reason-giving emergency procedure may reduce emergency-process irregularity while slowing response time. These are system-level interactions.
+The article's main contribution is methodological. It offers a computational framework for comparing constitutional-review design bundles under shared assumptions. The model is deliberately stylized. It does not forecast the U.S. Supreme Court, the German Federal Constitutional Court, or any other tribunal. It asks a narrower and more auditable question: if one specifies a docket generator, review pipeline, institutional mechanisms, response rules, costs, and scoring conventions, which tradeoffs become visible when each design faces the same synthetic worlds?
 
-The contribution is a computational simulation framework for comparing emergency-review and constitutional-review design bundles. The model is deliberately stylized. It does not forecast the U.S. Supreme Court, the German Federal Constitutional Court, or any other real tribunal. Instead, it provides a structured way to ask how design bundles behave under shared dockets and shared worlds. Institution-specific empirical models can represent one court in greater detail; this article asks which emergency-review reforms and adjacent institutional architectures are worth comparing before that institution-specific work begins.
+That framing matters because many constitutional-review reforms do not eliminate veto power. They move it. A court-expansion plan may relocate veto power into appointment timing. A council may move it into pre-enactment or abstract screening. Weak-form review may move it into legislative response capacity. Rights-impact statements may move it into executive drafting and certification. Emergency relief may move it into opaque interim orders. This paper calls that risk veto-relocation risk and treats it as the central diagnostic rather than as an afterthought.
 
-The framework can also use legislative-output profiles as subject-matter-preserving docket stress signals. That bridge makes it possible to compare review designs against the kinds of laws different legislative systems produce without treating legislative and judicial institutions as the same model. The central substantive question is modest but important: when does constitutional review improve democratic constitutionalism rather than merely relocating veto power? Appointment method, court size, and term length matter, but so do front-end rights review, weak-form declarations, abstract review, emergency procedure, lower-court routing, voting thresholds, implementation cost, and compliance culture. The article therefore treats simulation as a comparative institutional audit, not as a predictive model of existing courts.
+The paper therefore presents itself as a comparative stress-testing framework, not as an empirical ranking of constitutional courts. Named-system-inspired presets are renamed and interpreted as stylized institutional archetypes: U.S.-style discretionary apex review, Kelsenian constitutional-court review, council-style pre-enactment and abstract review, weak-form parliamentary review, supranational treaty review, and dual-court or cross-checking review. They remain useful because they discipline the scenario catalog, but they are not fitted replicas. The external diagnostic checks later in the paper show where the source-specific fit is weak and where future calibration work should begin.
 
-The strongest claim tested below is therefore not that a simulator can identify the best constitutional court. It is that emergency-process reforms can be compared against appointment, council, override, and weak-form reforms in a shared-world design, and that the most informative outputs are second-order tradeoffs rather than the obvious fact that a transparency rule improves a transparency index. The rest of the article is organized for a law-and-courts audience. Section~\ref{sec:infrastructure} defines constitutional review as institutional infrastructure. Section~\ref{sec:framework} describes the simulation framework. Section~\ref{sec:calibration} explains calibration, uncertainty, and replication. Section~\ref{sec:experiments} summarizes the comparative experiments. Section~\ref{sec:implications} identifies implications for institutional design. Section~\ref{sec:limits} discusses limitations and next steps.
+The framework can also use legislative-output profiles as subject-matter-preserving docket stress signals. That bridge makes it possible to ask whether a review design behaves differently when the docket is produced by high capture, high volatility, low mandate, or baseline legislative outputs. The bridge is secondary to the paper's contribution, and it is treated as a stress input rather than as validation of either simulator.
+
+The central question is when constitutional review improves democratic constitutionalism rather than merely relocating veto power. The answer offered here is conditional: under stated model assumptions, mechanisms are attractive only when they preserve rights-sensitive review, make veto relocation visible, and generate credible democratic response without excessive conflict, cost, or political-culture dependence. The rest of the article is organized for a law-and-courts audience. Section~\ref{sec:infrastructure} defines constitutional review as institutional infrastructure. Section~\ref{sec:framework} describes the simulation framework. Section~\ref{sec:experiments} summarizes the comparative stress tests. Section~\ref{sec:diagnostics} reports external diagnostic comparisons, uncertainty, and replication limits. Section~\ref{sec:implications} identifies implications for institutional design. Section~\ref{sec:limits} discusses limitations and next steps.
 
 \section{Constitutional Review as Institutional Infrastructure}
 \label{sec:infrastructure}
 
 A constitutional review system is more than an apex court. It includes appointment and replacement rules, lower-court pathways, docket filters, emergency relief procedures, merits review, voting thresholds, opinion coalitions, recusal practices, legislative override rules, and enforcement channels. Treating these features as separate design variables makes sense analytically, but reform proposals usually bundle them. The simulation therefore models review as an infrastructure problem: a constitutional system routes disputes through a sequence of institutions, and the consequences depend on how those routing rules interact.
 
-Table~\ref{tab:design-space} summarizes the current design space. The categories are intentionally broad enough to cover U.S.-style discretionary appellate review, specialized constitutional complaints, pre-enactment councils, mixed abstract and concrete review, declaration-oriented parliamentary review, and supranational treaty courts.
+The model components are tied to distinct literatures rather than to a single court-reform theory. Political-insurance and juristocracy accounts motivate treating constitutional review adoption and design as political-institutional choices \citep{hirschl2004,ginsburgVersteeg2014}. Weak-form and Commonwealth-model scholarship motivates declaration, override, and legislative-response mechanisms \citep{gardbaum2013}. Access-to-justice and support-structure work motivates the case-selection-access and public-defender diagnostics \citep{epp1998}. Comparative judicial-role scholarship motivates the attention to compliance, implementation, and political consequences \citep{kapiszewski2013}. Emergency-docket scholarship motivates separating interim relief, reasons, vote disclosure, public disagreement, and merits follow-up \citep{baude2015,vladeck2023}.
 
-\begin{longtable}{p{0.32\linewidth}p{0.58\linewidth}}
-\caption{Modeled constitutional-review design space.}
+Table~\ref{tab:design-space} narrows the design space used in this paper. The simulator contains additional scenario-library variants, but the manuscript focuses on four mechanism families and one diagnostic archetype family so that the reader can tell what is actually being compared.
+
+\begin{longtable}{L{0.24\linewidth}L{0.30\linewidth}L{0.34\linewidth}}
+\caption{Scenario groups used in the reported stress tests.}
 \label{tab:design-space}\\
 \toprule
-Design family & Modeled variants \\
+Scenario group & Examples in reported campaign & Primary tradeoff diagnosed \\
 \midrule
 \endfirsthead
 \toprule
-Design family & Modeled variants \\
+Scenario group & Examples in reported campaign & Primary tradeoff diagnosed \\
 \midrule
 \endhead
-Appointment method & Presidential/senate appointment, supermajority commission, merit sortition, legislative selection, and popular-retention variants. \\
-Court size & 9-, 11-, 12-, 15-, 16-, 18-, 27-, 34-, and 46-member designs for experimental and real-world benchmark scenarios. \\
-Terms and removal & Life tenure, nonrenewable long terms, short renewable terms, impeachment-only removal, misconduct commission removal, and retention-election accountability. \\
-Recusal & Self-policing, mandatory conflict recusal, random substitution, and strict transparency. \\
-Docket control & Discretionary certiorari, leave to appeal, complaint admissibility, referral-gated review, and mandatory review with filters. \\
-Emergency docket & Fast shadow docket, reasoned emergency panels, full-court emergency review, and merits follow-up. \\
-Doctrine & Speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state claims. \\
-Policy domains & Civil rights, speech/religion, criminal justice, federalism, governance, elections, emergency/security, economic regulation, and administration. \\
-Jurisdiction and lower courts & Federal, state, and mixed state-federal disputes; district-only, circuit-panel, en banc, state high-court, and state-federal split paths. \\
-Voting threshold & Simple majority, supermajority invalidation, concurrent-majority logic, and high constitutional threshold. \\
-Review structure & Full court, panel plus en banc review, dual supreme courts, cross-checking courts, and constitutional council review. \\
-Legislative override & No override, supermajority override, delayed majority override, and referendum override. \\
-Real-world benchmark presets & U.S. Supreme Court, German Federal Constitutional Court, French Constitutional Council, Supreme Court of Canada, South African Constitutional Court, UK Supreme Court, India Supreme Court, Brazil STF, ECHR, and CJEU. \\
-Synthetic mechanism tests & Weak-form review, suspended declarations, explicit override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles. \\
-Feasibility modifiers & Legal-transplant feasibility, implementation cost, and political-culture sensitivity are modeled as diagnostic constraints rather than empirical country estimates. \\
+Court-architecture variants & Current-style discretionary apex court; 18-year terms; commission appointment; supermajority invalidation; strict recusal; panel/en banc routing; dual cross-checking courts; constitutional council; legislative override; retention accountability; hybrid independence/accountability. & Whether selection, size, threshold, routing, and accountability reforms change rights, legitimacy, conflict, cost, and veto-relocation diagnostics when the docket is held fixed. \\
+Emergency-review procedure & Current-style emergency orders, strict recusal, reasoned emergency panels, cross-checking or council review, and hybrid review. & Whether urgent rights protection can be separated from opaque or merits-displacing emergency intervention. \\
+Dialogic and weak-form mechanisms & Weak-form review, suspended declarations, override clauses, and mandatory legislative response cycles. & Whether review generates credible democratic response rather than final judicial veto or unresolved legislative drift. \\
+Front-end and access mechanisms & Pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, and rights-impact statements. & Whether access and early screening improve rights-sensitive review or hide veto power in upstream institutions. \\
+Stylized archetype presets & U.S.-style discretionary apex review, Kelsenian constitutional-court review, council-style pre-enactment or abstract review, weak-form parliamentary review, supranational treaty review, and dual-court/cross-checking review. & External diagnostic comparison and scenario discipline only; these are not fitted country replicas. \\
+Feasibility constraints & Legal-transplant feasibility, implementation cost, political-culture sensitivity, implementation capacity, and case-selection access. & Whether a reform remains plausible once cost, administrative load, legal culture, compliance, and unequal access are visible. \\
 \bottomrule
 \end{longtable}
 
 The central design question is not whether one feature is good or bad in isolation. It is whether a bundle produces an acceptable balance among legal stability, rights protection, democratic responsiveness, legitimacy, conflict management, administrative burden, and enforceability.
 
-The project therefore separates three evidentiary categories. Real-world presets encode observable institutional rules and cost/intake context for named systems, but they are not fitted replicas. Synthetic mechanisms isolate reform ideas that may have comparative analogues but are not country presets. Speculative design recommendations are conditional inferences from those synthetic comparisons; they are not empirical claims about the systems that inspired a mechanism.
+The project therefore separates three evidentiary categories. Stylized archetype presets encode observable institutional rules and cost/intake context inspired by named systems, but they are not fitted replicas. Synthetic mechanisms isolate reform ideas that may have comparative analogues but are not country presets. Speculative design recommendations are conditional inferences from those synthetic comparisons; they are not empirical claims about the systems that inspired a mechanism.
 
 \section{Simulation Framework}
 \label{sec:framework}
@@ -123,6 +120,27 @@ Figure~\ref{fig:model-pipeline} summarizes the model pipeline. Legislative-outpu
 Each scenario creates justices or review actors from appointment method, court size, term and removal structure, independence level, accountability pressure, transparency level, coalition norm, rights priority, stability preference, review archetype, docket-control mechanism, review timing, cost profile, scenario kind, and review mechanism. The review process then models intake selection, emergency handling, recusals, panel or en banc review, voting thresholds, cross-checking agreement, constitutional-council screening, weak-form or suspended declarations, legislative response, explicit override, ombudsman access, public-defender participation, rights-impact statements, and opinion fragmentation. The reported campaigns use fixed weights rather than fitted parameters.
 
 The weights have different epistemic status. Some inputs are institutional mappings, such as court size, route type, and whether a design uses weak-form declarations or merits follow-up. Some are source-observed benchmark ranges used only for diagnostic checks. Some are literature-informed directional priors: for example, higher political conflict should reduce compliance, and reason-giving should improve process transparency. Some are design-prior weights used to make synthetic mechanisms comparable under shared worlds. Finally, the directional score is a display convention, not a parameter estimate. The analysis below treats source-observed checks, synthetic mechanism movement, and normative score construction as separate claims.
+
+The democratic-constitutionalism diagnostic is not offered as a universal constitutional theory. It combines rights protection, democratic responsiveness, legality, legitimacy, compliance, low conflict, low veto-relocation risk, access, implementation capacity, transplant feasibility, and political-culture robustness because those are the values most directly implicated by the design bundles modeled here. A rights-centered reader could weight rights protection more heavily; a parliamentary constitutionalist could weight legislative response and democratic responsiveness more heavily; a legal-stability theorist could weight precedent durability and compliance more heavily; and a public-administration reader could weight cost and implementation more heavily. The experiments therefore report direct outputs first, use the composite score only as a display aid, and add alternative normative profiles rather than asking the reader to accept a single welfare function.
+
+\begin{table}[hbt!]
+\centering
+\caption{Model-input transparency and parameter status.}
+\label{tab:model-transparency}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}L{0.21\linewidth}L{0.25\linewidth}L{0.23\linewidth}L{0.21\linewidth}@{}}
+\toprule
+Input family & Scale or construction & Role in model & Status in this paper \\
+\midrule
+Generated case facts & Bounded $[0,1]$ synthetic draws with correlations among rights threat, urgency, salience, ambiguity, public support, lower-court conflict, and policy domain. & Creates the shared docket faced by each scenario. & Design prior; stress-tested through campaign cases and legislative-output imports. \\
+World context & Bounded controls for appointment polarization, rights-threat rate, emergency pressure, legislative conflict, public trust, partisan pressure, fragmentation, government control, electoral time pressure, civil society, implementation capacity, and legal-tradition fit. & Shapes docket stress, replacement dynamics, compliance, and response. & Stress-case parameter; country-context rows are diagnostic comparators, not fitted estimates. \\
+Institutional rules & Scenario-coded court size, appointment method, tenure, removal, recusal, routing, emergency procedure, voting threshold, council/cross-checking, override, and weak-form mechanisms. & Determines intake, voting, emergency handling, response, cost, and veto-relocation channels. & Institutional mapping or synthetic mechanism flag. \\
+Model weights & Stated coefficients for intake, emergency relief, merits invalidation, compliance, response, conflict, legitimacy, cost, and composites. & Converts case facts and rules into outputs. & Explicit design-prior weights; not fitted coefficients. Alternative profile and stress-case results test sensitivity. \\
+External diagnostic targets & Source-backed rows with source URL, denominator, construction note, and direct simulator analogue; contextual rows are retained but excluded from fit counts. & Finds missing mechanisms and denominator problems. & External diagnostic comparison only. \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 The main model equations are intentionally simple enough to audit; the supplementary appendix states the fuller notation, composite-score equations, and route-mix construction. Review propensity is a weighted score:
 \[
@@ -154,7 +172,7 @@ A simple toy case clarifies the state transition. Suppose the docket contains a 
 \label{tab:mechanical-diagnostic}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}p{0.24\linewidth}p{0.24\linewidth}p{0.42\linewidth}@{}}
+\begin{tabular}{@{}L{0.24\linewidth}L{0.24\linewidth}L{0.42\linewidth}@{}}
 \toprule
 Modeled pattern & Mechanically implied? & What would make it diagnostically interesting \\
 \midrule
@@ -166,7 +184,7 @@ Weak-form or response-cycle mechanisms improve democratic constitutionalism & No
 \end{tabular}
 \end{table}
 
-Runs are partitioned into review periods so term limits and removal or retention rules can change court composition over time. Decision outcomes also update an institutional reaction state: public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and compliance norms feed later cases in the same run. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance. World assumptions include party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility. For the validation campaign, real-world presets use country-year context modifiers; for synthetic campaigns, the same variables remain stress-test levers.
+Runs are partitioned into review periods so term limits and removal or retention rules can change court composition over time. Decision outcomes also update an institutional reaction state: public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and compliance norms feed later cases in the same run. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance. World assumptions include party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility. For the external diagnostic campaign, stylized archetype presets use country-year context modifiers; for synthetic campaigns, the same variables remain stress-test levers.
 
 The main outcome metrics are listed in Table~\ref{tab:metrics}. The table separates direct procedural outputs, direct outcome outputs, constructed indices, and display-only reading aids. That distinction matters. Emergency reason-giving, vote disclosure, merits follow-up, weak-form declarations, legislative responses, and public-defender participation are direct model events. Rights-claimant success and invalidation are direct outcomes, but they are not identical to morally correct rights protection; a successful claimant can be strategically selected, anti-regulatory, or in tension with other rights holders. Legitimacy is therefore labeled as a modeled public-legitimacy proxy rather than an opinion-survey measure, and the legacy \texttt{shadowDocketAbuse} report column is interpreted as emergency-process irregularity rather than a legal conclusion that a specific order is abusive. Constitutional conflict is likewise a composite index covering legal, political, federalism, and implementation conflict.
 
@@ -183,7 +201,7 @@ where $S$ is legal stability, $R_p$ rights protection, $L$ the modeled public-le
 \centering
 \caption{Core metric families.}
 \label{tab:metrics}
-\begin{tabular}{@{}p{0.23\linewidth}p{0.50\linewidth}p{0.13\linewidth}@{}}
+\begin{tabular}{@{}L{0.23\linewidth}L{0.50\linewidth}L{0.13\linewidth}@{}}
 \toprule
 Metric family & Examples & Direction \\
 \midrule
@@ -212,37 +230,6 @@ The higher-is-better set includes legal stability, rights protection, modeled pu
 
 Small differences in $S$ are not substantively meaningful. The tables and figures therefore use the score only as a compact index for orienting the reader to clusters of designs. Designs with overlapping bootstrap intervals or score differences below about one percentage point should be treated as tied unless an individual mechanism diagnostic explains a stable difference. The main results privilege multi-objective comparisons--emergency irregularity, rights-claimant success, democratic constitutionalism, public-legitimacy proxy, veto-relocation risk, transplant feasibility, political-culture sensitivity, and cost--over ordinal rankings by this score.
 
-\section{Calibration, Uncertainty, and Replication}
-\label{sec:calibration}
-
-The model is not empirically validated in the sense of fitting a historical court. It uses documented external ranges in two different ways. Source-specific diagnostic checks require a citable source, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. Contextual benchmarks, public-trust ranges, doctrine-mix proxies without stored denominators, and institutional-cost ranges are used only as stress-test assumptions. They help discipline the comparative setup, but they are not calibration evidence and are not counted in validation-style summaries.
-
-Calibration targets identify the court, time period, target measure, target range, observed value when available, sample size, unit, method, reliability, source, validation-use flag, and construction note. The current targets include U.S. Supreme Court merits-docket doctrine shares from the Supreme Court Database \citep{scdb2025,scdbIssueCodebook}, emergency-docket context \citep{scotusblogInterim2024}, comparative court intake and throughput proxies, public-trust context \citep{gallupCourtApproval2024}, official-source intake or response rows for Canada, France, the United Kingdom, the European Court of Human Rights, and the CJEU, plus normalized institutional cost profiles. The United Kingdom permission-to-appeal row is also mirrored as a case-selection-access proxy; that row is used only to discipline the access diagnostic and should not be read as a direct measure of legal aid, counsel quality, filing cost, standing, or public-interest litigation capacity. Under the source-specific rule, validation-counted rows remain narrow: they require a documented source, denominator, and direct simulator analogue. The comparative presets for Germany, South Africa, and the U.S. merits docket are therefore still presented as structured real-world presets and stress tests, not as empirical validations.
-
-The calibration workflow also records promising but not yet validation-ready findings. Some observations have been incorporated after source verification; others remain excluded because they are secondary-source findings, lack a direct simulator analogue, or need a coding-rule audit. These excluded observations include leads on Canadian Charter legislative sequels, conditional French QPC remedy rates, comparative pre-enactment review frequencies, and transplant-feasibility indicators from public-law and governance datasets. This separation is meant to prevent a common error in simulation papers: allowing source-discovery notes to masquerade as calibration.
-
-\input{tables/calibration_targets}
-
-The reported campaigns include case-level outcome records and bootstrap uncertainty bands for aggregate and segment diagnostics. The bootstrap resamples entire generated-world run blocks rather than isolated cases, which preserves within-run dependence while still using the raw outcome records. Composition and calibration intervals remain conservative denominator-based checks where no case-level analogue exists.
-
-\subsection{Validation-style diagnostics}
-
-The validation campaign runs real-world scenario presets against a shared benchmark docket and compares the resulting diagnostics to documented calibration ranges where a direct analogue exists. Table~\ref{tab:validation-summary} reports the count of mapped targets that fall within range and the largest remaining miss for each profile. These checks are intentionally diagnostic. A miss may indicate that the simulator abstracts away a case-flow mechanism, that a target is contextual rather than directly comparable, or that the preset should be refined; it is not treated as a failed prediction.
-
-\input{tables/validation_summary}
-
-Table~\ref{tab:validation-miss-interpretation} makes the largest misses explicit. Intake-rate misses usually point to a denominator problem: the simulator's generated filing pool and screeners do not yet reproduce a court's annual leave, petition, or admissibility universe. Case-selection-access misses are even narrower because the current promoted row is a permission-to-appeal grant-rate proxy rather than a full access measure. Emergency-relief misses point to procedure-specific assumptions about applicant mix, urgency, interim relief, public reasons, and merits follow-through. Weak-form response misses point to the quality and timing of legislative response rather than to the court's merits behavior. These categories prevent the external checks from being read as a single pass/fail validation score.
-
-\input{tables/validation_miss_interpretation}
-
-\subsection{What the diagnostics still miss}
-
-The validation diagnostics are intentionally better at finding missing mechanisms than at confirming model fit. The most important current misses are pipeline misses: generated filing pools, leave filters, lower-court conflict formation, repeat-player selection, and public-interest support are still stylized. Compliance and enforcement diagnostics are downstream model outputs, not source-fitted country estimates. Emergency-docket diagnostics distinguish reasons, vote disclosure, public disagreement, government applicants, merits follow-up, and relief, but they do not yet use a docket-level dataset of applications, responses, referral decisions, and subsequent merits disposition. These gaps are why the paper separates empirical claims, synthetic findings, and speculative design recommendations. The empirical claims are limited to the existence and construction of source-bearing target rows. The synthetic findings describe how fixed model mechanisms move under shared simulated dockets. The design recommendations are conditional interpretations of those synthetic movements, not claims that a named court would behave that way.
-
-The narrowness of Tables~\ref{tab:validation-summary} and \ref{tab:validation-miss-interpretation} is itself a result. Comparative rows are excluded from the validation count when they rely on synthesis labels, missing denominators, public-trust proxies, unsupported target keys, or normalized-cost assumptions. Source-counted rows for Canada, France, the United Kingdom, the ECHR, the CJEU, and the U.S. emergency docket are still narrow, source-specific diagnostics. That leaves a smaller validation-style surface and makes the limitation explicit: the framework is ready for comparative design stress testing, not for estimating the behavior of named courts. Empirical extensions should replace each contextual row with a source-specific dataset before using the word validation for country profiles.
-
-Replication materials separate source code, model inputs, generated reports, manuscript source, and provenance records. The public replication deposit should include source code, model inputs, aggregate reports, full case-level and interval outputs or scripts that regenerate them, and instructions for reproducing the campaign outputs.
-
 \section{Comparative Experiments}
 \label{sec:experiments}
 
@@ -256,12 +243,36 @@ Table~\ref{tab:mechanism-results} isolates the noncourt mechanisms. These estima
 
 \input{tables/mechanism_results}
 
-Figure~\ref{fig:paired-import} shows the paired-input campaign as a design stress test. Legislative-output profiles can change the relative diagnostic score of each design, which is why cross-institutional stress testing is useful.
+Table~\ref{tab:normative-profiles} makes the score sensitivity problem explicit. It uses the same baseline outputs but changes the display weights to match five plausible constitutional priorities. The point is not to replace one ranking with five rankings; it is to show that the preferred architecture or mechanism can change when the normative theory changes.
+
+\input{tables/normative_profile_results}
+
+Figure~\ref{fig:cost-score} displays cost against democratic constitutionalism. The current-style court is low cost but has a lower democratic-constitutionalism diagnostic in the baseline campaign, while cross-checking, council, and hybrid designs move upward at the price of higher institutional cost. This is the kind of tradeoff that can disappear inside a single aggregate score.
+
+\begin{inlinefigureblock}
+\input{figures/cost_score_scatter}
+\inlinefigurecaption{Baseline institutional cost versus democratic constitutionalism. Filled markers denote court architectures; open markers denote synthetic mechanisms. The vertical axis is a synthetic diagnostic combining rights, responsiveness, legitimacy, compliance, implementation, access, response credibility, conflict, veto-relocation risk, feasibility, and culture sensitivity. CUR* marks the current-style scenario.}{fig:cost-score}
+\end{inlinefigureblock}
+
+Figure~\ref{fig:mechanism-tradeoff} focuses only on synthetic mechanisms. The desired region is high democratic constitutionalism and low veto-relocation risk. This figure is not a ranking of legal systems; it is a stress test of whether a proposed device protects rights and preserves democratic response without hiding final policy control in a less accountable stage.
+
+\begin{figure}[hbt!]
+\centering
+\input{figures/mechanism_tradeoff_scatter}
+\caption{Synthetic mechanism tradeoff: democratic constitutionalism versus veto-relocation risk.}
+\label{fig:mechanism-tradeoff}
+\end{figure}
+
+\subsection{Legislative-output bridge}
+
+The paired-input campaign is a docket-source stress test rather than an empirical validation of the legislative simulator. Each imported legislative row becomes a stress signal that preserves subject matter when a \texttt{policyDomain} column is available and otherwise infers one from row labels and stress fields. The five docket modes are synthetic baseline (SB), all imported rows (ALL), high lobby-capture rows (CAP), high policy-volatility rows (VOL), and low public-mandate rows (MAND). Imported rows change rights threat, public support, legislative mandate, policy-domain mix, capture pressure, volatility, and emergency pressure; they do not change the constitutional-review rules themselves.
+
+Figure~\ref{fig:paired-import} shows the paired-input campaign as a design stress test. Legislative-output profiles can change the relative diagnostic score of each design, which is why cross-institutional stress testing is useful. The figure remains secondary to Tables~\ref{tab:baseline-results}--\ref{tab:normative-profiles} because its docket sources depend on a separate simulator contract.
 
 \begin{figure}[hbt!]
 \centering
 \input{figures/paired_import_lines}
-\caption{Directional diagnostic scores under synthetic and legislative-output docket sources. The score is a compact display aid, not a welfare function. CUR* marks the current-style scenario.}
+\caption{Directional diagnostic scores under synthetic and legislative-output docket sources. SB means synthetic baseline, ALL all imported rows, CAP high capture, VOL high volatility, and MAND low mandate. The score is a compact display aid, not a welfare function. CUR* marks the current-style scenario.}
 \label{fig:paired-import}
 \end{figure}
 
@@ -269,9 +280,40 @@ Four patterns emerge from the experiments. First, emergency-process reforms prod
 
 The mechanism results add a fourth pattern. Dialogic and front-end mechanisms can improve democratic-constitutionalism scores only when they also reduce veto-relocation risk or produce a modeled legislative response. Weak-form review without legislative uptake is less attractive in the simulation than weak-form or suspended-declaration designs that trigger response cycles. Rights-impact statements and pre-enactment review lower downstream conflict in some worlds, but they can also relocate veto power into front-end screening if transparency and political-culture fit are weak.
 
-The negative results are equally important. The highest-scoring designs are not costless reforms, and the validation checks do not support a claim that any preset reproduces a real court. Close score differences should be treated as ties unless they are accompanied by clear and stable movement in a mechanism diagnostic. The current-style design remains administratively lean, which is a real institutional advantage, but its emergency-docket and modeled-legitimacy diagnostics are weaker in the baseline campaign. Council and cross-checking designs improve several legal-performance measures in the model, but they do so by relocating work to screening institutions or duplicate review structures. The useful output is therefore a tradeoff map, not a rank ordering.
+The negative results are equally important. The highest-scoring designs are not costless reforms, and the external diagnostic checks do not support a claim that any preset reproduces a real court. Close score differences should be treated as ties unless they are accompanied by clear and stable movement in a mechanism diagnostic. The current-style design remains administratively lean, which is a real institutional advantage, but its emergency-docket and modeled-legitimacy diagnostics are weaker in the baseline campaign. Council and cross-checking designs improve several legal-performance measures in the model, but they do so by relocating work to screening institutions or duplicate review structures. The useful output is therefore a tradeoff map, not a rank ordering.
 
 These patterns should be read as comparative diagnostics rather than findings about any existing court. The model is useful because all scenarios face the same generated worlds and dockets. The relevant comparison is not whether a simulated current-style court matches a historical court. It is whether changing a design feature while holding the rest of the simulated environment constant exposes a tradeoff that constitutional designers should take seriously.
+
+\section{External Diagnostics, Uncertainty, and Replication}
+\label{sec:diagnostics}
+
+The model is not empirically validated in the sense of fitting a historical court. It uses documented external ranges in two different ways. Source-specific diagnostic checks require a citable source, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. Contextual benchmarks, public-trust ranges, doctrine-mix proxies without stored denominators, and institutional-cost ranges are used only as stress-test assumptions. They help discipline the comparative setup, but they are not calibration evidence and are not counted in fit summaries.
+
+Calibration targets identify the court, time period, target measure, target range, observed value when available, sample size, unit, method, reliability, source, diagnostic-use flag, and construction note. The current targets include U.S. Supreme Court merits-docket doctrine shares from the Supreme Court Database \citep{scdb2025,scdbIssueCodebook}, emergency-docket context \citep{scotusblogInterim2024}, comparative court intake and throughput proxies, public-trust context \citep{gallupCourtApproval2024}, official-source intake or response rows for Canada, France, the United Kingdom, the European Court of Human Rights, and the CJEU, plus normalized institutional cost profiles. The United Kingdom permission-to-appeal row is also mirrored as a case-selection-access proxy; that row is used only to discipline the access diagnostic and should not be read as a direct measure of legal aid, counsel quality, filing cost, standing, or public-interest litigation capacity. Under the source-specific rule, counted rows remain narrow: they require a documented source, denominator, and direct simulator analogue. The comparative archetypes for Germany, South Africa, and the U.S. merits docket are therefore still presented as structured stress tests, not as empirical validations.
+
+The calibration workflow also records promising but not yet diagnostic-ready findings. Some observations have been incorporated after source verification; others remain excluded because they are secondary-source findings, lack a direct simulator analogue, or need a coding-rule audit. These excluded observations include leads on Canadian Charter legislative sequels, conditional French QPC remedy rates, comparative pre-enactment review frequencies, and transplant-feasibility indicators from public-law and governance datasets. This separation prevents source-discovery notes from masquerading as calibration.
+
+\input{tables/calibration_targets}
+
+The reported confidence intervals reflect run-block variation within the specified model. They do not represent uncertainty about model specification, weights, variable construction, country mapping, or normative assumptions. The bootstrap resamples entire generated-world run blocks rather than isolated cases, which preserves within-run dependence while still using the raw outcome records. Composition and calibration intervals remain conservative denominator-based checks where no case-level analogue exists. The alternative normative-profile table and stress-case sensitivity campaign are therefore more important for interpretation than narrow run-block intervals around one score.
+
+\subsection{External diagnostic fit checks}
+
+The diagnostic campaign runs stylized archetype presets against a shared benchmark docket and compares the resulting diagnostics to documented target ranges where a direct analogue exists. Table~\ref{tab:validation-summary} reports the count of mapped targets that fall within range and the largest remaining miss for each profile. These checks are intentionally diagnostic. A miss may indicate that the simulator abstracts away a case-flow mechanism, that a target is contextual rather than directly comparable, or that the preset should be refined; it is not treated as a failed prediction.
+
+\input{tables/validation_summary}
+
+Table~\ref{tab:validation-miss-interpretation} makes the largest misses explicit as a calibration roadmap. Intake-rate misses usually point to a denominator problem: the simulator's generated filing pool and screeners do not yet reproduce a court's annual leave, petition, or admissibility universe. Case-selection-access misses are even narrower because the current promoted row is a permission-to-appeal grant-rate proxy rather than a full access measure. Emergency-relief misses point to procedure-specific assumptions about applicant mix, urgency, interim relief, public reasons, and merits follow-through. Weak-form response misses point to the quality and timing of legislative response rather than to the court's merits behavior. These categories prevent the external checks from being read as a single pass/fail validation score.
+
+\input{tables/validation_miss_interpretation}
+
+\subsection{What the diagnostics still miss}
+
+The external diagnostics are intentionally better at finding missing mechanisms than at confirming model fit. The most important current misses are pipeline misses: generated filing pools, leave filters, lower-court conflict formation, repeat-player selection, and public-interest support are still stylized. Compliance and enforcement diagnostics are downstream model outputs, not source-fitted country estimates. Emergency-docket diagnostics distinguish reasons, vote disclosure, public disagreement, government applicants, merits follow-up, and relief, but they do not yet use a docket-level dataset of applications, responses, referral decisions, and subsequent merits disposition. These gaps are why the paper separates empirical claims, synthetic findings, and speculative design recommendations. The empirical claims are limited to the existence and construction of source-bearing target rows. The synthetic findings describe how fixed model mechanisms move under shared simulated dockets. The design recommendations are conditional interpretations of those synthetic movements, not claims that a named court would behave that way.
+
+The narrowness of Tables~\ref{tab:validation-summary} and \ref{tab:validation-miss-interpretation} is itself a result. Comparative rows are excluded from the diagnostic count when they rely on synthesis labels, missing denominators, public-trust proxies, unsupported target keys, or normalized-cost assumptions. Source-counted rows for Canada, France, the United Kingdom, the ECHR, the CJEU, and the U.S. emergency docket are still narrow, source-specific diagnostics. That leaves a smaller external-comparison surface and makes the limitation explicit: the framework is ready for comparative design stress testing, not for estimating the behavior of named courts. Empirical extensions should replace each contextual row with a source-specific dataset before using the word validation for country profiles.
+
+Replication materials separate source code, model inputs, generated reports, manuscript source, and provenance records. The public replication deposit should include source code, model inputs, aggregate reports, full case-level and interval outputs or scripts that regenerate them, and instructions for reproducing the campaign outputs.
 
 \section{Implications for Institutional Design}
 \label{sec:implications}
@@ -280,28 +322,12 @@ The simulation framework points toward a bundle-based account of constitutional 
 
 The model also makes administrative externalities visible. A small council may look inexpensive if only the top body is counted, but referral-gated review shifts costs into lower courts, political actors, or admissibility filters. A dual-court design may increase legitimacy through cross-checking but raise delay and capacity strain. A declaration-oriented model may improve democratic responsiveness while reducing judicial finality. These are not purely technical details; they are constitutional design consequences.
 
-Figure~\ref{fig:cost-score} displays the same point graphically. The current-style court is low cost but has a lower directional diagnostic score in the baseline campaign, while cross-checking, council, and hybrid designs move upward at the price of higher institutional cost. This is the kind of tradeoff that can disappear inside a single aggregate score.
-
-\begin{inlinefigureblock}
-\input{figures/cost_score_scatter}
-\inlinefigurecaption{Baseline institutional cost versus democratic constitutionalism. The vertical axis is a synthetic diagnostic combining rights, responsiveness, legitimacy, compliance, implementation, access, response credibility, conflict, veto-relocation risk, feasibility, and culture sensitivity. CUR* marks the current-style scenario.}{fig:cost-score}
-\end{inlinefigureblock}
-
-Figure~\ref{fig:mechanism-tradeoff} focuses only on synthetic mechanisms. The desired quadrant is high democratic constitutionalism and low veto-relocation risk. This figure is not a ranking of legal systems; it is a stress test of whether a proposed device protects rights and preserves democratic response without hiding final policy control in a less accountable stage.
-
-\begin{figure}[t]
-\centering
-\input{figures/mechanism_tradeoff_scatter}
-\caption{Synthetic mechanism tradeoff: democratic constitutionalism versus veto-relocation risk.}
-\label{fig:mechanism-tradeoff}
-\end{figure}
-
 \section{Limitations and Next Steps}
 \label{sec:limits}
 
-The simulator is intentionally abstract. It compresses doctrinal variation, legal culture, party systems, federal design, and executive implementation into variables that can be compared across institutional scenarios. It does not yet model litigant strategy, judicial opinion assignment, actual precedent networks, budget appropriations, media framing, or reform backlash as independently strategic actors. Case-selection access, legislative-response credibility, legislative-response timing, government repeat-player advantage, implementation capacity, legal-transplant feasibility, and political-culture sensitivity are diagnostic constructs, not measured country-level estimates. Implementation cost is normalized to the simulator scale and should not be read as a budget forecast. The source-specific validation surface is narrow; most comparative rows remain stress-test assumptions until paired with reproducible empirical datasets.
+The simulator is intentionally abstract. It compresses doctrinal variation, legal culture, party systems, federal design, and executive implementation into variables that can be compared across institutional scenarios. It does not yet model litigant strategy, judicial opinion assignment, actual precedent networks, budget appropriations, media framing, or reform backlash as independently strategic actors. Case-selection access, legislative-response credibility, legislative-response timing, government repeat-player advantage, implementation capacity, legal-transplant feasibility, and political-culture sensitivity are diagnostic constructs, not measured country-level estimates. Implementation cost is normalized to the simulator scale and should not be read as a budget forecast. The source-specific external diagnostic surface is narrow; most comparative rows remain stress-test assumptions until paired with reproducible empirical datasets.
 
-The largest inferential risk is circularity between mechanism definitions and outcome labels. A rule requiring reasons will mechanically improve a transparency component, and a no-relief-without-merits rule will mechanically reduce a merits-displacing emergency component. Those results are useful for checking implementation consistency, but they are not the substantive payoff. The stronger evidence comes only when direct rule effects propagate into less mechanical diagnostics such as rights-claimant success, compliance, constitutional-conflict index, modeled public-legitimacy proxy, legislative response, delay, and cost. A second risk is parameter arbitrariness: the weights are explicit and sensitivity-tested, but they are not estimated coefficients. A third risk is comparative overreach. The validation checks do not identify real counterfactual effects for named courts, and several mechanisms are grounded more heavily in U.S. emergency-docket concerns than in fully coded comparative datasets. The paper therefore treats the current results as a structured thought experiment with plausibility checks, not as a validated prediction engine.
+The largest inferential risk is circularity between mechanism definitions and outcome labels. A rule requiring reasons will mechanically improve a transparency component, and a no-relief-without-merits rule will mechanically reduce a merits-displacing emergency component. Those results are useful for checking implementation consistency, but they are not the substantive payoff. The stronger evidence comes only when direct rule effects propagate into less mechanical diagnostics such as rights-claimant success, compliance, constitutional-conflict index, modeled public-legitimacy proxy, legislative response, delay, and cost. A second risk is parameter arbitrariness: the weights are explicit and sensitivity-tested, but they are not estimated coefficients. A third risk is comparative overreach. The external diagnostics do not identify real counterfactual effects for named courts, and several mechanisms are grounded more heavily in U.S. emergency-docket concerns than in fully coded comparative datasets. The paper therefore treats the current results as a structured thought experiment with plausibility checks, not as a validated prediction engine.
 
 The most valuable empirical extensions are richer case-flow validation against specific courts and periods; denominator-backed evidence for emergency applications, merits follow-through, legislative response, compliance, enforcement, transplant feasibility, political culture, and case-selection access; and externally sourced indicators for party fragmentation, government control, electoral time pressure, civil-society capacity, public trust, court throughput, and administrative implementation capacity. Future empirical work should replace synthesized targets with denominator-backed datasets, model political-culture variables with external indicators rather than internal assumptions, add explicit implementation budgets for access institutions, and test whether legislative response cycles are credible under different party-system and compliance conditions.
 

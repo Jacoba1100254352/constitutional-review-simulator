@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build source-specific validation miss diagnostics from calibration output."""
+"""Build source-specific diagnostic miss reports from calibration output."""
 
 from __future__ import annotations
 
@@ -176,7 +176,7 @@ def write_markdown(rows: list[dict[str, str]]) -> None:
         "# Validation Miss Interpretation",
         "",
         "This file is generated from `constitutional-review-validation-v1-calibration.csv`.",
-        "It includes only source-specific validation rows with documented denominators and direct simulator analogues.",
+        "It includes only source-specific diagnostic rows with documented denominators and direct simulator analogues.",
         "A miss is a calibration diagnostic, not a failed forecast.",
         "",
         "| Profile | Target | Source range | Model | Gap | Category | Interpretation | Next action |",

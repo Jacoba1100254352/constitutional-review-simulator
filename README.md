@@ -1,8 +1,8 @@
 # Constitutional Review Simulator
 
-This is a dependency-free Java simulator for comparing supreme-court and constitutional-review designs. It is intentionally separate from the legislative simulator, but it can import legislative campaign CSV output as the docket generator for review cases. It is now positioned as a broader comparative-design companion to any narrower Supreme Court simulator, not as a deprecated predecessor or a codebase that should be merged into a single-court model.
+This is a dependency-free Java simulator for stress-testing supreme-court and constitutional-review design bundles. It is intentionally separate from the legislative simulator, but it can import legislative campaign CSV output as docket stress signals for review cases. It is positioned as a broader comparative-design companion to any narrower Supreme Court simulator, not as a deprecated predecessor or a codebase that should be merged into a single-court model.
 
-The model is built for comparative institutional design, not for predicting any real court. It keeps the same working style as the legislative simulator: named scenarios, randomized worlds, campaign sweeps, metrics with explicit directions, CSV/Markdown reports, and provenance manifests.
+The model is built for comparative institutional design stress testing, not for predicting any real court. It is a structured implication engine: given stated rules, weights, dockets, political-culture assumptions, and scoring profiles, it exposes tradeoffs such as veto-relocation risk, cost, compliance, and rights-sensitive access. It keeps the same working style as the legislative simulator: named scenarios, randomized worlds, campaign sweeps, metrics with explicit directions, CSV/Markdown reports, and provenance manifests.
 
 ## Run
 
@@ -106,18 +106,18 @@ This writes high/low assumption sweeps for emergency pressure, appointment polar
 - `reports/constitutional-review-sensitivity-v1.md`
 - `reports/constitutional-review-sensitivity-v1-manifest.json`
 
-Run the validation-style benchmark campaign:
+Run the external diagnostic benchmark campaign:
 
 ```sh
 make validation-check
 ```
 
-This compares the real-world scenario presets for the U.S. Supreme Court,
+This compares stylized archetype presets inspired by the U.S. Supreme Court,
 German Federal Constitutional Court, French Constitutional Council, Supreme
 Court of Canada, South African Constitutional Court, UK Supreme Court, ECHR,
-and CJEU against a validation benchmark. The campaign applies country/context
+and CJEU against a source-specific diagnostic benchmark. The campaign applies country/context
 modifiers from `config/context/country-year-context.csv` while keeping empirical
-validation claims limited to source-backed calibration rows. It writes the same
+fit claims limited to source-backed calibration rows. It writes the same
 aggregate, segment, compressed case-level, bootstrap interval, calibration,
 Markdown, and manifest artifact family under the
 `reports/constitutional-review-validation-v1*` prefix. It also writes
@@ -169,7 +169,7 @@ The starter catalog covers:
 - policy domains: civil rights, speech/religion, criminal justice, federalism, governance, elections, emergency/security, economic regulation, and administration; imported legislative rows preserve an explicit `policyDomain` column when present and otherwise infer one from row labels and stress signals
 - state/federal and lower-court pipeline signals: federal, state, and mixed state-federal jurisdiction; district-only, circuit-panel, en banc, state high-court, and state-federal split paths; panel skew, government win/loss, conflict pressure, certiorari pressure, and time-to-review
 - court-system archetypes: discretionary appellate leave, constitutional complaint, pre-enactment council, mixed abstract/concrete review, declaration-only parliamentary review, and supranational treaty review
-- real-world presets: U.S. Supreme Court, German Federal Constitutional Court, French Constitutional Council, Supreme Court of Canada, South African Constitutional Court, UK Supreme Court, India Supreme Court, Brazil STF, ECHR, and CJEU
+- stylized archetype presets: U.S.-style discretionary apex review, Kelsenian constitutional-court review, council-style pre-enactment/abstract review, weak-form parliamentary review, supranational treaty review, dual-court/cross-checking review, and related presets inspired by Germany, France, Canada, South Africa, the United Kingdom, India, Brazil, the ECHR, and the CJEU
 - public and legislative reaction dynamics: compliance, defiance, workarounds, repeated litigation, court-curbing pressure, amendment pressure, trust shifts, executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance
 - political-system and implementation assumptions: party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility
 - voting thresholds: simple majority, supermajority invalidation, concurrent-majority logic, and high constitutional thresholds
@@ -179,7 +179,7 @@ The starter catalog covers:
 - constitutional councils
 - legislative override rules
 - independence vs accountability balance
-- scenario-kind separation: real-world presets, court variants, and synthetic mechanism tests
+- scenario-kind separation: stylized archetype presets, court variants, and synthetic mechanism tests
 - synthetic noncourt mechanisms: weak-form review, suspended declarations of invalidity, legislative override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles
 
 ## Metrics
@@ -271,7 +271,7 @@ The calibration schema is:
 targetFile,profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl,constructionNote
 ```
 
-Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, validation-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The denominator-backed validation pack currently includes Canada SCC leave grants, France QPC nonconformity and deferred-effect remedies, UK Supreme Court permission-to-appeal grants, UK declaration-of-incompatibility legislative responses, ECHR allocated-application and Rule 39 interim-measure targets, CJEU route mix, and U.S. Supreme Court emergency-docket relief, reason-giving, and public-disagreement rows. `make promotion-check` enforces those promotion rules and rejects validation rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
+Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, diagnostic-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The denominator-backed diagnostic pack currently includes Canada SCC leave grants, France QPC nonconformity and deferred-effect remedies, UK Supreme Court permission-to-appeal grants, UK declaration-of-incompatibility legislative responses, ECHR allocated-application and Rule 39 interim-measure targets, CJEU route mix, and U.S. Supreme Court emergency-docket relief, reason-giving, and public-disagreement rows. `make promotion-check` enforces those promotion rules and rejects counted rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
 
 Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets by default. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Rows marked `promoted` have been moved into `config/calibration-source-observations.csv`; rows marked `verified-context-only` have primary-source URLs but are not direct simulator analogues; rows still marked `pending-url-verification` remain research leads. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row.
 

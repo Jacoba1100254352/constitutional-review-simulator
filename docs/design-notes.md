@@ -12,7 +12,7 @@ The core abstraction mirrors the legislative simulator without sharing code:
 
 The model deliberately separates institutional variables from outcome metrics. A design can be highly independent but illegitimate, responsive but rights-weak, procedurally stable but vulnerable to emergency-docket abuse, or democratically responsive while simply relocating veto power to a new institutional stage.
 
-Scenario outputs now distinguish `scenarioKind` and `reviewMechanism`. Real-world presets encode observable institutional rules for named systems without claiming fitted empirical replication. Synthetic mechanisms isolate design ideas: weak-form review, suspended declarations, explicit override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles.
+Scenario outputs now distinguish `scenarioKind` and `reviewMechanism`. Stylized archetype presets encode observable institutional rules inspired by named systems without claiming fitted empirical replication. Synthetic mechanisms isolate design ideas: weak-form review, suspended declarations, explicit override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles.
 
 Cases now carry doctrine, jurisdiction, and lower-court pipeline structure. Doctrine areas are speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state. Jurisdiction distinguishes federal, state, and mixed state-federal disputes. The lower-court pipeline distinguishes district-only, circuit panel, circuit en banc, state high-court, and state-federal split paths, contributing panel skew, government win/loss, state-federal tension, intercourt conflict, certiorari pressure, and time-to-review. These inputs affect review selection, deference, rights sensitivity, delay costs, and partisan-alignment risk.
 
@@ -26,7 +26,7 @@ Outcomes now update public and legislative reaction state. Each decision changes
 
 Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, legislative-response delay, timely legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central diagnostic is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
 
-The world specification now separates formal review design from political and administrative context. Party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility feed response credibility, transplant feasibility, political-culture sensitivity, and compliance channels. Validation presets read these context values from `config/context/country-year-context.csv`; synthetic campaigns still treat them as stress-test levers unless source-specific research promotes a value into documented calibration evidence.
+The world specification now separates formal review design from political and administrative context. Party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility feed response credibility, transplant feasibility, political-culture sensitivity, and compliance channels. External diagnostic archetype presets read these context values from `config/context/country-year-context.csv`; synthetic campaigns still treat them as stress-test levers unless source-specific research promotes a value into documented calibration evidence.
 
 Imported legislative outputs are not treated as empirical truth. They become stress signals for generated cases:
 
@@ -57,27 +57,28 @@ for emergency pressure, appointment polarization, rights-threat rate, public
 trust, and legislative conflict so directional scores, democratic
 constitutionalism, veto-relocation risk, transplant feasibility, and
 political-culture sensitivity can be inspected for parameter dependence. The
-validation campaign separately runs real-world scenario presets against
-documented target ranges where a source-specific analogue exists. A validation
+external diagnostic campaign separately runs stylized archetype presets against
+documented target ranges where a source-specific analogue exists. A diagnostic
 miss is useful evidence about model scope or target comparability, not a failed
 forecast.
 
 Calibration targets are documented in `config/calibration-source-observations.csv`
-and `docs/calibration-target-methods.md`. Source-specific validation rows and
-provisional synthesis rows must remain distinguishable in paper and supplement
-language. Rows with synthesis labels, missing denominators, public-trust
-proxies, or normalized-cost construction are stress-test context, not
-validation evidence.
+and `docs/calibration-target-methods.md`. Source-specific external diagnostic
+rows and provisional synthesis rows must remain distinguishable in paper and
+supplement language. Rows with synthesis labels, missing denominators,
+public-trust proxies, or normalized-cost construction are stress-test context,
+not validation evidence.
 
 Deep-research prompts for the next empirical pass are maintained in
 `docs/deep-research-prompts.md`. Their requested outputs should be treated as
 source-discovery material until denominators, URLs, coding rules, and target
 analogues are checked into the calibration source matrix. When a research pass
 returns useful denominator-backed findings but not enough source trail for
-validation, preserve them in `config/research/*-source-candidates.csv` or in an
-operationalization file. Candidate rows should record the reported numerator,
-denominator, period, source family, URL-verification status, and whether the
-row is a direct simulator analogue. They should not be promoted into
+external diagnostic use, preserve them in `config/research/*-source-candidates.csv`
+or in an operationalization file. Candidate rows should record the reported
+numerator, denominator, period, source family, URL-verification status, and
+whether the row is a direct simulator analogue. They should not be promoted into
 `config/calibration-source-observations.csv` until the original source URL and
 coding rule have been independently verified. `make promotion-check` enforces
-the current promotion gate for validation rows and promoted candidate rows.
+the current promotion gate for counted diagnostic rows and promoted candidate
+rows.

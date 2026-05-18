@@ -6,10 +6,11 @@ in the article.
 
 ## Figures
 
-`fig:model-pipeline`: Flow diagram showing the simulator pipeline. Scenario
-catalog rules produce shared worlds and dockets, which pass through a review
-pipeline and generate metrics and reports. A separate legislative-output box
-feeds into the docket stage as stress-signal input.
+`fig:model-pipeline`: Flow diagram showing the simulator pipeline as separate
+audit points: scenario catalog, world and case generation, institutional
+routing, decision process, diagnostics and reports, legislative-output stress
+signals, intake and access filters, emergency and merits review, compliance,
+reaction, cost, and period turnover or political-culture state.
 
 `fig:emergency-docket`: Horizontal grouped bar chart comparing six court-design
 scenarios on emergency-process irregularity, emergency reason-giving, and merits
@@ -24,7 +25,8 @@ legislative outputs are useful stress tests.
 
 `fig:cost-score`: Scatterplot of baseline total institutional cost against
 democratic constitutionalism. The current-style court is marked `CUR*`.
-Court variants and synthetic mechanisms are labeled so readers can compare
+Filled markers show court architectures and open markers show synthetic
+mechanisms, all labeled so readers can compare
 cost against the rights, responsiveness, legitimacy, compliance, feasibility,
 implementation, access, response credibility, feasibility, and veto-relocation
 diagnostic.
@@ -37,11 +39,15 @@ statement, and mandatory legislative-response mechanisms are labeled.
 
 ## Tables
 
-`tab:design-space`: Table listing modeled design families and variants,
-including appointment method, court size, tenure and removal, recusal, docket
-control, emergency docket procedure, doctrine, policy domains, lower-court
-pathways, voting thresholds, review structures, override rules, and benchmark
-presets.
+`tab:design-space`: Table listing the scenario groups used in the reported
+stress tests: court architecture variants, emergency-review procedure,
+dialogic and weak-form mechanisms, front-end and access mechanisms, stylized
+archetype presets, and feasibility constraints.
+
+`tab:model-transparency`: Table summarizing model-input families, scale or
+construction, model role, and evidentiary status for generated case facts,
+world context, institutional rules, model weights, and external diagnostic
+targets.
 
 `tab:metrics`: Table grouping the simulator's outcome metrics into legal
 performance, political alignment, democratic constitutionalism, noncourt
@@ -59,26 +65,34 @@ comparative court intake or invalidation benchmarks. Columns report the court
 and period, target label, observed value, target range, sample size, and
 reliability.
 
-`tab:validation-summary`: Table listing validation-style diagnostics for U.S.,
-German, Canadian, French, and South African benchmark scenario presets. Columns
-show the scenario preset, count of mapped targets falling within documented
-ranges, median target gap, and the largest remaining miss.
+`tab:validation-summary`: Table listing external diagnostic fit checks for
+U.S., German, Canadian, French, South African, UK, ECHR, and CJEU-inspired
+archetype presets. Columns show the scenario preset, count of mapped targets
+falling within documented ranges, median target gap, and the largest remaining
+miss.
 
 `tab:validation-miss-interpretation`: Table listing the largest out-of-range
-source-specific validation diagnostics. Columns show the target, model value
-versus source range, miss category, interpretation, and next calibration step.
+source-specific diagnostic checks as a calibration roadmap. Columns show the
+target, model value versus source range, miss category, interpretation, and
+next calibration step.
 
 `tab:baseline-results`: Table listing selected baseline estimates for court
-variant and synthetic mechanism scenario codes. Columns report scenario kind,
-democratic constitutionalism, rights protection, emergency-process
-irregularity, modeled public-legitimacy proxy, veto-relocation risk,
-transplant feasibility, institutional cost, and the display-score aid.
+architecture scenario codes. Columns report design label, democratic
+constitutionalism, rights protection, emergency-process irregularity, modeled
+public-legitimacy proxy, veto-relocation risk, institutional cost, and the
+display-score aid.
 
 `tab:mechanism-results`: Table listing synthetic mechanism diagnostics.
 Columns report democratic constitutionalism, veto-relocation risk, transplant
 feasibility, political-culture sensitivity, weak-form declaration rate,
-suspended declaration rate, legislative response rate, front-end review rate,
-and case-selection access diagnostic.
+suspended declaration rate, rights-impact statement rate, pre-enactment review
+rate, abstract review rate, and legislative response rate.
+
+`tab:normative-profiles`: Table listing five alternative normative-profile
+readings of the same baseline outputs. Rows identify rights-centered,
+parliamentary-dialogue, legal-stability, cost-minimizing, and
+anti-veto-relocation profiles, along with the leading court architecture and
+leading synthetic mechanism under each profile.
 
 `tab:supp-model-weights`: Supplementary long table describing the fixed model
 weights and formulas for core simulated outcomes, including emergency-process

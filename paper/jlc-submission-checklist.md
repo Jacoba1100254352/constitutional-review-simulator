@@ -23,13 +23,13 @@ Use this checklist before uploading to Editorial Manager.
   works cited in the manuscript.
 - Legal cases, if added later, are not placed in the reference list.
 - Directional-score formula and component metrics are disclosed.
-- Main text includes a compact result table and a compact calibration-target
-  table.
-- Main text includes a validation-style diagnostics table and makes clear that
+- Main text splits court-architecture diagnostics from synthetic mechanism
+  diagnostics and includes an alternative normative-profile table.
+- Main text includes an external diagnostic fit table and makes clear that
   these checks are not fitted forecasts.
-- Main text discusses the largest validation misses and does not imply that
-  benchmark presets reproduce named real courts.
-- Generated validation-miss CSV/Markdown artifacts are current and separate
+- Main text discusses the largest diagnostic misses as a calibration roadmap and
+  does not imply that stylized archetype presets reproduce named real courts.
+- Generated diagnostic-miss CSV/Markdown artifacts are current and separate
   denominator, emergency-procedure, weak-form response, remedy-timing,
   merits-outcome, and route-mix diagnostics.
 - Back-matter declarations appear as separate headings before references:
@@ -59,7 +59,7 @@ Use this checklist before uploading to Editorial Manager.
 - `make calibration-check` passes, confirming the source-observation matrix can
   regenerate the calibration target files.
 - `make validation-miss-report` has refreshed the generated miss diagnostics
-  after the latest validation campaign.
+  after the latest external diagnostic campaign.
 - Supplement includes source code, configuration files, calibration targets,
   calibration source observations, compact generated reports, a manifest of
   omitted large outputs, figure/table-generation scripts, and reproduction

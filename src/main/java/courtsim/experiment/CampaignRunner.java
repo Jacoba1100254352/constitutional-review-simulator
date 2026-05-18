@@ -680,7 +680,7 @@ public final class CampaignRunner
 				new CampaignCase(
 						"benchmark-context",
 						"Shared benchmark context",
-						"Validation context compares each real-world preset against documented calibration target ranges using its country/context modifiers.",
+						"External diagnostic context compares each stylized archetype preset against documented calibration target ranges using its country/context modifiers.",
 						baseSpec.withLegislativeConflict(0.48).withEmergencyPressure(0.32).withPublicTrust(0.56),
 						SignalMode.SYNTHETIC
 				)
