@@ -42,7 +42,7 @@ Use this checklist before uploading to Editorial Manager.
 ## Figures, Tables, And Accessibility
 
 - `paper/accessibility-descriptions.md` has one description for every figure
-  and table label in `paper/main.tex`.
+  and table label in `paper/constitutional-review-design-stress-test.tex`.
 - `paper/figure-placement-audit.md` shows no severe figure/table white-space
   findings or placement warnings in the compiled manuscript PDF.
 - Final accepted figures are exported as separate high-resolution files if

@@ -14,7 +14,7 @@ from word_count import WORD_LIMIT, count_words
 
 ROOT = Path(__file__).resolve().parents[2]
 PAPER_DIR = ROOT / "paper"
-MAIN_TEX = PAPER_DIR / "main.tex"
+MAIN_TEX = PAPER_DIR / "constitutional-review-design-stress-test.tex"
 SUPPLEMENT_TEX = PAPER_DIR / "supplementary-appendix.tex"
 ACCESSIBILITY = PAPER_DIR / "accessibility-descriptions.md"
 REFERENCES_BIB = PAPER_DIR / "references.bib"
@@ -223,20 +223,20 @@ def main() -> None:
     validation_miss_table = VALIDATION_MISS_TABLE.read_text(encoding="utf-8") if VALIDATION_MISS_TABLE.exists() else ""
 
     if r"\documentclass[" not in tex or "]{cup-journal}" not in tex:
-        fail("main.tex should keep the cup-journal document-class interface.")
+        fail("manuscript source should keep the cup-journal document-class interface.")
 
     if r"\author{Anonymous Author}" not in tex:
-        fail("main.tex should remain anonymous for review.")
+        fail("manuscript source should remain anonymous for review.")
 
     if r"\usepackage[authoryear,round]{natbib}" not in tex:
-        fail("main.tex should keep author-date natbib citations for JLC review.")
+        fail("manuscript source should keep author-date natbib citations for JLC review.")
 
     if r"\bibliographystyle{plainnat}" in tex or r"\bibliography{references}" in tex:
-        fail("main.tex should not use plainnat output for the JLC submission draft.")
+        fail("manuscript source should not use plainnat output for the JLC submission draft.")
 
     bibliography_index = tex.find(r"\begin{thebibliography}")
     if bibliography_index < 0:
-        fail("main.tex must include a Chicago-style reference list at the end of the manuscript.")
+        fail("manuscript source must include a Chicago-style reference list at the end of the manuscript.")
 
     for heading in REQUIRED_BACK_MATTER:
         marker = rf"\section*{{{heading}}}"
@@ -251,13 +251,13 @@ def main() -> None:
         fail("appendices should not appear after the reference list in the main manuscript.")
 
     if "Directional score construction" not in tex:
-        fail("main.tex must explain the directional score construction.")
+        fail("manuscript source must explain the directional score construction.")
     if "score differences below about one percentage point should be treated as tied" not in tex:
-        fail("main.tex must warn that close directional-score differences are not meaningful.")
+        fail("manuscript source must warn that close directional-score differences are not meaningful.")
     if "What the diagnostics still miss" not in tex:
-        fail("main.tex must include a diagnostic-misses subsection.")
+        fail("manuscript source must include a diagnostic-misses subsection.")
     if "case-selection-access proxy" not in tex:
-        fail("main.tex must flag case-selection-access proxy limitations.")
+        fail("manuscript source must flag case-selection-access proxy limitations.")
 
     if "OpenAI ChatGPT Deep Research" not in tex or "OpenAI Codex" not in tex or "GPT-5" not in tex:
         fail("AI Tools Declaration should identify the tools and model/interface family used.")

@@ -13,7 +13,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PAPER_DIR = ROOT / "paper"
 SUBMISSION_DIR = ROOT / "submission"
-MANUSCRIPT_PDF = PAPER_DIR / "build" / "main.pdf"
+MANUSCRIPT_TEX_NAME = "constitutional-review-design-stress-test.tex"
+MANUSCRIPT_PDF_NAME = "constitutional-review-design-stress-test.pdf"
+MANUSCRIPT_PDF = PAPER_DIR / "build" / MANUSCRIPT_PDF_NAME
 SUPPLEMENT_PDF = PAPER_DIR / "build" / "supplementary-appendix.pdf"
 
 
@@ -84,10 +86,10 @@ def refresh_pdfs() -> None:
     run(["python3", "paper/scripts/generate_supplement.py"])
     run(["python3", "paper/scripts/check_jlc_format.py"])
     run(
-        ["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", "-outdir=build", "main.tex"],
+        ["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", "-outdir=build", MANUSCRIPT_TEX_NAME],
         cwd=PAPER_DIR,
     )
-    shutil.copy2(MANUSCRIPT_PDF, PAPER_DIR / "main.pdf")
+    shutil.copy2(MANUSCRIPT_PDF, PAPER_DIR / MANUSCRIPT_PDF_NAME)
     run(["python3", "paper/scripts/generate_supplement.py"])
     run(
         [
@@ -249,7 +251,7 @@ def main() -> None:
     shutil.copy2(SUPPLEMENT_PDF, supplement_target)
 
     source_files = [
-        ROOT / "paper" / "main.tex",
+        ROOT / "paper" / MANUSCRIPT_TEX_NAME,
         ROOT / "paper" / "supplementary-appendix.tex",
         ROOT / "paper" / "model-appendix.tex",
         ROOT / "paper" / "cup-journal.cls",

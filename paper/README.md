@@ -14,7 +14,8 @@ make paper
 `make paper` regenerates the LaTeX figure fragments in `paper/figures/` and
 the LaTeX table fragments in `paper/tables/` from tracked CSV artifacts, runs
 the repository JLC formatting check, compiles the PDF, refreshes
-`paper/main.pdf`, and updates `paper/figure-placement-audit.md`.
+`paper/constitutional-review-design-stress-test.pdf`, and updates
+`paper/figure-placement-audit.md`.
 
 Run only the JLC formatting check with:
 
@@ -75,7 +76,7 @@ instructions point LaTeX authors to the Cambridge small-template Overleaf
 package. The official Overleaf template page, reviewed on May 9, 2026, lists
 Journal of Law and Courts among the supported journals and uses the
 `cup-journal` document-class interface. The manuscript therefore keeps that
-interface in `main.tex`:
+interface in `constitutional-review-design-stress-test.tex`:
 
 ```tex
 \documentclass[

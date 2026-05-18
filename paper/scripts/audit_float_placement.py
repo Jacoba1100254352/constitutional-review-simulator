@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_PDF = ROOT / "paper" / "main.pdf"
+DEFAULT_PDF = ROOT / "paper" / "constitutional-review-design-stress-test.pdf"
 DEFAULT_REPORT = ROOT / "paper" / "figure-placement-audit.md"
 
 CAPTION_RE = re.compile(r"\b(?:Figure|Table)\s+\d+:\s+.*")

@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-MAIN_TEX = ROOT / "paper" / "main.tex"
+MAIN_TEX = ROOT / "paper" / "constitutional-review-design-stress-test.tex"
 WORD_LIMIT = 10_000
 
 

@@ -3,6 +3,8 @@ TEST_SOURCES := $(shell find src/test/java -name '*.java')
 JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
 LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
+PAPER_TEX := constitutional-review-design-stress-test.tex
+PAPER_PDF := constitutional-review-design-stress-test.pdf
 
 .PHONY: build run campaign paired-campaign validation-check validation-miss-report sensitivity-check calibration-build calibration-check promotion-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
@@ -55,18 +57,18 @@ paper-check: paper-artifacts
 	python3 paper/scripts/check_jlc_format.py
 
 paper: paper-artifacts paper-check
-	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
-	cp paper/build/main.pdf paper/main.pdf
+	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build $(PAPER_TEX)
+	cp paper/build/$(PAPER_PDF) paper/$(PAPER_PDF)
 	python3 paper/scripts/audit_float_placement.py --write
 
 figure-placement-audit:
 	python3 paper/scripts/audit_float_placement.py --write
 
 paper-word-count:
-	if command -v texcount >/dev/null 2>&1; then cd paper && texcount -inc -total main.tex; else python3 paper/scripts/word_count.py; fi
+	if command -v texcount >/dev/null 2>&1; then cd paper && texcount -inc -total $(PAPER_TEX); else python3 paper/scripts/word_count.py; fi
 
 paper-clean:
-	cd paper && latexmk -C -outdir=build main.tex
+	cd paper && latexmk -C -outdir=build $(PAPER_TEX)
 	rm -rf paper/build
 	rm -rf paper/scripts/__pycache__
 	rm -f paper/*.aux paper/*.log paper/*.out paper/*.pdf paper/*.synctex.gz paper/.DS_Store config/.DS_Store

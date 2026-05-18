@@ -139,8 +139,10 @@ make paper
 make supplement
 ```
 
-The paper source is in `paper/main.tex`; the compiled PDF is written to
-`paper/build/main.pdf` and refreshed at `paper/main.pdf`. `make paper` also
+The paper source is in `paper/constitutional-review-design-stress-test.tex`;
+the compiled PDF is written to
+`paper/build/constitutional-review-design-stress-test.pdf` and refreshed at
+`paper/constitutional-review-design-stress-test.pdf`. `make paper` also
 updates `paper/figure-placement-audit.md`, which maps rendered figure and table
 pages and flags figure-driven white-space problems.
 The supplementary appendix source is in `paper/supplementary-appendix.tex`;

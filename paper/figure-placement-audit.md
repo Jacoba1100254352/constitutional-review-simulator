@@ -1,6 +1,6 @@
 # Figure and Float Placement Audit
 
-Compiled PDF audited: `paper/main.pdf`.
+Compiled PDF audited: `paper/constitutional-review-design-stress-test.pdf`.
 
 This audit checks rendered pages, not just LaTeX source. It flags figure or table pages that leave excessive vertical whitespace after trimming normal margins. Final text-only pages, such as a short references tail, are noted but not treated as figure-placement defects.
 
