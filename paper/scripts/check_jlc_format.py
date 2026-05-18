@@ -20,6 +20,7 @@ ACCESSIBILITY = PAPER_DIR / "accessibility-descriptions.md"
 REFERENCES_BIB = PAPER_DIR / "references.bib"
 VALIDATION_TABLE = PAPER_DIR / "tables" / "validation_summary.tex"
 VALIDATION_MISS_TABLE = PAPER_DIR / "tables" / "validation_miss_interpretation.tex"
+WEIGHT_ROBUSTNESS_TABLE = PAPER_DIR / "tables" / "weight_robustness_results.tex"
 SCENARIO_POINT_LABELS = {
     "CUR*",
     "18Y",
@@ -221,6 +222,7 @@ def main() -> None:
     references = REFERENCES_BIB.read_text(encoding="utf-8")
     validation_table = VALIDATION_TABLE.read_text(encoding="utf-8") if VALIDATION_TABLE.exists() else ""
     validation_miss_table = VALIDATION_MISS_TABLE.read_text(encoding="utf-8") if VALIDATION_MISS_TABLE.exists() else ""
+    weight_robustness_table = WEIGHT_ROBUSTNESS_TABLE.read_text(encoding="utf-8") if WEIGHT_ROBUSTNESS_TABLE.exists() else ""
 
     if r"\documentclass[" not in tex or "]{cup-journal}" not in tex:
         fail("manuscript source should keep the cup-journal document-class interface.")
@@ -274,26 +276,33 @@ def main() -> None:
         fail("AI Tools Declaration should state how AI outputs were handled.")
 
     for expected in [
-            "U.S. Supreme Court",
             "U.S. emergency docket",
-            "Germany BVerfG",
             "Canada SCC",
             "France Conseil",
-            "South Africa ConstCourt",
+            "UK Supreme Court",
+            "UK declarations",
+            "ECHR",
+            "CJEU",
     ]:
         if expected not in validation_table:
             fail(f"validation summary table is missing expected profile: {expected}")
-    if "source-check campaign" not in validation_table:
+    if "source-range comparison" not in validation_table:
         fail("validation table should state that checks are source-range comparisons.")
     for expected in [
             "intake denominator alignment",
             "emergency-procedure calibration",
-            "weak-form response mechanism",
-            "case-selection access proxy",
+            "European Court of Human Rights",
             "Misses are priorities for future calibration",
     ]:
         if expected not in validation_miss_table:
             fail(f"validation miss table is missing required interpretive language: {expected}")
+    for expected in [
+            "Random-weight robustness",
+            "Weak-form dominance should be tested",
+            "Architecture leadership is fragile",
+    ]:
+        if expected not in weight_robustness_table:
+            fail(f"weight robustness table is missing required language: {expected}")
     if "tab:supp-model-crosswalk" not in supplement_expanded:
         fail("supplement must include the model-to-code crosswalk table.")
 
