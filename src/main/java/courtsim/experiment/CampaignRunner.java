@@ -609,7 +609,7 @@ public final class CampaignRunner
 		cases.add(new CampaignCase(
 				"emergency-docket-stress",
 				"Emergency docket stress",
-				"Higher urgency and executive pressure, meant to stress shadow-docket procedures.",
+				"Higher urgency and executive pressure, meant to stress emergency-review procedures.",
 				baseSpec.withEmergencyPressure(0.76).withPartisanPressure(0.68),
 				SignalMode.SYNTHETIC
 		));
@@ -1451,7 +1451,7 @@ public final class CampaignRunner
 			CampaignRow bestRights = caseRows.stream()
 			                                 .max(Comparator.comparingDouble(row -> row.report().rightsProtection()))
 			                                 .orElseThrow();
-			CampaignRow lowestShadow = caseRows.stream()
+			CampaignRow lowestEmergencyIrregularity = caseRows.stream()
 			                                   .min(Comparator.comparingDouble(row -> row.report().shadowDocketAbuse()))
 			                                   .orElseThrow();
 			CampaignRow lowestEmergencyRelief = caseRows.stream()
@@ -1470,8 +1470,8 @@ public final class CampaignRunner
 			       .append(Values.format(best.report().directionalScore())).append('\n');
 			builder.append("- strongest rights protection: ").append(bestRights.report().scenarioName())
 			       .append(" at ").append(Values.format(bestRights.report().rightsProtection())).append('\n');
-			builder.append("- lowest shadow-docket abuse: ").append(lowestShadow.report().scenarioName())
-			       .append(" at ").append(Values.format(lowestShadow.report().shadowDocketAbuse())).append('\n');
+			builder.append("- lowest emergency-process irregularity: ").append(lowestEmergencyIrregularity.report().scenarioName())
+			       .append(" at ").append(Values.format(lowestEmergencyIrregularity.report().shadowDocketAbuse())).append('\n');
 			builder.append("- lowest emergency relief rate: ").append(lowestEmergencyRelief.report().scenarioName())
 			       .append(" at ").append(Values.format(lowestEmergencyRelief.report().emergencyReliefRate())).append('\n');
 			builder.append("- highest compliance rate: ").append(highestCompliance.report().scenarioName())
@@ -1481,7 +1481,7 @@ public final class CampaignRunner
 		}
 		
 		builder.append("## Scenario Averages\n\n");
-		builder.append("| Scenario | Kind | Mechanism | Score | Dem. const. | Stability | Rights | Partisan | Shadow | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legitimacy | Reversal | Conflict | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |\n");
+		builder.append("| Scenario | Kind | Mechanism | Score aid | Dem. const. | Stability | Rights | Partisan | Emerg. irr. | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legit. proxy | Reversal | Conflict index | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |\n");
 		builder.append("| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
 		for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
 			List<ScenarioReport> reports = rows.stream()
@@ -1545,7 +1545,7 @@ public final class CampaignRunner
 			SegmentKind kind
 	) {
 		builder.append("\n## ").append(title).append("\n\n");
-		builder.append("| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |\n");
+		builder.append("| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |\n");
 		builder.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n");
 		for (String scenarioKey : rows.stream().map(row -> row.report().scenarioKey()).distinct().toList()) {
 			List<CampaignRow> scenarioRows = rows.stream()

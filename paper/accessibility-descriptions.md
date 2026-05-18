@@ -12,8 +12,8 @@ pipeline and generate metrics and reports. A separate legislative-output box
 feeds into the docket stage as stress-signal input.
 
 `fig:emergency-docket`: Horizontal grouped bar chart comparing six court-design
-scenarios on shadow-docket abuse, emergency reason-giving, and merits
-follow-up. The current-style court is marked `CUR*` and has higher shadow-docket abuse than the
+scenarios on emergency-process irregularity, emergency reason-giving, and merits
+follow-up. The current-style court is marked `CUR*` and has higher emergency-process irregularity than the
 reasoned emergency, cross-checking, council, and hybrid designs.
 
 `fig:paired-import`: Line chart comparing directional diagnostic scores across
@@ -48,6 +48,11 @@ performance, political alignment, democratic constitutionalism, noncourt
 mechanisms, emergency docket, legitimacy and conflict, pipeline and intake,
 coalitions and recusals, compliance, and institutional cost categories.
 
+`tab:mechanical-diagnostic`: Table separating mechanically implied model
+patterns from diagnostic findings. It explains when emergency-reasoning,
+no-relief-without-merits, appointment, and weak-form response results should be
+read as implementation checks rather than substantive tradeoffs.
+
 `tab:calibration-targets`: Table listing selected external calibration targets
 for U.S. Supreme Court doctrine and emergency activity, public trust, and
 comparative court intake or invalidation benchmarks. Columns report the court
@@ -65,9 +70,9 @@ versus source range, miss category, interpretation, and next calibration step.
 
 `tab:baseline-results`: Table listing selected baseline estimates for court
 variant and synthetic mechanism scenario codes. Columns report scenario kind,
-directional score and score interval, democratic constitutionalism, rights
-protection, veto-relocation risk, transplant feasibility, political-culture
-sensitivity, and institutional cost.
+democratic constitutionalism, rights protection, emergency-process
+irregularity, modeled public-legitimacy proxy, veto-relocation risk,
+transplant feasibility, institutional cost, and the display-score aid.
 
 `tab:mechanism-results`: Table listing synthetic mechanism diagnostics.
 Columns report democratic constitutionalism, veto-relocation risk, transplant
@@ -76,9 +81,10 @@ suspended declaration rate, legislative response rate, front-end review rate,
 and case-selection access diagnostic.
 
 `tab:supp-model-weights`: Supplementary long table describing the fixed model
-weights and formulas for core simulated outcomes, including shadow-docket abuse,
-legal stability, legitimacy, rights protection, constitutional conflict,
-compliance, enforcement, case-selection access, legislative-response
+weights and formulas for core simulated outcomes, including emergency-process
+irregularity, legal stability, modeled public-legitimacy proxy, rights
+protection, constitutional-conflict index, compliance, enforcement,
+case-selection access, legislative-response
 credibility, implementation capacity, institutional cost, and the directional
 display score.
 

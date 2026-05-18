@@ -7,25 +7,25 @@
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llrrrrrrrr@{}}
 \toprule
-Scenario & Kind & Score & 95\% CI & Dem. const. & Rights & Veto $\downarrow$ & Transplant & Culture $\downarrow$ & Cost $\downarrow$ \\
+Scenario & Kind & Dem. const. & Rights & Emerg. irr. $\downarrow$ & Legit. proxy & Veto $\downarrow$ & Transplant & Cost $\downarrow$ & Score aid \\
 \midrule
-CUR & C & 0.524 & 0.523--0.526 & 0.570 & 0.685 & 0.529 & 0.644 & 0.728 & 0.450 \\
-EMR & C & 0.623 & 0.620--0.626 & 0.648 & 0.739 & 0.446 & 0.644 & 0.719 & 0.460 \\
-DUAL & C & 0.627 & 0.623--0.631 & 0.649 & 0.746 & 0.596 & 0.641 & 0.733 & 0.589 \\
-COUNC & C & 0.630 & 0.626--0.633 & 0.651 & 0.740 & 0.662 & 0.643 & 0.726 & 0.533 \\
-OVR & C & 0.589 & 0.587--0.591 & 0.635 & 0.733 & 0.435 & 0.644 & 0.724 & 0.466 \\
-HYB & C & 0.636 & 0.633--0.640 & 0.661 & 0.745 & 0.432 & 0.642 & 0.732 & 0.542 \\
-WFR & S & 0.699 & 0.697--0.701 & 0.708 & 0.717 & 0.174 & 0.678 & 0.759 & 0.359 \\
-SUS & S & 0.672 & 0.670--0.675 & 0.679 & 0.721 & 0.206 & 0.624 & 0.837 & 0.383 \\
-PRE & S & 0.649 & 0.646--0.653 & 0.664 & 0.766 & 0.511 & 0.581 & 0.833 & 0.437 \\
-ABS & S & 0.643 & 0.640--0.647 & 0.666 & 0.770 & 0.311 & 0.565 & 0.905 & 0.436 \\
-OMB & S & 0.606 & 0.604--0.608 & 0.632 & 0.736 & 0.525 & 0.604 & 0.775 & 0.516 \\
-DEF & S & 0.616 & 0.614--0.619 & 0.645 & 0.773 & 0.513 & 0.632 & 0.746 & 0.518 \\
-RIS & S & 0.686 & 0.683--0.689 & 0.691 & 0.805 & 0.501 & 0.699 & 0.709 & 0.437 \\
-MLR & S & 0.660 & 0.656--0.663 & 0.681 & 0.717 & 0.223 & 0.616 & 0.916 & 0.394 \\
+CUR & C & 0.570 & 0.685 & 0.370 & 0.580 & 0.529 & 0.644 & 0.450 & 0.524 \\
+EMR & C & 0.648 & 0.739 & 0.003 & 0.739 & 0.446 & 0.644 & 0.460 & 0.623 \\
+DUAL & C & 0.649 & 0.746 & 0.003 & 0.750 & 0.596 & 0.641 & 0.589 & 0.627 \\
+COUNC & C & 0.651 & 0.740 & 0.059 & 0.752 & 0.662 & 0.643 & 0.533 & 0.630 \\
+OVR & C & 0.635 & 0.733 & 0.064 & 0.699 & 0.435 & 0.644 & 0.466 & 0.589 \\
+HYB & C & 0.661 & 0.745 & 0.003 & 0.753 & 0.432 & 0.642 & 0.542 & 0.636 \\
+WFR & S & 0.708 & 0.717 & 0.058 & 0.752 & 0.174 & 0.678 & 0.359 & 0.699 \\
+SUS & S & 0.679 & 0.721 & 0.003 & 0.760 & 0.206 & 0.624 & 0.383 & 0.672 \\
+PRE & S & 0.664 & 0.766 & 0.058 & 0.754 & 0.511 & 0.581 & 0.437 & 0.649 \\
+ABS & S & 0.666 & 0.770 & 0.004 & 0.747 & 0.311 & 0.565 & 0.436 & 0.643 \\
+OMB & S & 0.632 & 0.736 & 0.060 & 0.729 & 0.525 & 0.604 & 0.516 & 0.606 \\
+DEF & S & 0.645 & 0.773 & 0.003 & 0.741 & 0.513 & 0.632 & 0.518 & 0.616 \\
+RIS & S & 0.691 & 0.805 & 0.056 & 0.773 & 0.501 & 0.699 & 0.437 & 0.686 \\
+MLR & S & 0.681 & 0.717 & 0.002 & 0.783 & 0.223 & 0.616 & 0.394 & 0.660 \\
 \bottomrule
 \end{tabular}
 \begin{minipage}{0.96\linewidth}
-\footnotesize Notes: Values are baseline campaign estimates. C denotes court-variant scenarios and S denotes synthetic mechanism scenarios. The score column reports the equally weighted directional diagnostic score; the interval column reports the 95\% run-block bootstrap interval for that score. Democratic constitutionalism, veto-relocation risk, transplant feasibility, political-culture sensitivity, case-selection access, response credibility, repeat-player advantage, and implementation capacity are synthetic diagnostic constructs, not empirical estimates.
+\footnotesize Notes: Values are baseline campaign estimates. C denotes court-variant scenarios and S denotes synthetic mechanism scenarios. Emergency irregularity is the renamed emergency-process irregularity index stored in reports as \texttt{shadowDocketAbuse}; lower values indicate less opaque or merits-displacing emergency intervention. The legitimacy column is a modeled public-legitimacy proxy, not public-opinion measurement. The score aid is the equally weighted directional diagnostic score and should not be read as a rank ordering. Its 95\% run-block bootstrap interval is reported in the replication files. Democratic constitutionalism, veto-relocation risk, transplant feasibility, case-selection access, response credibility, repeat-player advantage, and implementation capacity are synthetic diagnostic constructs, not empirical estimates.
 \end{minipage}
 \end{table}

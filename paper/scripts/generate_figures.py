@@ -213,7 +213,7 @@ def generate_emergency_bars(rows: list[dict[str, str]]) -> None:
     lines.append(rf"\put({fmt(left)},10){{\line(1,0){{{fmt(width)}}}}}")
     lines.append(rf"\put({fmt(left)},10){{\line(0,1){{50}}}}")
     lines.append(r"\put(36,64){\color{black}\rule{6mm}{1.2mm}}")
-    lines.append(r"\put(44,64){\makebox(0,0)[l]{shadow-docket abuse}}")
+    lines.append(r"\put(44,64){\makebox(0,0)[l]{emergency irregularity}}")
     lines.append(r"\put(76,64){\color{black!55}\rule{6mm}{1.2mm}}")
     lines.append(r"\put(84,64){\makebox(0,0)[l]{reason-giving}}")
     lines.append(r"\put(36,60.5){\color{black!25}\rule{6mm}{1.2mm}}")

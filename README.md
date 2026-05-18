@@ -164,7 +164,7 @@ The starter catalog covers:
 - term limits: life tenure, nonrenewable 18-year terms, and shorter renewable terms
 - removal standards: impeachment-only, misconduct commission, and retention election pressure
 - recusal rules: self-policing, mandatory conflict recusal, random substitution, and strict transparency
-- emergency/shadow docket procedures: fast emergency orders, reasoned emergency panels, full-court emergency review, and merits follow-up
+- emergency-review procedures: fast emergency orders, reasoned emergency panels, full-court emergency review, and merits follow-up
 - doctrine areas: speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state
 - policy domains: civil rights, speech/religion, criminal justice, federalism, governance, elections, emergency/security, economic regulation, and administration; imported legislative rows preserve an explicit `policyDomain` column when present and otherwise infer one from row labels and stress signals
 - state/federal and lower-court pipeline signals: federal, state, and mixed state-federal jurisdiction; district-only, circuit-panel, en banc, state high-court, and state-federal split paths; panel skew, government win/loss, conflict pressure, certiorari pressure, and time-to-review
@@ -189,8 +189,8 @@ Core metrics:
 - `legalStability` `↑`: doctrinal and institutional stability after review
 - `rightsProtection` `↑`: protection against high-rights-threat laws without over-invalidating low-threat laws
 - `partisanAlignment` `↓`: extent to which review tracks partisan/ideological law origin more than legal risk
-- `shadowDocketAbuse` `↓`: unexplained or emergency-driven high-impact review
-- `legitimacy` `↑`: public trust, transparency, broad agreement, and rights performance net of conflict
+- `shadowDocketAbuse` `↓`: emergency-process irregularity; the legacy report column captures unexplained, opaque, or emergency-driven high-impact review
+- `legitimacy` `↑`: modeled public-legitimacy proxy combining trust input, transparency, broad agreement, and rights performance net of conflict
 - `reversalRate` `↓/diag.`: share of cases where laws are invalidated or reversed
 - `emergencyReliefRate` `↓`: emergency orders granting interim relief
 - `intakeAcceptanceRate` `diag.`: accepted review matters divided by estimated upstream filings
@@ -289,7 +289,7 @@ Research-derived structured inputs are checked in under `config/`:
 - `config/research/comparative-calibration-source-candidates.csv`: comparative court intake, route-mix, timing, emergency, and nonunanimity targets with source and mapping status
 - `config/research/transplant-indicator-operationalization.csv`: transplant-feasibility indicators, source families, ranges, and simulator-field mappings
 - `config/pipeline/us-scotus-pipeline.csv`: filings, certiorari, lower-court conflict, state-court origin, en banc, and timing benchmarks
-- `config/emergency/scotus-emergency-schema.csv`: row schema for future emergency/shadow-docket datasets
+- `config/emergency/scotus-emergency-schema.csv`: row schema for future emergency-review and shadow-docket datasets
 - `config/emergency/scotus-emergency-summary.csv`: universe and curated-sample emergency docket benchmarks
 - `config/cost-benchmarks/institutional-costs.csv`: normalized direct, delay, complexity, and capacity cost profiles
 

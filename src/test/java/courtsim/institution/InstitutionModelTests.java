@@ -42,8 +42,8 @@ public final class InstitutionModelTests
 		double fastAbuse = fast.shadowDocketAbuse(caseFile, true, false, true, false);
 		double followUpAbuse = followUp.shadowDocketAbuse(caseFile, true, true, true, true);
 		
-		assertBetween(fastAbuse, "fast shadow-docket abuse");
-		assertBetween(followUpAbuse, "merits follow-up shadow-docket abuse");
+		assertBetween(fastAbuse, "fast emergency-process irregularity");
+		assertBetween(followUpAbuse, "merits follow-up emergency-process irregularity");
 		assertTrue(followUpAbuse < fastAbuse, "merits follow-up should reduce modeled emergency abuse risk");
 		assertTrue(followUp.reliefGranted(caseFile, true, grantedRelief, new java.util.Random(7L)), "high-vote emergency relief should remain possible");
 	}

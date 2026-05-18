@@ -12,7 +12,7 @@ Baseline assumptions for sensitivity comparison.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.699
 - strongest rights protection: Rights-impact statements before review at 0.803
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.002
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.002
 - lowest emergency relief rate: Retention-election accountability court at 0.296
 - highest compliance rate: Weak-form review with legislative reply at 0.802
 - lowest defiance rate: Weak-form review with legislative reply at 0.036
@@ -23,7 +23,7 @@ Lower urgency and emergency docket pressure.
 
 - best overall: Rights-impact statements before review (`rights-impact-statement-review`) at 0.706
 - strongest rights protection: Rights-impact statements before review at 0.810
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.000
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.000
 - lowest emergency relief rate: Mandatory legislative response cycles at 0.190
 - highest compliance rate: Weak-form review with legislative reply at 0.827
 - lowest defiance rate: Weak-form review with legislative reply at 0.028
@@ -34,7 +34,7 @@ Higher urgency and emergency docket pressure.
 
 - best overall: Suspended declarations of invalidity (`suspended-declaration-review`) at 0.647
 - strongest rights protection: Rights-impact statements before review at 0.780
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.036
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.036
 - lowest emergency relief rate: Retention-election accountability court at 0.323
 - highest compliance rate: Mandatory legislative response cycles at 0.507
 - lowest defiance rate: Mandatory legislative response cycles at 0.190
@@ -45,7 +45,7 @@ Lower appointment ideology spread and partisan pressure.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.706
 - strongest rights protection: Rights-impact statements before review at 0.806
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.002
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.002
 - lowest emergency relief rate: Retention-election accountability court at 0.256
 - highest compliance rate: Weak-form review with legislative reply at 0.807
 - lowest defiance rate: Weak-form review with legislative reply at 0.035
@@ -56,7 +56,7 @@ Higher appointment ideology spread and partisan pressure.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.688
 - strongest rights protection: Rights-impact statements before review at 0.804
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.003
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.003
 - lowest emergency relief rate: Mandatory legislative response cycles at 0.341
 - highest compliance rate: Weak-form review with legislative reply at 0.758
 - lowest defiance rate: Weak-form review with legislative reply at 0.055
@@ -67,7 +67,7 @@ Lower share of cases with generated rights-risk signals.
 
 - best overall: Rights-impact statements before review (`rights-impact-statement-review`) at 0.719
 - strongest rights protection: Rights-impact statements before review at 0.858
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.001
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.001
 - lowest emergency relief rate: Mandatory legislative response cycles at 0.131
 - highest compliance rate: Weak-form review with legislative reply at 0.833
 - lowest defiance rate: Weak-form review with legislative reply at 0.028
@@ -78,7 +78,7 @@ Higher share of cases with generated rights-risk signals.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.688
 - strongest rights protection: Constitutional public defender access model at 0.852
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.008
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.008
 - lowest emergency relief rate: Retention-election accountability court at 0.686
 - highest compliance rate: Weak-form review with legislative reply at 0.711
 - lowest defiance rate: Weak-form review with legislative reply at 0.074
@@ -89,7 +89,7 @@ High initial trust and lower institutional conflict.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.718
 - strongest rights protection: Rights-impact statements before review at 0.806
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.003
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.003
 - lowest emergency relief rate: Retention-election accountability court at 0.258
 - highest compliance rate: Weak-form review with legislative reply at 0.860
 - lowest defiance rate: Weak-form review with legislative reply at 0.016
@@ -100,7 +100,7 @@ Low initial trust and higher institutional conflict.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.645
 - strongest rights protection: Rights-impact statements before review at 0.802
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.003
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.003
 - lowest emergency relief rate: Retention-election accountability court at 0.331
 - highest compliance rate: Weak-form review with legislative reply at 0.483
 - lowest defiance rate: Weak-form review with legislative reply at 0.176
@@ -111,7 +111,7 @@ Lower legislature-court conflict pressure.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.713
 - strongest rights protection: Rights-impact statements before review at 0.804
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.002
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.002
 - lowest emergency relief rate: Retention-election accountability court at 0.254
 - highest compliance rate: Weak-form review with legislative reply at 0.834
 - lowest defiance rate: Weak-form review with legislative reply at 0.025
@@ -122,14 +122,14 @@ Higher legislature-court conflict pressure and lower trust.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.637
 - strongest rights protection: Rights-impact statements before review at 0.801
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.003
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.003
 - lowest emergency relief rate: Retention-election accountability court at 0.365
 - highest compliance rate: Weak-form review with legislative reply at 0.439
 - lowest defiance rate: Weak-form review with legislative reply at 0.209
 
 ## Scenario Averages
 
-| Scenario | Kind | Mechanism | Score | Dem. const. | Stability | Rights | Partisan | Shadow | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legitimacy | Reversal | Conflict | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |
+| Scenario | Kind | Mechanism | Score aid | Dem. const. | Stability | Rights | Partisan | Emerg. irr. | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legit. proxy | Reversal | Conflict index | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | court_variant | strong_form_court | 0.522 | 0.566 | 0.779 | 0.687 | 0.203 | 0.400 | 0.024 | 0.685 | 0.027 | 0.558 | 0.447 | 0.569 | 0.259 | 0.355 | 0.404 | 0.545 | 0.432 | 0.357 | 0.608 | 0.528 | 0.642 | 0.736 | 0.410 | 0.406 | 0.183 | 0.069 | 0.241 | 2.428 | 0.563 | 0.486 | 0.307 | 0.690 | 0.420 | 0.451 |
 | Staggered 18-year nonrenewable terms | court_variant | strong_form_court | 0.532 | 0.573 | 0.788 | 0.695 | 0.186 | 0.394 | 0.024 | 0.640 | 0.035 | 0.551 | 0.410 | 0.579 | 0.238 | 0.349 | 0.414 | 0.544 | 0.432 | 0.357 | 0.607 | 0.519 | 0.643 | 0.735 | 0.413 | 0.417 | 0.178 | 0.067 | 0.248 | 2.428 | 0.563 | 0.494 | 0.311 | 0.690 | 0.435 | 0.455 |
@@ -181,7 +181,7 @@ Higher legislature-court conflict pressure and lower trust.
 
 ## Period Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | 1 | 17600 | 1.000 | 0.024 | 0.687 | 0.583 | 0.545 | 0.432 | 0.357 | 0.608 | 0.528 | 0.642 | 0.736 | 0.400 | 0.028 | 0.547 | 0.444 | 2.424 | 0.562 | 0.501 | 0.570 | 0.560 | 0.106 | 0.035 | 0.413 | 0.110 | 0.693 | 0.462 | 0.447 |
 | Current-style federal supreme court | 2 | 17600 | 1.000 | 0.024 | 0.688 | 0.565 | 0.545 | 0.432 | 0.357 | 0.608 | 0.528 | 0.642 | 0.736 | 0.396 | 0.024 | 0.566 | 0.447 | 2.426 | 0.563 | 0.500 | 0.400 | 0.399 | 0.192 | 0.073 | 0.234 | 0.000 | 0.935 | 0.927 | 0.452 |
@@ -270,7 +270,7 @@ Higher legislature-court conflict pressure and lower trust.
 
 ## Doctrine Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | administrative_state | 9999 | 1.000 | 0.023 | 0.742 | 0.606 | 0.533 | 0.393 | 0.394 | 0.613 | 0.543 | 0.642 | 0.720 | 0.322 | 0.019 | 0.494 | 0.082 | 2.703 | 0.468 | 0.510 | 0.451 | 0.448 | 0.220 | 0.058 | 0.301 | 0.032 | 0.893 | 0.839 | 0.458 |
 | Current-style federal supreme court | criminal_procedure | 10152 | 1.000 | 0.024 | 0.676 | 0.563 | 0.550 | 0.441 | 0.347 | 0.608 | 0.519 | 0.643 | 0.736 | 0.378 | 0.019 | 0.552 | 0.577 | 2.333 | 0.564 | 0.491 | 0.407 | 0.399 | 0.179 | 0.076 | 0.231 | 0.029 | 0.903 | 0.846 | 0.446 |
@@ -422,7 +422,7 @@ Higher legislature-court conflict pressure and lower trust.
 
 ## Pipeline Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | federal/circuit_en_banc | 6673 | 1.000 | 0.023 | 0.709 | 0.585 | 0.543 | 0.420 | 0.370 | 0.611 | 0.534 | 0.642 | 0.718 | 0.383 | 0.024 | 0.526 | 0.284 | 3.000 | 0.393 | 0.479 | 0.442 | 0.432 | 0.190 | 0.067 | 0.331 | 0.031 | 0.892 | 0.837 | 0.460 |
 | Current-style federal supreme court | federal/circuit_panel | 14881 | 1.000 | 0.023 | 0.694 | 0.576 | 0.547 | 0.439 | 0.352 | 0.613 | 0.517 | 0.643 | 0.721 | 0.406 | 0.026 | 0.565 | 0.428 | 2.000 | 0.409 | 0.439 | 0.433 | 0.420 | 0.174 | 0.065 | 0.318 | 0.030 | 0.898 | 0.842 | 0.439 |
@@ -679,7 +679,7 @@ Higher legislature-court conflict pressure and lower trust.
 
 ## Policy Domain Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | administration | 6386 | 1.000 | 0.023 | 0.743 | 0.607 | 0.532 | 0.394 | 0.403 | 0.614 | 0.543 | 0.642 | 0.720 | 0.318 | 0.021 | 0.505 | 0.080 | 2.702 | 0.469 | 0.512 | 0.453 | 0.445 | 0.219 | 0.058 | 0.298 | 0.031 | 0.894 | 0.840 | 0.458 |
 | Current-style federal supreme court | civil-rights | 11773 | 1.000 | 0.024 | 0.676 | 0.560 | 0.555 | 0.463 | 0.321 | 0.608 | 0.510 | 0.643 | 0.733 | 0.398 | 0.029 | 0.543 | 0.693 | 2.269 | 0.503 | 0.461 | 0.404 | 0.406 | 0.179 | 0.074 | 0.249 | 0.025 | 0.911 | 0.856 | 0.442 |

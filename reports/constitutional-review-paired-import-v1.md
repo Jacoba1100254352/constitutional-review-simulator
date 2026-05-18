@@ -12,7 +12,7 @@ Synthetic docket using the same world assumptions as the imported comparisons.
 
 - best overall: Weak-form review with legislative reply (`weak-form-review`) at 0.650
 - strongest rights protection: Rights-impact statements before review at 0.792
-- lowest shadow-docket abuse: Mandatory legislative response cycles at 0.009
+- lowest emergency-process irregularity: Mandatory legislative response cycles at 0.009
 - lowest emergency relief rate: Retention-election accountability court at 0.327
 - highest compliance rate: Weak-form review with legislative reply at 0.563
 - lowest defiance rate: Weak-form review with legislative reply at 0.148
@@ -23,7 +23,7 @@ Docket generated from every imported legislative campaign row.
 
 - best overall: Rights-impact statements before review (`rights-impact-statement-review`) at 0.744
 - strongest rights protection: Rights-impact statements before review at 0.865
-- lowest shadow-docket abuse: Dual supreme courts with cross-checking invalidations at 0.000
+- lowest emergency-process irregularity: Dual supreme courts with cross-checking invalidations at 0.000
 - lowest emergency relief rate: Panel review with en banc safety valve at 0.000
 - highest compliance rate: Rights-impact statements before review at 0.852
 - lowest defiance rate: Rights-impact statements before review at 0.016
@@ -34,7 +34,7 @@ Imported rows with high lobby-capture or proposer-gain signals.
 
 - best overall: Suspended declarations of invalidity (`suspended-declaration-review`) at 0.738
 - strongest rights protection: Rights-impact statements before review at 0.858
-- lowest shadow-docket abuse: Reasoned emergency orders with merits follow-up at 0.000
+- lowest emergency-process irregularity: Reasoned emergency orders with merits follow-up at 0.000
 - lowest emergency relief rate: Fifteen-justice supermajority commission court at 0.000
 - highest compliance rate: Rights-impact statements before review at 0.834
 - lowest defiance rate: Rights-impact statements before review at 0.025
@@ -45,7 +45,7 @@ Imported rows with high policy-shift, reversal, or status-quo volatility signals
 
 - best overall: Rights-impact statements before review (`rights-impact-statement-review`) at 0.708
 - strongest rights protection: Rights-impact statements before review at 0.836
-- lowest shadow-docket abuse: Dual supreme courts with cross-checking invalidations at 0.000
+- lowest emergency-process irregularity: Dual supreme courts with cross-checking invalidations at 0.000
 - lowest emergency relief rate: Dual supreme courts with cross-checking invalidations at 0.000
 - highest compliance rate: Weak-form review with legislative reply at 0.774
 - lowest defiance rate: Weak-form review with legislative reply at 0.043
@@ -56,14 +56,14 @@ Imported rows with weak public mandate, low support, or public-preference distor
 
 - best overall: Rights-impact statements before review (`rights-impact-statement-review`) at 0.717
 - strongest rights protection: Rights-impact statements before review at 0.829
-- lowest shadow-docket abuse: Reasoned emergency orders with merits follow-up at 0.000
+- lowest emergency-process irregularity: Reasoned emergency orders with merits follow-up at 0.000
 - lowest emergency relief rate: Fifteen-justice supermajority commission court at 0.000
 - highest compliance rate: Weak-form review with legislative reply at 0.795
 - lowest defiance rate: Weak-form review with legislative reply at 0.038
 
 ## Scenario Averages
 
-| Scenario | Kind | Mechanism | Score | Dem. const. | Stability | Rights | Partisan | Shadow | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legitimacy | Reversal | Conflict | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |
+| Scenario | Kind | Mechanism | Score aid | Dem. const. | Stability | Rights | Partisan | Emerg. irr. | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legit. proxy | Reversal | Conflict index | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | court_variant | strong_form_court | 0.566 | 0.626 | 0.878 | 0.740 | 0.173 | 0.175 | 0.022 | 0.513 | 0.021 | 0.508 | 0.295 | 0.641 | 0.199 | 0.281 | 0.516 | 0.540 | 0.362 | 0.350 | 0.620 | 0.539 | 0.643 | 0.765 | 0.532 | 0.521 | 0.121 | 0.060 | 0.352 | 2.448 | 0.575 | 0.446 | 0.303 | 0.674 | 0.401 | 0.442 |
 | Staggered 18-year nonrenewable terms | court_variant | strong_form_court | 0.583 | 0.637 | 0.890 | 0.749 | 0.156 | 0.170 | 0.022 | 0.375 | 0.032 | 0.453 | 0.248 | 0.655 | 0.162 | 0.270 | 0.532 | 0.539 | 0.362 | 0.350 | 0.620 | 0.528 | 0.643 | 0.763 | 0.552 | 0.545 | 0.110 | 0.054 | 0.378 | 2.448 | 0.575 | 0.454 | 0.308 | 0.674 | 0.416 | 0.446 |
@@ -115,7 +115,7 @@ Imported rows with weak public mandate, low support, or public-preference distor
 
 ## Period Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | 1 | 12000 | 1.000 | 0.022 | 0.749 | 0.645 | 0.538 | 0.357 | 0.354 | 0.622 | 0.540 | 0.643 | 0.762 | 0.162 | 0.045 | 0.347 | 0.249 | 2.428 | 0.569 | 0.495 | 0.631 | 0.622 | 0.074 | 0.032 | 0.464 | 0.287 | 0.651 | 0.353 | 0.438 |
 | Current-style federal supreme court | 2 | 12000 | 1.000 | 0.022 | 0.723 | 0.615 | 0.546 | 0.370 | 0.344 | 0.618 | 0.536 | 0.643 | 0.767 | 0.182 | 0.037 | 0.555 | 0.368 | 2.435 | 0.563 | 0.498 | 0.536 | 0.514 | 0.125 | 0.060 | 0.354 | 0.048 | 0.698 | 0.666 | 0.442 |
@@ -204,7 +204,7 @@ Imported rows with weak public mandate, low support, or public-preference distor
 
 ## Doctrine Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | administrative_state | 4707 | 1.000 | 0.021 | 0.825 | 0.665 | 0.528 | 0.342 | 0.372 | 0.625 | 0.550 | 0.643 | 0.748 | 0.183 | 0.068 | 0.499 | 0.025 | 2.678 | 0.465 | 0.498 | 0.547 | 0.541 | 0.167 | 0.048 | 0.395 | 0.102 | 0.720 | 0.657 | 0.449 |
 | Current-style federal supreme court | criminal_procedure | 3149 | 1.000 | 0.022 | 0.723 | 0.614 | 0.527 | 0.377 | 0.344 | 0.619 | 0.530 | 0.643 | 0.760 | 0.300 | 0.013 | 0.357 | 0.291 | 2.346 | 0.572 | 0.495 | 0.497 | 0.489 | 0.132 | 0.059 | 0.312 | 0.104 | 0.747 | 0.663 | 0.442 |
@@ -356,7 +356,7 @@ Imported rows with weak public mandate, low support, or public-preference distor
 
 ## Pipeline Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | federal/circuit_en_banc | 3797 | 1.000 | 0.021 | 0.775 | 0.652 | 0.535 | 0.353 | 0.354 | 0.625 | 0.544 | 0.643 | 0.745 | 0.167 | 0.005 | 0.446 | 0.138 | 3.000 | 0.389 | 0.467 | 0.560 | 0.551 | 0.131 | 0.056 | 0.448 | 0.097 | 0.686 | 0.622 | 0.450 |
 | Current-style federal supreme court | federal/circuit_panel | 9735 | 1.000 | 0.021 | 0.755 | 0.650 | 0.535 | 0.358 | 0.347 | 0.628 | 0.531 | 0.643 | 0.745 | 0.167 | 0.045 | 0.490 | 0.152 | 2.000 | 0.400 | 0.430 | 0.568 | 0.561 | 0.109 | 0.053 | 0.459 | 0.097 | 0.678 | 0.608 | 0.430 |
@@ -613,7 +613,7 @@ Imported rows with weak public mandate, low support, or public-preference distor
 
 ## Policy Domain Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Current-style federal supreme court | administration | 841 | 1.000 | 0.024 | 0.717 | 0.565 | 0.509 | 0.393 | 0.404 | 0.606 | 0.543 | 0.642 | 0.757 | 0.573 | 0.012 | 0.505 | 0.088 | 2.688 | 0.484 | 0.538 | 0.392 | 0.366 | 0.256 | 0.049 | 0.243 | 0.017 | 0.972 | 0.911 | 0.465 |
 | Current-style federal supreme court | civil-rights | 19633 | 1.000 | 0.022 | 0.701 | 0.609 | 0.555 | 0.374 | 0.343 | 0.619 | 0.532 | 0.643 | 0.768 | 0.109 | 0.033 | 0.571 | 0.476 | 2.417 | 0.543 | 0.487 | 0.536 | 0.522 | 0.117 | 0.068 | 0.372 | 0.059 | 0.687 | 0.622 | 0.436 |

@@ -11,7 +11,7 @@ public final class DirectionalScoreModelTests
 	
 	public static void runAll() {
 		scoreRemainsBoundedAndDelegatedFromReport();
-		reasonedEmergencyReviewReducesShadowDocketRiskUnderEmergencyStress();
+		reasonedEmergencyReviewReducesIrregularityUnderEmergencyStress();
 	}
 	
 	private static void scoreRemainsBoundedAndDelegatedFromReport() {
@@ -34,7 +34,7 @@ public final class DirectionalScoreModelTests
 		}
 	}
 	
-	private static void reasonedEmergencyReviewReducesShadowDocketRiskUnderEmergencyStress() {
+	private static void reasonedEmergencyReviewReducesIrregularityUnderEmergencyStress() {
 		List<ScenarioReport> reports = new Simulator().compare(
 				ScenarioCatalog.scenariosForKeys(List.of(
 						"current-federal-court",
@@ -55,7 +55,7 @@ public final class DirectionalScoreModelTests
 		                                 .orElseThrow();
 		
 		assertTrue(reasoned.shadowDocketAbuse() < current.shadowDocketAbuse(),
-		           "reasoned emergency procedure should reduce shadow-docket abuse in the stress scenario");
+			           "reasoned emergency procedure should reduce emergency-process irregularity in the stress scenario");
 		assertTrue(reasoned.emergencyReasonGivingRate() > current.emergencyReasonGivingRate(),
 		           "reasoned emergency procedure should increase emergency reason giving");
 	}

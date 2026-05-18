@@ -295,7 +295,7 @@ def generate_baseline_results() -> None:
         r"\setlength{\tabcolsep}{3pt}",
         r"\begin{tabular}{@{}llrrrrrrrr@{}}",
         r"\toprule",
-        r"Scenario & Kind & Score & 95\% CI & Dem. const. & Rights & Veto $\downarrow$ & Transplant & Culture $\downarrow$ & Cost $\downarrow$ \\",
+        r"Scenario & Kind & Dem. const. & Rights & Emerg. irr. $\downarrow$ & Legit. proxy & Veto $\downarrow$ & Transplant & Cost $\downarrow$ & Score aid \\",
         r"\midrule",
     ]
     for scenario in SCENARIO_ORDER:
@@ -306,14 +306,14 @@ def generate_baseline_results() -> None:
                 [
                     SCENARIO_LABELS[scenario],
                     "S" if row["scenarioKind"] == "synthetic_mechanism" else ("R" if row["scenarioKind"] == "real_world_preset" else "C"),
-                    num(row["directionalScore"]),
-                    f"{num(interval['lower95'])}--{num(interval['upper95'])}",
                     num(row["democraticConstitutionalism"]),
                     num(row["rightsProtection"]),
+                    num(row["shadowDocketAbuse"]),
+                    num(row["legitimacy"]),
                     num(row["vetoRelocationRisk"]),
                     num(row["legalTransplantFeasibility"]),
-                    num(row["politicalCultureSensitivity"]),
                     num(row["totalInstitutionalCost"]),
+                    num(row["directionalScore"]),
                 ]
             )
             + r" \\"
@@ -323,7 +323,7 @@ def generate_baseline_results() -> None:
             r"\bottomrule",
             r"\end{tabular}",
             r"\begin{minipage}{0.96\linewidth}",
-            r"\footnotesize Notes: Values are baseline campaign estimates. C denotes court-variant scenarios and S denotes synthetic mechanism scenarios. The score column reports the equally weighted directional diagnostic score; the interval column reports the 95\% run-block bootstrap interval for that score. Democratic constitutionalism, veto-relocation risk, transplant feasibility, political-culture sensitivity, case-selection access, response credibility, repeat-player advantage, and implementation capacity are synthetic diagnostic constructs, not empirical estimates.",
+            r"\footnotesize Notes: Values are baseline campaign estimates. C denotes court-variant scenarios and S denotes synthetic mechanism scenarios. Emergency irregularity is the renamed emergency-process irregularity index stored in reports as \texttt{shadowDocketAbuse}; lower values indicate less opaque or merits-displacing emergency intervention. The legitimacy column is a modeled public-legitimacy proxy, not public-opinion measurement. The score aid is the equally weighted directional diagnostic score and should not be read as a rank ordering. Its 95\% run-block bootstrap interval is reported in the replication files. Democratic constitutionalism, veto-relocation risk, transplant feasibility, case-selection access, response credibility, repeat-player advantage, and implementation capacity are synthetic diagnostic constructs, not empirical estimates.",
             r"\end{minipage}",
             r"\end{table}",
             "",

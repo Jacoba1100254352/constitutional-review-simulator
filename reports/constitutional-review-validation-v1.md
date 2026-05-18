@@ -12,14 +12,14 @@ Validation context compares each real-world preset against documented calibratio
 
 - best overall: UK Supreme Court declaration model (`uk-supreme-court`) at 0.699
 - strongest rights protection: Court of Justice of the European Union at 0.764
-- lowest shadow-docket abuse: South African Constitutional Court at 0.005
+- lowest emergency-process irregularity: South African Constitutional Court at 0.005
 - lowest emergency relief rate: Court of Justice of the European Union at 0.360
 - highest compliance rate: UK Supreme Court declaration model at 0.786
 - lowest defiance rate: UK Supreme Court declaration model at 0.043
 
 ## Scenario Averages
 
-| Scenario | Kind | Mechanism | Score | Dem. const. | Stability | Rights | Partisan | Shadow | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legitimacy | Reversal | Conflict | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |
+| Scenario | Kind | Mechanism | Score aid | Dem. const. | Stability | Rights | Partisan | Emerg. irr. | Intake | Emerg. relief | Reasons | Disagree | Merits inval. | Legit. proxy | Reversal | Conflict index | Response | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Depth | St/Fed | Admin | Direct | Upstream | Capacity | Cost |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | U.S. Supreme Court benchmark | real_world_preset | strong_form_court | 0.486 | 0.525 | 0.739 | 0.647 | 0.283 | 0.482 | 0.025 | 0.781 | 0.026 | 0.587 | 0.574 | 0.475 | 0.254 | 0.404 | 0.370 | 0.494 | 0.494 | 0.378 | 0.612 | 0.529 | 0.693 | 0.867 | 0.329 | 0.326 | 0.220 | 0.077 | 0.158 | 2.454 | 0.627 | 0.511 | 0.557 | 0.704 | 0.515 | 0.569 |
 | German Federal Constitutional Court | real_world_preset | strong_form_court | 0.621 | 0.659 | 0.900 | 0.735 | 0.124 | 0.094 | 0.007 | 0.469 | 0.709 | 0.264 | 0.404 | 0.745 | 0.326 | 0.251 | 0.458 | 0.592 | 0.491 | 0.335 | 0.673 | 0.492 | 0.724 | 0.683 | 0.618 | 0.656 | 0.091 | 0.056 | 0.441 | 2.422 | 0.549 | 0.669 | 0.615 | 0.814 | 0.630 | 0.673 |
@@ -45,7 +45,7 @@ Validation context compares each real-world preset against documented calibratio
 
 ## Period Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | U.S. Supreme Court benchmark | 1 | 2400 | 1.000 | 0.025 | 0.649 | 0.535 | 0.494 | 0.495 | 0.378 | 0.613 | 0.529 | 0.693 | 0.866 | 0.471 | 0.023 | 0.577 | 0.576 | 2.460 | 0.630 | 0.577 | 0.423 | 0.430 | 0.162 | 0.049 | 0.268 | 0.024 | 0.972 | 0.742 | 0.566 |
 | U.S. Supreme Court benchmark | 2 | 2400 | 1.000 | 0.025 | 0.645 | 0.520 | 0.493 | 0.493 | 0.378 | 0.612 | 0.529 | 0.693 | 0.867 | 0.493 | 0.028 | 0.598 | 0.562 | 2.438 | 0.622 | 0.572 | 0.282 | 0.291 | 0.235 | 0.082 | 0.133 | 0.000 | 0.998 | 1.000 | 0.570 |
@@ -82,7 +82,7 @@ Validation context compares each real-world preset against documented calibratio
 
 ## Doctrine Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | U.S. Supreme Court benchmark | administrative_state | 1428 | 1.000 | 0.024 | 0.705 | 0.561 | 0.486 | 0.457 | 0.419 | 0.617 | 0.543 | 0.693 | 0.852 | 0.399 | 0.020 | 0.573 | 0.145 | 2.707 | 0.529 | 0.586 | 0.363 | 0.376 | 0.249 | 0.067 | 0.211 | 0.008 | 0.988 | 0.927 | 0.577 |
 | U.S. Supreme Court benchmark | criminal_procedure | 1370 | 1.000 | 0.025 | 0.635 | 0.522 | 0.498 | 0.503 | 0.364 | 0.612 | 0.520 | 0.694 | 0.867 | 0.455 | 0.030 | 0.547 | 0.739 | 2.372 | 0.628 | 0.562 | 0.323 | 0.310 | 0.223 | 0.087 | 0.161 | 0.005 | 0.993 | 0.937 | 0.564 |
@@ -143,7 +143,7 @@ Validation context compares each real-world preset against documented calibratio
 
 ## Pipeline Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | U.S. Supreme Court benchmark | federal/circuit_en_banc | 839 | 1.000 | 0.024 | 0.665 | 0.541 | 0.492 | 0.484 | 0.392 | 0.615 | 0.534 | 0.693 | 0.850 | 0.462 | 0.030 | 0.586 | 0.387 | 3.000 | 0.447 | 0.550 | 0.374 | 0.358 | 0.216 | 0.073 | 0.254 | 0.010 | 0.987 | 0.920 | 0.578 |
 | U.S. Supreme Court benchmark | federal/circuit_panel | 1845 | 1.000 | 0.024 | 0.657 | 0.534 | 0.494 | 0.499 | 0.372 | 0.617 | 0.518 | 0.694 | 0.853 | 0.495 | 0.030 | 0.598 | 0.561 | 2.000 | 0.464 | 0.509 | 0.359 | 0.338 | 0.219 | 0.064 | 0.240 | 0.005 | 0.992 | 0.942 | 0.556 |
@@ -244,7 +244,7 @@ Validation context compares each real-world preset against documented calibratio
 
 ## Policy Domain Diagnostics
 
-| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Shadow | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust | Conflict | Curbing | Cost |
+| Scenario | Segment | Cases | Review | Intake | Rights | Dem. const. | Resp. cred. | Access | Gov. adv. | Impl. cap. | Veto reloc. | Transplant | Culture sens. | Emerg. irr. | Reasons | Disagree | Merits inval. | Depth | St/Fed | Intercourt | Compliance | Exec impl. | Agency nonaq. | Reenact. | Local comp. | Trust input | Conflict index | Curbing | Cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | U.S. Supreme Court benchmark | administration | 921 | 1.000 | 0.024 | 0.708 | 0.563 | 0.486 | 0.455 | 0.426 | 0.617 | 0.544 | 0.693 | 0.852 | 0.394 | 0.017 | 0.576 | 0.158 | 2.704 | 0.532 | 0.587 | 0.368 | 0.393 | 0.243 | 0.068 | 0.226 | 0.009 | 0.987 | 0.922 | 0.577 |
 | U.S. Supreme Court benchmark | civil-rights | 1633 | 1.000 | 0.025 | 0.640 | 0.524 | 0.498 | 0.525 | 0.337 | 0.613 | 0.510 | 0.694 | 0.864 | 0.477 | 0.026 | 0.547 | 0.807 | 2.314 | 0.570 | 0.535 | 0.322 | 0.316 | 0.213 | 0.083 | 0.166 | 0.005 | 0.993 | 0.936 | 0.561 |
