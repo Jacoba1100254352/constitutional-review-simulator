@@ -1,8 +1,8 @@
-# Validation Miss Interpretation
+# Source-Range Miss Interpretation
 
 This file is generated from `constitutional-review-validation-v1-calibration.csv`.
-It includes only source-specific diagnostic rows with documented denominators and direct simulator analogues.
-A miss is a calibration diagnostic, not a failed forecast.
+It includes only source-backed rows with documented denominators and direct simulator analogues.
+A miss is a calibration priority, not a failed forecast.
 
 | Profile | Target | Source range | Model | Gap | Category | Interpretation | Next action |
 | --- | --- | --- | --- | ---: | --- | --- | --- |
@@ -17,7 +17,7 @@ A miss is a calibration diagnostic, not a failed forecast.
 | uk-human-rights-doi-2025 | Strict response after declarations of incompatibility | 0.430--0.460 | 0.367 | 0.063 | weak-form response mechanism | The weak-form declaration pathway understates source-counted legislative or remedial response. | Tune response-cycle triggers, government capacity, and statutory-remedy coding for the declaration model. |
 | canada-scc-2024 | Leave application grant rate | 0.060--0.075 | 0.114 | 0.039 | intake denominator alignment | The model's generated filing screen is not yet aligned with the source court's annual intake denominator. | Refine upstream filing volume, leave/admission filters, and docket-source mapping before making court-specific intake claims. |
 | france-conseil-qpc | QPC nonconformity rate | 0.305--0.324 | 0.290 | 0.015 | merits-outcome mechanism | The merits-outcome rate is close but outside the source interval for this profile. | Retune doctrine severity, referral screening, and invalidation-threshold parameters only after preserving cross-profile comparability. |
-| cjeu-2024 | Preliminary-reference docket share | 0.613--0.633 | 0.621 | 0.000 | within source range | The preset matches this narrow source-denominated diagnostic only. | Keep the row as a benchmark check; do not generalize it to full court behavior. |
-| cjeu-2024 | Appeal route docket share | 0.292--0.311 | 0.310 | 0.000 | within source range | The preset matches this narrow source-denominated diagnostic only. | Keep the row as a benchmark check; do not generalize it to full court behavior. |
-| cjeu-2024 | Direct-action docket share | 0.052--0.064 | 0.061 | 0.000 | within source range | The preset matches this narrow source-denominated diagnostic only. | Keep the row as a benchmark check; do not generalize it to full court behavior. |
-| scotus-emergency-2024-2025 | Public disagreement share | 0.570--0.760 | 0.587 | 0.000 | within source range | The preset matches this narrow source-denominated diagnostic only. | Keep the row as a benchmark check; do not generalize it to full court behavior. |
+| cjeu-2024 | Preliminary-reference docket share | 0.613--0.633 | 0.621 | 0.000 | within source range | The preset matches this narrow source-denominated check. | Keep the row as a benchmark check; do not generalize it to full court behavior. |
+| cjeu-2024 | Appeal route docket share | 0.292--0.311 | 0.310 | 0.000 | within source range | The preset matches this narrow source-denominated check. | Keep the row as a benchmark check; do not generalize it to full court behavior. |
+| cjeu-2024 | Direct-action docket share | 0.052--0.064 | 0.061 | 0.000 | within source range | The preset matches this narrow source-denominated check. | Keep the row as a benchmark check; do not generalize it to full court behavior. |
+| scotus-emergency-2024-2025 | Public disagreement share | 0.570--0.760 | 0.587 | 0.000 | within source range | The preset matches this narrow source-denominated check. | Keep the row as a benchmark check; do not generalize it to full court behavior. |

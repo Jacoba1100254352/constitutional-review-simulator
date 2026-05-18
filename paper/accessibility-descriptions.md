@@ -8,7 +8,7 @@ in the article.
 
 `fig:model-pipeline`: Flow diagram showing the simulator pipeline as separate
 audit points: scenario catalog, world and case generation, institutional
-routing, decision process, diagnostics and reports, legislative-output stress
+routing, decision process, outputs and reports, legislative-output stress
 signals, intake and access filters, emergency and merits review, compliance,
 reaction, cost, and period turnover or political-culture state.
 
@@ -17,21 +17,21 @@ scenarios on emergency-process irregularity, emergency reason-giving, and merits
 follow-up. The current-style court is marked `CUR*` and has higher emergency-process irregularity than the
 reasoned emergency, cross-checking, council, and hybrid designs.
 
-`fig:paired-import`: Line chart comparing directional diagnostic scores across
-five docket sources: synthetic baseline, all imported legislative rows,
+`fig:paired-import`: Line chart comparing directional display scores across
+five docket sources: generated baseline, all imported legislative rows,
 high-capture imports, high-volatility imports, and low-mandate imports. The
 current-style court is marked `CUR*`. The designs move differently as the docket source changes, showing why imported
 legislative outputs are useful stress tests.
 
 `fig:cost-score`: Scatterplot of baseline total institutional cost against
 democratic constitutionalism. The current-style court is marked `CUR*`.
-Filled markers show court architectures and open markers show synthetic
-mechanisms, all labeled so readers can compare
+Filled markers show court architectures and open markers show mechanism
+scenarios, all labeled so readers can compare
 cost against the rights, responsiveness, legitimacy, compliance, feasibility,
 implementation, access, response credibility, feasibility, and veto-relocation
-diagnostic.
+measure.
 
-`fig:mechanism-tradeoff`: Scatterplot of synthetic mechanisms only. The
+`fig:mechanism-tradeoff`: Scatterplot of mechanism scenarios only. The
 horizontal axis is veto-relocation risk and the vertical axis is democratic
 constitutionalism. Weak-form, suspended-declaration, override-clause,
 pre-enactment, abstract-review, ombudsman, public-defender, rights-impact
@@ -46,8 +46,7 @@ archetype presets, and feasibility constraints.
 
 `tab:model-transparency`: Table summarizing model-input families, scale or
 construction, model role, and evidentiary status for generated case facts,
-world context, institutional rules, model weights, and external diagnostic
-targets.
+world context, institutional rules, model weights, and external source ranges.
 
 `tab:metrics`: Table grouping the simulator's outcome metrics into legal
 performance, political alignment, democratic constitutionalism, noncourt
@@ -55,7 +54,7 @@ mechanisms, emergency docket, legitimacy and conflict, pipeline and intake,
 coalitions and recusals, compliance, and institutional cost categories.
 
 `tab:mechanical-diagnostic`: Table separating mechanically implied model
-patterns from diagnostic findings. It explains when emergency-reasoning,
+patterns from downstream tests. It explains when emergency-reasoning,
 no-relief-without-merits, appointment, and weak-form response results should be
 read as implementation checks rather than substantive tradeoffs.
 
@@ -65,14 +64,14 @@ comparative court intake or invalidation benchmarks. Columns report the court
 and period, target label, observed value, target range, sample size, and
 reliability.
 
-`tab:validation-summary`: Table listing external diagnostic fit checks for
+`tab:validation-summary`: Table listing external source-range checks for
 U.S., German, Canadian, French, South African, UK, ECHR, and CJEU-inspired
 archetype presets. Columns show the scenario preset, count of mapped targets
 falling within documented ranges, median target gap, and the largest remaining
 miss.
 
 `tab:validation-miss-interpretation`: Table listing the largest out-of-range
-source-specific diagnostic checks as a calibration roadmap. Columns show the
+source-range checks as a calibration roadmap. Columns show the
 target, model value versus source range, miss category, interpretation, and
 next calibration step.
 
@@ -82,7 +81,7 @@ constitutionalism, rights protection, emergency-process irregularity, modeled
 public-legitimacy proxy, veto-relocation risk, institutional cost, and the
 display-score aid.
 
-`tab:mechanism-results`: Table listing synthetic mechanism diagnostics.
+`tab:mechanism-results`: Table listing mechanism scenario results.
 Columns report democratic constitutionalism, veto-relocation risk, transplant
 feasibility, political-culture sensitivity, weak-form declaration rate,
 suspended declaration rate, rights-impact statement rate, pre-enactment review
@@ -92,7 +91,7 @@ rate, abstract review rate, and legislative response rate.
 readings of the same baseline outputs. Rows identify rights-centered,
 parliamentary-dialogue, legal-stability, cost-minimizing, and
 anti-veto-relocation profiles, along with the leading court architecture and
-leading synthetic mechanism under each profile.
+leading mechanism under each profile.
 
 `tab:supp-model-weights`: Supplementary long table describing the fixed model
 weights and formulas for core simulated outcomes, including emergency-process
@@ -105,8 +104,7 @@ display score.
 `tab:supp-model-crosswalk`: Supplementary long table mapping manuscript model
 stages to implementation modules. Columns identify each stage, the main code
 module, principal inputs, principal outputs, and whether the component is an
-institutional mapping, synthetic mechanism, normalized diagnostic, or
-source-range diagnostic.
+institutional mapping, mechanism flag, normalized index, or source-range check.
 
 `tab:supp-scenario-matrix`: Supplementary long table listing all main-campaign
 case-scenario combinations with mechanism family, score, democratic
@@ -114,7 +112,7 @@ constitutionalism, rights protection, veto-relocation risk, political-culture
 sensitivity, and institutional cost.
 
 `tab:supp-sensitivity`: Supplementary long table listing sensitivity campaign
-stress cases and scenario diagnostics for score, democratic constitutionalism,
+stress cases and scenario outputs for score, democratic constitutionalism,
 veto-relocation risk, transplant feasibility, political-culture sensitivity,
 and trust.
 

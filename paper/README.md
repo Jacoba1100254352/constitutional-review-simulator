@@ -116,8 +116,8 @@ Relevant venue-format constraints now reflected in the manuscript:
   dates, access method, modification status, and use description;
 - explicit directional-score formula and a generated baseline results table;
 - generated calibration target table;
-- generated external diagnostic fit table;
-- generated diagnostic-miss interpretation table, backed by
+- generated external source-range check table;
+- generated source-range miss interpretation table, backed by
   `reports/constitutional-review-validation-v1-misses.csv` and `.md`;
 - generated supplementary calibration source-observation matrix;
 - generated supplementary empirical research-roadmap matrix;

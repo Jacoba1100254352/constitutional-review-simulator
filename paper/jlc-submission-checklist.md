@@ -58,8 +58,8 @@ Use this checklist before uploading to Editorial Manager.
   submitted supplementary CSV, not an author-specific absolute path.
 - `make calibration-check` passes, confirming the source-observation matrix can
   regenerate the calibration target files.
-- `make validation-miss-report` has refreshed the generated miss diagnostics
-  after the latest external diagnostic campaign.
+- `make validation-miss-report` has refreshed the generated source-range miss
+  report after the latest source-check campaign.
 - Supplement includes source code, configuration files, calibration targets,
   calibration source observations, compact generated reports, a manifest of
   omitted large outputs, figure/table-generation scripts, and reproduction

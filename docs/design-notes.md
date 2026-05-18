@@ -12,11 +12,11 @@ The core abstraction mirrors the legislative simulator without sharing code:
 
 The model deliberately separates institutional variables from outcome metrics. A design can be highly independent but illegitimate, responsive but rights-weak, procedurally stable but vulnerable to emergency-docket abuse, or democratically responsive while simply relocating veto power to a new institutional stage.
 
-Scenario outputs now distinguish `scenarioKind` and `reviewMechanism`. Stylized archetype presets encode observable institutional rules inspired by named systems without claiming fitted empirical replication. Synthetic mechanisms isolate design ideas: weak-form review, suspended declarations, explicit override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles.
+Scenario outputs now distinguish `scenarioKind` and `reviewMechanism`. Stylized archetype presets encode observable institutional rules inspired by named systems. Mechanism scenarios isolate design ideas: weak-form review, suspended declarations, explicit override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles.
 
 Cases now carry doctrine, jurisdiction, and lower-court pipeline structure. Doctrine areas are speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state. Jurisdiction distinguishes federal, state, and mixed state-federal disputes. The lower-court pipeline distinguishes district-only, circuit panel, circuit en banc, state high-court, and state-federal split paths, contributing panel skew, government win/loss, state-federal tension, intercourt conflict, certiorari pressure, and time-to-review. These inputs affect review selection, deference, rights sensitivity, delay costs, and partisan-alignment risk.
 
-Cases also carry access and repeat-player variables. `litigantCapacity` approximates claimant resources and legal-aid support, `publicInterestSupport` approximates NGO/amicus/rights-commission backing, and `governmentRepeatPlayerAdvantage` approximates the procedural advantage of repeat government litigants. These are synthetic until source-backed case-selection datasets are added, but they now affect review probability, intake acceptance, veto-relocation risk, and democratic constitutionalism.
+Cases also carry access and repeat-player variables. `litigantCapacity` approximates claimant resources and legal-aid support, `publicInterestSupport` approximates NGO/amicus/rights-commission backing, and `governmentRepeatPlayerAdvantage` approximates the procedural advantage of repeat government litigants. These fields now affect review probability, intake acceptance, veto-relocation risk, and democratic constitutionalism.
 
 Emergency review is split into interim relief and merits invalidation. A case can receive emergency relief without a merits decision, receive a merits decision without emergency relief, or move through both stages. This lets the shadow-docket metric track unexplained or non-merits emergency action instead of treating every emergency order as a final reversal.
 
@@ -24,9 +24,9 @@ Court composition now changes across review periods. `WorldSpec.reviewPeriods` p
 
 Outcomes now update public and legislative reaction state. Each decision changes public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and a compliance norm. Those state variables feed later cases in the same run, so emergency relief, merits invalidation, override use, defiance, workaround behavior, and repeated litigation can compound instead of appearing as isolated case-level events. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance.
 
-Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, legislative-response delay, timely legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central diagnostic is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
+Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, legislative-response delay, timely legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central design question is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
 
-The world specification now separates formal review design from political and administrative context. Party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility feed response credibility, transplant feasibility, political-culture sensitivity, and compliance channels. External diagnostic archetype presets read these context values from `config/context/country-year-context.csv`; synthetic campaigns still treat them as stress-test levers unless source-specific research promotes a value into documented calibration evidence.
+The world specification now separates formal review design from political and administrative context. Party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility feed response credibility, transplant feasibility, political-culture sensitivity, and compliance channels. Source-range archetype runs read these context values from `config/context/country-year-context.csv`; other campaigns treat them as stress-test levers unless source-specific research promotes a value into documented calibration evidence.
 
 Imported legislative outputs are not treated as empirical truth. They become stress signals for generated cases:
 
@@ -41,14 +41,14 @@ Campaign reports now write reproducible CSV layers plus compressed raw case
 exports:
 
 - aggregate scenario/campaign-case averages
-- period-by-period diagnostics for replacement and reaction dynamics
+- period-by-period outputs for replacement and reaction dynamics
 - doctrine-specific scoreboards for speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state claims
 - pipeline scoreboards for state/federal jurisdiction and lower-court hierarchy paths
-- composition diagnostics for each review period
-- calibration diagnostics against `config/calibration-targets.csv`
+- composition outputs for each review period
+- source-range checks against `config/calibration-targets.csv`
 - aggregate and segment uncertainty bands
 - compressed case-level outcomes for bootstrap replication
-- mechanism diagnostics, legislative-response timing fields, and scenario-kind metadata in aggregate, segment, composition, and case-level exports
+- mechanism outputs, legislative-response timing fields, and scenario-kind metadata in aggregate, segment, composition, and case-level exports
 - research-roadmap inputs under `config/research/` for empirical court packs, legislative response evidence, transplant factors, enforcement channels, and case-selection access
 
 The sensitivity campaign is a brittleness check rather than empirical
@@ -57,13 +57,13 @@ for emergency pressure, appointment polarization, rights-threat rate, public
 trust, and legislative conflict so directional scores, democratic
 constitutionalism, veto-relocation risk, transplant feasibility, and
 political-culture sensitivity can be inspected for parameter dependence. The
-external diagnostic campaign separately runs stylized archetype presets against
-documented target ranges where a source-specific analogue exists. A diagnostic
+external source-range campaign separately runs stylized archetype presets against
+documented target ranges where a source-specific analogue exists. A source-range
 miss is useful evidence about model scope or target comparability, not a failed
 forecast.
 
 Calibration targets are documented in `config/calibration-source-observations.csv`
-and `docs/calibration-target-methods.md`. Source-specific external diagnostic
+and `docs/calibration-target-methods.md`. Source-specific source-range
 rows and provisional synthesis rows must remain distinguishable in paper and
 supplement language. Rows with synthesis labels, missing denominators,
 public-trust proxies, or normalized-cost construction are stress-test context,
@@ -74,11 +74,11 @@ Deep-research prompts for the next empirical pass are maintained in
 source-discovery material until denominators, URLs, coding rules, and target
 analogues are checked into the calibration source matrix. When a research pass
 returns useful denominator-backed findings but not enough source trail for
-external diagnostic use, preserve them in `config/research/*-source-candidates.csv`
+source-range use, preserve them in `config/research/*-source-candidates.csv`
 or in an operationalization file. Candidate rows should record the reported
 numerator, denominator, period, source family, URL-verification status, and
 whether the row is a direct simulator analogue. They should not be promoted into
 `config/calibration-source-observations.csv` until the original source URL and
 coding rule have been independently verified. `make promotion-check` enforces
-the current promotion gate for counted diagnostic rows and promoted candidate
+the current promotion gate for counted source-range rows and promoted candidate
 rows.

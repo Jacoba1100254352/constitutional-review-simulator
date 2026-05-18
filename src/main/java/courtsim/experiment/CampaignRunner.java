@@ -678,11 +678,11 @@ public final class CampaignRunner
 	private List<CampaignCase> validationCases(WorldSpec baseSpec) {
 		return List.of(
 				new CampaignCase(
-						"benchmark-context",
-						"Shared benchmark context",
-						"External diagnostic context compares each stylized archetype preset against documented calibration target ranges using its country/context modifiers.",
-						baseSpec.withLegislativeConflict(0.48).withEmergencyPressure(0.32).withPublicTrust(0.56),
-						SignalMode.SYNTHETIC
+							"benchmark-context",
+							"Shared benchmark context",
+							"Source-check context compares each stylized archetype preset against documented calibration target ranges using its country/context modifiers.",
+							baseSpec.withLegislativeConflict(0.48).withEmergencyPressure(0.32).withPublicTrust(0.56),
+							SignalMode.SYNTHETIC
 				)
 		);
 	}

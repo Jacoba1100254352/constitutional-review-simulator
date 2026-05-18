@@ -8,7 +8,7 @@
 
 ### Shared benchmark context
 
-External diagnostic context compares each stylized archetype preset against documented calibration target ranges using its country/context modifiers.
+Source-check context compares each stylized archetype preset against documented calibration target ranges using its country/context modifiers.
 
 - best overall: UK Supreme Court declaration model (`uk-supreme-court`) at 0.699
 - strongest rights protection: Court of Justice of the European Union at 0.764

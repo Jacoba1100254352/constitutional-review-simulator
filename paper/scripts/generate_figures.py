@@ -175,7 +175,7 @@ def generate_model_pipeline() -> None:
 \put(28,45){\framebox(22,12){\shortstack[c]{World and\\case generation}}}
 \put(54,45){\framebox(22,12){\shortstack[c]{Institutional\\routing}}}
 \put(80,45){\framebox(22,12){\shortstack[c]{Decision\\process}}}
-\put(106,45){\framebox(20,12){\shortstack[c]{Diagnostics\\and reports}}}
+\put(106,45){\framebox(20,12){\shortstack[c]{Outputs\\and reports}}}
 \put(24,51){\vector(1,0){4}}
 \put(50,51){\vector(1,0){4}}
 \put(76,51){\vector(1,0){4}}
@@ -280,7 +280,7 @@ def generate_cost_score_scatter(rows: list[dict[str, str]]) -> None:
         lines.append(rf"\put({fmt(left - 4)},{fmt(y)}){{\makebox(0,0)[r]{{{tick:.2f}}}}}")
     lines.append(rf"\put({fmt(left)},{fmt(bottom)}){{\line(1,0){{{fmt(width)}}}}}")
     lines.append(rf"\put({fmt(left)},{fmt(bottom)}){{\line(0,1){{{fmt(height)}}}}}")
-    lines.append(r"\put(26,79){\makebox(0,0)[l]{\rule{1.8mm}{1.8mm} court architecture \quad \raisebox{-0.3mm}{\framebox(1.8,1.8){}} synthetic mechanism}}")
+    lines.append(r"\put(26,79){\makebox(0,0)[l]{\rule{1.8mm}{1.8mm} court architecture \quad \raisebox{-0.3mm}{\framebox(1.8,1.8){}} mechanism scenario}}")
     for row in rows:
         key = row["scenarioKey"]
         label = SCENARIO_LABELS[key]
@@ -427,7 +427,7 @@ def generate_paired_lines() -> None:
         lines.append(rf"\put({fmt(label_x)},{fmt(label_y)}){{\makebox(0,0)[l]{{\color{{black}}{figure_label(scenario_key)}}}}}")
     lines.append(r"\put(65,4){\makebox(0,0){docket source}}")
     lines.append(r"\put(12,75){\makebox(0,0){score}}")
-    lines.append(r"\put(65,80){\makebox(0,0){SB synthetic; ALL all imports; CAP high capture; VOL high volatility; MAND low mandate}}")
+    lines.append(r"\put(65,80){\makebox(0,0){SB generated; ALL all imports; CAP high capture; VOL high volatility; MAND low mandate}}")
     lines.extend([r"\end{picture}", r"\endgroup", ""])
     write("paired_import_lines.tex", "\n".join(lines))
 

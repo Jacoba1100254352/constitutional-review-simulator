@@ -2,8 +2,7 @@
 
 This note describes how the calibration target files should be interpreted in
 the paper and replication package. The targets are a transparent benchmark
-registry, not fitted parameters and not proof that the simulator predicts any
-specific court.
+registry used for source-range checks and calibration planning.
 
 ## Target Tiers
 
@@ -21,7 +20,7 @@ denominator is added. Rows with no source URL, low reliability, contextual
 public-trust proxies, normalized cost benchmarks, or broad comparative
 synthesis labels are provisional stress-test ranges. They remain in the
 repository so that weak assumptions are visible, editable, and excluded from
-source-specific diagnostic counts.
+source-range fit counts.
 
 Deep Research outputs and other secondary research notes can produce useful
 candidate rows before they are ready for calibration. Those rows belong in
@@ -49,16 +48,16 @@ verified from the primary source.
 - Cost rows are normalized institutional-cost benchmarks. They are appropriate
   for stress-testing relative burden, not for estimating actual budgets.
 
-## External Diagnostic Use
+## External Source-Range Use
 
 Only rows with `useForValidation=true` are counted in the manuscript's
-external diagnostic table. The source-matrix builder rejects counted rows that
+external source-range table. The source-matrix builder rejects counted rows that
 lack a source URL, lack a nonzero denominator, have low reliability, use any
 synthesis source or synthesis method label, use contextual public-trust
 proxies, or use normalized-cost/benchmark-cost construction. The promotion
 checker also rejects counted rows whose target keys are not exposed by the
 simulator's calibration observation mapping. Under this stricter rule, the
-current source-specific diagnostic surface remains intentionally narrow, but it
+current source-range surface remains intentionally narrow, but it
 now includes official-source checks for U.S. emergency procedure, Canada SCC
 leave grants, France QPC nonconformity and deferred-effect rates, UK Supreme
 Court permission grants, UK declarations of incompatibility responses, ECHR
@@ -68,7 +67,7 @@ Comparative doctrine mix without stored SCDB denominators, trust,
 merits-outcome synthesis, unsupported route-mix statistics, and normalized cost
 rows are stress-test context only.
 
-The external diagnostic campaign intentionally reports misses. A failed target should be
+The external source-range campaign intentionally reports misses. A failed target should be
 read as one of three things:
 
 - the simulator lacks a case-flow mechanism needed for that court or period;
@@ -89,4 +88,4 @@ and conditional deferred-effect rates, pre-enactment review frequency evidence,
 and transplant-feasibility indicators from V-Dem, ParlGov, PPEG, DPI, WGI,
 CEPEJ, OECD, WVS, and related source families. Rows already marked
 `promoted` have been added to the calibration source matrix; rows marked
-`verified-context-only` have source support but are not external diagnostic results.
+`verified-context-only` have source support but are not source-range results.

@@ -254,8 +254,8 @@ def main() -> None:
         fail("manuscript source must explain the directional score construction.")
     if "score differences below about one percentage point should be treated as tied" not in tex:
         fail("manuscript source must warn that close directional-score differences are not meaningful.")
-    if "What the diagnostics still miss" not in tex:
-        fail("manuscript source must include a diagnostic-misses subsection.")
+    if "Remaining Source-Range Gaps" not in tex:
+        fail("manuscript source must include a source-range gap subsection.")
     if "case-selection-access proxy" not in tex:
         fail("manuscript source must flag case-selection-access proxy limitations.")
 
@@ -283,14 +283,14 @@ def main() -> None:
     ]:
         if expected not in validation_table:
             fail(f"validation summary table is missing expected profile: {expected}")
-    if "not fitted validation estimates" not in validation_table:
-        fail("validation table should state that checks are not fitted validation estimates.")
+    if "source-check campaign" not in validation_table:
+        fail("validation table should state that checks are source-range comparisons.")
     for expected in [
             "intake denominator alignment",
             "emergency-procedure calibration",
             "weak-form response mechanism",
             "case-selection access proxy",
-            "not evidence that a country profile has been predicted incorrectly",
+            "Misses are priorities for future calibration",
     ]:
         if expected not in validation_miss_table:
             fail(f"validation miss table is missing required interpretive language: {expected}")

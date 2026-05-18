@@ -8,11 +8,11 @@ Each simulated observation is a case $i$ in review period $t$ under institutiona
 \[
 x_i = (r_i, u_i, a_i, s_i, p_i, m_i, e_i, \ell_i, q_i, z_i),
 \]
-where $r_i$ is rights threat, $u_i$ urgency, $a_i$ legal ambiguity, $s_i$ constitutional salience, $p_i$ public support, $m_i$ legislative mandate, $e_i$ executive pressure, $\ell_i$ lower-court conflict, $q_i$ state-federal tension, and $z_i$ policy-domain position. A world context $w$ supplies public trust, legislative conflict, partisan pressure, party fragmentation, government control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility. For external diagnostic presets, those context inputs are read from \texttt{config/context/country-year-context.csv}; for synthetic campaigns, they are stress-case parameters.
+where $r_i$ is rights threat, $u_i$ urgency, $a_i$ legal ambiguity, $s_i$ constitutional salience, $p_i$ public support, $m_i$ legislative mandate, $e_i$ executive pressure, $\ell_i$ lower-court conflict, $q_i$ state-federal tension, and $z_i$ policy-domain position. A world context $w$ supplies public trust, legislative conflict, partisan pressure, party fragmentation, government control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility. For source-range archetype runs, those context inputs are read from \texttt{config/context/country-year-context.csv}; for other campaigns, they are stress-case parameters.
 
 \subsection*{Variable Scales and Parameter Status}
 
-All continuous case and world fields are bounded to $[0,1]$ after generation or import. Synthetic case generation is not independent uniform sampling: rights threat is anchored by the world rights-threat rate and policy distance; public support falls as rights threat rises; urgency rises with emergency pressure and high rights threat; salience rises with rights threat and policy distance; lower-court conflict rises with salience, ambiguity, state-federal tension, and pipeline path; and litigant capacity, public-interest support, and government repeat-player advantage vary by policy domain and world context. Imported legislative signals preserve policy domain when available and otherwise map legislative support, mandate, capture, volatility, and challenge-pressure fields into the same bounded case vector.
+All continuous case and world fields are bounded to $[0,1]$ after generation or import. Generated case facts are not independent uniform samples: rights threat is anchored by the world rights-threat rate and policy distance; public support falls as rights threat rises; urgency rises with emergency pressure and high rights threat; salience rises with rights threat and policy distance; lower-court conflict rises with salience, ambiguity, state-federal tension, and pipeline path; and litigant capacity, public-interest support, and government repeat-player advantage vary by policy domain and world context. Imported legislative signals preserve policy domain when available and otherwise map legislative support, mandate, capture, volatility, and challenge-pressure fields into the same bounded case vector.
 
 \begin{center}
 \scriptsize
@@ -20,11 +20,11 @@ All continuous case and world fields are bounded to $[0,1]$ after generation or 
 \toprule
 Family & Construction & Main correlations & Status \\
 \midrule
-Case facts & Bounded synthetic or imported values for rights threat, mandate, support, urgency, ambiguity, salience, lower-court conflict, and executive pressure. & Rights threat with salience and urgency; ambiguity with lower-court conflict; support inversely with rights threat. & Design-prior docket generator. \\
-World context & Appointment polarization, emergency pressure, legislative conflict, public trust, partisan pressure, fragmentation, government control, electoral pressure, civil society, implementation, and legal-tradition compatibility. & Political conflict affects public trust, compliance, response, and appointment pressure. & Stress-case controls; country-context rows are diagnostic only. \\
-Institutional rules & Scenario-coded appointment, size, tenure, removal, recusal, docket control, emergency procedure, review timing, threshold, council/cross-checking, override, and weak-form flags. & Rules interact with case facts through access, voting, emergency, response, compliance, and cost models. & Institutional mapping or synthetic mechanism. \\
+Case facts & Bounded generated or imported values for rights threat, mandate, support, urgency, ambiguity, salience, lower-court conflict, and executive pressure. & Rights threat with salience and urgency; ambiguity with lower-court conflict; support inversely with rights threat. & Design-prior docket generator. \\
+World context & Appointment polarization, emergency pressure, legislative conflict, public trust, partisan pressure, fragmentation, government control, electoral pressure, civil society, implementation, and legal-tradition compatibility. & Political conflict affects public trust, compliance, response, and appointment pressure. & Stress-case controls; country-context rows support source checks. \\
+Institutional rules & Scenario-coded appointment, size, tenure, removal, recusal, docket control, emergency procedure, review timing, threshold, council/cross-checking, override, and weak-form flags. & Rules interact with case facts through access, voting, emergency, response, compliance, and cost models. & Institutional mapping or mechanism flag. \\
 Composite weights & Stated coefficients in intake, vote, emergency, response, compliance, conflict, legitimacy, cost, and display-score formulas. & Not estimated; alternative profiles and stress sweeps test dependence. & Explicit design priors, not fitted coefficients. \\
-External targets & Source-backed target ranges only when URL, denominator, construction note, and direct simulator analogue are present. & None assumed; misses are calibration roadmap items. & External diagnostic comparison. \\
+External targets & Source-backed target ranges only when URL, denominator, construction note, and direct simulator analogue are present. & None assumed; misses are calibration roadmap items. & Source-range comparison. \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -62,7 +62,7 @@ Design-specific mechanisms are observed rather than folded into a single court-v
 \[
 (P_i,A_i,D_i,O_i) \sim \text{Categorical}(\pi_P(x_i), \pi_A(x_i), \pi_D(x_i), 1-\pi_P-\pi_A-\pi_D),
 \]
-with preliminary-reference, appeal, and direct-action probabilities bounded around the official 2024 route mix used in calibration diagnostics.
+with preliminary-reference, appeal, and direct-action probabilities bounded around the official 2024 route mix used in source-range checks.
 
 \subsection*{Legislative Response}
 
@@ -88,9 +88,9 @@ Compliance is drawn after the decision and political reaction update:
 \]
 The simulator separately records executive implementation, agency nonacquiescence, legislative reenactment, local-government compliance, defiance, workaround behavior, and repeated litigation. These channels prevent a high rights-protection score from being treated as automatically implemented law.
 
-\subsection*{Composite Diagnostics}
+\subsection*{Composite Measures}
 
-The principal composite diagnostic is democratic constitutionalism:
+The principal composite is democratic constitutionalism:
 \[
 \begin{aligned}
 DC_i ={}& .11\,LS_i + .18\,RP_i + .12\,LG_i + .15\,DR_i + .09\,CP_i
@@ -103,4 +103,4 @@ Here $LS$ is legal stability, $RP$ rights protection, $LG$ the modeled public-le
 
 \subsection*{Uncertainty and Calibration}
 
-Campaign uncertainty bands use a cluster bootstrap over run-level outputs. They measure run-block simulation variation inside the specified model, not uncertainty about model specification, variable construction, weight choice, country mapping, or normative theory. External diagnostic comparisons compare simulated columns to source-backed calibration rows only when a row has a public URL, nonzero denominator, construction note, and direct simulator analogue. Context rows, public-trust proxies, normalized cost estimates, and unverified source candidates remain visible in the supplement but are not counted as empirical validation evidence.
+Campaign uncertainty bands use a cluster bootstrap over run-level outputs. They measure run-block simulation variation inside the specified model, not uncertainty about model specification, variable construction, weight choice, country mapping, or normative theory. Source-range checks compare simulated columns to source-backed calibration rows only when a row has a public URL, nonzero denominator, construction note, and direct simulator analogue. Context rows, public-trust proxies, normalized cost estimates, and unverified source candidates remain visible in the supplement but are excluded from fit counts.

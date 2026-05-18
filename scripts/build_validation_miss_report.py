@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build source-specific diagnostic miss reports from calibration output."""
+"""Build source-range miss reports from calibration output."""
 
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ FIELDNAMES = [
 def read_rows(path: Path) -> list[dict[str, str]]:
     if not path.exists():
         raise SystemExit(
-            f"Missing {path}. Run `make validation-check` before building validation miss diagnostics."
+            f"Missing {path}. Run `make validation-check` before building source-range miss reports."
         )
     with path.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
@@ -70,7 +70,7 @@ def category_for(row: dict[str, str]) -> str:
         return "merits-outcome mechanism"
     if key in {"preliminary_reference_rate", "appeal_route_rate", "direct_action_rate"}:
         return "route-mix preset"
-    return "source-specific diagnostic"
+    return "source-range check"
 
 
 def interpretation_for(row: dict[str, str]) -> tuple[str, str]:
@@ -79,7 +79,7 @@ def interpretation_for(row: dict[str, str]) -> tuple[str, str]:
     court = row["court"]
     if category == "within source range":
         return (
-            "The preset matches this narrow source-denominated diagnostic only.",
+            "The preset matches this narrow source-denominated check.",
             "Keep the row as a benchmark check; do not generalize it to full court behavior.",
         )
     if key == "intake_acceptance_rate":
@@ -128,7 +128,7 @@ def interpretation_for(row: dict[str, str]) -> tuple[str, str]:
             "Keep route shares source-specific and avoid treating route fit as validation of merits outcomes.",
         )
     return (
-        "The preset misses this source-specific diagnostic.",
+        "The preset misses this source-range check.",
         "Inspect whether the source denominator, simulator metric, and scenario preset are directly comparable.",
     )
 
@@ -173,11 +173,11 @@ def write_csv(rows: list[dict[str, str]]) -> None:
 
 def write_markdown(rows: list[dict[str, str]]) -> None:
     lines = [
-        "# Validation Miss Interpretation",
+        "# Source-Range Miss Interpretation",
         "",
         "This file is generated from `constitutional-review-validation-v1-calibration.csv`.",
-        "It includes only source-specific diagnostic rows with documented denominators and direct simulator analogues.",
-        "A miss is a calibration diagnostic, not a failed forecast.",
+        "It includes only source-backed rows with documented denominators and direct simulator analogues.",
+        "A miss is a calibration priority, not a failed forecast.",
         "",
         "| Profile | Target | Source range | Model | Gap | Category | Interpretation | Next action |",
         "| --- | --- | --- | --- | ---: | --- | --- | --- |",

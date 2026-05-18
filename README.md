@@ -2,7 +2,7 @@
 
 This is a dependency-free Java simulator for stress-testing supreme-court and constitutional-review design bundles. It is intentionally separate from the legislative simulator, but it can import legislative campaign CSV output as docket stress signals for review cases. Within the local simulator workspaces, this is the primary Constitutional Review implementation. The sibling `Supreme Court Simulator Design` workspace is an earlier related artifact and may contain useful design notes or source trails, but it is not an authoritative upstream and should not be treated as a repo to merge into this one by default.
 
-The model is built for comparative institutional design stress testing, not for predicting any real court. It is a structured implication engine: given stated rules, weights, dockets, political-culture assumptions, and scoring profiles, it exposes tradeoffs such as veto-relocation risk, cost, compliance, and rights-sensitive access. It keeps the same working style as the legislative simulator: named scenarios, randomized worlds, campaign sweeps, metrics with explicit directions, CSV/Markdown reports, and provenance manifests.
+The model is built for comparative institutional design stress testing. Given stated rules, weights, dockets, political-culture assumptions, and scoring profiles, it exposes tradeoffs such as veto-relocation risk, cost, compliance, and rights-sensitive access. It keeps the same working style as the legislative simulator: named scenarios, randomized worlds, campaign sweeps, metrics with explicit directions, CSV/Markdown reports, and provenance manifests.
 
 ## Run
 
@@ -48,7 +48,7 @@ This writes:
 - `reports/constitutional-review-campaign-v0.md`
 - `reports/constitutional-review-campaign-v0-manifest.json`
 
-The aggregate CSVs include scenario kind, review mechanism, intake filings, screened filings, intake acceptance rate, emergency reason-giving, emergency vote disclosure, public emergency disagreement, government emergency applicant/win diagnostics, emergency merits follow-up, mechanism rates, legislative-response credibility, case-selection access, government repeat-player advantage, implementation capacity, democratic constitutionalism, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, direct court cost, upstream screening cost, capacity strain cost, and aggregate budget/delay/complexity cost fields.
+The aggregate CSVs include scenario kind, review mechanism, intake filings, screened filings, intake acceptance rate, emergency reason-giving, emergency vote disclosure, public emergency disagreement, government emergency applicant/win outputs, emergency merits follow-up, mechanism rates, legislative-response credibility, case-selection access, government repeat-player advantage, implementation capacity, democratic constitutionalism, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, direct court cost, upstream screening cost, capacity strain cost, and aggregate budget/delay/complexity cost fields.
 
 Run the paired imported-legislative campaign:
 
@@ -106,7 +106,7 @@ This writes high/low assumption sweeps for emergency pressure, appointment polar
 - `reports/constitutional-review-sensitivity-v1.md`
 - `reports/constitutional-review-sensitivity-v1-manifest.json`
 
-Run the external diagnostic benchmark campaign:
+Run the external source-range benchmark campaign:
 
 ```sh
 make validation-check
@@ -115,7 +115,7 @@ make validation-check
 This compares stylized archetype presets inspired by the U.S. Supreme Court,
 German Federal Constitutional Court, French Constitutional Council, Supreme
 Court of Canada, South African Constitutional Court, UK Supreme Court, ECHR,
-and CJEU against a source-specific diagnostic benchmark. The campaign applies country/context
+and CJEU against a source-range benchmark. The campaign applies country/context
 modifiers from `config/context/country-year-context.csv` while keeping empirical
 fit claims limited to source-backed calibration rows. It writes the same
 aggregate, segment, compressed case-level, bootstrap interval, calibration,
@@ -123,8 +123,8 @@ Markdown, and manifest artifact family under the
 `reports/constitutional-review-validation-v1*` prefix. It also writes
 `reports/constitutional-review-validation-v1-misses.csv` and
 `reports/constitutional-review-validation-v1-misses.md`, which interpret
-out-of-range source-specific checks as denominator, emergency-procedure,
-weak-form response, remedy-timing, merits-outcome, or route-mix diagnostics.
+out-of-range source checks as denominator, emergency-procedure,
+weak-form response, remedy-timing, merits-outcome, or route-mix calibration priorities.
 
 Run tests:
 
@@ -181,8 +181,8 @@ The starter catalog covers:
 - constitutional councils
 - legislative override rules
 - independence vs accountability balance
-- scenario-kind separation: stylized archetype presets, court variants, and synthetic mechanism tests
-- synthetic noncourt mechanisms: weak-form review, suspended declarations of invalidity, legislative override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles
+- scenario-kind separation: stylized archetype presets, court variants, and mechanism tests
+- noncourt mechanisms: weak-form review, suspended declarations of invalidity, legislative override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles
 
 ## Metrics
 
@@ -209,7 +209,7 @@ Core metrics:
 - `caseSelectionAccess` `↑`: modeled access to constitutional review after litigant capacity, public-interest support, repeat-player advantage, and intake filtering
 - `governmentRepeatPlayerAdvantage` `↓`: modeled procedural or capacity advantage for repeat government litigants
 - `implementationCapacity` `↑`: modeled ability of public institutions to implement review outcomes despite cost and conflict
-- `democraticConstitutionalism` `↑`: synthetic diagnostic combining rights protection, responsiveness, legitimacy, compliance, implementation, review access, low conflict, low veto relocation, feasibility, and political-culture robustness
+- `democraticConstitutionalism` `↑`: composite combining rights protection, responsiveness, legitimacy, compliance, implementation, review access, low conflict, low veto relocation, feasibility, and political-culture robustness
 - `vetoRelocationRisk` `↓`: risk that review merely shifts veto power into courts, councils, screeners, cross-checking bodies, or response stages
 - `legalTransplantFeasibility` `↑`: modeled fit between a design, institutional capacity, and portability outside its home context
 - `politicalCultureSensitivity` `↓`: modeled dependence on trust, low polarization, compliance norms, and cooperative legislative response
@@ -273,7 +273,7 @@ The calibration schema is:
 targetFile,profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl,constructionNote
 ```
 
-Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, diagnostic-counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The denominator-backed diagnostic pack currently includes Canada SCC leave grants, France QPC nonconformity and deferred-effect remedies, UK Supreme Court permission-to-appeal grants, UK declaration-of-incompatibility legislative responses, ECHR allocated-application and Rule 39 interim-measure targets, CJEU route mix, and U.S. Supreme Court emergency-docket relief, reason-giving, and public-disagreement rows. `make promotion-check` enforces those promotion rules and rejects counted rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions, not empirical validation evidence.
+Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The denominator-backed source-check pack currently includes Canada SCC leave grants, France QPC nonconformity and deferred-effect remedies, UK Supreme Court permission-to-appeal grants, UK declaration-of-incompatibility legislative responses, ECHR allocated-application and Rule 39 interim-measure targets, CJEU route mix, and U.S. Supreme Court emergency-docket relief, reason-giving, and public-disagreement rows. `make promotion-check` enforces those promotion rules and rejects counted rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions.
 
 Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets by default. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Rows marked `promoted` have been moved into `config/calibration-source-observations.csv`; rows marked `verified-context-only` have primary-source URLs but are not direct simulator analogues; rows still marked `pending-url-verification` remain research leads. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row.
 
