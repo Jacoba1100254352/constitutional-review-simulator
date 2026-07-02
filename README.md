@@ -319,14 +319,17 @@ are not mapped to a platform target family.
 `make empirical-platform-report` writes
 `reports/constitutional-review-empirical-platform-v1.csv`,
 `reports/constitutional-review-empirical-platform-v1-families.csv`, and
-`reports/constitutional-review-empirical-platform-v1-promotion-queue.csv`, plus
-`reports/constitutional-review-empirical-platform-v1.md`. It also writes
+`reports/constitutional-review-empirical-platform-v1-promotion-queue.csv`,
+`reports/constitutional-review-empirical-platform-v1-readiness.csv`, plus
+Markdown coverage and readiness reports. It also writes
 `config/court-profiles/profile-benchmark-cards.md`, a generated per-profile
 handoff that combines each court profile's validation checks, stress-only rows,
 missing families, candidate rows, and queued promotion tasks. These reports
 combine profile coverage, source-observation families, source-candidate
 evidence, and current source-range miss categories into a reusable
-calibration-platform roadmap.
+calibration-platform roadmap. The readiness report is the claim-boundary
+artifact: it records which publication claims are currently supported and which
+ones require source expansion before broader country-profile validation claims.
 
 ## Research Configs
 

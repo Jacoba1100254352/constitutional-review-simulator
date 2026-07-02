@@ -39,6 +39,17 @@ This generated report summarizes the reusable calibration-platform surface. It i
 
 No out-of-range validation rows are reported.
 
+## Readiness Gates
+
+| Item | Status | Evidence | Next action |
+| --- | --- | --- | --- |
+| source-range-fit | ready-for-current-claims | 15 validation-counted rows; 15 within range; 0 out of range | Run validation-check before publication and after every calibration-source or source-profile change. |
+| profile-validation-depth | needs-source-expansion | 7/16 profiles have validation-counted rows; 3/16 profiles cover multiple validation families | Promote denominator-backed source rows for high-priority profiles before making stronger country-profile claims. |
+| target-family-depth | needs-source-expansion | 7/11 families have validation-counted rows; missing validation families: compliance, cost, doctrine-mix, political-context | Use source-acquisition and source-promotion queue rows to expand family coverage with URLs, denominators, and direct analogues. |
+| source-documentation | ready-for-current-claims | 50 calibration source rows; 15/15 validation rows have denominators and source URLs; 25 total rows with stored denominators; 39 total rows with source URLs | Keep unverified research leads in config/research until their URLs, denominators, coding rules, and analogues are documented. |
+| promotion-pipeline | active-pipeline | 51 queued tasks; 9 candidate-verification, 22 source-acquisition, 20 source-promotion; top queue item: candidate-verification for canada-scc-2024 case-selection | Work promotion-queue rows in rank order, starting with candidate verification and then source promotion. |
+| publication-boundary | ready-for-current-claims | Generated profile index, family matrix, promotion queue, benchmark cards, readiness report, manuscript tables, and replication bundle are all derived from the same source matrix. | Keep manuscript claims tied to validation-counted rows and describe missing families as empirical-roadmap work. |
+
 ## Promotion Queue Actions
 
 | Action type | Rows |

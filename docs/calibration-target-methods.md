@@ -101,7 +101,10 @@ The generated empirical platform reports in `reports/` reuse the same profile
 index and add the current source-range miss categories. They should be refreshed
 after any validation campaign or calibration-source change so the profile
 roadmap, family-coverage matrix, and replication package describe the same
-evidence surface. The promotion-queue CSV is the preferred handoff artifact for
+evidence surface. The readiness CSV and Markdown report are the preferred
+publication-boundary artifacts: they record which claims are supported by the
+current promoted rows and which profile or target-family claims still require
+source expansion. The promotion-queue CSV is the preferred handoff artifact for
 new empirical work because it distinguishes model-calibration misses,
 candidate-verification tasks, source-promotion tasks, and source-acquisition
 tasks. `config/court-profiles/profile-benchmark-cards.md` is the companion

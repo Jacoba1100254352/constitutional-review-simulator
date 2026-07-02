@@ -20,6 +20,8 @@ REPORT_PREFIX = ROOT / "reports" / "constitutional-review-empirical-platform-v1"
 PROFILE_REPORT = REPORT_PREFIX.with_suffix(".csv")
 FAMILY_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-families.csv"
 PROMOTION_QUEUE_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-promotion-queue.csv"
+READINESS_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-readiness.csv"
+READINESS_MARKDOWN_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-readiness.md"
 MARKDOWN_REPORT = REPORT_PREFIX.with_suffix(".md")
 RESEARCH_DIR = ROOT / "config" / "research"
 
@@ -76,6 +78,14 @@ PROMOTION_QUEUE_HEADER = [
     "topCandidateStatus",
     "topCandidateSourceStatus",
     "recommendedAction",
+]
+
+READINESS_HEADER = [
+    "readinessItem",
+    "status",
+    "evidence",
+    "interpretation",
+    "nextAction",
 ]
 
 MISS_HEADER = [
@@ -584,6 +594,144 @@ def rows_by_profile(rows: list[dict[str, str]]) -> dict[str, list[dict[str, str]
     return grouped
 
 
+def readiness_rows(
+        profile_rows: list[dict[str, str]],
+        family_rows: list[dict[str, str]],
+        queue_rows: list[dict[str, str]],
+        source_rows: list[dict[str, str]],
+        miss_rows: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    validation_rows = sum(int(row["validationRows"]) for row in profile_rows)
+    failures = out_of_range(miss_rows)
+    validation_profiles = sum(1 for row in profile_rows if int(row["validationRows"]) > 0)
+    multi_family_profiles = sum(1 for row in profile_rows if len(split_families(row["validationFamilies"])) >= 2)
+    validation_families = {
+        row["targetFamily"]
+        for row in family_rows
+        if row["coverageStatus"] == "validation-counted"
+    }
+    missing_validation_families = [
+        family
+        for family in build_court_profiles.PLATFORM_FAMILY_ORDER
+        if family not in validation_families
+    ]
+    action_counts = Counter(row["actionType"] for row in queue_rows)
+    queue_summary = ", ".join(
+        f"{action_counts[action]} {action}"
+        for action in sorted(action_counts)
+    ) or "no queued actions"
+    top_queue = queue_rows[0] if queue_rows else None
+    top_queue_summary = (
+        f"{top_queue['actionType']} for {top_queue['profileKey']} {top_queue['targetFamily']}"
+        if top_queue
+        else "no current queue item"
+    )
+    validation_source_rows = [
+        row
+        for row in source_rows
+        if row["useForValidation"].lower() == "true"
+    ]
+    validation_source_rows_with_denominator_and_url = sum(
+        1
+        for row in validation_source_rows
+        if row["sourceUrl"].strip() and row["n"].strip() and row["n"].strip() != "0"
+    )
+    source_url_rows = sum(1 for row in source_rows if row["sourceUrl"].strip())
+    denominator_rows = sum(1 for row in source_rows if row["n"].strip() and row["n"].strip() != "0")
+
+    return [
+        {
+            "readinessItem": "source-range-fit",
+            "status": "ready-for-current-claims" if validation_rows and not failures else "needs-model-calibration",
+            "evidence": (
+                f"{validation_rows} validation-counted rows; "
+                f"{sum(1 for row in miss_rows if row['withinTarget'].lower() == 'true')} within range; "
+                f"{len(failures)} out of range"
+            ),
+            "interpretation": "The current source-range surface clears documented benchmark ranges, but only for promoted rows.",
+            "nextAction": "Run validation-check before publication and after every calibration-source or source-profile change.",
+        },
+        {
+            "readinessItem": "profile-validation-depth",
+            "status": "needs-source-expansion",
+            "evidence": (
+                f"{validation_profiles}/{len(profile_rows)} profiles have validation-counted rows; "
+                f"{multi_family_profiles}/{len(profile_rows)} profiles cover multiple validation families"
+            ),
+            "interpretation": "Profile cards are reusable handoffs, but many named profiles remain stress-only or narrow single-family benchmarks.",
+            "nextAction": "Promote denominator-backed source rows for high-priority profiles before making stronger country-profile claims.",
+        },
+        {
+            "readinessItem": "target-family-depth",
+            "status": "needs-source-expansion",
+            "evidence": (
+                f"{len(validation_families)}/{len(build_court_profiles.PLATFORM_FAMILY_ORDER)} families have validation-counted rows; "
+                f"missing validation families: {', '.join(missing_validation_families) if missing_validation_families else 'none'}"
+            ),
+            "interpretation": "The platform now fits its narrow benchmark surface, but compliance, cost, doctrine, and political-context families remain outside validation counts.",
+            "nextAction": "Use source-acquisition and source-promotion queue rows to expand family coverage with URLs, denominators, and direct analogues.",
+        },
+        {
+            "readinessItem": "source-documentation",
+            "status": "ready-for-current-claims",
+            "evidence": (
+                f"{len(source_rows)} calibration source rows; "
+                f"{validation_source_rows_with_denominator_and_url}/{len(validation_source_rows)} validation rows have denominators and source URLs; "
+                f"{denominator_rows} total rows with stored denominators; "
+                f"{source_url_rows} total rows with source URLs"
+            ),
+            "interpretation": "The checked-in source matrix preserves the source trail needed for the current narrow validation surface.",
+            "nextAction": "Keep unverified research leads in config/research until their URLs, denominators, coding rules, and analogues are documented.",
+        },
+        {
+            "readinessItem": "promotion-pipeline",
+            "status": "active-pipeline",
+            "evidence": f"{len(queue_rows)} queued tasks; {queue_summary}; top queue item: {top_queue_summary}",
+            "interpretation": "After clearing current source-range misses, the next empirical work is coverage expansion rather than additional retuning.",
+            "nextAction": "Work promotion-queue rows in rank order, starting with candidate verification and then source promotion.",
+        },
+        {
+            "readinessItem": "publication-boundary",
+            "status": "ready-for-current-claims",
+            "evidence": "Generated profile index, family matrix, promotion queue, benchmark cards, readiness report, manuscript tables, and replication bundle are all derived from the same source matrix.",
+            "interpretation": "The project can support bounded comparative simulation claims and a reusable calibration-platform handoff, not comprehensive empirical validation of every named court.",
+            "nextAction": "Keep manuscript claims tied to validation-counted rows and describe missing families as empirical-roadmap work.",
+        },
+    ]
+
+
+def readiness_markdown(rows: list[dict[str, str]]) -> str:
+    lines = [
+        "# Empirical Platform Readiness Report",
+        "",
+        "This generated report converts the empirical-platform coverage matrix into publication-readiness gates. It is a claim-boundary artifact: it says what the current source-backed platform can support and what still requires source expansion.",
+        "",
+    ]
+    lines.extend(
+        markdown_table(
+            ["Readiness item", "Status", "Evidence", "Interpretation", "Next action"],
+            [
+                [
+                    row["readinessItem"],
+                    row["status"],
+                    row["evidence"],
+                    row["interpretation"],
+                    row["nextAction"],
+                ]
+                for row in rows
+            ],
+        )
+    )
+    lines.extend(
+        [
+            "",
+            "Statuses marked `ready-for-current-claims` are bounded by the currently promoted validation rows. `needs-source-expansion` does not mean the simulator is failing; it means the platform should not make broader country-profile claims until more denominator-backed source rows are promoted.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def family_row_index(rows: list[dict[str, str]]) -> dict[tuple[str, str], dict[str, str]]:
     return {(row["profileKey"], row["targetFamily"]): row for row in rows}
 
@@ -776,6 +924,7 @@ def markdown_report(
         queue_rows: list[dict[str, str]],
         source_rows: list[dict[str, str]],
         miss_rows: list[dict[str, str]],
+        readiness: list[dict[str, str]],
 ) -> str:
     status_counts = Counter(row["empiricalStatus"] for row in profile_rows)
     validation_family_counts = Counter()
@@ -843,6 +992,21 @@ def markdown_report(
         )
     else:
         lines.append("No out-of-range validation rows are reported.")
+    lines.extend(["", "## Readiness Gates", ""])
+    lines.extend(
+        markdown_table(
+            ["Item", "Status", "Evidence", "Next action"],
+            [
+                [
+                    row["readinessItem"],
+                    row["status"],
+                    row["evidence"],
+                    row["nextAction"],
+                ]
+                for row in readiness
+            ],
+        )
+    )
     lines.extend(["", "## Promotion Queue Actions", ""])
     lines.extend(
         markdown_table(
@@ -908,11 +1072,14 @@ def expected_outputs() -> dict[Path, str]:
     profile_rows = profile_report_rows(profiles, misses_by_profile)
     family_rows = family_report_rows(profiles, counts, misses_by_family)
     queue_rows = promotion_queue_rows(family_rows, candidate_rows(), roadmap_rows())
+    readiness = readiness_rows(profile_rows, family_rows, queue_rows, source_rows, miss_rows)
     return {
         PROFILE_REPORT: csv_text(profile_rows, PROFILE_REPORT_HEADER),
         FAMILY_REPORT: csv_text(family_rows, FAMILY_REPORT_HEADER),
         PROMOTION_QUEUE_REPORT: csv_text(queue_rows, PROMOTION_QUEUE_HEADER),
-        MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, queue_rows, source_rows, miss_rows),
+        READINESS_REPORT: csv_text(readiness, READINESS_HEADER),
+        READINESS_MARKDOWN_REPORT: readiness_markdown(readiness),
+        MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, queue_rows, source_rows, miss_rows, readiness),
         PROFILE_CARDS: benchmark_cards(profiles, family_rows, queue_rows, source_rows, miss_rows),
     }
 

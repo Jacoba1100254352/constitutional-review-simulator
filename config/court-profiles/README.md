@@ -39,6 +39,9 @@ The empirical platform report targets in `reports/` combine this profile index
 with the current source-range miss report and source-candidate files. Use
 `reports/constitutional-review-empirical-platform-v1-promotion-queue.csv` when
 deciding which profile family to verify, promote, or retune next. Use
+`reports/constitutional-review-empirical-platform-v1-readiness.csv` when
+checking which publication claims are supported by the current source surface
+and which claims still require source expansion. Use
 `profile-benchmark-cards.md` when reviewing one court profile at a time, because
 it keeps validation-counted rows, stress-only context, missing families, and
 queued tasks in the same generated card.
