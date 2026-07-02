@@ -168,12 +168,17 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 		boolean emergencyReliefGranted = emergencyDocketModel.reliefGranted(caseFile, emergency, finalVote, random);
 		boolean dialogueConcernFound = (configuration.weakFormReview()
 				|| configuration.reviewMechanism() == ReviewMechanism.SUSPENDED_DECLARATION)
-				&& finalVote.strikeVoteShare() >= Math.max(0.40, configuration.invalidationThreshold() - 0.10);
+				&& finalVote.strikeVoteShare() >= Math.max(
+						0.35,
+						configuration.invalidationThreshold() - 0.10 + configuration.sourceDialogueConcernThresholdAdjustment()
+				);
 		boolean constitutionalConcernFound = meritsReview && (meritsEligibleInvalidation || dialogueConcernFound);
 		boolean weakFormDeclaration = configuration.reviewMechanism() == ReviewMechanism.WEAK_FORM_REVIEW
 				&& constitutionalConcernFound;
-		boolean suspendedDeclaration = configuration.reviewMechanism() == ReviewMechanism.SUSPENDED_DECLARATION
-				&& constitutionalConcernFound;
+		boolean suspendedDeclaration = constitutionalConcernFound
+				&& (configuration.reviewMechanism() == ReviewMechanism.SUSPENDED_DECLARATION
+				|| (configuration.sourceDeferredEffectRemedyProfile()
+				&& random.nextDouble() < configuration.sourceDeferredEffectRemedyProbability()));
 		boolean meritsInvalidated = constitutionalConcernFound && !weakFormDeclaration;
 		boolean overrideUsed = responseModel.overrideUsed(caseFile, meritsInvalidated, random);
 		double legislativeResponseCredibility = responseModel.legislativeResponseCredibility(

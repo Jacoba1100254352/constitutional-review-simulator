@@ -67,6 +67,14 @@ Comparative doctrine mix without stored SCDB denominators, trust,
 merits-outcome synthesis, unsupported route-mix statistics, and normalized cost
 rows are stress-test context only.
 
+The named source-range presets include bounded profile-calibration hooks for
+source denominator conventions and procedure definitions: Canada and UK
+leave/permission denominators, ECHR allocated-application filtering and Rule 39
+interim relief, U.S. emergency reason/disagreement procedure, French QPC
+deferred-effect remedies, and UK declaration-response semantics. These hooks
+belong to the source-range audit surface; they should not be interpreted as
+estimated country effects or applied to synthetic mechanism scenarios.
+
 The external source-range campaign intentionally reports misses. A failed target should be
 read as one of three things:
 

@@ -289,9 +289,8 @@ def main() -> None:
     if "source-range comparison" not in validation_table:
         fail("validation table should state that checks are source-range comparisons.")
     for expected in [
-            "intake denominator alignment",
-            "emergency-procedure calibration",
-            "European Court of Human Rights",
+            "weak-form response mechanism",
+            "United Kingdom domestic courts",
             "Misses are priorities for future calibration",
     ]:
         if expected not in validation_miss_table:

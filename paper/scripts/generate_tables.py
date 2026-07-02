@@ -819,7 +819,7 @@ def generate_validation_miss_interpretation() -> None:
             r"\bottomrule",
             r"\end{tabular}",
             r"\begin{minipage}{0.96\linewidth}",
-            r"\footnotesize Notes: The table reports the four largest out-of-range source checks. The full generated miss report is retained in \texttt{reports/constitutional-review-validation-v1-misses.csv} and \texttt{.md}. Misses are priorities for future calibration.",
+            r"\footnotesize Notes: The table reports up to four of the largest out-of-range source checks. The full generated miss report is retained in \texttt{reports/constitutional-review-validation-v1-misses.csv} and \texttt{.md}. Misses are priorities for future calibration.",
             r"\end{minipage}",
             r"\end{table}",
             "",

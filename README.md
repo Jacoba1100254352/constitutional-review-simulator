@@ -283,6 +283,10 @@ Research-roadmap and source-candidate CSVs live in `config/research/`. They are 
 The target-method note in `docs/calibration-target-methods.md` separates
 source-specific targets from provisional synthesis ranges. Rows without a source
 URL, rows without denominators, rows marked as synthesis, low-reliability contextual rows, public-trust proxies, and normalized-cost rows should be treated as transparent stress-test assumptions, not as empirical validation evidence.
+Named real-world presets include bounded source-profile calibration hooks for
+documented denominator and procedure differences in the source-range audit
+surface. Synthetic mechanism scenarios continue to use the generic comparative
+mechanics.
 
 ## Court Profile Index
 

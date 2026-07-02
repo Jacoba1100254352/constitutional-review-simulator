@@ -69,6 +69,13 @@ supplement language. Rows with synthesis labels, missing denominators,
 public-trust proxies, or normalized-cost construction are stress-test context,
 not validation evidence.
 
+Named real-world presets use bounded source-profile calibration hooks only for
+documented source-range checks where denominator conventions or procedural
+definitions differ from the generic comparative mechanism. Those hooks adjust
+intake denominators, emergency-relief thresholds, emergency reason/disagreement
+procedure, French deferred-effect remedies, and UK declaration-response
+semantics while keeping synthetic mechanism scenarios on the generic model.
+
 The derived court-profile index in `config/court-profiles/profile-index.csv`
 groups the source-observation matrix into empirical profiles. It records
 validation-counted rows, stress-only rows, political-context mappings, missing

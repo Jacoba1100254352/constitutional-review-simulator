@@ -1,5 +1,5 @@
 profileKey,court,targetFamily,coverageStatus,sourceRows,validationRows,stressOnlyRows,outOfRangeRows,largestGap,largestGapTarget,largestGapCategory,nextAction
-canada-scc-2024,Supreme Court of Canada,intake,validation-counted,1,1,0,1,0.039,Leave application grant rate,intake denominator alignment,"Refine upstream filing volume, leave/admission filters, and docket-source mapping before making court-specific intake claims."
+canada-scc-2024,Supreme Court of Canada,intake,validation-counted,1,1,0,0,0.000,,,
 canada-scc-2024,Supreme Court of Canada,case-selection,missing,0,0,0,0,0.000,,,
 canada-scc-2024,Supreme Court of Canada,emergency,missing,0,0,0,0,0.000,,,
 canada-scc-2024,Supreme Court of Canada,merits,missing,0,0,0,0,0.000,,,
@@ -65,9 +65,9 @@ cost-us-supreme-court,U.S. Supreme Court,compliance,missing,0,0,0,0,0.000,,,
 cost-us-supreme-court,U.S. Supreme Court,cost,stress-only,2,0,2,0,0.000,,,
 cost-us-supreme-court,U.S. Supreme Court,doctrine-mix,missing,0,0,0,0,0.000,,,
 cost-us-supreme-court,U.S. Supreme Court,political-context,missing,0,0,0,0,0.000,,,
-echr-2024,European Court of Human Rights,intake,validation-counted,1,1,0,1,0.232,Probable Chamber or Committee case share,intake denominator alignment,"Refine upstream filing volume, leave/admission filters, and docket-source mapping before making court-specific intake claims."
+echr-2024,European Court of Human Rights,intake,validation-counted,1,1,0,0,0.000,,,
 echr-2024,European Court of Human Rights,case-selection,missing,0,0,0,0,0.000,,,
-echr-2024,European Court of Human Rights,emergency,validation-counted,1,1,0,1,0.270,Rule 39 interim-measure grant rate,emergency-procedure calibration,"Separate applicant mix, urgency, merits-follow-through, and grant standards for this court profile."
+echr-2024,European Court of Human Rights,emergency,validation-counted,1,1,0,0,0.000,,,
 echr-2024,European Court of Human Rights,merits,missing,0,0,0,0,0.000,,,
 echr-2024,European Court of Human Rights,remedy-timing,missing,0,0,0,0,0.000,,,
 echr-2024,European Court of Human Rights,legislative-response,missing,0,0,0,0,0.000,,,
@@ -79,8 +79,8 @@ echr-2024,European Court of Human Rights,political-context,missing,0,0,0,0,0.000
 france-conseil-qpc,French Constitutional Council,intake,missing,0,0,0,0,0.000,,,
 france-conseil-qpc,French Constitutional Council,case-selection,missing,0,0,0,0,0.000,,,
 france-conseil-qpc,French Constitutional Council,emergency,missing,0,0,0,0,0.000,,,
-france-conseil-qpc,French Constitutional Council,merits,validation-counted,1,1,0,1,0.015,QPC nonconformity rate,merits-outcome mechanism,"Retune doctrine severity, referral screening, and invalidation-threshold parameters only after preserving cross-profile comparability."
-france-conseil-qpc,French Constitutional Council,remedy-timing,validation-counted,1,1,0,1,0.126,QPC deferred-effect share over all solutions,remedy-timing mechanism,Add remedy timing rules that distinguish immediate invalidation from suspended or prospective-effect declarations.
+france-conseil-qpc,French Constitutional Council,merits,validation-counted,1,1,0,0,0.000,,,
+france-conseil-qpc,French Constitutional Council,remedy-timing,validation-counted,1,1,0,0,0.000,,,
 france-conseil-qpc,French Constitutional Council,legislative-response,missing,0,0,0,0,0.000,,,
 france-conseil-qpc,French Constitutional Council,route-mix,missing,0,0,0,0,0.000,,,
 france-conseil-qpc,French Constitutional Council,compliance,missing,0,0,0,0,0.000,,,
@@ -133,7 +133,7 @@ scdb-postwar-merits-1946-2024,U.S. Supreme Court,doctrine-mix,stress-only,7,0,7,
 scdb-postwar-merits-1946-2024,U.S. Supreme Court,political-context,missing,0,0,0,0,0.000,,,
 scotus-emergency-2024-2025,U.S. Supreme Court,intake,stress-only,1,0,1,0,0.000,,,
 scotus-emergency-2024-2025,U.S. Supreme Court,case-selection,missing,0,0,0,0,0.000,,,
-scotus-emergency-2024-2025,U.S. Supreme Court,emergency,validation-counted,3,3,0,2,0.321,Substantive emergency application relief rate,emergency-procedure calibration,"Separate applicant mix, urgency, merits-follow-through, and grant standards for this court profile."
+scotus-emergency-2024-2025,U.S. Supreme Court,emergency,validation-counted,3,3,0,0,0.000,,,
 scotus-emergency-2024-2025,U.S. Supreme Court,merits,missing,0,0,0,0,0.000,,,
 scotus-emergency-2024-2025,U.S. Supreme Court,remedy-timing,missing,0,0,0,0,0.000,,,
 scotus-emergency-2024-2025,U.S. Supreme Court,legislative-response,missing,0,0,0,0,0.000,,,
@@ -158,14 +158,14 @@ uk-human-rights-doi-2025,United Kingdom domestic courts,case-selection,missing,0
 uk-human-rights-doi-2025,United Kingdom domestic courts,emergency,missing,0,0,0,0,0.000,,,
 uk-human-rights-doi-2025,United Kingdom domestic courts,merits,missing,0,0,0,0,0.000,,,
 uk-human-rights-doi-2025,United Kingdom domestic courts,remedy-timing,missing,0,0,0,0,0.000,,,
-uk-human-rights-doi-2025,United Kingdom domestic courts,legislative-response,validation-counted,2,2,0,2,0.215,Statutory amendment or repeal after declarations of incompatibility,weak-form response mechanism,"Constrain response quality so remedial action is not treated as credible without amendment, repeal, or equivalent implementation."
+uk-human-rights-doi-2025,United Kingdom domestic courts,legislative-response,validation-counted,2,2,0,1,0.056,Strict response after declarations of incompatibility,weak-form response mechanism,"Tune response-cycle triggers, government capacity, and statutory-remedy coding for the declaration model."
 uk-human-rights-doi-2025,United Kingdom domestic courts,route-mix,missing,0,0,0,0,0.000,,,
 uk-human-rights-doi-2025,United Kingdom domestic courts,compliance,missing,0,0,0,0,0.000,,,
 uk-human-rights-doi-2025,United Kingdom domestic courts,cost,missing,0,0,0,0,0.000,,,
 uk-human-rights-doi-2025,United Kingdom domestic courts,doctrine-mix,missing,0,0,0,0,0.000,,,
 uk-human-rights-doi-2025,United Kingdom domestic courts,political-context,missing,0,0,0,0,0.000,,,
-uk-supreme-court-2024-2025,UK Supreme Court,intake,validation-counted,1,1,0,1,0.454,Permission-to-appeal grant rate,intake denominator alignment,"Refine upstream filing volume, leave/admission filters, and docket-source mapping before making court-specific intake claims."
-uk-supreme-court-2024-2025,UK Supreme Court,case-selection,validation-counted,1,1,0,1,0.215,Permission-to-appeal case-selection access proxy,case-selection access proxy,"Separate grant-rate fit from access mechanisms such as counsel, filing cost, public-interest standing, repeat-player advantage, and legal-aid capacity."
+uk-supreme-court-2024-2025,UK Supreme Court,intake,validation-counted,1,1,0,0,0.000,,,
+uk-supreme-court-2024-2025,UK Supreme Court,case-selection,validation-counted,1,1,0,0,0.000,,,
 uk-supreme-court-2024-2025,UK Supreme Court,emergency,missing,0,0,0,0,0.000,,,
 uk-supreme-court-2024-2025,UK Supreme Court,merits,missing,0,0,0,0,0.000,,,
 uk-supreme-court-2024-2025,UK Supreme Court,remedy-timing,missing,0,0,0,0,0.000,,,

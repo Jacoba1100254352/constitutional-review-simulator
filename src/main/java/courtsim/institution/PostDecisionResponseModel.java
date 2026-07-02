@@ -46,7 +46,7 @@ final class PostDecisionResponseModel
 		double triggerClarity = (weakFormDeclaration || suspendedDeclaration || overrideUsed)
 				? 0.18
 				: (meritsInvalidated ? 0.08 : 0.0);
-		return Values.clamp01(
+		double credibility = Values.clamp01(
 				0.18
 						+ worldSpec.governmentControl() * 0.18
 						+ Values.lowerIsBetter(worldSpec.partyFragmentation()) * 0.14
@@ -60,6 +60,7 @@ final class PostDecisionResponseModel
 						- worldSpec.partisanPressure() * 0.08
 						- worldSpec.electoralTimePressure() * caseFile.rightsThreat() * 0.08
 		);
+		return Values.clamp01(credibility * configuration.sourceLegislativeResponseCredibilityMultiplier());
 	}
 	
 	boolean legislativeResponse(
@@ -103,7 +104,8 @@ final class PostDecisionResponseModel
 				- caseFile.rightsThreat() * 0.12
 				- worldSpec.legislativeConflict() * 0.10
 				- (meritsInvalidated && !suspendedDeclaration ? 0.08 : 0.0)
-				+ (overrideUsed ? 0.05 : 0.0);
+				+ (overrideUsed ? 0.05 : 0.0)
+				+ configuration.sourceLegislativeResponseScoreAdjustment();
 		return responseScore + random.nextDouble() * 0.20 > 0.55;
 	}
 	

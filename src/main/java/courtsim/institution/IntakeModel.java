@@ -98,6 +98,7 @@ final class IntakeModel
 		if (configuration.docketControl() == DocketControl.COMPLAINT_ADMISSIBILITY) {
 			acceptance *= 0.76 + caseFile.rightsThreat() * 0.28;
 		}
+		acceptance *= configuration.sourceIntakeDenominatorMultiplier();
 		acceptance = Values.clamp(acceptance, 0.003, 0.82);
 		int representedFilings = Math.max(1, (int) Math.round(1.0 / acceptance));
 		int pressureFilings = (int) Math.round(
@@ -115,6 +116,9 @@ final class IntakeModel
 	}
 	
 	double caseSelectionAccess(CaseFile caseFile, IntakeEstimate intake) {
+		if (configuration.sourceCaseSelectionAccessUsesIntakeProxy()) {
+			return Values.clamp01(intake.acceptanceRate() * 0.94);
+		}
 		return Values.clamp01(
 				caseFile.litigantCapacity() * 0.38
 						+ caseFile.publicInterestSupport() * 0.32

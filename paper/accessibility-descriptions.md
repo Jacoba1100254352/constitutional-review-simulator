@@ -71,7 +71,7 @@ presets with counted direct targets. Columns show the scenario preset, count of
 mapped targets falling within documented ranges, median target gap, and the
 largest remaining miss.
 
-`tab:validation-miss-interpretation`: Main-text table listing the four largest
+`tab:validation-miss-interpretation`: Main-text table listing up to four
 out-of-range source-range checks as a calibration roadmap. Columns show the
 target, model value versus source range, miss category, interpretation, and
 next calibration step. The full generated miss table remains in the replication

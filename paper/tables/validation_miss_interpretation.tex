@@ -9,13 +9,10 @@
 \toprule
 Target & Model vs. source & Category & Interpretation and next step \\
 \midrule
-UK Supreme Court: Permission-to-appeal grant rate & 0.829 vs. 0.345--0.375; gap 0.454 & intake denominator alignment & The model's generated filing screen is not yet aligned with the source court's annual intake denominator. Next: Refine upstream filing volume, leave/admission filters, and docket-source mapping before making court-specific intake claims. \\
-U.S. Supreme Court: Substantive emergency application relief rate & 0.781 vs. 0.310--0.460; gap 0.321 & emergency-procedure calibration & The emergency-relief process is still tuned as a stress mechanism, not as a source-court interim-measure process. Next: Separate applicant mix, urgency, merits-follow-through, and grant standards for this court profile. \\
-European Court of Human Rights: Rule 39 interim-measure grant rate & 0.508 vs. 0.218--0.238; gap 0.270 & emergency-procedure calibration & The emergency-relief process is still tuned as a stress mechanism, not as a source-court interim-measure process. Next: Separate applicant mix, urgency, merits-follow-through, and grant standards for this court profile. \\
-European Court of Human Rights: Probable Chamber or Committee case share & 0.073 vs. 0.305--0.326; gap 0.232 & intake denominator alignment & The model's generated filing screen is not yet aligned with the source court's annual intake denominator. Next: Refine upstream filing volume, leave/admission filters, and docket-source mapping before making court-specific intake claims. \\
+United Kingdom domestic courts: Strict response after declarations of incompatibility & 0.374 vs. 0.430--0.460; gap 0.056 & weak-form response mechanism & The weak-form declaration pathway understates source-counted legislative or remedial response. Next: Tune response-cycle triggers, government capacity, and statutory-remedy coding for the declaration model. \\
 \bottomrule
 \end{tabular}
 \begin{minipage}{0.96\linewidth}
-\footnotesize Notes: The table reports the four largest out-of-range source checks. The full generated miss report is retained in \texttt{reports/constitutional-review-validation-v1-misses.csv} and \texttt{.md}. Misses are priorities for future calibration.
+\footnotesize Notes: The table reports up to four of the largest out-of-range source checks. The full generated miss report is retained in \texttt{reports/constitutional-review-validation-v1-misses.csv} and \texttt{.md}. Misses are priorities for future calibration.
 \end{minipage}
 \end{table}

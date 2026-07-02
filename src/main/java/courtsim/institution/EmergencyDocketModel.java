@@ -63,7 +63,7 @@ final class EmergencyDocketModel
 			case REASONED_EMERGENCY_PANEL -> 0.50;
 			case FULL_COURT_EMERGENCY -> 0.54;
 			case MERITS_FOLLOW_UP -> 0.55;
-		};
+		} + configuration.sourceEmergencyReliefThresholdAdjustment();
 		double reliefScore = vote.strikeVoteShare()
 				+ caseFile.urgency() * 0.14
 				+ caseFile.rightsThreat() * 0.08
@@ -74,13 +74,14 @@ final class EmergencyDocketModel
 	}
 	
 	double reasonsProbability(CaseFile caseFile, boolean emergencyReliefGranted, boolean meritsReview) {
-		return Values.clamp01(
+		double probability = Values.clamp01(
 				configuration.emergencyReasonGiving() * 0.62
 						+ configuration.transparency() * 0.18
 						+ (meritsReview ? 0.12 : 0.0)
 						+ (emergencyReliefGranted ? caseFile.constitutionalSalience() * 0.08 : 0.03)
 						- (configuration.docketProcedure() == DocketProcedure.FAST_SHADOW_DOCKET ? 0.18 : 0.0)
 		);
+		return Math.max(configuration.sourceEmergencyReasonFloor(), probability);
 	}
 	
 	double voteDisclosureProbability(CaseFile caseFile, boolean emergencyReliefGranted, boolean reasonsGiven) {
@@ -105,6 +106,7 @@ final class EmergencyDocketModel
 						+ caseFile.constitutionalSalience() * 0.18
 						+ caseFile.executivePressure() * 0.08
 						- (reasonsGiven ? 0.12 : 0.0)
+						+ configuration.sourceEmergencyPublicDisagreementAdjustment()
 		);
 	}
 	
