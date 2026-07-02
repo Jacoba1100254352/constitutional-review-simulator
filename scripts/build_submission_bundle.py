@@ -81,6 +81,7 @@ def run(command: list[str], *, cwd: Path = ROOT) -> None:
 
 
 def refresh_pdfs() -> None:
+    run(["python3", "scripts/check_research_data_quality.py"])
     run(["python3", "scripts/build_court_profiles.py", "--write"])
     run(["python3", "scripts/build_empirical_platform_report.py", "--write"])
     run(["python3", "paper/scripts/generate_figures.py"])

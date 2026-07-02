@@ -80,7 +80,7 @@ This generated report summarizes the reusable calibration-platform surface. It i
 | 6 | model-calibration | uk-supreme-court-2024-2025 | case-selection | validation-counted | 0.215 | 0 | 0 | Separate grant-rate fit from access mechanisms such as counsel, filing cost, public-interest standing, repeat-player advantage, and legal-aid capacity. |
 | 7 | model-calibration | france-conseil-qpc | remedy-timing | validation-counted | 0.126 | 2 | 0 | Add remedy timing rules that distinguish immediate invalidation from suspended or prospective-effect declarations. |
 | 8 | model-calibration | canada-scc-2024 | intake | validation-counted | 0.039 | 1 | 0 | Refine upstream filing volume, leave/admission filters, and docket-source mapping before making court-specific intake claims. |
-| 9 | model-calibration | france-conseil-qpc | merits | validation-counted | 0.015 | 1 | 1 | Retune doctrine severity, referral screening, and invalidation-threshold parameters only after preserving cross-profile comparability. |
+| 9 | model-calibration | france-conseil-qpc | merits | validation-counted | 0.015 | 1 | 0 | Retune doctrine severity, referral screening, and invalidation-threshold parameters only after preserving cross-profile comparability. |
 | 10 | candidate-verification | canada-scc-2024 | case-selection | missing | 0.000 | 2 | 0 | keep as contextual evidence unless recoded to a direct simulator analogue |
 | 11 | candidate-verification | canada-scc-2024 | emergency | missing | 0.000 | 1 | 0 | keep as contextual evidence unless recoded to a direct simulator analogue |
 | 12 | candidate-verification | canada-scc-2024 | compliance | missing | 0.000 | 2 | 0 | verify primary source URL and numerator/denominator before promotion |

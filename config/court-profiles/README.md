@@ -11,6 +11,7 @@ Regenerate or check the index from the repository root:
 ```sh
 make court-profile-build
 make court-profile-check
+make research-data-check
 make empirical-platform-report
 make empirical-platform-check
 ```

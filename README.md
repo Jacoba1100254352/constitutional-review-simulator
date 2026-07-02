@@ -265,6 +265,7 @@ Default calibration profiles live in `config/calibration/*.csv`; `config/calibra
 make calibration-check
 make calibration-build
 make promotion-check
+make research-data-check
 make court-profile-check
 make empirical-platform-check
 ```
@@ -292,6 +293,7 @@ source-observation matrix plus `config/context/country-year-context.csv`:
 ```sh
 make court-profile-build
 make court-profile-check
+make research-data-check
 make empirical-platform-report
 make empirical-platform-check
 ```
@@ -304,6 +306,11 @@ route mix, compliance, cost, doctrine mix, and political context. Treat
 `missingValidationFamilies` as the empirical buildout roadmap: new rows should
 be promoted only when the public source URL, denominator, period, coding rule,
 construction note, and direct simulator analogue are documented.
+
+`make research-data-check` validates the source-candidate and research-roadmap
+CSV files before they feed the platform reports. It rejects malformed CSV rows,
+unexpected headers, blank required fields, and research `targetKey` values that
+are not mapped to a platform target family.
 
 `make empirical-platform-report` writes
 `reports/constitutional-review-empirical-platform-v1.csv`,

@@ -98,6 +98,11 @@ new empirical work because it distinguishes model-calibration misses,
 candidate-verification tasks, source-promotion tasks, and source-acquisition
 tasks.
 
+Before using source-candidate rows for that queue, `make research-data-check`
+validates that the research CSVs parse cleanly and that each research
+`targetKey` or roadmap family maps to the platform taxonomy. This keeps
+source-gathering notes from silently breaking downstream reports.
+
 The current post-research candidate files identify the most promising remaining
 promotion targets: Canadian Charter legislative sequels, French QPC invalidation
 and conditional deferred-effect rates, pre-enactment review frequency evidence,

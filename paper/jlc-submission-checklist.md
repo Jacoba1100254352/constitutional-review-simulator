@@ -58,6 +58,8 @@ Use this checklist before uploading to Editorial Manager.
   submitted supplementary CSV, not an author-specific absolute path.
 - `make calibration-check` passes, confirming the source-observation matrix can
   regenerate the calibration target files.
+- `make research-data-check` passes, confirming the research roadmap and
+  source-candidate CSVs parse cleanly and use mapped target families.
 - `make court-profile-check` passes, confirming the profile-level empirical
   platform index is synchronized with the source-observation matrix and context
   rows.
@@ -95,6 +97,7 @@ Run these commands from the repository root:
 make paper-check
 make paper
 make figure-placement-audit
+make research-data-check
 make empirical-platform-check
 make supplement
 make paper-pdf-check

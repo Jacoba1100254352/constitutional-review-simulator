@@ -6,7 +6,7 @@ LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 PAPER_TEX := constitutional-review-design-stress-test.tex
 PAPER_PDF := constitutional-review-design-stress-test.pdf
 
-.PHONY: build run campaign paired-campaign validation-check validation-miss-report empirical-platform-report empirical-platform-check sensitivity-check calibration-build calibration-check promotion-check court-profile-build court-profile-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
+.PHONY: build run campaign paired-campaign validation-check validation-miss-report research-data-check empirical-platform-report empirical-platform-check sensitivity-check calibration-build calibration-check promotion-check court-profile-build court-profile-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -30,10 +30,13 @@ validation-check: build
 validation-miss-report:
 	python3 scripts/build_validation_miss_report.py
 
-empirical-platform-report: court-profile-build validation-miss-report
+research-data-check:
+	python3 scripts/check_research_data_quality.py
+
+empirical-platform-report: research-data-check court-profile-build validation-miss-report
 	python3 scripts/build_empirical_platform_report.py --write
 
-empirical-platform-check: court-profile-check
+empirical-platform-check: research-data-check court-profile-check
 	python3 scripts/build_empirical_platform_report.py --check
 
 sensitivity-check: build
@@ -102,7 +105,7 @@ test: build
 	javac --release $(JAVA_RELEASE) -cp out/main -d out/test $(TEST_SOURCES)
 	java $(JAVA_PROPS) -cp out/main:out/test courtsim.SimulatorTests
 
-ci: calibration-check court-profile-check test campaign paired-campaign validation-check empirical-platform-check sensitivity-check paper supplement submission-bundle
+ci: calibration-check research-data-check court-profile-check test campaign paired-campaign validation-check empirical-platform-check sensitivity-check paper supplement submission-bundle
 
 clean:
 	rm -rf out
