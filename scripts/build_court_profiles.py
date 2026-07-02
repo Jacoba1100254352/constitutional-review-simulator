@@ -208,6 +208,8 @@ def next_priority(profile_key: str, missing: list[str], validation_rows: int, st
     if profile_key.startswith("cost-"):
         return "archive cost normalization workbook and denominators before validation use"
     stress_candidates = [family for family in PLATFORM_FAMILY_ORDER if family in missing and family in stress_families]
+    if validation_rows > 0:
+        stress_candidates = [family for family in stress_candidates if family not in {"cost", "political-context"}]
     lead = stress_candidates[0] if stress_candidates else missing[0]
     if lead == "cost":
         return "archive cost normalization workbook and denominators before validation use"

@@ -89,6 +89,12 @@ validation-counted for each court profile. Treat its missing-family columns as a
 calibration roadmap, not as evidence that a missing target is available or
 comparable for every system.
 
+The generated empirical platform reports in `reports/` reuse the same profile
+index and add the current source-range miss categories. They should be refreshed
+after any validation campaign or calibration-source change so the profile
+roadmap, family-coverage matrix, and replication package describe the same
+evidence surface.
+
 The current post-research candidate files identify the most promising remaining
 promotion targets: Canadian Charter legislative sequels, French QPC invalidation
 and conditional deferred-effect rates, pre-enactment review frequency evidence,

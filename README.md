@@ -266,6 +266,7 @@ make calibration-check
 make calibration-build
 make promotion-check
 make court-profile-check
+make empirical-platform-check
 ```
 
 The calibration schema is:
@@ -291,6 +292,8 @@ source-observation matrix plus `config/context/country-year-context.csv`:
 ```sh
 make court-profile-build
 make court-profile-check
+make empirical-platform-report
+make empirical-platform-check
 ```
 
 The index groups target rows by `profileKey`, records how many rows are
@@ -301,6 +304,13 @@ route mix, compliance, cost, doctrine mix, and political context. Treat
 `missingValidationFamilies` as the empirical buildout roadmap: new rows should
 be promoted only when the public source URL, denominator, period, coding rule,
 construction note, and direct simulator analogue are documented.
+
+`make empirical-platform-report` writes
+`reports/constitutional-review-empirical-platform-v1.csv`,
+`reports/constitutional-review-empirical-platform-v1-families.csv`, and
+`reports/constitutional-review-empirical-platform-v1.md`. These reports combine
+profile coverage, source-observation families, and current source-range miss
+categories into a reusable calibration-platform roadmap.
 
 ## Research Configs
 

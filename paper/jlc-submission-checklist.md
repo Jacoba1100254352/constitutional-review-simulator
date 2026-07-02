@@ -61,6 +61,9 @@ Use this checklist before uploading to Editorial Manager.
 - `make court-profile-check` passes, confirming the profile-level empirical
   platform index is synchronized with the source-observation matrix and context
   rows.
+- `make empirical-platform-check` passes, confirming the profile and
+  family-coverage reports are synchronized with the profile index and current
+  source-range miss report.
 - `make validation-miss-report` has refreshed the generated source-range miss
   report after the latest source-check campaign.
 - Supplement includes source code, configuration files, calibration targets,
@@ -92,6 +95,7 @@ Run these commands from the repository root:
 make paper-check
 make paper
 make figure-placement-audit
+make empirical-platform-check
 make supplement
 make paper-pdf-check
 make submission-bundle

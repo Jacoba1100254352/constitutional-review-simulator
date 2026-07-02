@@ -11,6 +11,8 @@ Regenerate or check the index from the repository root:
 ```sh
 make court-profile-build
 make court-profile-check
+make empirical-platform-report
+make empirical-platform-check
 ```
 
 Profile status values:
@@ -29,3 +31,7 @@ The `missingValidationFamilies` and `nextCalibrationPriority` columns are a
 roadmap, not a claim that every family is equally available for every court.
 Promote new rows only after a public source URL, denominator, period, coding
 rule, construction note, and direct simulator analogue are documented.
+
+The empirical platform report targets in `reports/` combine this profile index
+with the current source-range miss report. Use those reports when deciding which
+profile family to promote next.
