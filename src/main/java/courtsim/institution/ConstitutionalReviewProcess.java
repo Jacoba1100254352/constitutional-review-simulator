@@ -169,7 +169,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 		boolean dialogueConcernFound = (configuration.weakFormReview()
 				|| configuration.reviewMechanism() == ReviewMechanism.SUSPENDED_DECLARATION)
 				&& finalVote.strikeVoteShare() >= Math.max(
-						0.35,
+						configuration.sourceDialogueConcernFloor(),
 						configuration.invalidationThreshold() - 0.10 + configuration.sourceDialogueConcernThresholdAdjustment()
 				);
 		boolean constitutionalConcernFound = meritsReview && (meritsEligibleInvalidation || dialogueConcernFound);

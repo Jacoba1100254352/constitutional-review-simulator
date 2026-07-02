@@ -73,6 +73,7 @@ public final class InstitutionModelTests
 		assertTrue(generic.sourceIntakeDenominatorMultiplier() == 1.0, "generic scenarios should not shift source denominators");
 		assertTrue(generic.sourceEmergencyReliefThresholdAdjustment() == 0.0, "generic scenarios should not shift emergency thresholds");
 		assertTrue(!generic.sourceDeferredEffectRemedyProfile(), "generic scenarios should not use source deferred-effect remedies");
+		assertTrue(generic.sourceDialogueConcernFloor() == 0.35, "generic scenarios should keep the standard dialogue concern floor");
 
 		DesignConfiguration canada = sourceConfiguration(
 				CostProfileKey.CANADIAN_SUPREME_COURT,
@@ -122,6 +123,7 @@ public final class InstitutionModelTests
 		assertTrue(uk.sourceLegislativeResponseCredibilityMultiplier() < 1.0, "UK source profile should distinguish strict cure credibility");
 		assertTrue(uk.sourceLegislativeResponseScoreAdjustment() > 0.0, "UK source profile should preserve broader response counts");
 		assertTrue(uk.sourceDialogueConcernThresholdAdjustment() < 0.0, "UK source profile should broaden declaration concern threshold");
+		assertTrue(uk.sourceDialogueConcernFloor() < generic.sourceDialogueConcernFloor(), "UK source profile should lower the source-range declaration floor");
 	}
 
 	private static void complianceFallsUnderConflictAndLowImplementationCapacity() {

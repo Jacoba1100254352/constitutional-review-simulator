@@ -814,12 +814,16 @@ def generate_validation_miss_interpretation() -> None:
             )
             + r" \\"
         )
+    if not display_rows:
+        lines.append(
+            r"\multicolumn{4}{@{}p{0.95\linewidth}@{}}{All currently validation-counted source-range checks fall within their documented ranges. Remaining calibration work is therefore about broadening source-backed coverage, not resolving a current out-of-range benchmark.} \\"
+        )
     lines.extend(
         [
             r"\bottomrule",
             r"\end{tabular}",
             r"\begin{minipage}{0.96\linewidth}",
-            r"\footnotesize Notes: The table reports up to four of the largest out-of-range source checks. The full generated miss report is retained in \texttt{reports/constitutional-review-validation-v1-misses.csv} and \texttt{.md}. Misses are priorities for future calibration.",
+            r"\footnotesize Notes: The table reports source-range misses when validation-counted checks fall outside documented ranges; when none do, it records the no-current-miss state. The full generated source-range report is retained in \texttt{reports/constitutional-review-validation-v1-misses.csv} and \texttt{.md}.",
             r"\end{minipage}",
             r"\end{table}",
             "",
@@ -863,6 +867,10 @@ def generate_supplement_validation_misses() -> None:
                 ]
             )
             + r" \\"
+        )
+    if not rows:
+        lines.append(
+            r"\multicolumn{5}{@{}p{0.86\linewidth}@{}}{No out-of-range source checks are currently reported. The empirical roadmap remains focused on expanding source-backed coverage beyond the narrow validation-counted rows.} \\"
         )
     lines.extend(
         [

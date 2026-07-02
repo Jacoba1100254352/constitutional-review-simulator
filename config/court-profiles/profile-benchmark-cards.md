@@ -46,11 +46,11 @@ Use these cards to distinguish source-range validation evidence from stress-only
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2 | candidate-verification | case-selection | missing | 2 | Post-leave hearing time | keep as contextual evidence unless recoded to a direct simulator analogue |
-| 3 | candidate-verification | emergency | missing | 1 | Merits nonunanimity rate | keep as contextual evidence unless recoded to a direct simulator analogue |
-| 4 | candidate-verification | compliance | missing | 2 | Reenactment or effective overruling after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
-| 5 | candidate-verification | legislative-response | missing | 5 | Legislative sequel after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
-| 31 | source-acquisition | remedy-timing | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 1 | candidate-verification | case-selection | missing | 2 | Post-leave hearing time | keep as contextual evidence unless recoded to a direct simulator analogue |
+| 2 | candidate-verification | emergency | missing | 1 | Merits nonunanimity rate | keep as contextual evidence unless recoded to a direct simulator analogue |
+| 3 | candidate-verification | compliance | missing | 2 | Reenactment or effective overruling after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
+| 4 | candidate-verification | legislative-response | missing | 5 | Legislative sequel after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
+| 30 | source-acquisition | remedy-timing | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## canada-scc-recent
 
@@ -95,13 +95,13 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 6 | candidate-verification | compliance | missing | 2 | Reenactment or effective overruling after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
-| 7 | candidate-verification | legislative-response | missing | 5 | Legislative sequel after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
-| 11 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 12 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 13 | source-promotion | merits | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 14 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 32 | source-acquisition | remedy-timing | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 5 | candidate-verification | compliance | missing | 2 | Reenactment or effective overruling after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
+| 6 | candidate-verification | legislative-response | missing | 5 | Legislative sequel after Charter invalidation | verify primary source URL and numerator/denominator before promotion |
+| 10 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 11 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 12 | source-promotion | merits | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 13 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 31 | source-acquisition | remedy-timing | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## cjeu-2024
 
@@ -189,7 +189,7 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 15 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 14 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
 
 ## cost-uk-supreme-court
 
@@ -231,7 +231,7 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 16 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 15 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
 
 ## cost-us-supreme-court
 
@@ -274,7 +274,7 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 17 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 16 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
 
 ## echr-2024
 
@@ -367,9 +367,9 @@ No promotion task is currently queued for this profile.
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 18 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 19 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 33 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 17 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 18 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 32 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## gallup-court-confidence-2024
 
@@ -411,12 +411,12 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 20 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 34 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 35 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 36 | source-acquisition | doctrine-mix | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 37 | source-acquisition | emergency | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 38 | source-acquisition | merits | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 19 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 33 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 34 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 35 | source-acquisition | doctrine-mix | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 36 | source-acquisition | emergency | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 37 | source-acquisition | merits | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## germany-bverfg-2024
 
@@ -461,13 +461,13 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 8 | candidate-verification | legislative-response | missing | 1 | Legislative response to unconstitutional-without-nullity decisions | verify primary source URL and numerator/denominator before promotion |
-| 9 | candidate-verification | merits | missing | 1 | Constitutional complaint success or grant rate | verify primary source URL and numerator/denominator before promotion |
-| 21 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 22 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 23 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 39 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 40 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 7 | candidate-verification | legislative-response | missing | 1 | Legislative response to unconstitutional-without-nullity decisions | verify primary source URL and numerator/denominator before promotion |
+| 8 | candidate-verification | merits | missing | 1 | Constitutional complaint success or grant rate | verify primary source URL and numerator/denominator before promotion |
+| 20 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 21 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 22 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 38 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 39 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## scdb-modern-merits-2000-2024
 
@@ -515,12 +515,12 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 24 | source-promotion | doctrine-mix | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 41 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 42 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 43 | source-acquisition | emergency | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 44 | source-acquisition | merits | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 45 | source-acquisition | political-context | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 23 | source-promotion | doctrine-mix | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 40 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 41 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 42 | source-acquisition | emergency | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 43 | source-acquisition | merits | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 44 | source-acquisition | political-context | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## scdb-postwar-merits-1946-2024
 
@@ -568,7 +568,7 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 25 | source-promotion | doctrine-mix | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 24 | source-promotion | doctrine-mix | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
 
 ## scotus-emergency-2024-2025
 
@@ -617,12 +617,12 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 26 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 46 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 47 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 48 | source-acquisition | doctrine-mix | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 49 | source-acquisition | merits | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 50 | source-acquisition | political-context | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 25 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 45 | source-acquisition | case-selection | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 46 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 47 | source-acquisition | doctrine-mix | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 48 | source-acquisition | merits | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 49 | source-acquisition | political-context | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## south-africa-constcourt-recent
 
@@ -667,13 +667,13 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 10 | candidate-verification | legislative-response | missing | 1 | Legislative response to suspended declarations of invalidity | verify primary source URL and numerator/denominator before promotion |
-| 27 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 28 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 29 | source-promotion | merits | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 30 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
-| 51 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
-| 52 | source-acquisition | remedy-timing | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 9 | candidate-verification | legislative-response | missing | 1 | Legislative response to suspended declarations of invalidity | verify primary source URL and numerator/denominator before promotion |
+| 26 | source-promotion | cost | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 27 | source-promotion | intake | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 28 | source-promotion | merits | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 29 | source-promotion | political-context | stress-only | 0 | -- | verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows |
+| 50 | source-acquisition | compliance | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
+| 51 | source-acquisition | remedy-timing | missing | 0 | -- | collect denominator-backed source rows for this profile-family |
 
 ## uk-human-rights-doi-2025
 
@@ -694,7 +694,7 @@ No validation-counted source-range rows are currently registered for this profil
 | emergency | missing | 0 | 0 | 0 | -- | 0.000 | 0 | 0 | no source row or candidate is currently registered for this profile-family |
 | merits | missing | 0 | 0 | 0 | -- | 0.000 | 0 | 0 | no source row or candidate is currently registered for this profile-family |
 | remedy-timing | missing | 0 | 0 | 0 | -- | 0.000 | 0 | 0 | no source row or candidate is currently registered for this profile-family |
-| legislative-response | validation-counted | 2 | 2 | 1 | Strict response after declarations of incompatibility | 0.056 | 4 | 0 | Tune response-cycle triggers, government capacity, and statutory-remedy coding for the declaration model. |
+| legislative-response | validation-counted | 2 | 2 | 0 | -- | 0.000 | 0 | 0 | keep as a narrow benchmark check; do not generalize to full court behavior |
 | route-mix | missing | 0 | 0 | 0 | -- | 0.000 | 0 | 0 | no source row or candidate is currently registered for this profile-family |
 | compliance | missing | 0 | 0 | 0 | -- | 0.000 | 0 | 0 | no source row or candidate is currently registered for this profile-family |
 | cost | missing | 0 | 0 | 0 | -- | 0.000 | 0 | 0 | no source row or candidate is currently registered for this profile-family |
@@ -705,8 +705,8 @@ No validation-counted source-range rows are currently registered for this profil
 
 | Family | Target | Source range | Model interval | Gap | Status | Miss category |
 | --- | --- | --- | --- | --- | --- | --- |
-| legislative-response | Strict response after declarations of incompatibility | 0.430--0.460 | 0.365--0.384 | 0.056 | miss | weak-form response mechanism |
-| legislative-response | Statutory amendment or repeal after declarations of incompatibility | 0.410--0.450 | 0.417--0.436 | 0.000 | within | within source range |
+| legislative-response | Statutory amendment or repeal after declarations of incompatibility | 0.410--0.450 | 0.424--0.444 | 0.000 | within | within source range |
+| legislative-response | Strict response after declarations of incompatibility | 0.430--0.460 | 0.423--0.443 | 0.000 | within | within source range |
 
 ### Source Rows
 
@@ -717,9 +717,7 @@ No validation-counted source-range rows are currently registered for this profil
 
 ### Promotion Tasks
 
-| Rank | Action | Family | Coverage | Candidate rows | Top candidate | Recommended action |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | model-calibration | legislative-response | validation-counted | 4 | Strict post-declaration statutory cure after section 4 declaration | Tune response-cycle triggers, government capacity, and statutory-remedy coding for the declaration model. |
+No promotion task is currently queued for this profile.
 
 ## uk-supreme-court-2024-2025
 
@@ -752,7 +750,7 @@ No validation-counted source-range rows are currently registered for this profil
 | Family | Target | Source range | Model interval | Gap | Status | Miss category |
 | --- | --- | --- | --- | --- | --- | --- |
 | intake | Permission-to-appeal grant rate | 0.345--0.375 | 0.366--0.378 | 0.000 | within | within source range |
-| case-selection | Permission-to-appeal case-selection access proxy | 0.345--0.375 | 0.358--0.377 | 0.000 | within | within source range |
+| case-selection | Permission-to-appeal case-selection access proxy | 0.345--0.375 | 0.357--0.376 | 0.000 | within | within source range |
 
 ### Source Rows
 

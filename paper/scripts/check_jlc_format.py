@@ -289,9 +289,9 @@ def main() -> None:
     if "source-range comparison" not in validation_table:
         fail("validation table should state that checks are source-range comparisons.")
     for expected in [
-            "weak-form response mechanism",
-            "United Kingdom domestic courts",
-            "Misses are priorities for future calibration",
+            "All currently validation-counted source-range checks",
+            "broadening source-backed coverage",
+            "no-current-miss state",
     ]:
         if expected not in validation_miss_table:
             fail(f"validation miss table is missing required interpretive language: {expected}")

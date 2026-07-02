@@ -123,8 +123,8 @@ Markdown, and manifest artifact family under the
 `reports/constitutional-review-validation-v1*` prefix. It also writes
 `reports/constitutional-review-validation-v1-misses.csv` and
 `reports/constitutional-review-validation-v1-misses.md`, which interpret
-out-of-range source checks as denominator, emergency-procedure,
-weak-form response, remedy-timing, merits-outcome, or route-mix calibration priorities.
+out-of-range source checks when any remain and otherwise preserve the full
+source-range status table for the calibration platform.
 
 Run tests:
 

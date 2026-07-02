@@ -69,13 +69,12 @@ reliability.
 U.S. emergency-docket, Canadian, French, UK, ECHR, and CJEU-inspired archetype
 presets with counted direct targets. Columns show the scenario preset, count of
 mapped targets falling within documented ranges, median target gap, and the
-largest remaining miss.
+largest current miss, if any.
 
-`tab:validation-miss-interpretation`: Main-text table listing up to four
-out-of-range source-range checks as a calibration roadmap. Columns show the
-target, model value versus source range, miss category, interpretation, and
-next calibration step. The full generated miss table remains in the replication
-files.
+`tab:validation-miss-interpretation`: Main-text table listing out-of-range
+source-range checks when any remain, or a no-current-miss statement when all
+validation-counted checks fall within their documented ranges. The full
+generated source-range table remains in the replication files.
 
 `tab:baseline-results`: Table listing selected baseline estimates for court
 architecture scenario codes. Columns report design label, democratic
@@ -130,8 +129,9 @@ reliability, and source-status category. Rows without direct URLs or sample
 counts are identified as provisional synthesis targets.
 
 `tab:supp-validation-misses`: Supplementary long table listing all out-of-range
-source-range checks retained in the generated miss roadmap. Columns show the
-target, model value versus source range, miss category, next action, and gap.
+source-range checks retained in the generated miss roadmap, or the generated
+no-current-miss statement when none remain. Columns show the target, model value
+versus source range, miss category, next action, and gap when rows exist.
 
 `tab:supp-research-roadmap`: Supplementary long table listing the empirical
 data-development files, row counts, and the purpose of each file. It

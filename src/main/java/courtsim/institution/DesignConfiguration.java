@@ -310,7 +310,11 @@ public record DesignConfiguration(
 	}
 
 	public double sourceDialogueConcernThresholdAdjustment() {
-		return realWorldPreset() && costProfileKey == CostProfileKey.UK_SUPREME_COURT ? -0.05 : 0.0;
+		return realWorldPreset() && costProfileKey == CostProfileKey.UK_SUPREME_COURT ? -0.16 : 0.0;
+	}
+
+	public double sourceDialogueConcernFloor() {
+		return realWorldPreset() && costProfileKey == CostProfileKey.UK_SUPREME_COURT ? 0.24 : 0.35;
 	}
 
 	public double intakeScreeningIntensity() {
