@@ -93,7 +93,10 @@ The generated empirical platform reports in `reports/` reuse the same profile
 index and add the current source-range miss categories. They should be refreshed
 after any validation campaign or calibration-source change so the profile
 roadmap, family-coverage matrix, and replication package describe the same
-evidence surface.
+evidence surface. The promotion-queue CSV is the preferred handoff artifact for
+new empirical work because it distinguishes model-calibration misses,
+candidate-verification tasks, source-promotion tasks, and source-acquisition
+tasks.
 
 The current post-research candidate files identify the most promising remaining
 promotion targets: Canadian Charter legislative sequels, French QPC invalidation

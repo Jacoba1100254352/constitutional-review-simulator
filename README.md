@@ -308,9 +308,11 @@ construction note, and direct simulator analogue are documented.
 `make empirical-platform-report` writes
 `reports/constitutional-review-empirical-platform-v1.csv`,
 `reports/constitutional-review-empirical-platform-v1-families.csv`, and
+`reports/constitutional-review-empirical-platform-v1-promotion-queue.csv`, plus
 `reports/constitutional-review-empirical-platform-v1.md`. These reports combine
-profile coverage, source-observation families, and current source-range miss
-categories into a reusable calibration-platform roadmap.
+profile coverage, source-observation families, source-candidate evidence, and
+current source-range miss categories into a reusable calibration-platform
+roadmap.
 
 ## Research Configs
 

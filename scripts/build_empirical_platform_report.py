@@ -18,7 +18,9 @@ VALIDATION_MISSES = ROOT / "reports" / "constitutional-review-validation-v1-miss
 REPORT_PREFIX = ROOT / "reports" / "constitutional-review-empirical-platform-v1"
 PROFILE_REPORT = REPORT_PREFIX.with_suffix(".csv")
 FAMILY_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-families.csv"
+PROMOTION_QUEUE_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-promotion-queue.csv"
 MARKDOWN_REPORT = REPORT_PREFIX.with_suffix(".md")
+RESEARCH_DIR = ROOT / "config" / "research"
 
 PROFILE_REPORT_HEADER = [
     "profileKey",
@@ -53,6 +55,28 @@ FAMILY_REPORT_HEADER = [
     "nextAction",
 ]
 
+PROMOTION_QUEUE_HEADER = [
+    "priorityRank",
+    "actionType",
+    "profileKey",
+    "court",
+    "targetFamily",
+    "coverageStatus",
+    "outOfRangeRows",
+    "largestGap",
+    "largestGapTarget",
+    "candidateRows",
+    "verifiedCandidateRows",
+    "pendingVerificationRows",
+    "directAnalogueCandidateRows",
+    "roadmapRows",
+    "topCandidateFile",
+    "topCandidateLabel",
+    "topCandidateStatus",
+    "topCandidateSourceStatus",
+    "recommendedAction",
+]
+
 MISS_HEADER = [
     "profileKey",
     "court",
@@ -72,6 +96,93 @@ MISS_HEADER = [
     "interpretation",
     "nextAction",
 ]
+
+TARGET_FAMILY_ALIASES = {
+    "abstractreviewrate": "case-selection",
+    "abstract_review_frequency": "case-selection",
+    "agency_nonacquiescence_rate": "compliance",
+    "averagetimetoreview": "case-selection",
+    "caseSelectionAccess".lower(): "case-selection",
+    "certiorari_pressure": "case-selection",
+    "complaint_success_rate": "intake",
+    "direct_defiance_rate": "compliance",
+    "doctrine_share_by_area": "doctrine-mix",
+    "emergencyReliefRate".lower(): "emergency",
+    "executive_implementation_rate": "compliance",
+    "front_end_rights_statement_accuracy": "case-selection",
+    "government_repeat_player_advantage": "case-selection",
+    "implementation_delay": "compliance",
+    "implementation_follow_up_rate": "compliance",
+    "intake_rejection_rate": "intake",
+    "legislativeResponseCredibility".lower(): "legislative-response",
+    "legislativeResponseRate".lower(): "legislative-response",
+    "legislative_reenactment_rate": "compliance",
+    "legislative_response_after_declaration": "legislative-response",
+    "legislative_response_credibility": "legislative-response",
+    "local_government_compliance_rate": "compliance",
+    "lower_court_conflict_creation": "case-selection",
+    "mandatoryResponseCompletionRate".lower(): "legislative-response",
+    "merits_invalidation_rate": "merits",
+    "normalized_budget_delay_cost": "cost",
+    "ombudsman_review_success_rate": "case-selection",
+    "ombudsman_trigger_access": "case-selection",
+    "overrideRate".lower(): "legislative-response",
+    "override_invocation_rate": "legislative-response",
+    "preEnactmentReviewRate".lower(): "case-selection",
+    "pre_enactment_defect_detection_rate": "case-selection",
+    "pre_enactment_review_rate": "case-selection",
+    "publicDisagreementRate".lower(): "emergency",
+    "public_defender_access": "case-selection",
+    "public_defender_participation_success_rate": "case-selection",
+    "public_interest_support": "case-selection",
+    "public_trust": "political-context",
+    "qpc_decision_outcome_rate": "merits",
+    "reenactment_after_adverse_review_rate": "compliance",
+    "responseFailureRate".lower(): "legislative-response",
+    "response_after_declaration": "legislative-response",
+    "response_before_suspension_expires": "remedy-timing",
+    "response_cycle_completion_rate": "legislative-response",
+    "structural_remedy_monitoring": "compliance",
+    "suspendedDeclarationRate".lower(): "remedy-timing",
+    "suspended_declaration_rate": "remedy-timing",
+    "suspended_order_rate": "remedy-timing",
+    "time_to_review": "case-selection",
+    "workaround_rate": "compliance",
+}
+
+ROADMAP_FAMILY_ALIASES = {
+    "case_selection": "case-selection",
+    "compliance": "compliance",
+    "docket_mix": "doctrine-mix",
+    "emergency_docket": "emergency",
+    "implementation": "compliance",
+    "intake": "intake",
+    "legislative_response": "legislative-response",
+    "legitimacy": "political-context",
+    "remedy_timing": "remedy-timing",
+    "review_activity": "merits",
+    "review_route": "case-selection",
+    "cost": "cost",
+}
+
+ROADMAP_PROFILE_ALIASES = {
+    "us-scotus-modern": ["scdb-modern-merits-2000-2024", "scotus-emergency-2024-2025", "gallup-court-confidence-2024"],
+    "germany-bverfg": ["germany-bverfg-2024"],
+    "france-conseil": ["france-conseil-qpc"],
+    "canada-scc": ["canada-scc-2024", "canada-scc-recent"],
+    "south-africa-constcourt": ["south-africa-constcourt-recent"],
+    "uk-supreme-court": ["uk-supreme-court-2024-2025", "uk-human-rights-doi-2025"],
+    "echr": ["echr-2024"],
+    "cjeu": ["cjeu-2024"],
+}
+
+LEGISLATIVE_SYSTEM_PROFILES = {
+    "United Kingdom": ["uk-human-rights-doi-2025"],
+    "Canada": ["canada-scc-recent", "canada-scc-2024"],
+    "South Africa": ["south-africa-constcourt-recent"],
+    "France": ["france-conseil-qpc"],
+    "Germany": ["germany-bverfg-2024"],
+}
 
 
 def read_rows(path: Path, expected_header: list[str]) -> list[dict[str, str]]:
@@ -97,6 +208,23 @@ def csv_text(rows: list[dict[str, str]], header: list[str]) -> str:
 
 def split_families(value: str) -> set[str]:
     return {part for part in value.split("|") if part}
+
+
+def target_family(target_key: str) -> str:
+    normalized = target_key.strip()
+    if not normalized:
+        return ""
+    if normalized.startswith("doctrine_mix."):
+        return "doctrine-mix"
+    snake = []
+    for index, char in enumerate(normalized):
+        if char.isupper() and index > 0 and normalized[index - 1] != "_":
+            snake.append("_")
+        snake.append(char.lower())
+    snake_key = "".join(snake)
+    if snake_key in build_court_profiles.TARGET_FAMILIES:
+        return build_court_profiles.TARGET_FAMILIES[snake_key]
+    return TARGET_FAMILY_ALIASES.get(normalized.lower(), TARGET_FAMILY_ALIASES.get(snake_key, ""))
 
 
 def gap_value(row: dict[str, str]) -> float:
@@ -136,6 +264,99 @@ def source_family_counts(rows: list[dict[str, str]]) -> dict[tuple[str, str], Co
         else:
             counts[key]["stressOnlyRows"] += 1
     return counts
+
+
+def candidate_rows() -> dict[tuple[str, str], list[dict[str, str]]]:
+    grouped: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+    comparative_path = RESEARCH_DIR / "comparative-calibration-source-candidates.csv"
+    for row in read_rows(comparative_path, [
+        "profileKey",
+        "courtOrSystem",
+        "period",
+        "targetKey",
+        "label",
+        "observedValue",
+        "lowerBound",
+        "upperBound",
+        "numerator",
+        "denominator",
+        "unit",
+        "reliability",
+        "directAnalogue",
+        "calibrationAction",
+        "sourceTrail",
+        "sourceUrlStatus",
+        "notes",
+    ]):
+        family = target_family(row["targetKey"])
+        if family:
+            item = {
+                "sourceFile": str(comparative_path.relative_to(ROOT)),
+                "label": row["label"],
+                "status": row["calibrationAction"],
+                "sourceUrlStatus": row["sourceUrlStatus"],
+                "directAnalogue": row["directAnalogue"],
+                "denominator": row["denominator"],
+            }
+            grouped[(row["profileKey"], family)].append(item)
+
+    legislative_path = RESEARCH_DIR / "legislative-response-source-candidates.csv"
+    for row in read_rows(legislative_path, [
+        "system",
+        "mechanism",
+        "period",
+        "targetKey",
+        "label",
+        "observedValue",
+        "lowerBound",
+        "upperBound",
+        "numerator",
+        "denominator",
+        "unit",
+        "evidenceStatus",
+        "reliability",
+        "directAnalogue",
+        "sourceTrail",
+        "sourceUrlStatus",
+        "notes",
+    ]):
+        family = target_family(row["targetKey"])
+        if not family:
+            continue
+        item = {
+            "sourceFile": str(legislative_path.relative_to(ROOT)),
+            "label": row["label"],
+            "status": row["evidenceStatus"],
+            "sourceUrlStatus": row["sourceUrlStatus"],
+            "directAnalogue": row["directAnalogue"],
+            "denominator": row["denominator"],
+        }
+        for profile_key in LEGISLATIVE_SYSTEM_PROFILES.get(row["system"], []):
+            grouped[(profile_key, family)].append(item)
+    return grouped
+
+
+def roadmap_rows() -> dict[tuple[str, str], int]:
+    grouped: dict[tuple[str, str], int] = defaultdict(int)
+    roadmap_path = RESEARCH_DIR / "empirical-target-roadmap.csv"
+    for row in read_rows(roadmap_path, [
+        "profileKey",
+        "courtOrSystem",
+        "period",
+        "targetFamily",
+        "targetKey",
+        "neededObservedValue",
+        "neededDenominator",
+        "preferredSources",
+        "validationUseIfDocumented",
+        "notes",
+    ]):
+        family = ROADMAP_FAMILY_ALIASES.get(row["targetFamily"], target_family(row["targetKey"]))
+        if not family:
+            continue
+        for profile_key in ROADMAP_PROFILE_ALIASES.get(row["profileKey"], [row["profileKey"]]):
+            grouped[(profile_key, family)] += 1
+    return grouped
 
 
 def largest_row(rows: list[dict[str, str]]) -> dict[str, str] | None:
@@ -220,6 +441,106 @@ def family_report_rows(
     return output
 
 
+def candidate_score(row: dict[str, str]) -> tuple[int, int, int, str]:
+    verified = 1 if row["sourceUrlStatus"].startswith("verified:https://") else 0
+    direct = 1 if row["directAnalogue"].lower() == "true" else 0
+    denominator = 1 if row["denominator"].strip() and row["denominator"].strip() != "0" else 0
+    return (verified, direct, denominator, row["label"])
+
+
+def queue_action_type(family_row: dict[str, str], candidates: list[dict[str, str]], roadmap_count: int) -> str:
+    if int(family_row["outOfRangeRows"]) > 0:
+        return "model-calibration"
+    if family_row["coverageStatus"] == "validation-counted":
+        return ""
+    if family_row["coverageStatus"] == "stress-only":
+        return "source-promotion"
+    if candidates:
+        return "candidate-verification"
+    if roadmap_count:
+        return "source-acquisition"
+    return ""
+
+
+def queue_recommendation(action_type: str, family_row: dict[str, str], top_candidate: dict[str, str] | None) -> str:
+    if action_type == "model-calibration":
+        return family_row["nextAction"] or "retune model only after preserving cross-profile comparability"
+    if action_type == "source-promotion":
+        return "verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows"
+    if action_type == "candidate-verification" and top_candidate:
+        if not top_candidate["sourceUrlStatus"].startswith("verified:https://"):
+            return "verify primary source URL and numerator/denominator before promotion"
+        if top_candidate["directAnalogue"].lower() != "true":
+            return "keep as contextual evidence unless recoded to a direct simulator analogue"
+        return "audit construction note and promote if target key is simulator-observable"
+    if action_type == "source-acquisition":
+        return "collect denominator-backed source rows for this profile-family"
+    return ""
+
+
+def promotion_queue_rows(
+        family_rows: list[dict[str, str]],
+        candidates_by_family: dict[tuple[str, str], list[dict[str, str]]],
+        roadmap_by_family: dict[tuple[str, str], int],
+) -> list[dict[str, str]]:
+    pending: list[tuple[tuple[float, int, int, str, str], dict[str, str]]] = []
+    for family_row in family_rows:
+        key = (family_row["profileKey"], family_row["targetFamily"])
+        candidates = candidates_by_family.get(key, [])
+        roadmap_count = roadmap_by_family.get(key, 0)
+        action_type = queue_action_type(family_row, candidates, roadmap_count)
+        if not action_type:
+            continue
+
+        verified_count = sum(1 for row in candidates if row["sourceUrlStatus"].startswith("verified:https://"))
+        pending_count = sum(1 for row in candidates if row["sourceUrlStatus"].startswith("pending"))
+        direct_count = sum(1 for row in candidates if row["directAnalogue"].lower() == "true")
+        top_candidate = max(candidates, key=candidate_score) if candidates else None
+        action_weight = {
+            "model-calibration": 0,
+            "candidate-verification": 1,
+            "source-promotion": 2,
+            "source-acquisition": 3,
+        }[action_type]
+        sort_key = (
+            -float(family_row["largestGap"]),
+            action_weight,
+            -verified_count,
+            family_row["profileKey"],
+            family_row["targetFamily"],
+        )
+        pending.append(
+            (
+                sort_key,
+                {
+                    "priorityRank": "",
+                    "actionType": action_type,
+                    "profileKey": family_row["profileKey"],
+                    "court": family_row["court"],
+                    "targetFamily": family_row["targetFamily"],
+                    "coverageStatus": family_row["coverageStatus"],
+                    "outOfRangeRows": family_row["outOfRangeRows"],
+                    "largestGap": family_row["largestGap"],
+                    "largestGapTarget": family_row["largestGapTarget"],
+                    "candidateRows": str(len(candidates)),
+                    "verifiedCandidateRows": str(verified_count),
+                    "pendingVerificationRows": str(pending_count),
+                    "directAnalogueCandidateRows": str(direct_count),
+                    "roadmapRows": str(roadmap_count),
+                    "topCandidateFile": top_candidate["sourceFile"] if top_candidate else "",
+                    "topCandidateLabel": top_candidate["label"] if top_candidate else "",
+                    "topCandidateStatus": top_candidate["status"] if top_candidate else "",
+                    "topCandidateSourceStatus": top_candidate["sourceUrlStatus"] if top_candidate else "",
+                    "recommendedAction": queue_recommendation(action_type, family_row, top_candidate),
+                },
+            )
+        )
+    output = [row for _, row in sorted(pending, key=lambda item: item[0])]
+    for index, row in enumerate(output, start=1):
+        row["priorityRank"] = str(index)
+    return output
+
+
 def md_escape(value: str) -> str:
     return value.replace("|", "\\|").replace("\n", " ")
 
@@ -237,6 +558,7 @@ def markdown_table(header: list[str], rows: list[list[str]]) -> list[str]:
 def markdown_report(
         profile_rows: list[dict[str, str]],
         family_rows: list[dict[str, str]],
+        queue_rows: list[dict[str, str]],
         source_rows: list[dict[str, str]],
         miss_rows: list[dict[str, str]],
 ) -> str:
@@ -254,12 +576,14 @@ def markdown_report(
 
     failures = out_of_range(miss_rows)
     miss_category_counts = Counter(row["missCategory"] for row in failures)
+    action_counts = Counter(row["actionType"] for row in queue_rows)
     top_profiles = sorted(profile_rows, key=lambda row: (-float(row["largestGap"]), row["profileKey"]))[:8]
+    top_queue = queue_rows[:12]
 
     lines = [
         "# Empirical Platform Coverage Report",
         "",
-        "This generated report summarizes the reusable calibration-platform surface. It is derived from `config/court-profiles/profile-index.csv`, `config/calibration-source-observations.csv`, and `reports/constitutional-review-validation-v1-misses.csv`.",
+        "This generated report summarizes the reusable calibration-platform surface. It is derived from `config/court-profiles/profile-index.csv`, `config/calibration-source-observations.csv`, `reports/constitutional-review-validation-v1-misses.csv`, and source-candidate roadmap files under `config/research/`.",
         "",
         "## Summary",
         "",
@@ -268,6 +592,7 @@ def markdown_report(
         f"- Validation-counted source rows: {sum(int(row['validationRows']) for row in profile_rows)}",
         f"- Validation rows within source range: {sum(1 for row in miss_rows if row['withinTarget'].lower() == 'true')}",
         f"- Validation rows out of range: {len(failures)}",
+        f"- Promotion queue rows: {len(queue_rows)}",
         "",
         "## Profile Status",
         "",
@@ -303,6 +628,13 @@ def markdown_report(
         )
     else:
         lines.append("No out-of-range validation rows are reported.")
+    lines.extend(["", "## Promotion Queue Actions", ""])
+    lines.extend(
+        markdown_table(
+            ["Action type", "Rows"],
+            [[action_type, str(action_counts[action_type])] for action_type in sorted(action_counts)],
+        )
+    )
     lines.extend(["", "## Largest Profile Gaps", ""])
     lines.extend(
         markdown_table(
@@ -318,6 +650,26 @@ def markdown_report(
                     row["nextCalibrationPriority"],
                 ]
                 for row in top_profiles
+            ],
+        )
+    )
+    lines.extend(["", "## Top Promotion Queue", ""])
+    lines.extend(
+        markdown_table(
+            ["Rank", "Action", "Profile", "Family", "Coverage", "Gap", "Candidate rows", "Roadmap rows", "Recommended action"],
+            [
+                [
+                    row["priorityRank"],
+                    row["actionType"],
+                    row["profileKey"],
+                    row["targetFamily"],
+                    row["coverageStatus"],
+                    row["largestGap"],
+                    row["candidateRows"],
+                    row["roadmapRows"],
+                    row["recommendedAction"],
+                ]
+                for row in top_queue
             ],
         )
     )
@@ -340,10 +692,12 @@ def expected_outputs() -> dict[Path, str]:
     counts = source_family_counts(source_rows)
     profile_rows = profile_report_rows(profiles, misses_by_profile)
     family_rows = family_report_rows(profiles, counts, misses_by_family)
+    queue_rows = promotion_queue_rows(family_rows, candidate_rows(), roadmap_rows())
     return {
         PROFILE_REPORT: csv_text(profile_rows, PROFILE_REPORT_HEADER),
         FAMILY_REPORT: csv_text(family_rows, FAMILY_REPORT_HEADER),
-        MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, source_rows, miss_rows),
+        PROMOTION_QUEUE_REPORT: csv_text(queue_rows, PROMOTION_QUEUE_HEADER),
+        MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, queue_rows, source_rows, miss_rows),
     }
 
 

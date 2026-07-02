@@ -33,5 +33,6 @@ Promote new rows only after a public source URL, denominator, period, coding
 rule, construction note, and direct simulator analogue are documented.
 
 The empirical platform report targets in `reports/` combine this profile index
-with the current source-range miss report. Use those reports when deciding which
-profile family to promote next.
+with the current source-range miss report and source-candidate files. Use
+`reports/constitutional-review-empirical-platform-v1-promotion-queue.csv` when
+deciding which profile family to verify, promote, or retune next.
