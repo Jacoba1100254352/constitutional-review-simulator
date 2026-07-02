@@ -4,7 +4,9 @@ This directory is the profile-level entry point for the empirical calibration
 platform. The canonical target rows remain in
 `config/calibration-source-observations.csv`; the generated
 `profile-index.csv` groups those rows into court profiles and records the
-current validation surface for each profile.
+current validation surface for each profile. The generated
+`profile-benchmark-cards.md` file expands that index into per-profile benchmark
+cards with family coverage, source rows, validation misses, and promotion tasks.
 
 Regenerate or check the index from the repository root:
 
@@ -36,4 +38,7 @@ rule, construction note, and direct simulator analogue are documented.
 The empirical platform report targets in `reports/` combine this profile index
 with the current source-range miss report and source-candidate files. Use
 `reports/constitutional-review-empirical-platform-v1-promotion-queue.csv` when
-deciding which profile family to verify, promote, or retune next.
+deciding which profile family to verify, promote, or retune next. Use
+`profile-benchmark-cards.md` when reviewing one court profile at a time, because
+it keeps validation-counted rows, stress-only context, missing families, and
+queued tasks in the same generated card.

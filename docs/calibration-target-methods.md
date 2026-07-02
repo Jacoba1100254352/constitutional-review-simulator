@@ -96,7 +96,10 @@ roadmap, family-coverage matrix, and replication package describe the same
 evidence surface. The promotion-queue CSV is the preferred handoff artifact for
 new empirical work because it distinguishes model-calibration misses,
 candidate-verification tasks, source-promotion tasks, and source-acquisition
-tasks.
+tasks. `config/court-profiles/profile-benchmark-cards.md` is the companion
+human-readable handoff for profile-by-profile review: it places each court
+profile's validation checks, source rows, missing families, and queued
+promotion tasks on one generated card.
 
 Before using source-candidate rows for that queue, `make research-data-check`
 validates that the research CSVs parse cleanly and that each research

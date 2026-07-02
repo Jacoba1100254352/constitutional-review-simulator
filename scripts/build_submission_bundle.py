@@ -218,7 +218,7 @@ Files:
   It includes a local `cup-journal.cls` compatibility shim for reproducible
   review builds plus `TEMPLATE-SHIM-NOTICE.md`; it is not represented as the
   official Cambridge production template bundle.
-- `replication-package.zip`: Java source, configuration, calibration source observations, court-profile index, empirical platform coverage reports, compact aggregate reports, provenance manifests, and reproduction commands.
+- `replication-package.zip`: Java source, configuration, calibration source observations, court-profile index and benchmark cards, empirical platform coverage reports, compact aggregate reports, provenance manifests, and reproduction commands.
 - `excluded-large-artifacts.txt`: raw case-level and interval outputs omitted from the review ZIP to keep the upload practical; regenerate with the listed `make` commands.
 - `jlc-review-bundle.zip`: single upload bundle containing the PDFs and the two ZIP archives.
 

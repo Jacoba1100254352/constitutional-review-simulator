@@ -13,6 +13,7 @@ import build_court_profiles
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_INDEX = ROOT / "config" / "court-profiles" / "profile-index.csv"
+PROFILE_CARDS = ROOT / "config" / "court-profiles" / "profile-benchmark-cards.md"
 CALIBRATION_SOURCE = ROOT / "config" / "calibration-source-observations.csv"
 VALIDATION_MISSES = ROOT / "reports" / "constitutional-review-validation-v1-misses.csv"
 REPORT_PREFIX = ROOT / "reports" / "constitutional-review-empirical-platform-v1"
@@ -569,6 +570,206 @@ def markdown_table(header: list[str], rows: list[list[str]]) -> list[str]:
     return lines
 
 
+def family_sort_key(family: str) -> int:
+    try:
+        return build_court_profiles.PLATFORM_FAMILY_ORDER.index(family)
+    except ValueError:
+        return len(build_court_profiles.PLATFORM_FAMILY_ORDER)
+
+
+def rows_by_profile(rows: list[dict[str, str]]) -> dict[str, list[dict[str, str]]]:
+    grouped: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in rows:
+        grouped[row["profileKey"]].append(row)
+    return grouped
+
+
+def family_row_index(rows: list[dict[str, str]]) -> dict[tuple[str, str], dict[str, str]]:
+    return {(row["profileKey"], row["targetFamily"]): row for row in rows}
+
+
+def source_row_family(row: dict[str, str]) -> str:
+    return build_court_profiles.family_for(row["targetKey"])
+
+
+def source_use(row: dict[str, str]) -> str:
+    return "validation" if row["useForValidation"].lower() == "true" else "stress"
+
+
+def cards_next_step(
+        family_row: dict[str, str],
+        queue_row: dict[str, str] | None,
+) -> str:
+    if family_row["outOfRangeRows"] != "0":
+        return family_row["nextAction"] or "calibrate this source-range miss before stronger profile claims"
+    if queue_row:
+        return queue_row["recommendedAction"]
+    if family_row["coverageStatus"] == "validation-counted":
+        return "keep as a narrow benchmark check; do not generalize to full court behavior"
+    if family_row["coverageStatus"] == "stress-only":
+        return "retain as stress context until denominator, source URL, and direct analogue are verified"
+    return "no source row or candidate is currently registered for this profile-family"
+
+
+def benchmark_cards(
+        profile_rows: list[dict[str, str]],
+        family_rows: list[dict[str, str]],
+        queue_rows: list[dict[str, str]],
+        source_rows: list[dict[str, str]],
+        miss_rows: list[dict[str, str]],
+) -> str:
+    family_by_key = family_row_index(family_rows)
+    queue_by_profile = rows_by_profile(queue_rows)
+    queue_by_key = {
+        (row["profileKey"], row["targetFamily"]): row
+        for row in queue_rows
+    }
+    source_by_profile = rows_by_profile(source_rows)
+    miss_by_profile = rows_by_profile(miss_rows)
+
+    lines = [
+        "# Court Profile Benchmark Cards",
+        "",
+        "This generated artifact is the profile-level handoff for the empirical calibration platform. It is derived from `config/court-profiles/profile-index.csv`, `config/calibration-source-observations.csv`, the generated validation-miss report, and the empirical-platform promotion queue. Do not edit it by hand; regenerate it with `make empirical-platform-report`.",
+        "",
+        "Use these cards to distinguish source-range validation evidence from stress-only context and from candidate or acquisition work. A `validation-counted` family is a narrow benchmark check, not a claim that the stylized preset reproduces the named court.",
+        "",
+    ]
+
+    for profile in profile_rows:
+        profile_key = profile["profileKey"]
+        profile_sources = sorted(
+            source_by_profile.get(profile_key, []),
+            key=lambda row: (family_sort_key(source_row_family(row)), row["targetKey"], row["label"]),
+        )
+        profile_misses = sorted(
+            miss_by_profile.get(profile_key, []),
+            key=lambda row: (-gap_value(row), family_sort_key(build_court_profiles.family_for(row["targetKey"])), row["targetKey"]),
+        )
+        profile_queue = sorted(
+            queue_by_profile.get(profile_key, []),
+            key=lambda row: int(row["priorityRank"]),
+        )
+
+        lines.extend(
+            [
+                f"## {profile_key}",
+                "",
+                f"- Court: {profile['court']}",
+                f"- Period: {profile['timePeriod']}",
+                f"- Status: {profile['empiricalStatus']}",
+                f"- Target file(s): {profile.get('targetFile', '')}",
+                f"- Context: {profile.get('contextScenarioKey', '') or '--'}; {profile.get('contextSourceFamily', '') or '--'}",
+                f"- Evidence rows: {profile['sourceRows']} source rows; {profile['validationRows']} validation-counted rows; {profile.get('denominatorRows', '')} rows with stored denominators; {profile.get('sourceUrlRows', '')} rows with source URLs",
+                f"- Next calibration priority: {profile['nextCalibrationPriority']}",
+                "",
+                "### Family Coverage",
+                "",
+            ]
+        )
+        lines.extend(
+            markdown_table(
+                [
+                    "Family",
+                    "Coverage",
+                    "Source rows",
+                    "Validation rows",
+                    "Out-of-range",
+                    "Largest miss",
+                    "Gap",
+                    "Candidates",
+                    "Roadmap",
+                    "Next step",
+                ],
+                [
+                    [
+                        family,
+                        family_by_key[(profile_key, family)]["coverageStatus"],
+                        family_by_key[(profile_key, family)]["sourceRows"],
+                        family_by_key[(profile_key, family)]["validationRows"],
+                        family_by_key[(profile_key, family)]["outOfRangeRows"],
+                        family_by_key[(profile_key, family)]["largestGapTarget"] or "--",
+                        family_by_key[(profile_key, family)]["largestGap"],
+                        queue_by_key.get((profile_key, family), {}).get("candidateRows", "0"),
+                        queue_by_key.get((profile_key, family), {}).get("roadmapRows", "0"),
+                        cards_next_step(family_by_key[(profile_key, family)], queue_by_key.get((profile_key, family))),
+                    ]
+                    for family in build_court_profiles.PLATFORM_FAMILY_ORDER
+                ],
+            )
+        )
+
+        lines.extend(["", "### Validation Checks", ""])
+        if profile_misses:
+            lines.extend(
+                markdown_table(
+                    ["Family", "Target", "Source range", "Model interval", "Gap", "Status", "Miss category"],
+                    [
+                        [
+                            build_court_profiles.family_for(row["targetKey"]),
+                            row["label"],
+                            row["sourceRange"],
+                            row["modelInterval"],
+                            row["gap"],
+                            "within" if row["withinTarget"].lower() == "true" else "miss",
+                            row["missCategory"],
+                        ]
+                        for row in profile_misses
+                    ],
+                )
+            )
+        else:
+            lines.append("No validation-counted source-range rows are currently registered for this profile.")
+
+        lines.extend(["", "### Source Rows", ""])
+        if profile_sources:
+            lines.extend(
+                markdown_table(
+                    ["Family", "Use", "Target", "Observed", "Range", "N", "Reliability", "Source"],
+                    [
+                        [
+                            source_row_family(row),
+                            source_use(row),
+                            row["label"],
+                            row["observedValue"],
+                            f"{row['lowerBound']}--{row['upperBound']}",
+                            row["n"],
+                            row["reliability"],
+                            row["sourceName"] or "--",
+                        ]
+                        for row in profile_sources
+                    ],
+                )
+            )
+        else:
+            lines.append("No calibration source rows are currently registered for this profile.")
+
+        lines.extend(["", "### Promotion Tasks", ""])
+        if profile_queue:
+            lines.extend(
+                markdown_table(
+                    ["Rank", "Action", "Family", "Coverage", "Candidate rows", "Top candidate", "Recommended action"],
+                    [
+                        [
+                            row["priorityRank"],
+                            row["actionType"],
+                            row["targetFamily"],
+                            row["coverageStatus"],
+                            row["candidateRows"],
+                            row["topCandidateLabel"] or "--",
+                            row["recommendedAction"],
+                        ]
+                        for row in profile_queue[:8]
+                    ],
+                )
+            )
+        else:
+            lines.append("No promotion task is currently queued for this profile.")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
 def markdown_report(
         profile_rows: list[dict[str, str]],
         family_rows: list[dict[str, str]],
@@ -712,6 +913,7 @@ def expected_outputs() -> dict[Path, str]:
         FAMILY_REPORT: csv_text(family_rows, FAMILY_REPORT_HEADER),
         PROMOTION_QUEUE_REPORT: csv_text(queue_rows, PROMOTION_QUEUE_HEADER),
         MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, queue_rows, source_rows, miss_rows),
+        PROFILE_CARDS: benchmark_cards(profiles, family_rows, queue_rows, source_rows, miss_rows),
     }
 
 

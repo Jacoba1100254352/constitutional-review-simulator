@@ -316,10 +316,13 @@ are not mapped to a platform target family.
 `reports/constitutional-review-empirical-platform-v1.csv`,
 `reports/constitutional-review-empirical-platform-v1-families.csv`, and
 `reports/constitutional-review-empirical-platform-v1-promotion-queue.csv`, plus
-`reports/constitutional-review-empirical-platform-v1.md`. These reports combine
-profile coverage, source-observation families, source-candidate evidence, and
-current source-range miss categories into a reusable calibration-platform
-roadmap.
+`reports/constitutional-review-empirical-platform-v1.md`. It also writes
+`config/court-profiles/profile-benchmark-cards.md`, a generated per-profile
+handoff that combines each court profile's validation checks, stress-only rows,
+missing families, candidate rows, and queued promotion tasks. These reports
+combine profile coverage, source-observation families, source-candidate
+evidence, and current source-range miss categories into a reusable
+calibration-platform roadmap.
 
 ## Research Configs
 
@@ -328,6 +331,7 @@ Research-derived structured inputs are checked in under `config/`:
 - `config/comparative/constitutional-review-designs.csv`: court-system design matrix and simulator scenario mapping
 - `config/comparative/synthetic-review-mechanisms.csv`: synthetic mechanism matrix with transplant, culture-fit, and implementation-cost notes
 - `config/court-profiles/profile-index.csv`: generated profile-level index of source rows, counted validation rows, context mappings, missing validation families, and next calibration priorities
+- `config/court-profiles/profile-benchmark-cards.md`: generated per-profile benchmark cards separating validation-counted rows, stress-only context, source-range misses, and promotion tasks
 - `config/research/legislative-response-source-candidates.csv`: denominator-backed weak-form, suspended-declaration, override, and mandatory-response findings with promotion status
 - `config/research/comparative-calibration-source-candidates.csv`: comparative court intake, route-mix, timing, emergency, and nonunanimity targets with source and mapping status
 - `config/research/transplant-indicator-operationalization.csv`: transplant-feasibility indicators, source families, ranges, and simulator-field mappings
