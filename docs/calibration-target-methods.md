@@ -82,6 +82,13 @@ and merits-invalidation proxies outside the emergency-docket context. Once
 those datasets include URLs, denominators, and construction formulas, set
 `useForValidation=true` and regenerate the calibration target files.
 
+For profile-level planning, `config/court-profiles/profile-index.csv` is the
+generated coverage index. It is derived from the source-observation matrix and
+the country-context file, and it records which target families are already
+validation-counted for each court profile. Treat its missing-family columns as a
+calibration roadmap, not as evidence that a missing target is available or
+comparable for every system.
+
 The current post-research candidate files identify the most promising remaining
 promotion targets: Canadian Charter legislative sequels, French QPC invalidation
 and conditional deferred-effect rates, pre-enactment review frequency evidence,

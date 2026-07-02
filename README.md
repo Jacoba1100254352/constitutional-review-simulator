@@ -265,6 +265,7 @@ Default calibration profiles live in `config/calibration/*.csv`; `config/calibra
 make calibration-check
 make calibration-build
 make promotion-check
+make court-profile-check
 ```
 
 The calibration schema is:
@@ -281,12 +282,33 @@ The target-method note in `docs/calibration-target-methods.md` separates
 source-specific targets from provisional synthesis ranges. Rows without a source
 URL, rows without denominators, rows marked as synthesis, low-reliability contextual rows, public-trust proxies, and normalized-cost rows should be treated as transparent stress-test assumptions, not as empirical validation evidence.
 
+## Court Profile Index
+
+The profile-level empirical platform index lives in
+`config/court-profiles/profile-index.csv` and is generated from the calibration
+source-observation matrix plus `config/context/country-year-context.csv`:
+
+```sh
+make court-profile-build
+make court-profile-check
+```
+
+The index groups target rows by `profileKey`, records how many rows are
+validation-counted, maps each profile to the relevant political-context row
+when one exists, and lists missing validation families such as intake,
+case-selection access, emergency, merits, remedy timing, legislative response,
+route mix, compliance, cost, doctrine mix, and political context. Treat
+`missingValidationFamilies` as the empirical buildout roadmap: new rows should
+be promoted only when the public source URL, denominator, period, coding rule,
+construction note, and direct simulator analogue are documented.
+
 ## Research Configs
 
 Research-derived structured inputs are checked in under `config/`:
 
 - `config/comparative/constitutional-review-designs.csv`: court-system design matrix and simulator scenario mapping
 - `config/comparative/synthetic-review-mechanisms.csv`: synthetic mechanism matrix with transplant, culture-fit, and implementation-cost notes
+- `config/court-profiles/profile-index.csv`: generated profile-level index of source rows, counted validation rows, context mappings, missing validation families, and next calibration priorities
 - `config/research/legislative-response-source-candidates.csv`: denominator-backed weak-form, suspended-declaration, override, and mandatory-response findings with promotion status
 - `config/research/comparative-calibration-source-candidates.csv`: comparative court intake, route-mix, timing, emergency, and nonunanimity targets with source and mapping status
 - `config/research/transplant-indicator-operationalization.csv`: transplant-feasibility indicators, source families, ranges, and simulator-field mappings

@@ -58,6 +58,9 @@ Use this checklist before uploading to Editorial Manager.
   submitted supplementary CSV, not an author-specific absolute path.
 - `make calibration-check` passes, confirming the source-observation matrix can
   regenerate the calibration target files.
+- `make court-profile-check` passes, confirming the profile-level empirical
+  platform index is synchronized with the source-observation matrix and context
+  rows.
 - `make validation-miss-report` has refreshed the generated source-range miss
   report after the latest source-check campaign.
 - Supplement includes source code, configuration files, calibration targets,

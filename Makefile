@@ -6,7 +6,7 @@ LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 PAPER_TEX := constitutional-review-design-stress-test.tex
 PAPER_PDF := constitutional-review-design-stress-test.pdf
 
-.PHONY: build run campaign paired-campaign validation-check validation-miss-report sensitivity-check calibration-build calibration-check promotion-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
+.PHONY: build run campaign paired-campaign validation-check validation-miss-report sensitivity-check calibration-build calibration-check promotion-check court-profile-build court-profile-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -40,6 +40,12 @@ calibration-check:
 
 promotion-check:
 	python3 scripts/check_calibration_promotions.py
+
+court-profile-build:
+	python3 scripts/build_court_profiles.py --write
+
+court-profile-check:
+	python3 scripts/build_court_profiles.py --check
 
 paper-figures:
 	python3 paper/scripts/generate_figures.py
@@ -88,7 +94,7 @@ test: build
 	javac --release $(JAVA_RELEASE) -cp out/main -d out/test $(TEST_SOURCES)
 	java $(JAVA_PROPS) -cp out/main:out/test courtsim.SimulatorTests
 
-ci: calibration-check test campaign paired-campaign validation-check sensitivity-check paper supplement submission-bundle
+ci: calibration-check court-profile-check test campaign paired-campaign validation-check sensitivity-check paper supplement submission-bundle
 
 clean:
 	rm -rf out
