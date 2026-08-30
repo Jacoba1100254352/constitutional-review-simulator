@@ -126,11 +126,12 @@ CALIBRATION_ROWS = [
     ("germany-bverfg-2024.csv", "germany-bverfg-2024", "intake_acceptance_rate"),
     ("canada-scc-recent.csv", "canada-scc-recent", "intake_acceptance_rate"),
     ("france-conseil-qpc.csv", "france-conseil-qpc", "merits_invalidation_rate"),
-    ("south-africa-constcourt-recent.csv", "south-africa-constcourt-recent", "review_rate"),
+    ("south-africa-constcourt-recent.csv", "south-africa-constcourt-recent", "intake_acceptance_rate"),
 ]
 
 VALIDATION_PROFILES = [
-    ("scdb-modern-merits-2000-2024", "us-supreme-court-benchmark", "U.S. Supreme Court"),
+    ("scdb-postwar-merits-1946-2024", "us-supreme-court-benchmark", "SCDB postwar merits"),
+    ("scdb-modern-merits-2000-2024", "us-supreme-court-benchmark", "SCDB modern merits"),
     ("scotus-emergency-2024-2025", "us-supreme-court-benchmark", "U.S. emergency docket"),
     ("germany-bverfg-2024", "german-constitutional-court", "Germany BVerfG"),
     ("canada-scc-2024", "canadian-supreme-court", "Canada SCC"),

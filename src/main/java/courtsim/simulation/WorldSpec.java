@@ -18,7 +18,8 @@ public record WorldSpec(
 		double electoralTimePressure,
 		double civilSocietyCapacity,
 		double implementationCapacity,
-		double legalTraditionCompatibility
+		double legalTraditionCompatibility,
+		DoctrineDocketProfile doctrineDocketProfile
 )
 {
 	public WorldSpec {
@@ -40,10 +41,13 @@ public record WorldSpec(
 		civilSocietyCapacity = Values.clamp01(civilSocietyCapacity);
 		implementationCapacity = Values.clamp01(implementationCapacity);
 		legalTraditionCompatibility = Values.clamp01(legalTraditionCompatibility);
+		if (doctrineDocketProfile == null) {
+			doctrineDocketProfile = DoctrineDocketProfile.STYLIZED_SEVEN_AREA;
+		}
 	}
 	
 	public static WorldSpec baseline(int caseCount) {
-		return new WorldSpec(caseCount, 4, 0.62, 0.36, 0.28, 0.42, 0.58, 0.55, 0.46, 0.54, 0.42, 0.58, 0.62, 0.68);
+		return new WorldSpec(caseCount, 4, 0.62, 0.36, 0.28, 0.42, 0.58, 0.55, 0.46, 0.54, 0.42, 0.58, 0.62, 0.68, DoctrineDocketProfile.STYLIZED_SEVEN_AREA);
 	}
 	
 	public WorldSpec withCaseCount(int newCaseCount) {
@@ -61,7 +65,8 @@ public record WorldSpec(
 				electoralTimePressure,
 				civilSocietyCapacity,
 				implementationCapacity,
-				legalTraditionCompatibility
+				legalTraditionCompatibility,
+				doctrineDocketProfile
 		);
 	}
 	
@@ -80,55 +85,60 @@ public record WorldSpec(
 				electoralTimePressure,
 				civilSocietyCapacity,
 				implementationCapacity,
-				legalTraditionCompatibility
+				legalTraditionCompatibility,
+				doctrineDocketProfile
 		);
 	}
 	
 	public WorldSpec withAppointmentPolarization(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, value, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, value, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withRightsThreatRate(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, value, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, value, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withEmergencyPressure(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, value, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, value, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withLegislativeConflict(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, value, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, value, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withPublicTrust(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, value, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, value, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withPartisanPressure(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, value, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, value, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withPartyFragmentation(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, value, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, value, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withGovernmentControl(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, value, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, value, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withElectoralTimePressure(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, value, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, value, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withCivilSocietyCapacity(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, value, implementationCapacity, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, value, implementationCapacity, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withImplementationCapacity(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, value, legalTraditionCompatibility);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, value, legalTraditionCompatibility, doctrineDocketProfile);
 	}
 	
 	public WorldSpec withLegalTraditionCompatibility(double value) {
-		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, value);
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, value, doctrineDocketProfile);
+	}
+
+	public WorldSpec withDoctrineDocketProfile(DoctrineDocketProfile profile) {
+		return new WorldSpec(caseCount, reviewPeriods, appointmentPolarization, rightsThreatRate, emergencyPressure, legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl, electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility, profile);
 	}
 }

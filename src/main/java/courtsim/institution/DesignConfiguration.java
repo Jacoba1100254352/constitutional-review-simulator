@@ -256,7 +256,9 @@ public record DesignConfiguration(
 			return 1.0;
 		}
 		return switch (costProfileKey) {
-			case CANADIAN_SUPREME_COURT -> 0.58;
+			case US_SUPREME_COURT -> 0.74;
+			case CANADIAN_SUPREME_COURT -> 0.64;
+			case SOUTH_AFRICAN_CONSTITUTIONAL_COURT -> 0.17;
 			case UK_SUPREME_COURT -> 0.42;
 			case ECHR -> 4.25;
 			default -> 1.0;
@@ -273,7 +275,7 @@ public record DesignConfiguration(
 		}
 		return switch (costProfileKey) {
 			case US_SUPREME_COURT -> 0.51;
-			case ECHR -> 0.53;
+			case ECHR -> 0.54;
 			default -> 0.0;
 		};
 	}
@@ -286,7 +288,7 @@ public record DesignConfiguration(
 	}
 
 	public double sourceEmergencyPublicDisagreementAdjustment() {
-		return realWorldPreset() && costProfileKey == CostProfileKey.US_SUPREME_COURT ? 0.05 : 0.0;
+		return realWorldPreset() && costProfileKey == CostProfileKey.US_SUPREME_COURT ? 0.065 : 0.0;
 	}
 
 	public boolean sourceDeferredEffectRemedyProfile() {
@@ -306,7 +308,14 @@ public record DesignConfiguration(
 	}
 
 	public double sourceLegislativeResponseScoreAdjustment() {
-		return realWorldPreset() && costProfileKey == CostProfileKey.UK_SUPREME_COURT ? 0.25 : 0.0;
+		if (!realWorldPreset()) {
+			return 0.0;
+		}
+		return switch (costProfileKey) {
+			case CANADIAN_SUPREME_COURT -> -0.02;
+			case UK_SUPREME_COURT -> 0.25;
+			default -> 0.0;
+		};
 	}
 
 	public double sourceDialogueConcernThresholdAdjustment() {

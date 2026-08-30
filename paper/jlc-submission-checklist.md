@@ -59,12 +59,14 @@ Use this checklist before uploading to Editorial Manager.
 - `make calibration-check` passes, confirming the source-observation matrix can
   regenerate the calibration target files.
 - `make research-data-check` passes, confirming the research roadmap and
-  source-candidate CSVs parse cleanly and use mapped target families.
+  source-candidate CSVs parse cleanly, use mapped target families, and pass
+  numeric range and numerator/denominator consistency checks where applicable.
 - `make court-profile-check` passes, confirming the profile-level empirical
   platform index is synchronized with the source-observation matrix and context
   rows.
 - `make empirical-platform-check` passes, confirming the profile,
-  family-coverage, promotion-queue, Markdown roadmap, and court-profile
+  family-coverage, promotion-queue, source-gap, candidate-verification,
+  source-acquisition, source-promotion, Markdown roadmap, and court-profile
   benchmark-card artifacts are synchronized with the profile index and current
   source-range miss report.
 - `make validation-miss-report` has refreshed the generated source-range miss

@@ -5,6 +5,9 @@ import courtsim.experiment.CampaignResult;
 import courtsim.experiment.CampaignRunner;
 import courtsim.importer.LegislativeOutputImporter;
 import courtsim.institution.InstitutionModelTests;
+import courtsim.model.CaseFile;
+import courtsim.model.CourtWorld;
+import courtsim.model.DoctrineArea;
 import courtsim.model.LegislativeSignal;
 import courtsim.model.PolicyDomain;
 import courtsim.simulation.*;
@@ -30,6 +33,7 @@ public final class SimulatorTests
 		InstitutionModelTests.runAll();
 		DirectionalScoreModelTests.runAll();
 		simulatorProducesReports();
+		scdbDoctrineResidualBucketKeepsSourceRangesVisible();
 		mechanismScenariosProduceDiagnostics();
 		cjeuRouteMixDiagnosticsAreExposed();
 		contextProfileFileIsWellFormed();
@@ -102,6 +106,7 @@ public final class SimulatorTests
 			assertBetween(report.executiveImplementationRate(), "executive implementation rate");
 			assertBetween(report.agencyNonacquiescenceRate(), "agency nonacquiescence rate");
 			assertBetween(report.legislativeReenactmentRate(), "legislative reenactment rate");
+			assertBetween(report.invalidationLegislativeReenactmentRate(), "post-invalidation legislative reenactment rate");
 			assertBetween(report.localGovernmentComplianceRate(), "local-government compliance rate");
 			assertBetween(report.directCourtCost(), "direct court cost");
 			assertBetween(report.upstreamScreeningCost(), "upstream screening cost");
@@ -115,6 +120,7 @@ public final class SimulatorTests
 			assertBetween(report.legalTransplantFeasibility(), "legal transplant feasibility");
 			assertBetween(report.politicalCultureSensitivity(), "political culture sensitivity");
 			assertBetween(report.legislativeResponseCredibility(), "legislative response credibility");
+			assertBetween(report.invalidationLegislativeResponseRate(), "post-invalidation legislative response rate");
 			assertBetween(report.caseSelectionAccess(), "case-selection access");
 			assertBetween(report.governmentRepeatPlayerAdvantage(), "government repeat-player advantage");
 			assertBetween(report.implementationCapacity(), "implementation capacity");
@@ -129,6 +135,27 @@ public final class SimulatorTests
 		}
 	}
 	
+	private static void scdbDoctrineResidualBucketKeepsSourceRangesVisible() {
+		CourtWorld world = new WorldGenerator().generate(
+				WorldSpec.baseline(12000).withDoctrineDocketProfile(DoctrineDocketProfile.SCDB_MERITS),
+				20260501L,
+				List.of()
+		);
+		Map<DoctrineArea, Integer> counts = new HashMap<>();
+		for (CaseFile caseFile : world.docket()) {
+			counts.merge(caseFile.doctrineArea(), 1, Integer::sum);
+		}
+		int total = world.docket().size();
+		assertShareBetween(counts, total, DoctrineArea.SPEECH, 0.060, 0.091);
+		assertShareBetween(counts, total, DoctrineArea.EQUALITY, 0.137, 0.169);
+		assertShareBetween(counts, total, DoctrineArea.CRIMINAL_PROCEDURE, 0.207, 0.244);
+		assertShareBetween(counts, total, DoctrineArea.FEDERALISM, 0.041, 0.071);
+		assertShareBetween(counts, total, DoctrineArea.ELECTION_LAW, 0.013, 0.040);
+		assertShareBetween(counts, total, DoctrineArea.EMERGENCY_POWERS, 0.000, 0.012);
+		assertShareBetween(counts, total, DoctrineArea.ADMINISTRATIVE_STATE, 0.199, 0.236);
+		assertShareBetween(counts, total, DoctrineArea.OTHER, 0.190, 0.260);
+	}
+
 	private static void mechanismScenariosProduceDiagnostics() {
 		List<ScenarioReport> reports = new Simulator().compare(
 				ScenarioCatalog.scenariosForKeys(List.of(
@@ -299,6 +326,8 @@ public final class SimulatorTests
 		assertTrue(Files.readString(result.csvPath()).contains("governmentRepeatPlayerAdvantage"), "expected government repeat-player metric");
 		assertTrue(Files.readString(result.csvPath()).contains("implementationCapacity"), "expected implementation capacity metric");
 		assertTrue(Files.readString(result.csvPath()).contains("weakFormDeclarationRate"), "expected weak-form mechanism metric");
+		assertTrue(Files.readString(result.csvPath()).contains("invalidationLegislativeResponseRate"), "expected post-invalidation response metric");
+		assertTrue(Files.readString(result.csvPath()).contains("invalidationLegislativeReenactmentRate"), "expected post-invalidation reenactment metric");
 		assertTrue(Files.readString(result.csvPath()).contains("timelyLegislativeResponseRate"), "expected response-timing metric");
 		assertTrue(Files.readString(result.csvPath()).contains("preliminaryReferenceRate"), "expected CJEU route metric");
 		assertTrue(Files.readString(result.periodCsvPath()).contains("caseSelectionAccess"), "expected period access metric");
@@ -464,6 +493,7 @@ public final class SimulatorTests
 		String calibrationCsv = Files.readString(result.calibrationCsvPath());
 		assertTrue(calibrationCsv.contains("scdb-modern-merits-2000-2024"), "expected U.S. doctrine target profile");
 		assertTrue(calibrationCsv.contains("scotus-emergency-2024-2025"), "expected emergency target profile");
+		assertTrue(calibrationCsv.contains("canada-charter-dialogue-1982-2007"), "expected Canada Charter-dialogue target profile");
 		assertTrue(calibrationCsv.contains("uk-human-rights-doi-2025"), "expected verified UK declaration response target profile");
 		assertTrue(calibrationCsv.contains("echr-2024"), "expected verified ECHR target profile");
 		assertTrue(calibrationCsv.contains("france-conseil-qpc"), "expected verified France QPC target profile");
@@ -516,17 +546,32 @@ public final class SimulatorTests
 			validationCounts.merge(row[profileKey], 1, Integer::sum);
 			validationTargets.put(row[profileKey] + "/" + row[targetKey], true);
 		}
-		assertTrue(validationCounts.size() == 7, "expected verified source-specific validation target families");
-		assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 3, "expected three emergency validation targets");
+		assertTrue(validationCounts.size() == 13, "expected verified source-specific validation target profiles");
+		assertTrue(validationCounts.getOrDefault("canada-charter-dialogue-1982-2007", 0) == 6, "expected six Canada Charter-dialogue validation targets");
+		assertTrue(validationCounts.getOrDefault("scdb-postwar-merits-1946-2024", 0) == 7, "expected seven postwar SCDB doctrine validation targets");
+		assertTrue(validationCounts.getOrDefault("scdb-modern-merits-2000-2024", 0) == 7, "expected seven modern SCDB doctrine validation targets");
+		assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 4, "expected three emergency targets plus official certiorari-intake validation");
 		assertTrue(validationCounts.getOrDefault("canada-scc-2024", 0) == 1, "expected Canada 2024 validation target");
+		assertTrue(validationCounts.getOrDefault("canada-scc-recent", 0) == 1, "expected Canada recent-average validation target");
+		assertTrue(validationCounts.getOrDefault("germany-bverfg-2024", 0) == 1, "expected Germany BVerfG validation target");
 		assertTrue(validationCounts.getOrDefault("france-conseil-qpc", 0) == 2, "expected France QPC validation targets");
+		assertTrue(validationCounts.getOrDefault("south-africa-constcourt-recent", 0) == 1, "expected South Africa petition-throughput validation target");
 		assertTrue(validationCounts.getOrDefault("uk-human-rights-doi-2025", 0) == 2, "expected two UK declaration-response validation targets");
 		assertTrue(validationCounts.getOrDefault("uk-supreme-court-2024-2025", 0) == 2, "expected UKSC intake and case-selection validation targets");
 		assertTrue(validationCounts.getOrDefault("echr-2024", 0) == 2, "expected two ECHR validation targets");
-		assertTrue(validationCounts.getOrDefault("cjeu-2024", 0) == 3, "expected three CJEU route validation targets");
+		assertTrue(validationCounts.getOrDefault("cjeu-2024", 0) == 4, "expected CJEU route and compliance validation targets");
 		assertTrue(validationTargets.containsKey("cjeu-2024/preliminary_reference_rate"), "missing CJEU preliminary-reference target");
 		assertTrue(validationTargets.containsKey("cjeu-2024/appeal_route_rate"), "missing CJEU appeal-route target");
 		assertTrue(validationTargets.containsKey("cjeu-2024/direct_action_rate"), "missing CJEU direct-action target");
+		assertTrue(validationTargets.containsKey("cjeu-2024/compliance_rate"), "missing CJEU compliance target");
+		assertTrue(validationTargets.containsKey("canada-charter-dialogue-1982-2007/invalidation_legislative_response_rate"), "missing Canada post-invalidation response target");
+		assertTrue(validationTargets.containsKey("canada-charter-dialogue-1982-2007/invalidation_legislative_reenactment_rate"), "missing Canada post-invalidation reenactment target");
+		assertTrue(validationTargets.containsKey("canada-scc-recent/intake_acceptance_rate"), "missing Canada recent-average intake target");
+		assertTrue(validationTargets.containsKey("germany-bverfg-2024/intake_acceptance_rate"), "missing Germany constitutional-complaint intake target");
+		assertTrue(validationTargets.containsKey("scotus-emergency-2024-2025/intake_acceptance_rate"), "missing SCOTUS certiorari-intake target");
+		assertTrue(validationTargets.containsKey("south-africa-constcourt-recent/intake_acceptance_rate"), "missing South Africa petition-throughput target");
+		assertTrue(validationTargets.containsKey("scdb-modern-merits-2000-2024/doctrine_mix.criminal_procedure"), "missing modern SCDB criminal-procedure target");
+		assertTrue(validationTargets.containsKey("scdb-postwar-merits-1946-2024/doctrine_mix.administrative_state"), "missing postwar SCDB administrative-state target");
 		assertTrue(validationTargets.containsKey("uk-human-rights-doi-2025/legislative_response_credibility"), "missing UK legislative-response-credibility target");
 		assertTrue(validationTargets.containsKey("uk-supreme-court-2024-2025/case_selection_access"), "missing UKSC case-selection-access proxy target");
 	}
@@ -585,6 +630,20 @@ public final class SimulatorTests
 		assertTrue(value >= 0.0 && value <= 1.0, label + " out of range: " + value);
 	}
 	
+	private static void assertShareBetween(
+			Map<DoctrineArea, Integer> counts,
+			int total,
+			DoctrineArea doctrineArea,
+			double lower,
+			double upper
+	) {
+		double share = counts.getOrDefault(doctrineArea, 0) / (double) total;
+		assertTrue(
+				share >= lower && share <= upper,
+				doctrineArea.name().toLowerCase() + " share out of source range: " + share
+		);
+	}
+
 	private static void assertTrue(boolean condition, String message) {
 		if (!condition) {
 			throw new AssertionError(message);

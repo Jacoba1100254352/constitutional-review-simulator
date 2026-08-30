@@ -14,7 +14,7 @@ The model deliberately separates institutional variables from outcome metrics. A
 
 Scenario outputs now distinguish `scenarioKind` and `reviewMechanism`. Stylized archetype presets encode observable institutional rules inspired by named systems. Mechanism scenarios isolate design ideas: weak-form review, suspended declarations, explicit override clauses, pre-enactment review, abstract review, ombudsman-triggered review, constitutional public defenders, rights-impact statements, and mandatory legislative response cycles.
 
-Cases now carry doctrine, jurisdiction, and lower-court pipeline structure. Doctrine areas are speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state. Jurisdiction distinguishes federal, state, and mixed state-federal disputes. The lower-court pipeline distinguishes district-only, circuit panel, circuit en banc, state high-court, and state-federal split paths, contributing panel skew, government win/loss, state-federal tension, intercourt conflict, certiorari pressure, and time-to-review. These inputs affect review selection, deference, rights sensitivity, delay costs, and partisan-alignment risk.
+Cases now carry doctrine, jurisdiction, and lower-court pipeline structure. Doctrine areas are speech, equality, criminal procedure, federalism, election law, emergency powers, administrative state, and an empirical residual `other` bucket used by the SCDB merits-docket profile. Jurisdiction distinguishes federal, state, and mixed state-federal disputes. The lower-court pipeline distinguishes district-only, circuit panel, circuit en banc, state high-court, and state-federal split paths, contributing panel skew, government win/loss, state-federal tension, intercourt conflict, certiorari pressure, and time-to-review. These inputs affect review selection, deference, rights sensitivity, delay costs, and partisan-alignment risk.
 
 Cases also carry access and repeat-player variables. `litigantCapacity` approximates claimant resources and legal-aid support, `publicInterestSupport` approximates NGO/amicus/rights-commission backing, and `governmentRepeatPlayerAdvantage` approximates the procedural advantage of repeat government litigants. These fields now affect review probability, intake acceptance, veto-relocation risk, and democratic constitutionalism.
 
@@ -24,7 +24,7 @@ Court composition now changes across review periods. `WorldSpec.reviewPeriods` p
 
 Outcomes now update public and legislative reaction state. Each decision changes public trust, legislature-court conflict, court-curbing pressure, override pressure, amendment pressure, and a compliance norm. Those state variables feed later cases in the same run, so emergency relief, merits invalidation, override use, defiance, workaround behavior, and repeated litigation can compound instead of appearing as isolated case-level events. Enforcement is split into executive implementation, agency nonacquiescence, legislative reenactment, and local-government compliance.
 
-Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, legislative-response delay, timely legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central design question is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
+Mechanism outputs expose weak-form declarations, suspended declarations, legislative response, invalidation-conditioned legislative response, legislative-response delay, timely legislative response, legislative-response credibility, rights-impact statement use, ombudsman triggers, public-defender participation, pre-enactment review, abstract review, case-selection access, implementation capacity, veto-relocation risk, legal-transplant feasibility, political-culture sensitivity, and democratic constitutionalism. The central design question is whether review improves rights, responsiveness, legitimacy, access, implementation, and compliance without merely hiding veto power in a less accountable location.
 
 The world specification now separates formal review design from political and administrative context. Party fragmentation, governing coalition control, electoral time pressure, civil-society capacity, implementation capacity, and legal-tradition compatibility feed response credibility, transplant feasibility, political-culture sensitivity, and compliance channels. Source-range archetype runs read these context values from `config/context/country-year-context.csv`; other campaigns treat them as stress-test levers unless source-specific research promotes a value into documented calibration evidence.
 
@@ -42,7 +42,7 @@ exports:
 
 - aggregate scenario/campaign-case averages
 - period-by-period outputs for replacement and reaction dynamics
-- doctrine-specific scoreboards for speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state claims
+- doctrine-specific scoreboards for speech, equality, criminal procedure, federalism, election law, emergency powers, administrative state, and residual `other` claims when a docket profile generates them
 - pipeline scoreboards for state/federal jurisdiction and lower-court hierarchy paths
 - composition outputs for each review period
 - source-range checks against `config/calibration-targets.csv`
@@ -79,7 +79,10 @@ semantics while keeping synthetic mechanism scenarios on the generic model.
 The derived court-profile index in `config/court-profiles/profile-index.csv`
 groups the source-observation matrix into empirical profiles. It records
 validation-counted rows, stress-only rows, political-context mappings, missing
-validation families, and the next calibration priority for each profile. The
+validation-eligible families, and the next calibration priority for each
+profile. Cost and political-context rows stay visible in family coverage as
+contextual source surfaces, but they are not validation-family gaps while
+normalized-cost and public-trust proxy rows remain excluded from validation. The
 index is generated by `scripts/build_court_profiles.py` and checked with
 `make court-profile-check`; it should not be edited by hand.
 
@@ -88,7 +91,9 @@ The empirical platform report under
 index with the current source-range miss report. It is regenerated by
 `make empirical-platform-report` and by `make validation-check`, giving the
 replication package a machine-readable profile summary, family-coverage matrix,
-promotion queue, readiness gates, and Markdown roadmap. The readiness report is
+promotion queue, actionability-sorted source-gap handoff, candidate-verification
+packet, source-acquisition packet, source-promotion packet, readiness gates, and
+Markdown roadmap. The readiness report is
 the claim-boundary artifact for publication review: it distinguishes the
 current no-miss source-range surface from the profile and target-family
 coverage expansion still needed for stronger country-profile claims. The same
@@ -99,7 +104,29 @@ missing families, source-range misses, and promotion tasks together.
 
 Research and source-candidate CSVs are checked by `make research-data-check`.
 That check protects the empirical platform from malformed CSV rows and from
-target names that are not mapped into the profile-family taxonomy.
+target names that are not mapped into the profile-family taxonomy. It also
+enforces allowed source-candidate status values, source-URL status prefixes,
+reliability labels, direct-analogue booleans, roadmap validation-use flags, and
+numeric consistency for candidate rows with observed values or count
+denominators.
+`make empirical-platform-check` extends that gate to the generated outputs by
+checking that promotion-queue ranks, source-gap ranks, candidate-verification
+rows, source-acquisition rows, source-promotion rows, actionability categories,
+and readiness counts agree before the platform is treated as current.
+Source-promotion rows can split into true documentation work and
+`claim-boundary-decision-needed` work: the latter means the row-level source
+package is complete, but validation promotion would broaden the
+model-calibration and manuscript claim boundary. The SCDB doctrine-mix rows have
+now passed that boundary decision and are counted as validation evidence.
+`make scdb-doctrine-audit` is deliberately separate from `ci` because it uses a
+live SCDB download; it produces a compact denominator audit report for the
+checked-in SCDB doctrine-mix rows. `make scdb-doctrine-apply-ready` is likewise
+manual: it fills audited denominators and construction notes for matching rows
+but does not flip validation-use flags or resolve value mismatches.
+`make scdb-doctrine-apply-audited-values` resolves those source-value
+mismatches only if the audited value remains inside the existing source range,
+so publication claims remain bounded when future source-codebook changes require
+a new doctrine-mix calibration pass.
 
 Deep-research prompts for the next empirical pass are maintained in
 `docs/deep-research-prompts.md`. Their requested outputs should be treated as
@@ -114,3 +141,15 @@ whether the row is a direct simulator analogue. They should not be promoted into
 coding rule have been independently verified. `make promotion-check` enforces
 the current promotion gate for counted source-range rows and promoted candidate
 rows.
+Use `verified-bibliography-only:<url>` for source-candidate rows whose article or
+report page is located but whose stored numeric values still need direct
+article/report-text verification. The empirical-platform queue reports those rows
+as `verify-source-values`, not as validation-ready evidence.
+Use `verified-source-candidate` for candidate rows whose source URL, numerator,
+denominator, and target analogue have been recorded but whose promotion would
+still require construction-note and claim-boundary review.
+Use `verified-model-gap` when the source URL, numerator, denominator, and coding
+rule are reproducible but the source unit does not match any current simulator
+output. Those rows appear as `model-metric-gap` queue items and remain outside
+validation until the missing output is implemented without changing the source
+denominator or silently mapping it to a broader metric.

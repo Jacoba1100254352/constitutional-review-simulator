@@ -11,12 +11,61 @@ import java.util.Random;
 
 public final class WorldGenerator
 {
-	private static DoctrineArea randomDoctrine(Random random) {
-		DoctrineArea[] areas = DoctrineArea.values();
-		return areas[random.nextInt(areas.length)];
+	private static final DoctrineArea[] STYLIZED_DOCTRINE_BUCKETS = {
+			DoctrineArea.SPEECH,
+			DoctrineArea.EQUALITY,
+			DoctrineArea.CRIMINAL_PROCEDURE,
+			DoctrineArea.FEDERALISM,
+			DoctrineArea.ELECTION_LAW,
+			DoctrineArea.EMERGENCY_POWERS,
+			DoctrineArea.ADMINISTRATIVE_STATE
+	};
+	private static final DoctrineArea[] EMPIRICAL_DOCTRINE_BUCKETS = {
+			DoctrineArea.SPEECH,
+			DoctrineArea.EQUALITY,
+			DoctrineArea.CRIMINAL_PROCEDURE,
+			DoctrineArea.FEDERALISM,
+			DoctrineArea.ELECTION_LAW,
+			DoctrineArea.EMERGENCY_POWERS,
+			DoctrineArea.ADMINISTRATIVE_STATE,
+			DoctrineArea.OTHER
+	};
+	private static final double[] EMPIRICAL_DOCTRINE_WEIGHTS = {
+			0.0700,
+			0.1580,
+			0.2360,
+			0.0565,
+			0.0262,
+			0.0060,
+			0.2190,
+			0.2283
+	};
+
+	private static DoctrineArea randomDoctrine(Random random, DoctrineDocketProfile docketProfile) {
+		if (docketProfile == DoctrineDocketProfile.STYLIZED_SEVEN_AREA) {
+			return STYLIZED_DOCTRINE_BUCKETS[random.nextInt(STYLIZED_DOCTRINE_BUCKETS.length)];
+		}
+		return empiricalDoctrine(random);
+	}
+
+	private static DoctrineArea empiricalDoctrine(Random random) {
+		double draw = random.nextDouble();
+		double cumulative = 0.0;
+		for (int i = 0; i < EMPIRICAL_DOCTRINE_BUCKETS.length; i++) {
+			cumulative += EMPIRICAL_DOCTRINE_WEIGHTS[i];
+			if (draw < cumulative) {
+				return EMPIRICAL_DOCTRINE_BUCKETS[i];
+			}
+		}
+		return EMPIRICAL_DOCTRINE_BUCKETS[EMPIRICAL_DOCTRINE_BUCKETS.length - 1];
 	}
 	
-	private static DoctrineArea importedDoctrine(LegislativeSignal signal, PolicyDomain policyDomain, Random random) {
+	private static DoctrineArea importedDoctrine(
+			LegislativeSignal signal,
+			PolicyDomain policyDomain,
+			DoctrineDocketProfile docketProfile,
+			Random random
+	) {
 		DoctrineArea domainDoctrine = switch (policyDomain) {
 			case CIVIL_RIGHTS -> signal.minorityHarm() > 0.16 ? DoctrineArea.EQUALITY : DoctrineArea.SPEECH;
 			case SPEECH_RELIGION -> DoctrineArea.SPEECH;
@@ -26,7 +75,7 @@ public final class WorldGenerator
 			case EMERGENCY_SECURITY -> DoctrineArea.EMERGENCY_POWERS;
 			case ADMINISTRATION -> DoctrineArea.ADMINISTRATIVE_STATE;
 			case ECONOMIC_REGULATION -> random.nextDouble() < 0.62 ? DoctrineArea.ADMINISTRATIVE_STATE : DoctrineArea.FEDERALISM;
-			case GOVERNANCE -> null;
+			case GOVERNANCE -> random.nextDouble() < 0.56 ? DoctrineArea.OTHER : null;
 		};
 		if (domainDoctrine != null && random.nextDouble() < 0.78) {
 			return domainDoctrine;
@@ -43,7 +92,7 @@ public final class WorldGenerator
 		if (signal.lobbyCapture() > 0.24) {
 			return DoctrineArea.ADMINISTRATIVE_STATE;
 		}
-		return randomDoctrine(random);
+		return randomDoctrine(random, docketProfile);
 	}
 	
 	private static PolicyDomain policyDomainFor(DoctrineArea doctrineArea, Random random) {
@@ -55,6 +104,16 @@ public final class WorldGenerator
 			case ELECTION_LAW -> PolicyDomain.ELECTIONS;
 			case EMERGENCY_POWERS -> PolicyDomain.EMERGENCY_SECURITY;
 			case ADMINISTRATIVE_STATE -> random.nextDouble() < 0.64 ? PolicyDomain.ADMINISTRATION : PolicyDomain.ECONOMIC_REGULATION;
+			case OTHER -> {
+				double draw = random.nextDouble();
+				if (draw < 0.45) {
+					yield PolicyDomain.GOVERNANCE;
+				}
+				if (draw < 0.78) {
+					yield PolicyDomain.ECONOMIC_REGULATION;
+				}
+				yield PolicyDomain.CIVIL_RIGHTS;
+			}
 		};
 	}
 	
@@ -67,6 +126,7 @@ public final class WorldGenerator
 			case CRIMINAL_PROCEDURE -> 0.18;
 			case EQUALITY -> 0.16;
 			case SPEECH -> 0.12;
+			case OTHER -> 0.18;
 		};
 		double stateProbability = switch (doctrineArea) {
 			case CRIMINAL_PROCEDURE -> 0.46;
@@ -76,6 +136,7 @@ public final class WorldGenerator
 			case SPEECH -> 0.28;
 			case EMERGENCY_POWERS -> 0.24;
 			case ADMINISTRATIVE_STATE -> 0.18;
+			case OTHER -> 0.26;
 		};
 		mixedProbability = Values.clamp01(mixedProbability + spec.legislativeConflict() * 0.08);
 		stateProbability = Values.clamp01(stateProbability + (1.0 - spec.publicTrust()) * 0.05);
@@ -281,6 +342,7 @@ public final class WorldGenerator
 			case EMERGENCY_POWERS -> 0.16;
 			case EQUALITY -> 0.14;
 			case ADMINISTRATIVE_STATE -> 0.12;
+			case OTHER -> 0.11;
 			case SPEECH -> 0.10;
 		};
 		return Values.clamp01(
@@ -380,7 +442,7 @@ public final class WorldGenerator
 	}
 	
 	private CaseFile syntheticCase(WorldSpec spec, int index, Random random) {
-		DoctrineArea doctrineArea = randomDoctrine(random);
+		DoctrineArea doctrineArea = randomDoctrine(random, spec.doctrineDocketProfile());
 		PolicyDomain policyDomain = policyDomainFor(doctrineArea, random);
 		Jurisdiction jurisdiction = jurisdictionFor(doctrineArea, spec, random);
 		LowerCourtPath lowerCourtPath = lowerCourtPathFor(jurisdiction, doctrineArea, random);
@@ -465,7 +527,7 @@ public final class WorldGenerator
 	
 	private CaseFile fromLegislativeSignal(WorldSpec spec, LegislativeSignal signal, int index, Random random) {
 		PolicyDomain policyDomain = signal.policyDomain();
-		DoctrineArea doctrineArea = importedDoctrine(signal, policyDomain, random);
+		DoctrineArea doctrineArea = importedDoctrine(signal, policyDomain, spec.doctrineDocketProfile(), random);
 		Jurisdiction jurisdiction = importedJurisdiction(signal, policyDomain, doctrineArea, spec, random);
 		LowerCourtPath lowerCourtPath = lowerCourtPathFor(jurisdiction, doctrineArea, policyDomain, random);
 		int reviewPeriod = reviewPeriod(spec, index);

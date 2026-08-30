@@ -18,6 +18,12 @@ make empirical-platform-report
 make empirical-platform-check
 ```
 
+`make research-data-check` also validates the source-candidate status taxonomy
+before profile reports are generated, including verified URLs, bibliography-only
+source locations, pending URL verification, context-only rows, promoted rows,
+and numeric range or numerator/denominator consistency where candidate rows
+provide provisional values.
+
 Profile status values:
 
 - `multi-target-validation-profile`: at least three validation rows across at
@@ -38,7 +44,18 @@ rule, construction note, and direct simulator analogue are documented.
 The empirical platform report targets in `reports/` combine this profile index
 with the current source-range miss report and source-candidate files. Use
 `reports/constitutional-review-empirical-platform-v1-promotion-queue.csv` when
-deciding which profile family to verify, promote, or retune next. Use
+deciding which profile family to verify, promote, or retune next, and use
+`reports/constitutional-review-empirical-platform-v1-source-gaps.csv` when you
+need the same queue grouped by promotion readiness and claim boundary. Use
+`reports/constitutional-review-empirical-platform-v1-candidate-verification.csv`
+when source verification needs every underlying candidate row, not only the top
+candidate for each gap. Use
+`reports/constitutional-review-empirical-platform-v1-source-acquisition.csv`
+when missing profile-family coverage has no registered candidate row and the
+roadmap needs preferred sources, denominators, validation-use flags, and
+collection recommendations. Use
+`reports/constitutional-review-empirical-platform-v1-source-promotion.csv`
+when stress-only rows need row-level blocker labels before promotion. Use
 `reports/constitutional-review-empirical-platform-v1-readiness.csv` when
 checking which publication claims are supported by the current source surface
 and which claims still require source expansion. Use

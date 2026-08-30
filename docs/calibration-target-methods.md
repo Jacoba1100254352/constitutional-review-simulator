@@ -30,6 +30,9 @@ numerator, denominator, period, and plausible simulator mapping, but it should
 remain a source-candidate until the original source URL, denominator
 construction, category coding, and direct analogue to a simulator metric are
 verified from the primary source.
+Use `verified-bibliography-only:<url>` only when the article or report page has
+been located but the stored numerator, denominator, period, or coding rule still
+needs direct source-text verification.
 
 ## Current Target Families
 
@@ -56,22 +59,27 @@ lack a source URL, lack a nonzero denominator, have low reliability, use any
 synthesis source or synthesis method label, use contextual public-trust
 proxies, or use normalized-cost/benchmark-cost construction. The promotion
 checker also rejects counted rows whose target keys are not exposed by the
-simulator's calibration observation mapping. Under this stricter rule, the
-current source-range surface remains intentionally narrow, but it
+simulator's calibration observation mapping. Because of that rule, the readiness
+report treats cost and political-context as contextual source-depth surfaces
+rather than validation-eligible target-family gaps. Under this stricter rule,
+the current source-range surface remains intentionally narrow, but it
 now includes official-source checks for U.S. emergency procedure, Canada SCC
-leave grants, France QPC nonconformity and deferred-effect rates, UK Supreme
-Court permission grants, UK declarations of incompatibility responses, ECHR
-intake/interim-measure measures, and CJEU preliminary-reference, appeal, and
-direct-action route mix.
-Comparative doctrine mix without stored SCDB denominators, trust,
+leave grants, historical Canada Charter-dialogue response, override, and
+reenactment rates, France QPC nonconformity and deferred-effect rates, UK
+Supreme Court permission grants, UK declarations of incompatibility responses,
+ECHR intake/interim-measure measures, CJEU preliminary-reference, appeal, and
+direct-action route mix, CJEU rule-of-law compliance, and SCDB merits-docket doctrine shares for the U.S.
+Supreme Court benchmark profile.
+Non-SCDB comparative doctrine mix without stored denominators, trust,
 merits-outcome synthesis, unsupported route-mix statistics, and normalized cost
 rows are stress-test context only.
 
 The named source-range presets include bounded profile-calibration hooks for
 source denominator conventions and procedure definitions: Canada and UK
-leave/permission denominators, ECHR allocated-application filtering and Rule 39
-interim relief, U.S. emergency reason/disagreement procedure, French QPC
-deferred-effect remedies, and UK declaration-response semantics. These hooks
+leave/permission denominators, Canada Charter-invalidation response denominators,
+ECHR allocated-application filtering and Rule 39 interim relief, U.S. emergency
+reason/disagreement procedure, French QPC deferred-effect remedies, and UK
+declaration-response semantics. These hooks
 belong to the source-range audit surface; they should not be interpreted as
 estimated country effects or applied to synthetic mechanism scenarios.
 
@@ -85,10 +93,14 @@ read as one of three things:
 
 Before final empirical submission, replace provisional synthesis rows with
 documented source-specific datasets where possible, especially doctrine mix
-denominators, comparative intake/throughput rows, public trust, normalized cost,
-and merits-invalidation proxies outside the emergency-docket context. Once
-those datasets include URLs, denominators, and construction formulas, set
-`useForValidation=true` and regenerate the calibration target files.
+analogues outside the SCDB merits profile, comparative intake/throughput rows,
+public trust, normalized cost, and merits-invalidation proxies outside the
+emergency-docket context. For validation-eligible target families, set
+`useForValidation=true` only after those datasets include URLs, denominators,
+direct simulator analogues, and construction formulas. For public-trust and
+normalized-cost rows, keep them contextual unless a future schema exposes raw,
+reproducible simulator-output analogues and the promotion checker is updated to
+accept that claim boundary.
 
 For profile-level planning, `config/court-profiles/profile-index.csv` is the
 generated coverage index. It is derived from the source-observation matrix and
@@ -107,7 +119,51 @@ current promoted rows and which profile or target-family claims still require
 source expansion. The promotion-queue CSV is the preferred handoff artifact for
 new empirical work because it distinguishes model-calibration misses,
 candidate-verification tasks, source-promotion tasks, and source-acquisition
-tasks. `config/court-profiles/profile-benchmark-cards.md` is the companion
+tasks. Its `promotionReadiness`, `claimBoundary`, and `blockingReason` columns
+identify whether a row is a direct candidate, context-only evidence, a
+source-complete stress row awaiting a claim-boundary decision, a stress-only
+documentation task, or a source-acquisition gap. The source-gap CSV sorts the
+same work by actionability for source-expansion sprints, and the
+candidate-verification CSV expands those gaps into the underlying candidate
+rows with source file, label, status, URL status, denominator, top-candidate
+marker, and recommended verification action. The source-acquisition CSV expands
+roadmap-backed gaps into target keys, preferred sources, needed denominators,
+validation-use flags, and collection recommendations so missing profile-family
+coverage does not have to be reconstructed from prose notes.
+The source-promotion CSV expands stress-only queue rows into the underlying
+calibration-source rows, including source URL, denominator, blocker taxonomy,
+and recommended audit or validation-scope action, so provisional rows can be
+promoted only after the same source-specific standard is met.
+For SCDB doctrine-mix rows, `make scdb-doctrine-audit` downloads the official
+SCDB 2025 Release 01 case-centered citation CSV and writes a denominator audit
+report with numerator, denominator, observed share, status, and construction
+note text. That report is a promotion aid, not automatic validation evidence:
+`make scdb-doctrine-apply-ready` can copy denominators and construction notes
+back into `config/calibration-source-observations.csv` for rows whose observed
+values match the audit, while leaving value mismatches and `useForValidation`
+flags unchanged. `make scdb-doctrine-apply-audited-values` can additionally
+copy audited observed values back into the source matrix when they remain inside
+the existing source range, so coding corrections stay separate from range
+redesign and validation promotion. The checked-in SCDB doctrine rows are now
+validation-counted after a deliberate model-calibration pass: the U.S. benchmark
+validation world uses an explicit SCDB merits-docket profile with a residual
+`other` bucket so the seven named doctrine shares remain absolute docket shares
+rather than an exhaustive distribution.
+Rows with `promotionReadiness=verify-source-values` are source-located but still
+blocked: they need direct inspection of the source text before stored numeric
+values can be promoted.
+Rows with `promotionReadiness=ready-for-promotion-review` have a verified URL,
+denominator, and direct-analogue claim, but still need construction-note and
+claim-boundary review before they are counted as validation evidence.
+Rows with `promotionReadiness=model-metric-gap` have a verified source URL,
+denominator, and reproducible coding rule, but the source unit is not exposed by
+the current simulator. They require an explicit output or data-model extension;
+they must not be compared with a broader existing metric merely to clear the
+promotion queue.
+Rows with `promotionReadiness=claim-boundary-decision-needed` have passed the
+source-documentation standard but still need a manuscript and model-calibration
+decision before they are counted as validation evidence.
+`config/court-profiles/profile-benchmark-cards.md` is the companion
 human-readable handoff for profile-by-profile review: it places each court
 profile's validation checks, source rows, missing families, and queued
 promotion tasks on one generated card.
@@ -115,12 +171,20 @@ promotion tasks on one generated card.
 Before using source-candidate rows for that queue, `make research-data-check`
 validates that the research CSVs parse cleanly and that each research
 `targetKey` or roadmap family maps to the platform taxonomy. This keeps
-source-gathering notes from silently breaking downstream reports.
+source-gathering notes from silently breaking downstream reports. The same check
+enforces candidate-status values and source-URL status prefixes, so a mistyped
+verification status fails before the row can affect the promotion queue. When a
+candidate row includes numeric fields, the check also verifies bound ordering,
+share ranges, numerator/denominator pairs, and rounded share arithmetic.
 
 The current post-research candidate files identify the most promising remaining
-promotion targets: Canadian Charter legislative sequels, French QPC invalidation
-and conditional deferred-effect rates, pre-enactment review frequency evidence,
-and transplant-feasibility indicators from V-Dem, ParlGov, PPEG, DPI, WGI,
+promotion targets: substituted-law coding for Canadian Charter legislative
+sequels, French QPC invalidation and conditional deferred-effect rates,
+pre-enactment review frequency evidence, and transplant-feasibility indicators
+from V-Dem, ParlGov, PPEG, DPI, WGI,
 CEPEJ, OECD, WVS, and related source families. Rows already marked
 `promoted` have been added to the calibration source matrix; rows marked
 `verified-context-only` have source support but are not source-range results.
+Rows marked `verified-bibliography-only:<url>` have a located source page but
+still need article/report-text verification before their stored values can be
+counted.

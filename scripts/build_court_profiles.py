@@ -84,6 +84,7 @@ CONTEXT_HEADER = [
 ]
 
 CONTEXT_OVERRIDES = {
+    "canada-charter-dialogue-1982-2007": "canadian-supreme-court",
     "canada-scc-2024": "canadian-supreme-court",
     "canada-scc-recent": "canadian-supreme-court",
     "cjeu-2024": "cjeu-court-of-justice",
@@ -116,25 +117,39 @@ PLATFORM_FAMILY_ORDER = [
     "political-context",
 ]
 
+CONTEXTUAL_CALIBRATION_FAMILIES = {"cost", "political-context"}
+VALIDATION_ELIGIBLE_FAMILY_ORDER = [
+    family
+    for family in PLATFORM_FAMILY_ORDER
+    if family not in CONTEXTUAL_CALIBRATION_FAMILIES
+]
+
 TARGET_FAMILIES = {
     "abstract_review_rate": "case-selection",
     "appeal_route_rate": "route-mix",
     "capacity_strain_cost": "cost",
     "case_selection_access": "case-selection",
+    "agency_nonacquiescence_rate": "compliance",
+    "compliance_rate": "compliance",
     "direct_action_rate": "route-mix",
     "direct_court_cost": "cost",
+    "direct_defiance_rate": "compliance",
     "emergency_public_disagreement_rate": "emergency",
     "emergency_reason_giving_rate": "emergency",
     "emergency_relief_rate": "emergency",
     "emergency_vote_disclosure_rate": "emergency",
     "government_emergency_win_rate": "emergency",
     "intake_acceptance_rate": "intake",
+    "invalidation_legislative_reenactment_rate": "compliance",
+    "invalidation_legislative_response_rate": "legislative-response",
+    "legislative_reenactment_rate": "compliance",
     "legislative_response_credibility": "legislative-response",
     "legislative_response_delay": "legislative-response",
     "legislative_response_rate": "legislative-response",
     "merits_follow_up_rate": "emergency",
     "merits_invalidation_rate": "merits",
     "ombudsman_trigger_rate": "case-selection",
+    "override_rate": "legislative-response",
     "pre_enactment_review_rate": "case-selection",
     "preliminary_reference_rate": "route-mix",
     "public_defender_participation_rate": "case-selection",
@@ -252,7 +267,11 @@ def profile_index_rows(source_rows: list[dict[str, str]], context_rows: list[dic
             if nonzero(row["n"]):
                 denominator_rows += 1
 
-        missing = [family for family in PLATFORM_FAMILY_ORDER if family not in validation_families]
+        missing = [
+            family
+            for family in VALIDATION_ELIGIBLE_FAMILY_ORDER
+            if family not in validation_families
+        ]
         context_key = CONTEXT_OVERRIDES.get(profile_key, "")
         context = contexts.get(context_key, {})
         output.append(

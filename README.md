@@ -167,7 +167,7 @@ The starter catalog covers:
 - removal standards: impeachment-only, misconduct commission, and retention election pressure
 - recusal rules: self-policing, mandatory conflict recusal, random substitution, and strict transparency
 - emergency-review procedures: fast emergency orders, reasoned emergency panels, full-court emergency review, and merits follow-up
-- doctrine areas: speech, equality, criminal procedure, federalism, election law, emergency powers, and administrative state
+- doctrine areas: speech, equality, criminal procedure, federalism, election law, emergency powers, administrative state, and an empirical residual `other` bucket used by the SCDB merits-docket profile
 - policy domains: civil rights, speech/religion, criminal justice, federalism, governance, elections, emergency/security, economic regulation, and administration; imported legislative rows preserve an explicit `policyDomain` column when present and otherwise infer one from row labels and stress signals
 - state/federal and lower-court pipeline signals: federal, state, and mixed state-federal jurisdiction; district-only, circuit-panel, en banc, state high-court, and state-federal split paths; panel skew, government win/loss, conflict pressure, certiorari pressure, and time-to-review
 - court-system archetypes: discretionary appellate leave, constitutional complaint, pre-enactment council, mixed abstract/concrete review, declaration-only parliamentary review, and supranational treaty review
@@ -221,6 +221,7 @@ Core metrics:
 - `executiveImplementationRate` `↑`: executive implementation of review outcomes
 - `agencyNonacquiescenceRate` `↓`: agency refusal, narrowing, or delayed implementation after review
 - `legislativeReenactmentRate` `↓`: reenactment or recoding after adverse review
+- `invalidationLegislativeReenactmentRate` `↓/diag.`: reenactment or effective overruling among merits invalidations
 - `localGovernmentComplianceRate` `↑`: state or local compliance with review outcomes
 - `publicTrust` `diag.`: evolving public trust after decisions and institutional reactions
 - `legislativeConflict` `↓`: evolving legislature-court conflict pressure
@@ -229,6 +230,7 @@ Core metrics:
 - `weakFormDeclarationRate` `diag.`: share of cases producing weak-form declarations rather than automatic invalidation
 - `suspendedDeclarationRate` `diag.`: share of cases with delayed-effect invalidity declarations
 - `legislativeResponseRate` `↑/diag.`: share of declarations, overrides, or mandatory response triggers receiving legislative response
+- `invalidationLegislativeResponseRate` `↑/diag.`: share of merits invalidations followed by a modeled legislative response
 - `averageLegislativeResponseDelay` `↓/diag.`: normalized delay among legislative responses after declarations, overrides, or mandatory response triggers
 - `timelyLegislativeResponseRate` `↑`: share of legislative responses occurring before the modeled response deadline
 - `rightsImpactStatementRate` `diag.`: share of cases with front-end rights-impact statement review
@@ -276,9 +278,9 @@ The calibration schema is:
 targetFile,profileKey,court,timePeriod,targetKey,label,lowerBound,upperBound,observedValue,n,unit,method,reliability,useForValidation,note,sourceName,sourceUrl,constructionNote
 ```
 
-Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis or normalized-cost construction. The denominator-backed source-check pack currently includes Canada SCC leave grants, France QPC nonconformity and deferred-effect remedies, UK Supreme Court permission-to-appeal grants, UK declaration-of-incompatibility legislative responses, ECHR allocated-application and Rule 39 interim-measure targets, CJEU route mix, and U.S. Supreme Court emergency-docket relief, reason-giving, and public-disagreement rows. `make promotion-check` enforces those promotion rules and rejects counted rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions.
+Current profiles include U.S. Supreme Court merits-docket doctrine shares for 1946-2024 and 2000-2024 from the Supreme Court Database, 2024-2025 public/emergency context targets, country-specific calibration profiles for Germany, France, Canada, South Africa, the United Kingdom, the ECHR, and the CJEU, and normalized institutional cost profiles. Generated `*-calibration.csv` files carry the target fields plus `modelObservedValue`, 95% bands, gap, and the simulator sample denominator. Under the current source-specific rule, counted rows require a source URL, nonzero denominator, direct target analogue, and no synthesis, contextual public-trust proxy, or normalized-cost construction. The denominator-backed source-check pack currently includes U.S. Supreme Court SCDB doctrine-mix rows, U.S. emergency-docket relief, reason-giving, and public-disagreement rows, Canada SCC leave grants, historical Canada Charter-dialogue response, override, and reenactment rows, France QPC nonconformity and deferred-effect remedies, UK Supreme Court permission-to-appeal grants, UK declaration-of-incompatibility legislative responses, ECHR allocated-application and Rule 39 interim-measure targets, and CJEU route mix plus narrow rule-of-law compliance. `make promotion-check` enforces those promotion rules and rejects counted rows whose target keys are not exposed by the simulator. Other rows are documented stress-test assumptions.
 
-Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets by default. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Rows marked `promoted` have been moved into `config/calibration-source-observations.csv`; rows marked `verified-context-only` have primary-source URLs but are not direct simulator analogues; rows still marked `pending-url-verification` remain research leads. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row.
+Research-roadmap and source-candidate CSVs live in `config/research/`. They are not calibration targets by default. They define the next source-gathering tasks for court-specific calibration packs, legislative response evidence, transplant feasibility factors, compliance/enforcement channels, and case-selection/access data. Rows marked `promoted` have been moved into `config/calibration-source-observations.csv`; rows marked `verified-source-candidate` have denominator-backed source values and direct-analogue claims that still need promotion review; rows marked `verified-model-gap` have reproducible source measures whose statistical unit is not yet exposed by the simulator and therefore remain outside validation; rows marked `verified-context-only` have primary-source URLs but are not direct simulator analogues; rows marked `verified-bibliography-only:<url>` have a verified article or report page but unresolved numeric coding; rows still marked `pending-url-verification` remain research leads. Use `docs/deep-research-prompts.md` to generate source-backed updates before promoting any roadmap or candidate row.
 
 The target-method note in `docs/calibration-target-methods.md` separates
 source-specific targets from provisional synthesis ranges. Rows without a source
@@ -300,28 +302,55 @@ make court-profile-check
 make research-data-check
 make empirical-platform-report
 make empirical-platform-check
+make scdb-doctrine-audit
+make scdb-doctrine-apply-ready
+make scdb-doctrine-apply-audited-values
 ```
 
 The index groups target rows by `profileKey`, records how many rows are
 validation-counted, maps each profile to the relevant political-context row
-when one exists, and lists missing validation families such as intake,
+when one exists, and lists missing validation-eligible families such as intake,
 case-selection access, emergency, merits, remedy timing, legislative response,
-route mix, compliance, cost, doctrine mix, and political context. Treat
-`missingValidationFamilies` as the empirical buildout roadmap: new rows should
+route mix, compliance, and profile-specific doctrine mix. Cost and political
+context remain visible in the family-coverage and source-promotion reports, but
+they are contextual calibration surfaces under the current promotion rule rather
+than missing source-range validation families. Treat `missingValidationFamilies`
+as the empirical buildout roadmap for validation-counted rows: new rows should
 be promoted only when the public source URL, denominator, period, coding rule,
 construction note, and direct simulator analogue are documented.
 
 `make research-data-check` validates the source-candidate and research-roadmap
 CSV files before they feed the platform reports. It rejects malformed CSV rows,
 unexpected headers, blank required fields, and research `targetKey` values that
-are not mapped to a platform target family.
+are not mapped to a platform target family. It also enforces the source-candidate
+status taxonomy, source-URL status prefixes, reliability labels, roadmap
+validation-use flags, direct-analogue booleans, numeric range ordering, share
+bounds, and numerator/denominator math for rows that provide counts.
 
 `make empirical-platform-report` writes
 `reports/constitutional-review-empirical-platform-v1.csv`,
 `reports/constitutional-review-empirical-platform-v1-families.csv`, and
 `reports/constitutional-review-empirical-platform-v1-promotion-queue.csv`,
+`reports/constitutional-review-empirical-platform-v1-source-gaps.csv`,
+`reports/constitutional-review-empirical-platform-v1-candidate-verification.csv`,
+`reports/constitutional-review-empirical-platform-v1-source-acquisition.csv`,
+`reports/constitutional-review-empirical-platform-v1-source-promotion.csv`,
+and
 `reports/constitutional-review-empirical-platform-v1-readiness.csv`, plus
-Markdown coverage and readiness reports. It also writes
+Markdown coverage and readiness reports. The promotion queue includes
+`promotionReadiness`, `claimBoundary`, and `blockingReason` columns so direct
+promotion candidates are kept separate from context-only evidence and ordinary
+source-acquisition gaps. A `verify-source-values` readiness state means the
+source page is located but the numeric coding still needs page-level audit; a
+`claim-boundary-decision-needed` state means the source package is complete but
+validation promotion would broaden the manuscript's empirical claim boundary. The
+candidate-verification report expands queued gaps
+into the underlying candidate rows to make source checks reproducible, and the
+source-acquisition report expands roadmap-backed gaps into preferred sources,
+needed denominators, validation-use flags, and acquisition recommendations. It
+also writes a source-promotion report that expands stress-only queue rows into
+the underlying calibration-source rows, promotion blockers, and recommended
+audit or validation-scope actions, plus
 `config/court-profiles/profile-benchmark-cards.md`, a generated per-profile
 handoff that combines each court profile's validation checks, stress-only rows,
 missing families, candidate rows, and queued promotion tasks. These reports
@@ -330,6 +359,27 @@ evidence, and current source-range miss categories into a reusable
 calibration-platform roadmap. The readiness report is the claim-boundary
 artifact: it records which publication claims are currently supported and which
 ones require source expansion before broader country-profile validation claims.
+`make empirical-platform-check` verifies the generated files and also checks
+that queue ranks, source-gap ranks, candidate-verification rows,
+source-acquisition rows, source-promotion rows, actionability categories, and
+readiness counts agree.
+`make scdb-doctrine-audit` is an optional network-backed source-audit aid:
+it downloads the official SCDB 2025 Release 01 case-centered citation CSV,
+audits the checked-in SCDB doctrine-mix rows against their denominator and
+numerator coding rules, and writes
+`reports/constitutional-review-scdb-doctrine-denominator-audit.csv`. The audit
+does not promote rows by itself. The checked-in SCDB doctrine rows are now
+validation-counted after denominator audit and model-calibration against an
+explicit SCDB merits-docket profile with a residual `other` bucket.
+`make scdb-doctrine-apply-ready` fills
+denominators and construction notes only for SCDB doctrine rows whose current
+observed values match the audit; it leaves value-mismatch rows and
+`useForValidation` flags unchanged. `make scdb-doctrine-apply-audited-values`
+also updates observed values from the audit, but only when the audited value
+falls inside the row's existing source range; it still leaves validation-use
+flags unchanged. Any future SCDB coding change should be paired with
+`make validation-check` so doctrine-mix source-range evidence remains a
+deliberate claim-boundary decision rather than an automatic audit side effect.
 
 ## Research Configs
 

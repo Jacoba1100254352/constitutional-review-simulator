@@ -20,6 +20,10 @@ REPORT_PREFIX = ROOT / "reports" / "constitutional-review-empirical-platform-v1"
 PROFILE_REPORT = REPORT_PREFIX.with_suffix(".csv")
 FAMILY_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-families.csv"
 PROMOTION_QUEUE_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-promotion-queue.csv"
+SOURCE_GAP_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-source-gaps.csv"
+CANDIDATE_VERIFICATION_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-candidate-verification.csv"
+SOURCE_ACQUISITION_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-source-acquisition.csv"
+SOURCE_PROMOTION_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-source-promotion.csv"
 READINESS_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-readiness.csv"
 READINESS_MARKDOWN_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-readiness.md"
 MARKDOWN_REPORT = REPORT_PREFIX.with_suffix(".md")
@@ -77,7 +81,105 @@ PROMOTION_QUEUE_HEADER = [
     "topCandidateLabel",
     "topCandidateStatus",
     "topCandidateSourceStatus",
+    "promotionReadiness",
+    "claimBoundary",
+    "blockingReason",
     "recommendedAction",
+]
+
+SOURCE_GAP_HEADER = [
+    "gapRank",
+    "queuePriorityRank",
+    "promotionReadiness",
+    "claimBoundary",
+    "actionType",
+    "profileKey",
+    "court",
+    "targetFamily",
+    "coverageStatus",
+    "candidateRows",
+    "verifiedCandidateRows",
+    "pendingVerificationRows",
+    "directAnalogueCandidateRows",
+    "roadmapRows",
+    "topCandidateFile",
+    "topCandidateLabel",
+    "topCandidateStatus",
+    "topCandidateSourceStatus",
+    "blockingReason",
+    "recommendedAction",
+]
+
+CANDIDATE_VERIFICATION_HEADER = [
+    "gapRank",
+    "queuePriorityRank",
+    "candidateRank",
+    "promotionReadiness",
+    "claimBoundary",
+    "profileKey",
+    "court",
+    "targetFamily",
+    "coverageStatus",
+    "sourceFile",
+    "label",
+    "status",
+    "sourceUrlStatus",
+    "directAnalogue",
+    "denominator",
+    "topCandidate",
+    "recommendedVerification",
+]
+
+SOURCE_ACQUISITION_HEADER = [
+    "gapRank",
+    "queuePriorityRank",
+    "acquisitionRank",
+    "promotionReadiness",
+    "claimBoundary",
+    "actionType",
+    "profileKey",
+    "court",
+    "targetFamily",
+    "coverageStatus",
+    "roadmapSourceFile",
+    "roadmapProfileKey",
+    "roadmapCourtOrSystem",
+    "period",
+    "roadmapTargetFamily",
+    "targetKey",
+    "neededObservedValue",
+    "neededDenominator",
+    "preferredSources",
+    "validationUseIfDocumented",
+    "notes",
+    "recommendedAcquisition",
+]
+
+SOURCE_PROMOTION_HEADER = [
+    "gapRank",
+    "queuePriorityRank",
+    "promotionRank",
+    "promotionReadiness",
+    "claimBoundary",
+    "profileKey",
+    "court",
+    "targetFamily",
+    "coverageStatus",
+    "targetFile",
+    "timePeriod",
+    "targetKey",
+    "label",
+    "observedValue",
+    "sourceRange",
+    "denominator",
+    "unit",
+    "method",
+    "reliability",
+    "sourceName",
+    "sourceUrl",
+    "useForValidation",
+    "promotionBlockers",
+    "recommendedPromotion",
 ]
 
 READINESS_HEADER = [
@@ -118,6 +220,7 @@ TARGET_FAMILY_ALIASES = {
     "caseSelectionAccess".lower(): "case-selection",
     "certiorari_pressure": "case-selection",
     "complaint_success_rate": "intake",
+    "compliance_rate": "compliance",
     "direct_defiance_rate": "compliance",
     "doctrine_share_by_area": "doctrine-mix",
     "emergencyReliefRate".lower(): "emergency",
@@ -127,6 +230,8 @@ TARGET_FAMILY_ALIASES = {
     "implementation_delay": "compliance",
     "implementation_follow_up_rate": "compliance",
     "intake_rejection_rate": "intake",
+    "invalidation_legislative_reenactment_rate": "compliance",
+    "invalidation_legislative_response_rate": "legislative-response",
     "litigant_capacity": "case-selection",
     "legislativeResponseCredibility".lower(): "legislative-response",
     "legislativeResponseRate".lower(): "legislative-response",
@@ -137,6 +242,7 @@ TARGET_FAMILY_ALIASES = {
     "lower_court_conflict_creation": "case-selection",
     "mandatoryResponseCompletionRate".lower(): "legislative-response",
     "merits_invalidation_rate": "merits",
+    "statute_nullification_rate": "merits",
     "normalized_budget_delay_cost": "cost",
     "ombudsman_review_success_rate": "case-selection",
     "ombudsman_trigger_access": "case-selection",
@@ -194,7 +300,7 @@ ROADMAP_PROFILE_ALIASES = {
     "us-scotus-modern": ["scdb-modern-merits-2000-2024", "scotus-emergency-2024-2025", "gallup-court-confidence-2024"],
     "germany-bverfg": ["germany-bverfg-2024"],
     "france-conseil": ["france-conseil-qpc"],
-    "canada-scc": ["canada-scc-2024", "canada-scc-recent"],
+    "canada-scc": ["canada-scc-2024", "canada-scc-recent", "canada-charter-dialogue-1982-2007"],
     "south-africa-constcourt": ["south-africa-constcourt-recent"],
     "uk-supreme-court": ["uk-supreme-court-2024-2025", "uk-human-rights-doi-2025"],
     "echr": ["echr-2024"],
@@ -203,7 +309,7 @@ ROADMAP_PROFILE_ALIASES = {
 
 LEGISLATIVE_SYSTEM_PROFILES = {
     "United Kingdom": ["uk-human-rights-doi-2025"],
-    "Canada": ["canada-scc-recent", "canada-scc-2024"],
+    "Canada": ["canada-charter-dialogue-1982-2007"],
     "South Africa": ["south-africa-constcourt-recent"],
     "France": ["france-conseil-qpc"],
     "Germany": ["germany-bverfg-2024"],
@@ -289,6 +395,13 @@ def source_family_counts(rows: list[dict[str, str]]) -> dict[tuple[str, str], Co
         else:
             counts[key]["stressOnlyRows"] += 1
     return counts
+
+
+def source_rows_by_family(rows: list[dict[str, str]]) -> dict[tuple[str, str], list[dict[str, str]]]:
+    grouped: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+    for row in rows:
+        grouped[(row["profileKey"], build_court_profiles.family_for(row["targetKey"]))].append(row)
+    return grouped
 
 
 def candidate_rows() -> dict[tuple[str, str], list[dict[str, str]]]:
@@ -384,6 +497,42 @@ def roadmap_rows() -> dict[tuple[str, str], int]:
     return grouped
 
 
+def roadmap_items() -> dict[tuple[str, str], list[dict[str, str]]]:
+    grouped: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+    roadmap_path = RESEARCH_DIR / "empirical-target-roadmap.csv"
+    for row in read_rows(roadmap_path, [
+        "profileKey",
+        "courtOrSystem",
+        "period",
+        "targetFamily",
+        "targetKey",
+        "neededObservedValue",
+        "neededDenominator",
+        "preferredSources",
+        "validationUseIfDocumented",
+        "notes",
+    ]):
+        family = ROADMAP_FAMILY_ALIASES.get(row["targetFamily"], target_family(row["targetKey"]))
+        if not family:
+            continue
+        item = {
+            "sourceFile": str(roadmap_path.relative_to(ROOT)),
+            "roadmapProfileKey": row["profileKey"],
+            "roadmapCourtOrSystem": row["courtOrSystem"],
+            "period": row["period"],
+            "roadmapTargetFamily": row["targetFamily"],
+            "targetKey": row["targetKey"],
+            "neededObservedValue": row["neededObservedValue"],
+            "neededDenominator": row["neededDenominator"],
+            "preferredSources": row["preferredSources"],
+            "validationUseIfDocumented": row["validationUseIfDocumented"],
+            "notes": row["notes"],
+        }
+        for profile_key in ROADMAP_PROFILE_ALIASES.get(row["profileKey"], [row["profileKey"]]):
+            grouped[(profile_key, family)].append(item)
+    return grouped
+
+
 def largest_row(rows: list[dict[str, str]]) -> dict[str, str] | None:
     if not rows:
         return None
@@ -466,11 +615,39 @@ def family_report_rows(
     return output
 
 
+def source_verified(row: dict[str, str]) -> bool:
+    return row["sourceUrlStatus"].startswith("verified:https://")
+
+
+def source_bibliography_verified(row: dict[str, str]) -> bool:
+    return row["sourceUrlStatus"].startswith("verified-bibliography-only:https://")
+
+
+def source_pending(row: dict[str, str]) -> bool:
+    return row["sourceUrlStatus"].startswith("pending")
+
+
+def verified_model_gap(row: dict[str, str]) -> bool:
+    return row["status"] == "verified-model-gap"
+
+
+def direct_analogue(row: dict[str, str]) -> bool:
+    return row["directAnalogue"].lower() == "true"
+
+
+def has_denominator(row: dict[str, str]) -> bool:
+    denominator = row["denominator"].strip()
+    return bool(denominator and denominator != "0")
+
+
 def candidate_score(row: dict[str, str]) -> tuple[int, int, int, str]:
-    verified = 1 if row["sourceUrlStatus"].startswith("verified:https://") else 0
-    direct = 1 if row["directAnalogue"].lower() == "true" else 0
-    denominator = 1 if row["denominator"].strip() and row["denominator"].strip() != "0" else 0
-    return (verified, direct, denominator, row["label"])
+    return (
+        1 if direct_analogue(row) else 0,
+        1 if source_verified(row) else 0,
+        1 if source_bibliography_verified(row) else 0,
+        1 if has_denominator(row) else 0,
+        row["label"],
+    )
 
 
 def queue_action_type(family_row: dict[str, str], candidates: list[dict[str, str]], roadmap_count: int) -> str:
@@ -491,36 +668,178 @@ def queue_recommendation(action_type: str, family_row: dict[str, str], top_candi
     if action_type == "model-calibration":
         return family_row["nextAction"] or "retune model only after preserving cross-profile comparability"
     if action_type == "source-promotion":
+        if family_row["targetFamily"] in build_court_profiles.CONTEXTUAL_CALIBRATION_FAMILIES:
+            return "document raw source trail for contextual use; do not promote normalized cost or public-trust proxy rows into validation"
         return "verify denominator, source URL, coding rule, and direct analogue before promoting stress-only rows"
     if action_type == "candidate-verification" and top_candidate:
+        if verified_model_gap(top_candidate):
+            return "add the missing simulator output and preserve the source unit before reconsidering validation promotion"
+        if source_bibliography_verified(top_candidate):
+            return "audit source values and coding table before promotion"
         if not top_candidate["sourceUrlStatus"].startswith("verified:https://"):
             return "verify primary source URL and numerator/denominator before promotion"
         if top_candidate["directAnalogue"].lower() != "true":
             return "keep as contextual evidence unless recoded to a direct simulator analogue"
         return "audit construction note and promote if target key is simulator-observable"
     if action_type == "source-acquisition":
+        if family_row["targetFamily"] in build_court_profiles.CONTEXTUAL_CALIBRATION_FAMILIES:
+            return "collect contextual source pack; do not count as source-range validation without a raw simulator analogue"
         return "collect denominator-backed source rows for this profile-family"
     return ""
+
+
+def queue_actionability(
+        action_type: str,
+        family_row: dict[str, str],
+        candidates: list[dict[str, str]],
+        top_candidate: dict[str, str] | None,
+        source_rows: list[dict[str, str]],
+) -> tuple[str, str, str]:
+    if action_type == "model-calibration":
+        return (
+            "model-calibration-needed",
+            "validation-counted source-range miss",
+            family_row["largestGapTarget"] or "current validation row falls outside its documented source range",
+        )
+    if action_type == "source-promotion":
+        if family_row["targetFamily"] in build_court_profiles.CONTEXTUAL_CALIBRATION_FAMILIES:
+            return (
+                "contextual-source-documentation",
+                "contextual source surface, not validation-family gap",
+                "current validation policy excludes normalized cost and public-trust proxy rows from source-range validation",
+            )
+        source_blockers = [source_promotion_blockers(row) for row in source_rows]
+        if source_blockers and all(blockers == ["not-validation-counted"] for blockers in source_blockers):
+            return (
+                "claim-boundary-decision-needed",
+                "source-complete stress rows need validation-scope decision",
+                "stress-only rows have URLs, denominators, and construction notes; promotion would broaden validation claims",
+            )
+        return (
+            "needs-source-documentation",
+            "stress-only row needs promotion evidence",
+            "stress-only coverage lacks the full promotion package: source URL, denominator, coding rule, and direct analogue",
+        )
+    if action_type == "source-acquisition":
+        if family_row["targetFamily"] in build_court_profiles.CONTEXTUAL_CALIBRATION_FAMILIES:
+            return (
+                "contextual-source-documentation",
+                "contextual source surface, not validation-family gap",
+                "current validation policy excludes normalized cost and public-trust proxy rows from source-range validation",
+            )
+        return (
+            "source-acquisition-needed",
+            "no registered source candidate",
+            "no candidate row is registered for this missing profile-family",
+        )
+    if action_type != "candidate-verification" or not top_candidate:
+        return ("needs-triage", "unclassified queue row", "queue row has no candidate or actionability signal")
+
+    direct_candidates = [row for row in candidates if direct_analogue(row)]
+    verified_direct = [row for row in direct_candidates if source_verified(row) and has_denominator(row)]
+    bibliography_verified_direct = [
+        row for row in direct_candidates
+        if source_bibliography_verified(row) and has_denominator(row)
+    ]
+    pending_direct = [row for row in direct_candidates if source_pending(row) and has_denominator(row)]
+    model_gap_candidates = [
+        row for row in candidates
+        if verified_model_gap(row) and source_verified(row) and has_denominator(row)
+    ]
+    verified_context = [row for row in candidates if source_verified(row) and not direct_analogue(row)]
+
+    if model_gap_candidates:
+        return (
+            "model-metric-gap",
+            "verified source measure lacks a matching simulator output unit",
+            "source evidence is reproducible but cannot be compared to the current all-merits simulator metric without mixing units",
+        )
+    if verified_direct:
+        return (
+            "ready-for-promotion-review",
+            "verified direct analogue candidate",
+            "construction note and simulator-observable target key still need final audit before promotion",
+        )
+    if pending_direct:
+        return (
+            "verify-primary-source",
+            "direct analogue candidate pending URL verification",
+            "primary source URL must be verified before this row can become validation evidence",
+        )
+    if bibliography_verified_direct:
+        return (
+            "verify-source-values",
+            "bibliographic source verified but source values blocked",
+            "source landing page is verified, but numerator, denominator, or coding table still needs page-level audit",
+        )
+    if direct_candidates:
+        return (
+            "candidate-triage-needed",
+            "direct analogue candidate missing promotion prerequisites",
+            "candidate needs denominator and source-status cleanup before promotion review",
+        )
+    if verified_context:
+        return (
+            "context-only-blocked",
+            "verified context but not validation evidence",
+            "candidate has a verified URL but is not a direct simulator analogue",
+        )
+    return (
+        "candidate-triage-needed",
+        "candidate not yet promotable",
+        "candidate lacks a verified source URL or direct simulator analogue",
+    )
+
+
+ACTIONABILITY_SORT_ORDER = {
+    "model-calibration-needed": 0,
+    "model-metric-gap": 1,
+    "ready-for-promotion-review": 2,
+    "claim-boundary-decision-needed": 3,
+    "verify-primary-source": 4,
+    "verify-source-values": 5,
+    "needs-source-documentation": 6,
+    "contextual-source-documentation": 7,
+    "candidate-triage-needed": 8,
+    "source-acquisition-needed": 9,
+    "context-only-blocked": 10,
+    "needs-triage": 11,
+}
 
 
 def promotion_queue_rows(
         family_rows: list[dict[str, str]],
         candidates_by_family: dict[tuple[str, str], list[dict[str, str]]],
         roadmap_by_family: dict[tuple[str, str], int],
+        sources_by_family: dict[tuple[str, str], list[dict[str, str]]],
 ) -> list[dict[str, str]]:
     pending: list[tuple[tuple[float, int, int, str, str], dict[str, str]]] = []
     for family_row in family_rows:
         key = (family_row["profileKey"], family_row["targetFamily"])
         candidates = candidates_by_family.get(key, [])
         roadmap_count = roadmap_by_family.get(key, 0)
+        family_sources = sources_by_family.get(key, [])
         action_type = queue_action_type(family_row, candidates, roadmap_count)
         if not action_type:
             continue
 
-        verified_count = sum(1 for row in candidates if row["sourceUrlStatus"].startswith("verified:https://"))
-        pending_count = sum(1 for row in candidates if row["sourceUrlStatus"].startswith("pending"))
-        direct_count = sum(1 for row in candidates if row["directAnalogue"].lower() == "true")
+        verified_count = sum(1 for row in candidates if source_verified(row))
+        pending_count = sum(1 for row in candidates if source_pending(row))
+        direct_count = sum(1 for row in candidates if direct_analogue(row))
         top_candidate = max(candidates, key=candidate_score) if candidates else None
+        promotion_readiness, claim_boundary, blocking_reason = queue_actionability(
+            action_type,
+            family_row,
+            candidates,
+            top_candidate,
+            family_sources,
+        )
+        recommended_action = queue_recommendation(action_type, family_row, top_candidate)
+        if promotion_readiness == "claim-boundary-decision-needed":
+            recommended_action = (
+                "decide whether to promote source-complete stress rows into validation and accept any resulting "
+                "model-calibration diagnostics"
+            )
         action_weight = {
             "model-calibration": 0,
             "candidate-verification": 1,
@@ -529,7 +848,9 @@ def promotion_queue_rows(
         }[action_type]
         sort_key = (
             -float(family_row["largestGap"]),
+            ACTIONABILITY_SORT_ORDER.get(promotion_readiness, 99),
             action_weight,
+            -direct_count,
             -verified_count,
             family_row["profileKey"],
             family_row["targetFamily"],
@@ -556,7 +877,10 @@ def promotion_queue_rows(
                     "topCandidateLabel": top_candidate["label"] if top_candidate else "",
                     "topCandidateStatus": top_candidate["status"] if top_candidate else "",
                     "topCandidateSourceStatus": top_candidate["sourceUrlStatus"] if top_candidate else "",
-                    "recommendedAction": queue_recommendation(action_type, family_row, top_candidate),
+                    "promotionReadiness": promotion_readiness,
+                    "claimBoundary": claim_boundary,
+                    "blockingReason": blocking_reason,
+                    "recommendedAction": recommended_action,
                 },
             )
         )
@@ -564,6 +888,261 @@ def promotion_queue_rows(
     for index, row in enumerate(output, start=1):
         row["priorityRank"] = str(index)
     return output
+
+
+def source_gap_rows(queue_rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    output: list[dict[str, str]] = []
+    sorted_rows = sorted(
+        queue_rows,
+        key=lambda row: (
+            ACTIONABILITY_SORT_ORDER.get(row["promotionReadiness"], 99),
+            int(row["priorityRank"]),
+        ),
+    )
+    for index, row in enumerate(sorted_rows, start=1):
+        output.append(
+            {
+                "gapRank": str(index),
+                "queuePriorityRank": row["priorityRank"],
+                "promotionReadiness": row["promotionReadiness"],
+                "claimBoundary": row["claimBoundary"],
+                "actionType": row["actionType"],
+                "profileKey": row["profileKey"],
+                "court": row["court"],
+                "targetFamily": row["targetFamily"],
+                "coverageStatus": row["coverageStatus"],
+                "candidateRows": row["candidateRows"],
+                "verifiedCandidateRows": row["verifiedCandidateRows"],
+                "pendingVerificationRows": row["pendingVerificationRows"],
+                "directAnalogueCandidateRows": row["directAnalogueCandidateRows"],
+                "roadmapRows": row["roadmapRows"],
+                "topCandidateFile": row["topCandidateFile"],
+                "topCandidateLabel": row["topCandidateLabel"],
+                "topCandidateStatus": row["topCandidateStatus"],
+                "topCandidateSourceStatus": row["topCandidateSourceStatus"],
+                "blockingReason": row["blockingReason"],
+                "recommendedAction": row["recommendedAction"],
+            }
+        )
+    return output
+
+
+def candidate_verification_recommendation(candidate: dict[str, str]) -> str:
+    if verified_model_gap(candidate):
+        return "design a statute-disposition nullification output; do not compare this row with all-merits invalidation"
+    if not direct_analogue(candidate):
+        if source_verified(candidate):
+            return "retain as context unless recoded to a direct simulator analogue"
+        return "verify source only if the metric can be recoded to a direct simulator analogue"
+    if not has_denominator(candidate):
+        return "recover numerator denominator and coding universe before promotion review"
+    if source_bibliography_verified(candidate):
+        return "audit article text coding table numerator and denominator before promotion"
+    if not source_verified(candidate):
+        return "verify primary source URL period numerator denominator and coding rule"
+    return "audit construction note and simulator target exposure before promotion"
+
+
+def candidate_verification_rows(
+        queue_rows: list[dict[str, str]],
+        source_gaps: list[dict[str, str]],
+        candidates_by_family: dict[tuple[str, str], list[dict[str, str]]],
+) -> list[dict[str, str]]:
+    gap_by_queue_rank = {row["queuePriorityRank"]: row["gapRank"] for row in source_gaps}
+    output: list[dict[str, str]] = []
+    for queue_row in queue_rows:
+        key = (queue_row["profileKey"], queue_row["targetFamily"])
+        candidates = sorted(candidates_by_family.get(key, []), key=candidate_score, reverse=True)
+        top_signature = (
+            queue_row["topCandidateFile"],
+            queue_row["topCandidateLabel"],
+            queue_row["topCandidateStatus"],
+            queue_row["topCandidateSourceStatus"],
+        )
+        for index, candidate in enumerate(candidates, start=1):
+            candidate_signature = (
+                candidate["sourceFile"],
+                candidate["label"],
+                candidate["status"],
+                candidate["sourceUrlStatus"],
+            )
+            output.append(
+                {
+                    "gapRank": gap_by_queue_rank.get(queue_row["priorityRank"], ""),
+                    "queuePriorityRank": queue_row["priorityRank"],
+                    "candidateRank": str(index),
+                    "promotionReadiness": queue_row["promotionReadiness"],
+                    "claimBoundary": queue_row["claimBoundary"],
+                    "profileKey": queue_row["profileKey"],
+                    "court": queue_row["court"],
+                    "targetFamily": queue_row["targetFamily"],
+                    "coverageStatus": queue_row["coverageStatus"],
+                    "sourceFile": candidate["sourceFile"],
+                    "label": candidate["label"],
+                    "status": candidate["status"],
+                    "sourceUrlStatus": candidate["sourceUrlStatus"],
+                    "directAnalogue": candidate["directAnalogue"],
+                    "denominator": candidate["denominator"],
+                    "topCandidate": "true" if candidate_signature == top_signature else "false",
+                    "recommendedVerification": candidate_verification_recommendation(candidate),
+                }
+            )
+    return output
+
+
+def source_acquisition_recommendation(row: dict[str, str], queue_row: dict[str, str]) -> str:
+    if row["validationUseIfDocumented"].lower() == "true":
+        return "collect URL denominator coding rule and construction note for validation promotion review"
+    if queue_row["actionType"] == "source-acquisition":
+        return "collect as contextual source unless a direct simulator analogue can be documented"
+    return "use as supporting roadmap context after higher-priority candidate verification"
+
+
+def source_acquisition_rows(
+        queue_rows: list[dict[str, str]],
+        source_gaps: list[dict[str, str]],
+        roadmap_by_family: dict[tuple[str, str], list[dict[str, str]]],
+) -> list[dict[str, str]]:
+    gap_by_queue_rank = {row["queuePriorityRank"]: row["gapRank"] for row in source_gaps}
+    output: list[dict[str, str]] = []
+    for queue_row in queue_rows:
+        key = (queue_row["profileKey"], queue_row["targetFamily"])
+        roadmap = sorted(
+            roadmap_by_family.get(key, []),
+            key=lambda row: (row["roadmapProfileKey"], row["targetKey"], row["neededObservedValue"]),
+        )
+        for index, item in enumerate(roadmap, start=1):
+            output.append(
+                {
+                    "gapRank": gap_by_queue_rank.get(queue_row["priorityRank"], ""),
+                    "queuePriorityRank": queue_row["priorityRank"],
+                    "acquisitionRank": str(index),
+                    "promotionReadiness": queue_row["promotionReadiness"],
+                    "claimBoundary": queue_row["claimBoundary"],
+                    "actionType": queue_row["actionType"],
+                    "profileKey": queue_row["profileKey"],
+                    "court": queue_row["court"],
+                    "targetFamily": queue_row["targetFamily"],
+                    "coverageStatus": queue_row["coverageStatus"],
+                    "roadmapSourceFile": item["sourceFile"],
+                    "roadmapProfileKey": item["roadmapProfileKey"],
+                    "roadmapCourtOrSystem": item["roadmapCourtOrSystem"],
+                    "period": item["period"],
+                    "roadmapTargetFamily": item["roadmapTargetFamily"],
+                    "targetKey": item["targetKey"],
+                    "neededObservedValue": item["neededObservedValue"],
+                    "neededDenominator": item["neededDenominator"],
+                    "preferredSources": item["preferredSources"],
+                    "validationUseIfDocumented": item["validationUseIfDocumented"],
+                    "notes": item["notes"],
+                    "recommendedAcquisition": source_acquisition_recommendation(item, queue_row),
+                }
+            )
+    return output
+
+
+def source_promotion_blockers(row: dict[str, str]) -> list[str]:
+    blockers: list[str] = []
+    if row["useForValidation"].lower() != "true":
+        blockers.append("not-validation-counted")
+    if not row["sourceUrl"].strip():
+        blockers.append("missing-source-url")
+    if not row["n"].strip() or row["n"].strip() == "0":
+        blockers.append("missing-denominator")
+    if len(row["constructionNote"].strip()) < 30:
+        blockers.append("thin-construction-note")
+
+    method = row["method"].lower()
+    source_name = row["sourceName"].lower()
+    if "synthesis" in method or "synthesis" in source_name or "deep research" in source_name:
+        blockers.append("synthesis-source")
+    if row["unit"].lower() == "normalized" or "benchmark cost" in method or "public-trust" in method:
+        blockers.append("context-or-normalized-measure")
+    return blockers
+
+
+def source_promotion_recommendation(blockers: list[str]) -> str:
+    if "context-or-normalized-measure" in blockers:
+        return "keep as stress context unless a direct simulator-output analogue and source-specific denominator are documented"
+    if "synthesis-source" in blockers:
+        return "replace synthesis trail with a primary or authoritative public source before validation promotion"
+    if "missing-source-url" in blockers or "missing-denominator" in blockers:
+        return "recover public source URL denominator period and coding rule before validation promotion"
+    if "thin-construction-note" in blockers:
+        return "expand construction note to make numerator denominator period and exclusions reproducible"
+    if blockers == ["not-validation-counted"]:
+        return "audit direct analogue and target exposure; promote only if row satisfies validation-source rules"
+    return "retain as stress-only evidence until all promotion blockers are resolved"
+
+
+def source_promotion_rows(
+        queue_rows: list[dict[str, str]],
+        source_gaps: list[dict[str, str]],
+        sources_by_family: dict[tuple[str, str], list[dict[str, str]]],
+) -> list[dict[str, str]]:
+    gap_by_queue_rank = {row["queuePriorityRank"]: row["gapRank"] for row in source_gaps}
+    output: list[dict[str, str]] = []
+    for queue_row in queue_rows:
+        if queue_row["actionType"] != "source-promotion":
+            continue
+        key = (queue_row["profileKey"], queue_row["targetFamily"])
+        sources = sorted(
+            sources_by_family.get(key, []),
+            key=lambda row: (row["targetFile"], row["targetKey"], row["label"]),
+        )
+        for index, source_row in enumerate(sources, start=1):
+            blockers = source_promotion_blockers(source_row)
+            recommended_promotion = source_promotion_recommendation(blockers)
+            if queue_row["promotionReadiness"] == "contextual-source-documentation":
+                recommended_promotion = (
+                    "document raw budget or public-opinion source trail for context; keep normalized-cost "
+                    "and public-trust proxy rows outside validation counts"
+                )
+            output.append(
+                {
+                    "gapRank": gap_by_queue_rank.get(queue_row["priorityRank"], ""),
+                    "queuePriorityRank": queue_row["priorityRank"],
+                    "promotionRank": str(index),
+                    "promotionReadiness": queue_row["promotionReadiness"],
+                    "claimBoundary": queue_row["claimBoundary"],
+                    "profileKey": queue_row["profileKey"],
+                    "court": queue_row["court"],
+                    "targetFamily": queue_row["targetFamily"],
+                    "coverageStatus": queue_row["coverageStatus"],
+                    "targetFile": source_row["targetFile"],
+                    "timePeriod": source_row["timePeriod"],
+                    "targetKey": source_row["targetKey"],
+                    "label": source_row["label"],
+                    "observedValue": source_row["observedValue"],
+                    "sourceRange": f"{source_row['lowerBound']}--{source_row['upperBound']}",
+                    "denominator": source_row["n"],
+                    "unit": source_row["unit"],
+                    "method": source_row["method"],
+                    "reliability": source_row["reliability"],
+                    "sourceName": source_row["sourceName"],
+                    "sourceUrl": source_row["sourceUrl"],
+                    "useForValidation": source_row["useForValidation"],
+                    "promotionBlockers": "|".join(blockers),
+                    "recommendedPromotion": recommended_promotion,
+                }
+            )
+    return output
+
+
+def source_promotion_blocker_counts(rows: list[dict[str, str]]) -> Counter[str]:
+    counts: Counter[str] = Counter()
+    for row in rows:
+        for blocker in row["promotionBlockers"].split("|"):
+            if blocker:
+                counts[blocker] += 1
+    return counts
+
+
+def source_promotion_blocker_summary(rows: list[dict[str, str]]) -> str:
+    counts = source_promotion_blocker_counts(rows)
+    if not counts:
+        return "no source-promotion blockers"
+    return ", ".join(f"{counts[blocker]} {blocker}" for blocker in sorted(counts))
 
 
 def md_escape(value: str) -> str:
@@ -598,6 +1177,7 @@ def readiness_rows(
         profile_rows: list[dict[str, str]],
         family_rows: list[dict[str, str]],
         queue_rows: list[dict[str, str]],
+        source_promotion_detail: list[dict[str, str]],
         source_rows: list[dict[str, str]],
         miss_rows: list[dict[str, str]],
 ) -> list[dict[str, str]]:
@@ -612,19 +1192,46 @@ def readiness_rows(
     }
     missing_validation_families = [
         family
-        for family in build_court_profiles.PLATFORM_FAMILY_ORDER
+        for family in build_court_profiles.VALIDATION_ELIGIBLE_FAMILY_ORDER
         if family not in validation_families
     ]
+    contextual_families = build_court_profiles.CONTEXTUAL_CALIBRATION_FAMILIES
+    contextual_family_rows = [
+        row
+        for row in family_rows
+        if row["targetFamily"] in contextual_families and int(row["sourceRows"]) > 0
+    ]
+    contextual_families_with_sources = {
+        row["targetFamily"]
+        for row in contextual_family_rows
+    }
+    contextual_source_rows = sum(int(row["sourceRows"]) for row in contextual_family_rows)
+    contextual_validation_rows = sum(int(row["validationRows"]) for row in contextual_family_rows)
+    contextual_profile_count = len({
+        row["profileKey"]
+        for row in contextual_family_rows
+    })
     action_counts = Counter(row["actionType"] for row in queue_rows)
     queue_summary = ", ".join(
         f"{action_counts[action]} {action}"
         for action in sorted(action_counts)
     ) or "no queued actions"
+    readiness_counts = Counter(row["promotionReadiness"] for row in queue_rows)
+    readiness_summary = ", ".join(
+        f"{readiness_counts[status]} {status}"
+        for status in sorted(readiness_counts, key=lambda status: ACTIONABILITY_SORT_ORDER.get(status, 99))
+    ) or "no readiness gaps"
     top_queue = queue_rows[0] if queue_rows else None
     top_queue_summary = (
-        f"{top_queue['actionType']} for {top_queue['profileKey']} {top_queue['targetFamily']}"
+        f"{top_queue['promotionReadiness']} for {top_queue['profileKey']} {top_queue['targetFamily']}"
         if top_queue
         else "no current queue item"
+    )
+    source_promotion_summary = (
+        f"{len(source_promotion_detail)} stress-only source rows; blockers: "
+        f"{source_promotion_blocker_summary(source_promotion_detail)}"
+        if source_promotion_detail
+        else "no source-promotion detail rows"
     )
     validation_source_rows = [
         row
@@ -638,6 +1245,17 @@ def readiness_rows(
     )
     source_url_rows = sum(1 for row in source_rows if row["sourceUrl"].strip())
     denominator_rows = sum(1 for row in source_rows if row["n"].strip() and row["n"].strip() != "0")
+
+    missing_family_text = (
+        ", ".join(missing_validation_families)
+        if missing_validation_families
+        else "no"
+    )
+    missing_family_phrase = (
+        f"{missing_family_text} family remains"
+        if len(missing_validation_families) == 1
+        else f"{missing_family_text} families remain"
+    )
 
     return [
         {
@@ -665,11 +1283,22 @@ def readiness_rows(
             "readinessItem": "target-family-depth",
             "status": "needs-source-expansion",
             "evidence": (
-                f"{len(validation_families)}/{len(build_court_profiles.PLATFORM_FAMILY_ORDER)} families have validation-counted rows; "
+                f"{len(validation_families)}/{len(build_court_profiles.VALIDATION_ELIGIBLE_FAMILY_ORDER)} validation-eligible families have validation-counted rows; "
                 f"missing validation families: {', '.join(missing_validation_families) if missing_validation_families else 'none'}"
             ),
-            "interpretation": "The platform now fits its narrow benchmark surface, but compliance, cost, doctrine, and political-context families remain outside validation counts.",
+            "interpretation": f"The platform now fits its narrow benchmark surface, but {missing_family_phrase} outside validation counts.",
             "nextAction": "Use source-acquisition and source-promotion queue rows to expand family coverage with URLs, denominators, and direct analogues.",
+        },
+        {
+            "readinessItem": "contextual-source-depth",
+            "status": "contextual-surface-active",
+            "evidence": (
+                f"{len(contextual_families_with_sources)}/{len(contextual_families)} contextual families have stress-source rows; "
+                f"{contextual_source_rows} source rows across {contextual_profile_count} profiles; "
+                f"{contextual_validation_rows} validation-counted by policy"
+            ),
+            "interpretation": "Cost and political-context rows remain visible for calibration context, but normalized cost and public-trust proxies are intentionally excluded from source-range validation.",
+            "nextAction": "Build raw cost-accounting and political-context source packs separately from validation-counted case-output analogues.",
         },
         {
             "readinessItem": "source-documentation",
@@ -686,9 +1315,9 @@ def readiness_rows(
         {
             "readinessItem": "promotion-pipeline",
             "status": "active-pipeline",
-            "evidence": f"{len(queue_rows)} queued tasks; {queue_summary}; top queue item: {top_queue_summary}",
-            "interpretation": "After clearing current source-range misses, the next empirical work is coverage expansion rather than additional retuning.",
-            "nextAction": "Work promotion-queue rows in rank order, starting with candidate verification and then source promotion.",
+            "evidence": f"{len(queue_rows)} queued tasks; {queue_summary}; readiness: {readiness_summary}; top actionable item: {top_queue_summary}; source-promotion detail: {source_promotion_summary}",
+            "interpretation": "After clearing current source-range misses, the next empirical work is coverage expansion, with missing simulator-output units separated from direct candidates and context-only blockers.",
+            "nextAction": "Resolve model-metric-gap rows only by implementing the matching source unit or keeping them excluded; then work direct-candidate and stress-promotion rows.",
         },
         {
             "readinessItem": "publication-boundary",
@@ -896,10 +1525,11 @@ def benchmark_cards(
         if profile_queue:
             lines.extend(
                 markdown_table(
-                    ["Rank", "Action", "Family", "Coverage", "Candidate rows", "Top candidate", "Recommended action"],
+                    ["Rank", "Readiness", "Action", "Family", "Coverage", "Candidate rows", "Top candidate", "Recommended action"],
                     [
                         [
                             row["priorityRank"],
+                            row["promotionReadiness"],
                             row["actionType"],
                             row["targetFamily"],
                             row["coverageStatus"],
@@ -922,6 +1552,7 @@ def markdown_report(
         profile_rows: list[dict[str, str]],
         family_rows: list[dict[str, str]],
         queue_rows: list[dict[str, str]],
+        source_promotion_detail: list[dict[str, str]],
         source_rows: list[dict[str, str]],
         miss_rows: list[dict[str, str]],
         readiness: list[dict[str, str]],
@@ -941,8 +1572,10 @@ def markdown_report(
     failures = out_of_range(miss_rows)
     miss_category_counts = Counter(row["missCategory"] for row in failures)
     action_counts = Counter(row["actionType"] for row in queue_rows)
+    readiness_counts = Counter(row["promotionReadiness"] for row in queue_rows)
     top_profiles = sorted(profile_rows, key=lambda row: (-float(row["largestGap"]), row["profileKey"]))[:8]
     top_queue = queue_rows[:12]
+    source_gaps = source_gap_rows(queue_rows)[:12]
 
     lines = [
         "# Empirical Platform Coverage Report",
@@ -957,6 +1590,7 @@ def markdown_report(
         f"- Validation rows within source range: {sum(1 for row in miss_rows if row['withinTarget'].lower() == 'true')}",
         f"- Validation rows out of range: {len(failures)}",
         f"- Promotion queue rows: {len(queue_rows)}",
+        f"- Source-promotion queue rows: {sum(1 for row in queue_rows if row['actionType'] == 'source-promotion')}",
         "",
         "## Profile Status",
         "",
@@ -1014,6 +1648,27 @@ def markdown_report(
             [[action_type, str(action_counts[action_type])] for action_type in sorted(action_counts)],
         )
     )
+    lines.extend(["", "## Promotion Readiness", ""])
+    lines.extend(
+        markdown_table(
+            ["Readiness", "Rows"],
+            [
+                [status, str(readiness_counts[status])]
+                for status in sorted(readiness_counts, key=lambda item: ACTIONABILITY_SORT_ORDER.get(item, 99))
+            ],
+        )
+    )
+    lines.extend(["", "## Source Promotion Blockers", ""])
+    blocker_counts = source_promotion_blocker_counts(source_promotion_detail)
+    if blocker_counts:
+        lines.extend(
+            markdown_table(
+                ["Blocker", "Rows"],
+                [[blocker, str(blocker_counts[blocker])] for blocker in sorted(blocker_counts)],
+            )
+        )
+    else:
+        lines.append("No source-promotion blockers are reported.")
     lines.extend(["", "## Largest Profile Gaps", ""])
     lines.extend(
         markdown_table(
@@ -1035,15 +1690,15 @@ def markdown_report(
     lines.extend(["", "## Top Promotion Queue", ""])
     lines.extend(
         markdown_table(
-            ["Rank", "Action", "Profile", "Family", "Coverage", "Gap", "Candidate rows", "Roadmap rows", "Recommended action"],
+            ["Rank", "Readiness", "Action", "Profile", "Family", "Coverage", "Candidate rows", "Roadmap rows", "Recommended action"],
             [
                 [
                     row["priorityRank"],
+                    row["promotionReadiness"],
                     row["actionType"],
                     row["profileKey"],
                     row["targetFamily"],
                     row["coverageStatus"],
-                    row["largestGap"],
                     row["candidateRows"],
                     row["roadmapRows"],
                     row["recommendedAction"],
@@ -1052,10 +1707,28 @@ def markdown_report(
             ],
         )
     )
+    lines.extend(["", "## Source Gap Handoff", ""])
+    lines.extend(
+        markdown_table(
+            ["Gap rank", "Readiness", "Profile", "Family", "Claim boundary", "Blocker"],
+            [
+                [
+                    row["gapRank"],
+                    row["promotionReadiness"],
+                    row["profileKey"],
+                    row["targetFamily"],
+                    row["claimBoundary"],
+                    row["blockingReason"],
+                ]
+                for row in source_gaps
+            ],
+        )
+    )
     lines.extend(
         [
             "",
             "The coverage report is a planning artifact. Validation-counted rows remain limited to source-backed targets with denominators and direct simulator analogues; stress-only and missing families should not be described as country validation evidence.",
+            "Use the source-promotion packet for row-level stress-only promotion audits, the candidate-verification packet for unpromoted candidates, and the source-acquisition packet for missing profile-family rows with no registered candidate.",
             "",
         ]
     )
@@ -1071,15 +1744,27 @@ def expected_outputs() -> dict[Path, str]:
     counts = source_family_counts(source_rows)
     profile_rows = profile_report_rows(profiles, misses_by_profile)
     family_rows = family_report_rows(profiles, counts, misses_by_family)
-    queue_rows = promotion_queue_rows(family_rows, candidate_rows(), roadmap_rows())
-    readiness = readiness_rows(profile_rows, family_rows, queue_rows, source_rows, miss_rows)
+    candidates = candidate_rows()
+    roadmaps = roadmap_rows()
+    roadmap_detail = roadmap_items()
+    source_detail = source_rows_by_family(source_rows)
+    queue_rows = promotion_queue_rows(family_rows, candidates, roadmaps, source_detail)
+    source_gaps = source_gap_rows(queue_rows)
+    candidate_verifications = candidate_verification_rows(queue_rows, source_gaps, candidates)
+    source_acquisitions = source_acquisition_rows(queue_rows, source_gaps, roadmap_detail)
+    source_promotions = source_promotion_rows(queue_rows, source_gaps, source_detail)
+    readiness = readiness_rows(profile_rows, family_rows, queue_rows, source_promotions, source_rows, miss_rows)
     return {
         PROFILE_REPORT: csv_text(profile_rows, PROFILE_REPORT_HEADER),
         FAMILY_REPORT: csv_text(family_rows, FAMILY_REPORT_HEADER),
         PROMOTION_QUEUE_REPORT: csv_text(queue_rows, PROMOTION_QUEUE_HEADER),
+        SOURCE_GAP_REPORT: csv_text(source_gaps, SOURCE_GAP_HEADER),
+        CANDIDATE_VERIFICATION_REPORT: csv_text(candidate_verifications, CANDIDATE_VERIFICATION_HEADER),
+        SOURCE_ACQUISITION_REPORT: csv_text(source_acquisitions, SOURCE_ACQUISITION_HEADER),
+        SOURCE_PROMOTION_REPORT: csv_text(source_promotions, SOURCE_PROMOTION_HEADER),
         READINESS_REPORT: csv_text(readiness, READINESS_HEADER),
         READINESS_MARKDOWN_REPORT: readiness_markdown(readiness),
-        MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, queue_rows, source_rows, miss_rows, readiness),
+        MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, queue_rows, source_promotions, source_rows, miss_rows, readiness),
         PROFILE_CARDS: benchmark_cards(profiles, family_rows, queue_rows, source_rows, miss_rows),
     }
 

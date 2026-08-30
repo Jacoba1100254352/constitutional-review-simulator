@@ -228,7 +228,7 @@ def calibration_source_matrix() -> None:
         [
             r"\bottomrule",
             r"\end{longtable}",
-            r"\noindent\footnotesize Rows marked Val.=yes are the only rows counted in the external source-range checks. Rows marked synthesis, contextual public-trust proxy, or normalized cost benchmark remain visible as stress-test assumptions. The source-observation data retain full notes, source names, URLs when available, and construction notes for every target.",
+            r"\noindent\footnotesize Rows marked Val.=yes are the only rows counted in the external source-range checks. Rows marked synthesis, contextual public-trust proxy, or normalized cost benchmark remain visible as stress-test assumptions. The source-observation data retain full notes, source names, URLs when available, and construction notes for every target. The empirical-platform readiness report treats cost and political-context as contextual source-depth surfaces rather than validation-eligible family gaps under the current promotion rule.",
             r"}",
             "",
         ]
@@ -290,7 +290,7 @@ def research_roadmap_matrix() -> None:
         [
             r"\bottomrule",
             r"\end{longtable}",
-            r"\noindent\footnotesize Data-development and candidate rows are source-gathering tasks, not calibration targets. A candidate row should move into the calibration source matrix only after URLs, denominators, period coverage, coding rules, and a direct simulator analogue are documented. Candidate files preserve provisional denominators while preventing unverified secondary research summaries from being counted as validation evidence. Profile benchmark cards are generated review aids for the same source matrix and promotion queue.",
+            r"\noindent\footnotesize Data-development and candidate rows are source-gathering tasks, not calibration targets. A candidate row should move into the calibration source matrix only after URLs, denominators, period coverage, coding rules, and a direct simulator analogue are documented. Candidate files preserve provisional denominators while preventing unverified secondary research summaries from being counted as validation evidence. Profile benchmark cards, the source-gap report, the candidate-verification packet, the source-acquisition packet, and the source-promotion packet are generated review aids for the same source matrix and promotion queue.",
             r"}",
             "",
         ]

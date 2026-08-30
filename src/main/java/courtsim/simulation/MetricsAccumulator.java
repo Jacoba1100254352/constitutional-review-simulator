@@ -67,6 +67,7 @@ public final class MetricsAccumulator
 	private int executiveImplementationCases;
 	private int agencyNonacquiescenceCases;
 	private int legislativeReenactmentCases;
+	private int invalidationLegislativeReenactmentCases;
 	private int localGovernmentComplianceCases;
 	private double publicTrustSum;
 	private double legislativeConflictSum;
@@ -87,6 +88,7 @@ public final class MetricsAccumulator
 	private int weakFormDeclarations;
 	private int suspendedDeclarations;
 	private int legislativeResponses;
+	private int invalidationLegislativeResponses;
 	private int timelyLegislativeResponses;
 	private double legislativeResponseDelaySum;
 	private int rightsImpactStatements;
@@ -203,6 +205,9 @@ public final class MetricsAccumulator
 		if (outcome.legislativeReenactment()) {
 			legislativeReenactmentCases++;
 		}
+		if (outcome.meritsInvalidated() && outcome.legislativeReenactment()) {
+			invalidationLegislativeReenactmentCases++;
+		}
 		if (outcome.localGovernmentCompliance()) {
 			localGovernmentComplianceCases++;
 		}
@@ -231,6 +236,9 @@ public final class MetricsAccumulator
 		if (outcome.legislativeResponse()) {
 			legislativeResponses++;
 			legislativeResponseDelaySum += outcome.legislativeResponseDelay();
+		}
+		if (outcome.meritsInvalidated() && outcome.legislativeResponse()) {
+			invalidationLegislativeResponses++;
 		}
 		if (outcome.timelyLegislativeResponse()) {
 			timelyLegislativeResponses++;
@@ -346,6 +354,7 @@ public final class MetricsAccumulator
 				Values.ratio(executiveImplementationCases, totalCases),
 				Values.ratio(agencyNonacquiescenceCases, totalCases),
 				Values.ratio(legislativeReenactmentCases, totalCases),
+				Values.ratio(invalidationLegislativeReenactmentCases, Math.max(meritsInvalidations, 1)),
 				Values.ratio(localGovernmentComplianceCases, totalCases),
 				average(publicTrustSum),
 				average(legislativeConflictSum),
@@ -365,6 +374,7 @@ public final class MetricsAccumulator
 				Values.ratio(weakFormDeclarations, totalCases),
 				Values.ratio(suspendedDeclarations, totalCases),
 				Values.ratio(legislativeResponses, totalCases),
+				Values.ratio(invalidationLegislativeResponses, Math.max(meritsInvalidations, 1)),
 				average(legislativeResponseDelaySum, legislativeResponses),
 				Values.ratio(timelyLegislativeResponses, legislativeResponses),
 				Values.ratio(rightsImpactStatements, totalCases),

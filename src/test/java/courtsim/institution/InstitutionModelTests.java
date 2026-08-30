@@ -103,6 +103,13 @@ public final class InstitutionModelTests
 				ReviewMechanism.WEAK_FORM_REVIEW,
 				DocketProcedure.REASONED_EMERGENCY_PANEL
 		);
+		DesignConfiguration southAfrica = sourceConfiguration(
+				CostProfileKey.SOUTH_AFRICAN_CONSTITUTIONAL_COURT,
+				ReviewArchetype.MIXED_ABSTRACT_CONCRETE,
+				DocketControl.LEAVE_TO_APPEAL,
+				ReviewMechanism.ABSTRACT_REVIEW,
+				DocketProcedure.MERITS_FOLLOW_UP
+		);
 		DesignConfiguration us = sourceConfiguration(
 				CostProfileKey.US_SUPREME_COURT,
 				ReviewArchetype.DISCRETIONARY_APPELLATE_LEAVE,
@@ -112,6 +119,8 @@ public final class InstitutionModelTests
 		);
 
 		assertTrue(canada.sourceIntakeDenominatorMultiplier() < 1.0, "Canada source denominator should lower leave acceptance");
+		assertTrue(us.sourceIntakeDenominatorMultiplier() < 1.0, "US source denominator should lower certiorari acceptance");
+		assertTrue(southAfrica.sourceIntakeDenominatorMultiplier() < 1.0, "South Africa source denominator should lower petition-throughput acceptance");
 		assertTrue(uk.sourceIntakeDenominatorMultiplier() < 1.0, "UK source denominator should lower PTA acceptance");
 		assertTrue(echr.sourceIntakeDenominatorMultiplier() > 1.0, "ECHR source denominator should use allocated-application filtering");
 		assertTrue(uk.sourceCaseSelectionAccessUsesIntakeProxy(), "UK source profile should expose PTA access proxy");

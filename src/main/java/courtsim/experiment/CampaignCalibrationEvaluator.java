@@ -26,6 +26,7 @@ final class CampaignCalibrationEvaluator
 			Map.entry("gallup-court-confidence-2024", "us-supreme-court-benchmark"),
 			Map.entry("germany-bverfg-2024", "german-constitutional-court"),
 			Map.entry("france-conseil-qpc", "french-constitutional-council"),
+			Map.entry("canada-charter-dialogue-1982-2007", "canadian-supreme-court"),
 			Map.entry("canada-scc-recent", "canadian-supreme-court"),
 			Map.entry("canada-scc-2024", "canadian-supreme-court"),
 			Map.entry("south-africa-constcourt-recent", "south-african-constitutional-court"),
@@ -177,6 +178,7 @@ final class CampaignCalibrationEvaluator
 		observed.put("weak_form_declaration_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::weakFormDeclarationRate), totalCases));
 		observed.put("suspended_declaration_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::suspendedDeclarationRate), totalCases));
 		observed.put("legislative_response_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::legislativeResponseRate), totalCases));
+		observed.put("invalidation_legislative_response_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::invalidationLegislativeResponseRate), totalCases));
 		observed.put("legislative_response_delay", new CalibrationObservation(weightedAverage(rows, ScenarioReport::averageLegislativeResponseDelay), totalCases));
 		observed.put("timely_legislative_response_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::timelyLegislativeResponseRate), totalCases));
 		observed.put("legislative_response_credibility", new CalibrationObservation(weightedAverage(rows, ScenarioReport::legislativeResponseCredibility), totalCases));
@@ -190,6 +192,7 @@ final class CampaignCalibrationEvaluator
 		observed.put("public_defender_participation_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::publicDefenderParticipationRate), totalCases));
 		observed.put("compliance_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::complianceRate), totalCases));
 		observed.put("legislative_reenactment_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::legislativeReenactmentRate), totalCases));
+		observed.put("invalidation_legislative_reenactment_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::invalidationLegislativeReenactmentRate), totalCases));
 		observed.put("public_trust", new CalibrationObservation(weightedAverage(rows, ScenarioReport::publicTrust), totalCases));
 		observed.put("direct_court_cost", new CalibrationObservation(weightedAverage(rows, ScenarioReport::directCourtCost), totalCases));
 		observed.put("upstream_screening_cost", new CalibrationObservation(weightedAverage(rows, ScenarioReport::upstreamScreeningCost), totalCases));

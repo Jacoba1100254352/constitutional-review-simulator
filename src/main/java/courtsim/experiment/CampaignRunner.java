@@ -212,6 +212,7 @@ public final class CampaignRunner
 				new ReportIntervalMetric("weakFormDeclarationRate", ScenarioReport::weakFormDeclarationRate, ScenarioReport::totalCases, 0.0, 1.0),
 				new ReportIntervalMetric("suspendedDeclarationRate", ScenarioReport::suspendedDeclarationRate, ScenarioReport::totalCases, 0.0, 1.0),
 				new ReportIntervalMetric("legislativeResponseRate", ScenarioReport::legislativeResponseRate, ScenarioReport::totalCases, 0.0, 1.0),
+				new ReportIntervalMetric("invalidationLegislativeResponseRate", ScenarioReport::invalidationLegislativeResponseRate, ScenarioReport::meritsInvalidations, 0.0, 1.0),
 				new ReportIntervalMetric("averageLegislativeResponseDelay", ScenarioReport::averageLegislativeResponseDelay, ScenarioReport::totalCases, 0.0, 1.0),
 				new ReportIntervalMetric("timelyLegislativeResponseRate", ScenarioReport::timelyLegislativeResponseRate, ScenarioReport::totalCases, 0.0, 1.0),
 				new ReportIntervalMetric("rightsImpactStatementRate", ScenarioReport::rightsImpactStatementRate, ScenarioReport::totalCases, 0.0, 1.0),
@@ -700,7 +701,11 @@ public final class CampaignRunner
 		for (Scenario scenario : scenarios) {
 			ContextProfile profile = profiles.get(scenario.key());
 			if (profile != null && profile.applyInValidation()) {
-				specs.put(scenario.key(), applyContext(baseSpec, profile));
+				WorldSpec spec = applyContext(baseSpec, profile);
+				if (scenario.key().equals("us-supreme-court-benchmark")) {
+					spec = spec.withDoctrineDocketProfile(DoctrineDocketProfile.SCDB_MERITS);
+				}
+				specs.put(scenario.key(), spec);
 			}
 		}
 		return specs;
@@ -855,7 +860,7 @@ public final class CampaignRunner
 	
 	private void writeCsv(Path path, List<CampaignRow> rows) throws IOException {
 		StringBuilder builder = new StringBuilder();
-		builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,scenarioKind,reviewMechanism,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,legislativeResponseCredibility,caseSelectionAccess,governmentRepeatPlayerAdvantage,implementationCapacity,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,weakFormDeclarationRate,suspendedDeclarationRate,legislativeResponseRate,averageLegislativeResponseDelay,timelyLegislativeResponseRate,rightsImpactStatementRate,ombudsmanTriggerRate,publicDefenderParticipationRate,preEnactmentReviewRate,abstractReviewRate,preliminaryReferenceRate,appealRouteRate,directActionRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
+		builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,scenarioKind,reviewMechanism,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,legislativeResponseCredibility,caseSelectionAccess,governmentRepeatPlayerAdvantage,implementationCapacity,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,weakFormDeclarationRate,suspendedDeclarationRate,legislativeResponseRate,invalidationLegislativeResponseRate,averageLegislativeResponseDelay,timelyLegislativeResponseRate,rightsImpactStatementRate,ombudsmanTriggerRate,publicDefenderParticipationRate,preEnactmentReviewRate,abstractReviewRate,preliminaryReferenceRate,appealRouteRate,directActionRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,invalidationLegislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
 		for (CampaignRow row : rows) {
 			ScenarioReport report = row.report();
 			builder.append(csv(row.caseKey())).append(',')
@@ -914,6 +919,7 @@ public final class CampaignRunner
 			       .append(number(report.weakFormDeclarationRate())).append(',')
 			       .append(number(report.suspendedDeclarationRate())).append(',')
 			       .append(number(report.legislativeResponseRate())).append(',')
+			       .append(number(report.invalidationLegislativeResponseRate())).append(',')
 			       .append(number(report.averageLegislativeResponseDelay())).append(',')
 			       .append(number(report.timelyLegislativeResponseRate())).append(',')
 			       .append(number(report.rightsImpactStatementRate())).append(',')
@@ -939,6 +945,7 @@ public final class CampaignRunner
 			       .append(number(report.executiveImplementationRate())).append(',')
 			       .append(number(report.agencyNonacquiescenceRate())).append(',')
 			       .append(number(report.legislativeReenactmentRate())).append(',')
+			       .append(number(report.invalidationLegislativeReenactmentRate())).append(',')
 			       .append(number(report.localGovernmentComplianceRate())).append(',')
 			       .append(number(report.publicTrust())).append(',')
 			       .append(number(report.legislativeConflict())).append(',')

@@ -26,9 +26,9 @@ This audit checks rendered pages, not just LaTeX source. It flags figure or tabl
 | 11 | Table 7, Table 8 | Table 8 | 85.3% | 4.8% | 9.9% | OK |
 | 12 | Figure 3 | Figure 3, Figure 4 | 85.1% | 4.8% | 10.1% | OK |
 | 13 | Figure 4 | - | 85.3% | 4.8% | 9.9% | OK |
-| 14 | Table 9 | Table 10 | 86.4% | 4.7% | 8.9% | OK |
-| 15 | Table 10, Table 11 | Table 11 | 85.9% | 4.8% | 9.3% | OK |
-| 19 | - | - | 21.5% | 4.8% | 73.6% | OK: final references page, not figure-driven |
+| 14 | Table 9 | - | 79.9% | 4.7% | 15.4% | OK |
+| 15 | Table 10, Table 11 | Table 10, Table 11 | 86.6% | 4.8% | 8.5% | OK |
+| 19 | - | - | 53.5% | 4.8% | 41.7% | OK: final references page, not figure-driven |
 
 ## Reading Notes
 

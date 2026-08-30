@@ -6,7 +6,7 @@ LEGISLATIVE_INPUT ?= data/legislative/simulation-campaign-v21-paper.csv
 PAPER_TEX := constitutional-review-design-stress-test.tex
 PAPER_PDF := constitutional-review-design-stress-test.pdf
 
-.PHONY: build run campaign paired-campaign validation-check validation-miss-report research-data-check empirical-platform-report empirical-platform-check sensitivity-check calibration-build calibration-check promotion-check court-profile-build court-profile-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
+.PHONY: build run campaign paired-campaign validation-check validation-miss-report research-data-check empirical-platform-report empirical-platform-check scdb-doctrine-audit scdb-doctrine-audit-check scdb-doctrine-apply-ready scdb-doctrine-apply-audited-values sensitivity-check calibration-build calibration-check promotion-check court-profile-build court-profile-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 build:
 	mkdir -p out/main
@@ -38,6 +38,19 @@ empirical-platform-report: research-data-check court-profile-build validation-mi
 
 empirical-platform-check: research-data-check court-profile-check
 	python3 scripts/build_empirical_platform_report.py --check
+	python3 scripts/check_empirical_platform_consistency.py
+
+scdb-doctrine-audit:
+	python3 scripts/audit_scdb_doctrine_denominators.py --write
+
+scdb-doctrine-audit-check:
+	python3 scripts/audit_scdb_doctrine_denominators.py --check
+
+scdb-doctrine-apply-ready:
+	python3 scripts/audit_scdb_doctrine_denominators.py --apply-ready-denominators
+
+scdb-doctrine-apply-audited-values:
+	python3 scripts/audit_scdb_doctrine_denominators.py --apply-audited-values
 
 sensitivity-check: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign sensitivity --runs 80 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
@@ -93,6 +106,7 @@ paper-clean:
 supplement:
 	python3 paper/scripts/generate_supplement.py
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build supplementary-appendix.tex
+	cp paper/build/supplementary-appendix.pdf paper/supplementary-appendix.pdf
 
 paper-pdf-check:
 	python3 scripts/build_submission_bundle.py --check-pdfs-only

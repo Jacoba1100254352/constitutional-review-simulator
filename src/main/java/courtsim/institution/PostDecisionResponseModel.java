@@ -82,7 +82,8 @@ final class PostDecisionResponseModel
 				|| (!configuration.mandatoryLegislativeResponseMechanism()
 				&& !weakFormDeclaration
 				&& !suspendedDeclaration
-				&& !overrideUsed)) {
+				&& !overrideUsed
+				&& !(meritsInvalidated && configuration.declarationOrDialogueMechanism()))) {
 			return false;
 		}
 		double base = configuration.mandatoryLegislativeResponseMechanism() ? 0.52 : 0.30;
