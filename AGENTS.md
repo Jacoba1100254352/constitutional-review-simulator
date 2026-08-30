@@ -25,3 +25,17 @@ Project constraints:
 - Keep `config/calibration-source-observations.csv`, `config/calibration/*.csv`, and the compatibility `config/calibration-targets.csv` in sync with generated `*-calibration.csv` report columns when adding calibration checks.
 - Keep the submission bundle anonymous-review safe: no local paths, build logs, IDE files, generated PDFs inside replication/source ZIPs, or unredacted repository metadata.
 - Treat the sibling `Supreme Court Simulator Design` workspace as an earlier related artifact, not as an automatically authoritative source.
+
+## Public Repository and Secret Handling
+
+- Treat this repository and every committed file as public information.
+- Never commit `.env`, `.env.*`, credentials, access tokens, private keys, signing material, restricted-source caches, or environment-specific private paths. Track only scrubbed templates such as `.env.example`, with blank or unmistakably fake values.
+- Before staging or publishing, inspect `git status --short`, review the staged diff, and run a redacted secret scan when available. Confirm that ignored local credential files remain ignored.
+- If a real secret ever enters tracked content or Git history, stop publication, remove it from the affected history, and rotate or revoke the credential before pushing or changing visibility.
+
+## Commit, Tag, and Release Policy
+
+- Commit coherent, validated increments frequently: normally after each focused change passes its relevant checks and before switching to a different concern. Preserve unrelated user work and do not fold it into an unclear commit.
+- Push validated commits as the normal completion step so the public repository stays current.
+- Create tags less frequently, only for meaningful version, citation, submission, or compatibility milestones. An ordinary commit does not need a tag.
+- Publish a release only at a milestone with aligned version metadata, release notes, verified artifacts and checksums where applicable, and passing release checks. Use a draft or prerelease for genuinely provisional milestones, a source-only release when that is the intended artifact, and a stable release only when the documented stable benchmark is met.
