@@ -247,11 +247,15 @@ test offline. For the full original-field revision audit, run
 the pinned public releases and verifies their original hashes. Do not rerun
 the original acquisition or forecast-freeze commands after the test was opened.
 
-`make historical-study historical-study-audit` regenerates the registered
-institutional grid and independently audits its raw cases and objects.
+`make historical-replication` regenerates the registered institutional grid,
+independently audits its raw cases and objects, and rebuilds and validates
+the paired and normative-weight analyses.
 `make historical-study-check` verifies the retained aggregate/stream evidence
-without large raw exports. These simulations are not a substitute for the
-remaining claim and publication analyses while the milestone is in progress.
+without large raw exports. `make historical-analysis-check
+historical-analysis-validation-check` verifies the retained statistical
+analysis. These retained-output checks also run in `make ci`; full historical
+regeneration is a separate, longer operation. Publication integration and
+final artifact checks remain required while the milestone is in progress.
 
 For a lighter review build using the supplied tables and figures, change into
 `paper/` and run `latexmk -pdf -outdir=build constitutional-review-design-stress-test.tex`

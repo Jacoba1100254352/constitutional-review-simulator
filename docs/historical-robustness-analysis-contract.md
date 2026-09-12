@@ -101,3 +101,15 @@ The main simulator and this analysis remain free of third-party dependencies.
 
 Publication integration, rendered artifacts, full native CI and extracted
 anonymous replication remain required after the analysis checkpoint.
+
+## Post-estimate denominator diagnostic, 12 September 2026
+
+The first comparative calculation exposed a reason-giving reversal in the
+low-emergency setting. Run summaries show that the reasoned design frequently
+has no emergency orders there, while the legacy conditional rate uses zero
+for an empty denominator. Add integer-reconciled pooled event counts/rates
+to the denominator diagnostic table to explain this measurement effect.
+Where no events exist, the pooled diagnostic is blank, not zero. This is an
+explicitly post-estimate diagnostic, not a replacement endpoint or a refitted
+comparison. Preserve all original run-mean contrasts, intervals, practical
+classifications and normative leadership results.

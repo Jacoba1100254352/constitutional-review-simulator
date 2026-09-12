@@ -13,6 +13,26 @@ PAPER_PDF := constitutional-review-design-stress-test.pdf
 .PHONY: historical-protocol-check historical-acquire-development historical-freeze-forecasts historical-forecast-check historical-acquire-test
 .PHONY: historical-benchmark historical-benchmark-check historical-scores-check historical-sources
 .PHONY: historical-study-inputs historical-study-inputs-check historical-study historical-study-check historical-study-audit historical-study-raw-check
+.PHONY: historical-analysis historical-analysis-check historical-analysis-validate historical-analysis-validation-check
+.PHONY: historical-replication
+
+historical-replication:
+	$(MAKE) historical-study
+	$(MAKE) historical-study-audit
+	$(MAKE) historical-analysis
+	$(MAKE) historical-analysis-validate
+
+historical-analysis: historical-scores-check
+	python3 scripts/historical_robustness_analysis.py
+
+historical-analysis-check: historical-scores-check
+	python3 scripts/historical_robustness_analysis.py --check
+
+historical-analysis-validate:
+	python3 scripts/check_historical_analysis.py
+
+historical-analysis-validation-check:
+	python3 scripts/check_historical_analysis.py --check
 
 historical-study-inputs:
 	python3 scripts/historical_study.py prepare
@@ -178,7 +198,7 @@ test: build
 	java $(JAVA_PROPS) -cp out/main:out/test courtsim.SimulatorTests
 	python3 -m unittest discover -s scripts -p 'test_*measurement*.py'
 
-ci: calibration-check research-data-check court-profile-check historical-scores-check test campaign paired-campaign validation-check benchmark-preservation-check empirical-platform-check sensitivity-check paper supplement submission-bundle
+ci: calibration-check research-data-check court-profile-check historical-scores-check test campaign paired-campaign validation-check benchmark-preservation-check empirical-platform-check sensitivity-check historical-study-check historical-analysis-check historical-analysis-validation-check paper supplement submission-bundle
 
 clean:
 	rm -rf out

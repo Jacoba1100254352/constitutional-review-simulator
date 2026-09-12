@@ -69,6 +69,7 @@ immutable; subsequent exploratory models must not replace it.
 ## Remaining work and claim boundary
 
 This report completes the empirical docket test, not Historical Benchmark and Robustness v1
-as a whole. The paired institutional study, active mechanism ablations, normative-weight
-sensitivity, claim-to-evidence matrix, manuscript integration, and final replication checks
-remain separate deliverables. No whole-court or causal claim follows from these scores.
+as a whole. The [paired institutional analysis](constitutional-review-historical-robustness-v1.md)
+reports the mechanism ablations, normative-weight sensitivity and claim-to-evidence matrix
+separately. Manuscript integration and final publication/replication checks remain required
+before the overall milestone is complete. No whole-court or causal claim follows from these scores.

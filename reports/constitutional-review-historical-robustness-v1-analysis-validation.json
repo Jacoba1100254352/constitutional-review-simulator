@@ -1,0 +1,17 @@
+{
+  "assessment": "share-with-caveats-model-results-not-reform-recommendations",
+  "cellMeanRowsVerified": 416,
+  "cells": 52,
+  "conditionalDenominatorRowsVerified": 416,
+  "dirichletVectorsRegenerated": 1000,
+  "expandedIndexBootstrapIntervalsVerified": 93,
+  "fixedWeightGridRowsVerified": 6000,
+  "inputSha256": {
+    "analysisManifest": "d0747a10d5bb5169b0b4cc6b4b9669f4cf2f8e3cac5659174dce31fbebac93eb",
+    "validator": "ceda3bf9cf83b31e35cd69f70d972074bd1987afa6e69fe7584b2c781ba08b34"
+  },
+  "leadershipRowsVerified": 624,
+  "pairedPointEstimatesAndSEsVerified": 3692,
+  "preferencePairRowsVerified": 312,
+  "responsePreferenceRowsVerified": 104
+}

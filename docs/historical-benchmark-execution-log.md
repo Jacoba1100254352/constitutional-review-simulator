@@ -141,3 +141,55 @@ sensitivity, claim-to-evidence matrix, updated empirical/institutional report,
 manuscript and supplement integration, complete native CI, rendered PDF checks,
 and an extracted anonymous replication check. No robustness result, winning
 institution or goal completion is claimed by this simulation checkpoint.
+
+## Paired inference and normative analysis checkpoint
+
+Analysis estimands and claim bindings were committed as `e11a48a` before
+computing comparative estimates. This operationalization occurred after the
+simulation, as disclosed in the analysis contract; it is not represented as
+an independent preregistration. The original protocol and empirical first
+evaluation remain unchanged.
+
+The analysis now reports 3,692 paired contrasts across all 52 cells, with
+2,000 run-block bootstrap replicates, 22 claim/diagnostic components, and
+1,000 shared Dirichlet normative-weight vectors. It includes response-off and
+half-response persistence comparisons, direct-only versus full accounting,
+624 leadership rows and 6,000 fixed-preference cross-grid comparisons.
+Conditional Monte Carlo intervals, fixed-grid ranges and preference
+sensitivity are separate quantities.
+
+The validation workflow identified an important interpretation hazard:
+at low emergency pressure, the reasoned design has no emergency orders in
+116 to 119 of 120 runs. The original zero-denominator convention creates
+apparent reason-giving reversals. Integer-reconciled event counts and pooled
+rates were added as explicitly post-estimate diagnostics, not replacement
+endpoints. All original 3,692 contrast bytes and leadership bytes remained
+unchanged after adding that explanation.
+
+The results qualify three manuscript claims. Emergency irregularity falls
+throughout the grid, but the review-time endpoint cannot identify procedural
+duration. Council upstream-cost differences stay below the practical
+threshold, and changing the council structure does not materially change
+that upstream measure. Turning weak-form response off reduces responsiveness
+and increases veto risk, but several advantages and substantial sampled
+leadership persist, exposing dependence on other modeled design/score terms.
+None of these are empirical reform effects or an institutional recommendation.
+
+Independent calculation checks verify every point estimate and Monte Carlo
+standard error, 93 expanded-index bootstrap intervals, every component
+classification, all preference vectors and leadership comparisons, and every
+conditional-denominator diagnostic. A full analysis rerun reproduces every
+saved output byte. All 57 Python measurement tests pass, including deliberately
+wrong but rehashed results that the independent validator rejects.
+
+The final checkpoint reran the native Java suite, all 57 Python tests, the
+full-field empirical report check, retained-study provenance, and full bytewise
+analysis reproduction. The independent checker additionally verifies merits
+follow-up counts and pooled rates, eligible-run counts, and the cost-accounting
+practical-sign flag; deliberately changed but rehashed versions are rejected.
+Python compilation and whitespace checks pass. The optional Ruff version guard
+remains unresolved and was not bypassed.
+
+Remaining mandatory work: integrate the findings into the manuscript and
+supplement; run complete native CI, rendered publication checks and an
+extracted anonymous replication audit. The goal remains active.

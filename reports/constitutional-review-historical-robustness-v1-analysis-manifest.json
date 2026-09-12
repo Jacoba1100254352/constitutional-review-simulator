@@ -1,0 +1,53 @@
+{
+  "bootstrapReplicates": 2000,
+  "bootstrapSeed": 20260912,
+  "bootstrapUnit": "paired whole simulation run; same resampling matrix for all cells and metrics",
+  "inputSha256": {
+    "config/historical-benchmark/claim-components.csv": "37ec15b368c7ebd5c03103f6fe45f6ee9c084302be2900cedd2539e6a9a22459",
+    "config/historical-benchmark/first-evaluation-lock.json": "c6b398d97779e29dce75e61aacdba145729917f84390c3c8cdbf6b2d5abe26d6",
+    "docs/historical-robustness-analysis-contract.md": "8b8e1a645bf5a18e39cc2118126dfd9faef73d0590d88cc6a27be7b5ef01f0ea",
+    "reports/constitutional-review-historical-benchmark-v1-first-evaluation.json": "4344593b9c6db932ce06ef7e5084d2f9577d838208f3f6df3be354142c7c08cb",
+    "reports/constitutional-review-historical-robustness-v1-manifest.json": "2e9c76e414042cacdcb0963b73419e03c256a48cb196d665d799e95db2cb0c60",
+    "reports/constitutional-review-historical-robustness-v1-raw-audit.json": "5342653395c7cc79473e51b11201080c465d0198e28b57011ea674fb1a1db174",
+    "reports/constitutional-review-historical-robustness-v1-runs.csv.gz": "2340eab169e4d13fa83a7efc192d0fa00ff04ed3b6d06398c4d8eb848baba5a0",
+    "scripts/check_historical_study_raw.py": "cf88061ade5b415bfb9974bb0b1e28c3664dc5dd934e88f4dd09aec6cf4dac55",
+    "scripts/historical_robustness_analysis.py": "d54cd0149de23e4392c46dc95cc5367da43ed7b74a6ada8f82441cb11fec1f17"
+  },
+  "outputSha256": {
+    "-cell-means.csv": "73729d44b1927606a626e69df3444a11457f4725e200183968e6de90e9e2a641",
+    "-claim-matrix.csv": "cc23c93817088fc410cc89c7845e068907f9f35adc9149bf6f4e14c2dd75fc9e",
+    "-component-patterns.csv": "48ff7868e796ebe592cb977a25bf1ddacf0f58997569238ceca32329b807a1ba",
+    "-conditional-denominators.csv": "bc1244ee26efcfa2a5fbf004c51eefbbe2f0cf494d9050c8a9e8341986194ac2",
+    "-contrasts.csv": "d4bfdad38ff0f55dd17c6ceb6aac80bef8bab9479307f673907ee72b46ee7211",
+    "-cost-accounting.csv": "5312cebc75801c6a0fdf55bc93bf7b671009ea696c5daa0a69490629f47b361a",
+    "-leadership.csv": "069d0e6f9cc0aa1f92cfe55da4e6b15168a0436fb79098c1e875b451dc392de9",
+    "-preference-pairs.csv": "0c0ed0e2aead2ca7c0acab4e36fa623a4e84c7f42e87973db40e3d997a0cfd14",
+    "-response-weight-effects.csv": "7c6c0856c27dda06f738e0a3dae570ee08292e1969c88f13106709b8d56c2525",
+    "-weight-grid-reversals.csv": "450e752c0f7406185980f99921a03a64629017989365a6e6390289099fb99b0e",
+    "-weight-vectors.csv": "9acd13199dfbb35c7505bea877c0612ae44eb8e2672e90caea2bcf5076b23f20",
+    ".md": "fb6c2e0dd0768008c8002f3aafc8b059933cd4b2d375b5fbec30b1a2243e6d4e"
+  },
+  "protocolId": "historical-benchmark-robustness-v1",
+  "rows": {
+    "-cell-means.csv": 416,
+    "-claim-matrix.csv": 22,
+    "-component-patterns.csv": 71,
+    "-conditional-denominators.csv": 416,
+    "-contrasts.csv": 3692,
+    "-cost-accounting.csv": 52,
+    "-leadership.csv": 624,
+    "-preference-pairs.csv": 312,
+    "-response-weight-effects.csv": 104,
+    "-weight-grid-reversals.csv": 6000,
+    "-weight-vectors.csv": 1000
+  },
+  "status": "analysis-complete-publication-incomplete",
+  "uncertaintyBoundary": "run-bootstrap MC intervals; structural grid ranges; preference sensitivity reported separately",
+  "weightAlgorithm": "Python Random positive uniforms; -log(U); normalize by sum; fixed metric directions",
+  "weightDraws": 1000,
+  "weightSeed": 2026091202,
+  "zeroDenominatorGroups": {
+    "runsWithoutEmergencyOrders": 2792,
+    "runsWithoutLegislativeResponses": 37440
+  }
+}

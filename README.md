@@ -22,8 +22,8 @@ separately and never substituted into the locked training source.
 of CI. `make historical-sources` verifies/reacquires the pinned originals;
 `make historical-benchmark-check` then checks all empirical reports, including
 the full-field source revision audit. See [data instructions](data/historical/README.md).
-The institutional ablations, claim matrix, manuscript integration, and final
-replication/publication checks remain part of the active milestone.
+The institutional analysis is reported separately; manuscript integration and
+final replication/publication checks remain part of the active milestone.
 
 `make historical-study` runs the registered four-profile, thirteen-context,
 eight-design paired experiment. `make historical-study-check` checks retained
@@ -35,9 +35,19 @@ tests are not a substitute for the full study or final publication checks.
 The full registered simulation now contains 3,993,600 case outcomes and
 5,193,352 challenged-object outcomes. Its [independent raw audit](reports/constitutional-review-historical-robustness-v1-raw-audit.json)
 reconstructs 84 run measures and verifies all 6,240 shared case/object dockets.
-The paired uncertainty analysis, normative-weight comparisons and final claim
-assessment remain in progress; completed simulations alone do not establish
-robust institutional conclusions.
+The [paired analysis and claim matrix](reports/constitutional-review-historical-robustness-v1.md)
+now report 3,692 contrasts and 1,000 shared normative-weight vectors. The
+[independent analysis validation](reports/constitutional-review-historical-robustness-v1-analysis-validation.md)
+checks every point estimate and ranking, with a separate expanded-index check
+of 93 bootstrap intervals. The findings qualify the manuscript's original
+claims: duration is not design-specific, upstream displacement is weak in this
+intervention, and legislative response explains only part of weak-form
+advantages. Empty conditional-rate denominators remain visible.
+
+`make historical-analysis-check historical-analysis-validation-check` verifies
+the retained analysis. `make historical-replication` regenerates the full
+historical institutional simulation, raw audit and analyses; it needs more
+time and disk space than the retained-output checks in `make ci`.
 
 ## Run
 
