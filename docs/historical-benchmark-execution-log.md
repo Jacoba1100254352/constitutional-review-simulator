@@ -47,3 +47,34 @@ The institutional robustness study, mechanism interventions, claim matrix,
 manuscript integration, complete CI, rendered publication checks, and final
 extracted replication audit are not completed by this empirical checkpoint.
 Keep the overall goal active until those deliverables are verified.
+
+## Opt-in simulation interfaces
+
+The next implementation increment adds an immutable eight-category
+`DoctrineDistribution`, strict profile-CSV reader, an explicit Simulator/WorldGenerator
+override, and a case-keyed `ResponseIntervention`. Existing callers retain the
+original generator and response logic. Historical profiles cannot silently
+replace imported legislative stress signals. The future study runner must give
+the response intervention a separately derived run/period seed.
+
+Native tests confirm the declared sampling law, deterministic reruns, identical
+case/object dockets across compared designs, exact factor-one identity, and
+propagation of a zero-response intervention to actual law effectiveness and
+rights outcomes. Invalid vectors, duplicate profile keys, and invalid response
+factors are rejected.
+
+A fresh standard validation campaign with 120 runs and 80 cases per run was
+written to a separate temporary directory. Its aggregate CSV, calibration CSV,
+aggregate intervals, compressed case export, and compressed object export were
+byte-identical to the existing corresponding artifacts. The independent object
+guard reconciled 99,990 objects, 76,800 cases, and eight aggregates. This tests
+legacy behavior with the interventions disabled, not the full robustness grid.
+The Java suite and all 32 Python measurement tests passed; the immutable first
+empirical evaluation still reproduces exactly.
+
+Still required: generate study inputs from the four locked forecasts; implement
+the eight-scenario runner and two remaining configuration ablations; execute
+all four docket profiles by thirteen context settings with the registered
+run/case counts; calculate paired contrasts, uncertainty and normative-weight
+sensitivity; build the claim matrix; integrate and validate publication and
+replication artifacts. No full-grid institutional result is claimed yet.

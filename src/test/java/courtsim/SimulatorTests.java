@@ -33,6 +33,7 @@ public final class SimulatorTests
 		InstitutionModelTests.runAll();
 		DirectionalScoreModelTests.runAll();
 		ObjectMeasurementTests.runAll();
+		HistoricalMechanismTests.runAll();
 		simulatorProducesReports();
 		scdbDoctrineResidualBucketKeepsSourceRangesVisible();
 		mechanismScenariosProduceDiagnostics();

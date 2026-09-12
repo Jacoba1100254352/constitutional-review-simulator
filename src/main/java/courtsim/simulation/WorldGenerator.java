@@ -429,6 +429,15 @@ public final class WorldGenerator
 	}
 	
 	public CourtWorld generate(WorldSpec spec, long seed, List<LegislativeSignal> importedSignals) {
+		return generate(spec, seed, importedSignals, null);
+	}
+
+	/** Explicit opt-in; the legacy generator and legislative importer remain unchanged. */
+	public CourtWorld generate(WorldSpec spec, long seed, List<LegislativeSignal> importedSignals,
+			DoctrineDistribution distribution) {
+		if (distribution != null && !importedSignals.isEmpty()) {
+			throw new IllegalArgumentException("historical docket profiles cannot replace imported legislative stress signals");
+		}
 		Random random = new Random(seed);
 		// Separate stream keeps the existing docket, voting and reaction benchmarks unchanged.
 		Random objectRandom = new Random(seed ^ 0x6A09E667F3BCC909L);
@@ -437,14 +446,16 @@ public final class WorldGenerator
 			if (!importedSignals.isEmpty()) {
 				docket.add(fromLegislativeSignal(spec, importedSignals.get(i % importedSignals.size()), i, random, objectRandom));
 			} else {
-				docket.add(syntheticCase(spec, i, random, objectRandom));
+				docket.add(syntheticCase(spec, i, random, objectRandom, distribution));
 			}
 		}
 		return new CourtWorld(spec, List.copyOf(docket));
 	}
 	
-	private CaseFile syntheticCase(WorldSpec spec, int index, Random random, Random objectRandom) {
-		DoctrineArea doctrineArea = randomDoctrine(random, spec.doctrineDocketProfile());
+	private CaseFile syntheticCase(WorldSpec spec, int index, Random random, Random objectRandom,
+			DoctrineDistribution distribution) {
+		DoctrineArea doctrineArea = distribution == null
+				? randomDoctrine(random, spec.doctrineDocketProfile()) : distribution.sample(random);
 		PolicyDomain policyDomain = policyDomainFor(doctrineArea, random);
 		Jurisdiction jurisdiction = jurisdictionFor(doctrineArea, spec, random);
 		LowerCourtPath lowerCourtPath = lowerCourtPathFor(jurisdiction, doctrineArea, random);

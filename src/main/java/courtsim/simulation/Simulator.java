@@ -51,6 +51,18 @@ public final class Simulator
 			List<LegislativeSignal> importedSignals,
 			Map<String, WorldSpec> scenarioSpecs
 	) {
+		return compareDetailed(scenarios, worldSpec, runs, seed, importedSignals, scenarioSpecs, null);
+	}
+
+	public List<ScenarioRunResult> compareDetailed(
+			List<Scenario> scenarios,
+			WorldSpec worldSpec,
+			int runs,
+			long seed,
+			List<LegislativeSignal> importedSignals,
+			Map<String, WorldSpec> scenarioSpecs,
+			DoctrineDistribution distribution
+	) {
 		MetricsAccumulator[] accumulators = new MetricsAccumulator[scenarios.size()];
 		List<List<CaseOutcome>> outcomes = new ArrayList<>();
 		for (int i = 0; i < accumulators.length; i++) {
@@ -66,7 +78,7 @@ public final class Simulator
 				WorldSpec scenarioSpec = scenarioSpecs.getOrDefault(scenario.key(), worldSpec);
 				CourtWorld world = worlds.computeIfAbsent(
 						scenarioSpec,
-						spec -> worldGenerator.generate(spec, mix(seed ^ spec.seedFingerprint(), runIndex, 17), importedSignals)
+						spec -> worldGenerator.generate(spec, mix(seed ^ spec.seedFingerprint(), runIndex, 17), importedSignals, distribution)
 				);
 				int currentPeriod = -1;
 				ReviewProcess process = null;

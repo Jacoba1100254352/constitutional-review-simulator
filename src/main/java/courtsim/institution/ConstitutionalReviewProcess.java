@@ -28,6 +28,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 	private final ComplianceModel complianceModel;
 	private final InstitutionalCostModel costModel;
 	private final OutcomeScoreModel scoreModel;
+	private final ResponseIntervention responseIntervention;
 	
 	public ConstitutionalReviewProcess(
 			DesignConfiguration configuration,
@@ -35,7 +36,18 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 			List<Justice> court,
 			double replacementPressure
 	) {
+		this(configuration, worldSpec, court, replacementPressure, ResponseIntervention.NONE);
+	}
+
+	public ConstitutionalReviewProcess(
+			DesignConfiguration configuration,
+			WorldSpec worldSpec,
+			List<Justice> court,
+			double replacementPressure,
+			ResponseIntervention responseIntervention
+	) {
 		this.configuration = configuration;
+		this.responseIntervention = java.util.Objects.requireNonNull(responseIntervention);
 		this.worldSpec = worldSpec;
 		this.court = court;
 		this.replacementPressure = replacementPressure;
@@ -188,6 +200,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 				meritsInvalidated,
 				overrideUsed
 		);
+		legislativeResponseCredibility *= responseIntervention.factor();
 		boolean legislativeResponse = responseModel.legislativeResponse(
 				caseFile,
 				weakFormDeclaration,
@@ -197,6 +210,7 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 				legislativeResponseCredibility,
 				random
 		);
+		legislativeResponse = legislativeResponse && responseIntervention.retain(caseFile.id());
 		double legislativeResponseDeadline = responseModel.legislativeResponseDeadline(
 				caseFile,
 				weakFormDeclaration,

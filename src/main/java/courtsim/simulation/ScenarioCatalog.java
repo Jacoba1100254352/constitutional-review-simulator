@@ -51,6 +51,13 @@ public final class ScenarioCatalog
 	public static List<Scenario> allScenarios() {
 		return entries().stream().map(ScenarioEntry::scenario).toList();
 	}
+
+	/** Immutable source configuration for explicitly registered mechanism ablations. */
+	public static DesignConfiguration configurationForKey(String key) {
+		Scenario scenario = scenariosForKeys(List.of(key)).get(0);
+		if (scenario instanceof ConfiguredScenario configured) return configured.configuration();
+		throw new IllegalArgumentException("scenario has no design configuration: " + key);
+	}
 	
 	public static List<Scenario> scenariosForKeys(List<String> keys) {
 		Map<String, Scenario> byKey = new LinkedHashMap<>();
