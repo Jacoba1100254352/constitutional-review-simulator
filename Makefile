@@ -11,6 +11,19 @@ PAPER_PDF := constitutional-review-design-stress-test.pdf
 
 .PHONY: benchmark-preservation-check
 .PHONY: historical-protocol-check historical-acquire-development historical-freeze-forecasts historical-forecast-check historical-acquire-test
+.PHONY: historical-benchmark historical-benchmark-check historical-scores-check historical-sources
+
+historical-benchmark:
+	python3 scripts/build_historical_benchmark.py
+
+historical-benchmark-check:
+	python3 scripts/build_historical_benchmark.py --check
+
+historical-scores-check:
+	python3 scripts/build_historical_benchmark.py --check-scores
+
+historical-sources:
+	python3 scripts/build_historical_benchmark.py --fetch-sources
 
 historical-protocol-check:
 	python3 scripts/historical_data.py check-protocol
@@ -146,7 +159,7 @@ test: build
 	java $(JAVA_PROPS) -cp out/main:out/test courtsim.SimulatorTests
 	python3 -m unittest discover -s scripts -p 'test_*measurement*.py'
 
-ci: calibration-check research-data-check court-profile-check test campaign paired-campaign validation-check benchmark-preservation-check empirical-platform-check sensitivity-check paper supplement submission-bundle
+ci: calibration-check research-data-check court-profile-check historical-scores-check test campaign paired-campaign validation-check benchmark-preservation-check empirical-platform-check sensitivity-check paper supplement submission-bundle
 
 clean:
 	rm -rf out

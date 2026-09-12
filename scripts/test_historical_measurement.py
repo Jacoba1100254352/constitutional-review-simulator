@@ -1,6 +1,7 @@
 """Adversarial checks for the frozen historical data and forecast contract."""
 
 from dataclasses import replace
+import csv
 import io
 import json
 import math
@@ -11,6 +12,7 @@ import zipfile
 
 import historical_data as data
 import historical_scoring as scoring
+import build_historical_benchmark as benchmark
 
 
 class HistoricalDataTests(unittest.TestCase):
@@ -181,6 +183,86 @@ class HistoricalDataTests(unittest.TestCase):
         self.assertTrue(all(row["trainingTerms"] == 4 for row in intervals))
         with self.assertRaises(ValueError):
             scoring.training_composition_intervals([r for r in records if r.term != 2024], 2025, protocol)
+
+    def test_quality_reconciles_denominators_without_silently_dropping_overlap(self):
+        record = replace(self.records()[0], issue=30140, issueArea=3, category="ELECTION_LAW", mappingStatus="explicit-issue")
+        report = benchmark.quality_rows([record], self.protocol)[0]
+        self.assertEqual(sum(report[c] for c in self.protocol["categories"]), report["n"])
+        self.assertEqual(report["legacyOverlapCases"], 1)
+        self.assertEqual(report["legacy.doctrine_mix.speech"], 1)
+        self.assertEqual(report["legacy.doctrine_mix.election_law"], 1)
+        self.assertEqual(report["SPEECH"], 0)
+
+    def test_revision_audit_separates_new_term_and_changes_outside_fitted_fields(self):
+        before = replace(self.records()[0], term=2024, caseId="prior", sourceRowSha256="1" * 64)
+        after = replace(before, sourceRelease="SCDB_2026_01", sourceRowSha256="2" * 64)
+        new_term = replace(after, term=2025, caseId="new-term")
+        originals = {"SCDB_2025_01": {"prior": {"term": "2024", "unused": "old"}},
+                     "SCDB_2026_01": {"prior": {"term": "2024", "unused": "new"},
+                                      "new-term": {"term": "2025", "unused": "new"}}}
+        rows, summary = benchmark.revision_rows([before], [after, new_term], originals, self.protocol)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["changedFields"], "unused")
+        self.assertEqual(summary["newTermRows"], 1)
+        self.assertEqual(summary["newHistoricalRows"], 1)
+        self.assertEqual(summary["changedFieldCounts"], {"unused": 1})
+
+    def test_retrospective_intervals_use_target_terms_not_independent_case_rows(self):
+        rows = [{"role": "retrospective-exposed", "term": term, "model": model, "n": term - 2010,
+                 "multiclass-brier": 0.8, "log-loss": 1.8, "total-variation": 0.1}
+                for term in (2023, 2024) for model in self.protocol["models"]]
+        result = benchmark.retrospective_summary(rows, {**self.protocol, "bootstrapReplicates": 30})
+        self.assertEqual(len(result), 12)
+        for row in result:
+            self.assertEqual((row["terms"], row["n"]), (2, 27))
+            self.assertEqual((row["empiricalMinusModel"], row["lower"], row["upper"]), (0, 0, 0))
+        with self.assertRaises(ValueError):
+            benchmark.retrospective_summary(rows[:4], self.protocol)
+
+    def test_committed_new_term_result_cannot_be_presented_as_clear_advantage(self):
+        if not benchmark.FIRST.exists():
+            self.skipTest("first evaluation not yet created in this checkpoint")
+        first = json.loads(benchmark.FIRST.read_text())
+        primary = next(row for row in first["pairedDifferences"]
+                       if row["metric"] == "multiclass-brier" and row["comparison"].endswith("frozen-generator"))
+        self.assertEqual(first["testN"], 66)
+        self.assertGreater(primary["difference"], 0)
+        self.assertLess(primary["lower"], 0)
+        self.assertGreater(primary["upper"], 0)
+        self.assertFalse(primary["conditionalAdvantage"])
+        revisions = {"oldHistoricalRows": 9341, "newHistoricalRows": 9343, "newTermRows": 66,
+                     "statusCounts": {"changed": 10, "added-historical": 2}}
+        report = benchmark.report_markdown(first, revisions, [], [], self.protocol).decode()
+        self.assertIn("no clear conditional advantage", report)
+        self.assertIn("not legal-outcome predictions", report)
+        self.assertIn("not Historical Benchmark and Robustness v1", report)
+
+    def test_raw_new_term_counts_by_independent_set_partition(self):
+        path = data.DATA / "source-cache/SCDB_2026_01_caseCentered_Citation.csv.zip"
+        if not path.exists():
+            self.skipTest("raw-source check requires make historical-sources; offline score checks remain available")
+        with zipfile.ZipFile(path) as archive:
+            source = archive.read("SCDB_2026_01_caseCentered_Citation.csv").decode("utf-8-sig")
+        # Independent set algebra, not the importer's category_for function.
+        rows = [row for row in csv.DictReader(io.StringIO(source)) if row["term"] == "2025"]
+        ids = {row["caseId"] for row in rows}
+        election = {row["caseId"] for row in rows if row["issue"] in {"20010", "20020", "20030", "20090", "30140"}}
+        emergency = {row["caseId"] for row in rows if row["issue"] == "130015"} - election
+        administrative_issue = {row["caseId"] for row in rows if row["issue"] == "90120"} - election - emergency
+        eligible = {row["caseId"] for row in rows if row["issue"] and row["issueArea"]} - election - emergency - administrative_issue
+        areas = [{row["caseId"] for row in rows if row["issueArea"] in allowed} & eligible
+                 for allowed in ({"3"}, {"2", "5"}, {"1"}, {"10", "11"}, {"8"})]
+        selected = [areas[0], areas[1], areas[2], areas[3], election, emergency, areas[4] | administrative_issue]
+        selected.append(ids - set().union(*selected))
+        self.assertEqual(sum(map(len, selected)), len(ids))
+        first = json.loads(benchmark.FIRST.read_text())
+        self.assertEqual([len(group) for group in selected], [row["count"] for row in first["categories"]])
+        forecasts = json.loads(data.FORECAST_FILE.read_text())["forecasts"]
+        for forecast, measured in zip(forecasts, first["modelScores"]):
+            vector = forecast["probabilities"]
+            direct = sum(sum((p - int(i == label)) ** 2 for i, p in enumerate(vector))
+                         for label, group in enumerate(selected) for _ in group) / len(ids)
+            self.assertAlmostEqual(measured["multiclass-brier"], direct, places=13)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,27 @@ This is a dependency-free Java simulator for stress-testing supreme-court and co
 
 The model is built for comparative institutional design stress testing. Given stated rules, weights, dockets, political-culture assumptions, and scoring profiles, it exposes tradeoffs such as veto-relocation risk, cost, compliance, and rights-sensitive access. It keeps the same working style as the legislative simulator: named scenarios, randomized worlds, campaign sweeps, metrics with explicit directions, CSV/Markdown reports, and provenance manifests.
 
+## Historical Benchmark and Robustness v1
+
+This milestone is in progress. Its [frozen protocol](docs/historical-benchmark-protocol.md)
+and [execution record](docs/historical-benchmark-execution-log.md) distinguish
+development data, exposed historical backtests, a newly evaluated 2025 SCDB
+term, and a planned paired institutional robustness study.
+
+The [first empirical report](reports/constitutional-review-historical-benchmark-v1.md)
+retains the 66-dispute new-term test without refitting. The training-only docket
+profile has no clear conditional advantage over the fixed generator on the
+primary Brier score. This is docket-composition evidence, not substantive
+judicial-outcome validation. Revisions to older SCDB records are audited
+separately and never substituted into the locked training source.
+
+`make historical-scores-check` recomputes the locked test offline and is part
+of CI. `make historical-sources` verifies/reacquires the pinned originals;
+`make historical-benchmark-check` then checks all empirical reports, including
+the full-field source revision audit. See [data instructions](data/historical/README.md).
+The institutional ablations, claim matrix, manuscript integration, and final
+replication/publication checks remain part of the active milestone.
+
 ## Run
 
 ```sh

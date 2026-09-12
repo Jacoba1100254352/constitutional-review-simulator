@@ -1,0 +1,8 @@
+{
+  "firstEvaluatedAtUtc": "2026-09-12T22:21:50.263199+00:00",
+  "policy": "Do not overwrite the first result. Append any correction and retain the original.",
+  "protocolId": "historical-benchmark-robustness-v1",
+  "sha256": {
+    "reports/constitutional-review-historical-benchmark-v1-first-evaluation.json": "4344593b9c6db932ce06ef7e5084d2f9577d838208f3f6df3be354142c7c08cb"
+  }
+}

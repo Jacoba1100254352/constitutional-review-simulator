@@ -53,9 +53,27 @@ exact CSV member name and release, unit, schema, term range, unique identifiers,
 and every row width before accepting the archive. Reacquisition must match the
 recorded hashes and retains the original acquisition timestamp.
 
-Replication should use the checked-in locked derivative and forecast for
-offline checks. Full raw-source verification reacquires the exact public ZIP
-and checks its hash. Anonymous extracted packages must not invent a new Git
-freeze or create a new first evaluation; the final replication workflow will
-recompute and verify the supplied locked artifacts separately from the original
-acquisition workflow.
+## Reproducing the existing evaluation
+
+The following commands do not invent a new acquisition or overwrite the first
+evaluation. They work without repository metadata, including inside an
+anonymous extracted replication package:
+
+```sh
+make historical-scores-check
+make historical-sources
+make historical-benchmark-check
+```
+
+The first command is offline: it recomputes the locked first evaluation using
+the source-hashed derivatives, forecasts, and scoring code. It does not claim
+a new audit of the raw ZIPs. The second verifies or downloads the two exact
+original ZIPs and byte-checks their derivatives, retaining the original source
+registry and acquisition timestamps. It requires source availability only when
+the originals are not already cached. The third recomputes every empirical
+report, including the original full-field revision audit, and fails on drift.
+
+`make historical-benchmark` regenerates the non-frozen report files but still
+cannot replace a divergent first evaluation. Use that command only for intended
+report refreshes. Neither reproduction path refits using the test release or
+substitutes revised historical observations for the old training records.

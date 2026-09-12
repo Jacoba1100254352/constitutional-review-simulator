@@ -1,0 +1,9 @@
+category,lower,upper,trainingTerms,method,replicates
+SPEECH,0.04601017812191976,0.07274062765374127,15,training-term-cluster-bootstrap-fixed-age-weights,2000
+EQUALITY,0.1448231644709556,0.1851052723690715,15,training-term-cluster-bootstrap-fixed-age-weights,2000
+CRIMINAL_PROCEDURE,0.19681281870283784,0.24892637966748898,15,training-term-cluster-bootstrap-fixed-age-weights,2000
+FEDERALISM,0.030603420071782968,0.058904405373704005,15,training-term-cluster-bootstrap-fixed-age-weights,2000
+ELECTION_LAW,0.01766752249913573,0.03491093804145499,15,training-term-cluster-bootstrap-fixed-age-weights,2000
+EMERGENCY_POWERS,0.00404062361826425,0.016493913098498535,15,training-term-cluster-bootstrap-fixed-age-weights,2000
+ADMINISTRATIVE_STATE,0.2163283849747789,0.2828649935735962,15,training-term-cluster-bootstrap-fixed-age-weights,2000
+OTHER,0.18907506958444742,0.2631595294573999,15,training-term-cluster-bootstrap-fixed-age-weights,2000
