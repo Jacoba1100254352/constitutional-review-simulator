@@ -1,0 +1,23 @@
+claim,metric,expectedSign,role,measurementCaveat
+emergency,emergencyReasonGivingRate,1,registered-component,Procedural event partly imposed by the design; conditional on emergency orders
+emergency,meritsFollowUpRate,1,registered-component,Procedural event partly imposed by the design; conditional on emergency orders
+emergency,averageTimeToReview,1,registered-component,Shared docket input; cannot identify a design-specific duration effect
+emergency,totalInstitutionalCost,1,registered-component,Constructed normalized cost index with assigned structural coefficients
+emergency,shadowDocketAbuse,-1,registered-component,Constructed emergency-process irregularity index; not a legal finding of abuse
+emergency,institutionalDelayCost,0,additional-diagnostic,Constructed delay-cost index; not a replacement for the registered duration endpoint
+screening,directCourtCost,0,registered-diagnostic,Direct-only normalized accounting view; no directional superiority prespecified
+screening,upstreamScreeningCost,1,registered-component,Constructed upstream-burden score partly imposed by intake rules
+screening,capacityStrainCost,0,registered-diagnostic,Constructed capacity score; no directional superiority prespecified
+screening,totalInstitutionalCost,0,registered-diagnostic,Constructed total index; not the arithmetic sum of raw monetary costs
+screening,intakeAcceptanceRate,0,registered-diagnostic,Reviewed cases divided by simulated intake filings; no directional superiority prespecified
+screening,councilScreenRate,1,registered-component,Mechanism activation conditional on reviewed cases; not independent validation
+screening,administrativeLoad,0,additional-diagnostic,Constructed administrative load; descriptive only
+weak-form,legislativeResponseRate,1,registered-component,Response event depends on assigned triggers and credibility rules
+weak-form,legislativeResponseCredibility,1,registered-component,Constructed credibility score; directly scaled by the response intervention
+weak-form,timelyLegislativeResponseRate,1,registered-component,Conditional on positive replies; no replies is not an observed late reply
+weak-form,rightsProtection,1,registered-component,Constructed rights-protection score; not constitutional correctness
+weak-form,complianceRate,1,registered-component,Simulated compliance event share; not an observed reform effect
+weak-form,democraticResponsiveness,1,registered-component,Constructed responsiveness index
+weak-form,vetoRelocationRisk,-1,registered-component,Constructed veto-risk index with design-specific terms
+weak-form,totalInstitutionalCost,0,registered-diagnostic,Constructed cost index; no cost superiority prespecified
+weak-form,averageLegislativeResponseDelay,0,additional-diagnostic,Conditional on positive replies; zero replies is not instantaneous response
