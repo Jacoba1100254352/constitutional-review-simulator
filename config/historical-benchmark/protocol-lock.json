@@ -1,0 +1,9 @@
+{
+  "protocolId": "historical-benchmark-robustness-v1",
+  "sha256": {
+    "config/historical-benchmark/protocol-v1.json": "64594a2a4d3976f85ecf3f1993f1d3a2096ef60c3063e2e06c912eb46f8c7022",
+    "docs/historical-benchmark-protocol.md": "75e183313a37dec4cb2fc81493c3ec3cbb9370b1d498d696e3e969b8cd1e9f92",
+    "docs/historical-benchmark-exposure-audit.md": "de1f75fd509fd5ae663140be171c3e6c8b1ab185121de9da3908757db2e2c37f"
+  },
+  "changePolicy": "Keep the original protocol and first evaluation. Record corrections as dated append-only amendments."
+}
