@@ -2,6 +2,7 @@ out/
 paper/build/
 submission/
 reports/*-cases.csv.gz
+reports/*-objects.csv.gz
 paper/*.aux
 paper/*.log
 paper/*.out

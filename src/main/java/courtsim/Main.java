@@ -61,6 +61,7 @@ public final class Main
 			System.out.println("Wrote " + result.compositionCsvPath());
 			System.out.println("Wrote " + result.calibrationCsvPath());
 			System.out.println("Wrote " + result.caseCsvGzPath());
+			System.out.println("Wrote " + result.objectCsvGzPath());
 			System.out.println("Wrote " + result.intervalCsvPath());
 			System.out.println("Wrote " + result.periodIntervalCsvPath());
 			System.out.println("Wrote " + result.doctrineIntervalCsvPath());

@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import re
+import csv
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
 from word_count import WORD_LIMIT, count_words
+from generate_tables import VALIDATION_PROFILES, latex_escape
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -214,6 +216,33 @@ def validate_rendered_figure_labels(path: Path) -> None:
                 )
 
 
+def check_source_range_tables(validation_table: str, miss_table: str, rows: list[dict[str, str]]) -> None:
+    counted = [row for row in rows if row["useForValidation"].lower() == "true"]
+    mapped = {profile for profile, _, _ in VALIDATION_PROFILES}
+    if {row["profileKey"] for row in counted} - mapped:
+        fail("validation summary omits a counted profile")
+    for profile, _, label in VALIDATION_PROFILES:
+        profile_rows = [row for row in counted if row["profileKey"] == profile]
+        if not profile_rows:
+            continue
+        within = sum(row["withinTarget"] == "true" for row in profile_rows)
+        table_rows = [line for line in validation_table.splitlines() if line.startswith(latex_escape(label) + " & ")]
+        if len(table_rows) != 1 or table_rows[0].split(" & ")[2].strip() != f"{within}/{len(profile_rows)}":
+            fail(f"validation table does not preserve all period-specific checks for {profile}")
+    misses = sorted([row for row in counted if row["withinTarget"] == "false"], key=lambda row: float(row["gap"]), reverse=True)
+    all_within = "All currently validation-counted source-range checks"
+    if misses:
+        if all_within in miss_table:
+            fail("miss table claims all checks pass despite recorded source-range misses")
+        for row in misses[:4]:
+            if latex_escape(row["label"]) not in miss_table:
+                fail(f"miss table omits current miss: {row['label']}")
+    elif all_within not in miss_table or "broadening source-backed coverage" not in miss_table:
+        fail("miss table must explain the no-current-miss state when no misses exist")
+    if "no-current-miss state" not in miss_table:
+        fail("miss table must describe its conditional no-current-miss reporting")
+
+
 def main() -> None:
     tex = MAIN_TEX.read_text(encoding="utf-8")
     expanded = expanded_tex(MAIN_TEX)
@@ -288,13 +317,8 @@ def main() -> None:
             fail(f"validation summary table is missing expected profile: {expected}")
     if "source-range comparison" not in validation_table:
         fail("validation table should state that checks are source-range comparisons.")
-    for expected in [
-            "All currently validation-counted source-range checks",
-            "broadening source-backed coverage",
-            "no-current-miss state",
-    ]:
-        if expected not in validation_miss_table:
-            fail(f"validation miss table is missing required interpretive language: {expected}")
+    with (ROOT / "reports/constitutional-review-validation-v1-calibration.csv").open(encoding="utf-8", newline="") as handle:
+        check_source_range_tables(validation_table, validation_miss_table, list(csv.DictReader(handle)))
     for expected in [
             "Random-weight robustness",
             "Weak-form dominance should be tested",

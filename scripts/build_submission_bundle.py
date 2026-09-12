@@ -59,6 +59,7 @@ EXCLUDED_NAMES = {
 
 REVIEW_REPLICATION_EXCLUDED_REPORT_SUFFIXES = {
     "-cases.csv.gz",
+    "-objects.csv.gz",
     "-intervals.csv",
     "-period-intervals.csv",
     "-doctrine-intervals.csv",
@@ -105,6 +106,7 @@ def refresh_pdfs() -> None:
         ],
         cwd=PAPER_DIR,
     )
+    shutil.copy2(SUPPLEMENT_PDF, PAPER_DIR / "supplementary-appendix.pdf")
 
 
 def should_include(path: Path) -> bool:
@@ -219,10 +221,22 @@ Files:
   review builds plus `TEMPLATE-SHIM-NOTICE.md`; it is not represented as the
   official Cambridge production template bundle.
 - `replication-package.zip`: Java source, configuration, calibration source observations, court-profile index and benchmark cards, empirical platform coverage/readiness/source-gap/candidate-verification/source-acquisition/source-promotion reports, compact aggregate reports, provenance manifests, and reproduction commands.
-- `excluded-large-artifacts.txt`: raw case-level and interval outputs omitted from the review ZIP to keep the upload practical; regenerate with the listed `make` commands.
+- `excluded-large-artifacts.txt`: raw case-level, object-level, and interval outputs omitted from the review ZIP to keep the upload practical; regenerate with the listed `make` commands.
 - `jlc-review-bundle.zip`: single upload bundle containing the PDFs and the two ZIP archives.
 
 The archive is intended for anonymous review. Repository metadata, IDE files, build directories, and local machine paths are excluded.
+
+## Reproduction order
+
+Extract `replication-package.zip` and run `make ci` from its root to regenerate
+the omitted raw and interval outputs before rebuilding manuscript tables and
+PDFs. Running `make paper` or `make paper-check` before regenerating campaign
+intervals will encounter intentionally omitted inputs.
+
+For a lighter review build using the supplied tables and figures, change into
+`paper/` and run `latexmk -pdf -outdir=build constitutional-review-design-stress-test.tex`
+and `latexmk -pdf -outdir=build supplementary-appendix.tex`. This compiles the
+included manuscript sources without rerunning the simulations.
 """,
         encoding="utf-8",
     )

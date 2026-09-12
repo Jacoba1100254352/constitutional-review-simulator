@@ -60,6 +60,9 @@ def validate_source_rows(rows: list[dict[str, str]]) -> None:
     errors: list[str] = []
     for index, row in enumerate(rows, start=2):
         label = f"line {index} {row.get('profileKey', '')}/{row.get('targetKey', '')}"
+        if set(row) != set(SOURCE_HEADER) or any(value is None for value in row.values()):
+            errors.append(f"{label}: CSV row width differs from the source header")
+            continue
         if GENERIC_CONSTRUCTION_NOTE in row.get("constructionNote", ""):
             errors.append(f"{label}: constructionNote is still generic")
         if row.get("useForValidation", "").lower() != "true":

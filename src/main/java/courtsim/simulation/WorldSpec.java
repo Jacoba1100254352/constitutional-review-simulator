@@ -22,6 +22,19 @@ public record WorldSpec(
 		DoctrineDocketProfile doctrineDocketProfile
 )
 {
+	public static final String SEED_DERIVATION = "world-spec-value-fingerprint-v1; numeric components in declaration order; doctrine enum name";
+
+	/** Explicit stable seed input. Record hashCode includes the enum's JVM identity hash. */
+	public int seedFingerprint() {
+		int fingerprint = 31 * caseCount + reviewPeriods;
+		for (double value : new double[]{appointmentPolarization, rightsThreatRate, emergencyPressure,
+				legislativeConflict, publicTrust, partisanPressure, partyFragmentation, governmentControl,
+				electoralTimePressure, civilSocietyCapacity, implementationCapacity, legalTraditionCompatibility}) {
+			fingerprint = 31 * fingerprint + Double.hashCode(value);
+		}
+		return 31 * fingerprint + doctrineDocketProfile.name().hashCode();
+	}
+
 	public WorldSpec {
 		if (caseCount <= 0) {
 			throw new IllegalArgumentException("caseCount must be positive");

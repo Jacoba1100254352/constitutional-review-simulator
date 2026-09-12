@@ -148,6 +148,7 @@ TARGET_FAMILIES = {
     "legislative_response_rate": "legislative-response",
     "merits_follow_up_rate": "emergency",
     "merits_invalidation_rate": "merits",
+    "statute_nullification_rate": "merits",
     "ombudsman_trigger_rate": "case-selection",
     "override_rate": "legislative-response",
     "pre_enactment_review_rate": "case-selection",

@@ -66,7 +66,7 @@ public final class Simulator
 				WorldSpec scenarioSpec = scenarioSpecs.getOrDefault(scenario.key(), worldSpec);
 				CourtWorld world = worlds.computeIfAbsent(
 						scenarioSpec,
-						spec -> worldGenerator.generate(spec, mix(seed ^ spec.hashCode(), runIndex, 17), importedSignals)
+						spec -> worldGenerator.generate(spec, mix(seed ^ spec.seedFingerprint(), runIndex, 17), importedSignals)
 				);
 				int currentPeriod = -1;
 				ReviewProcess process = null;

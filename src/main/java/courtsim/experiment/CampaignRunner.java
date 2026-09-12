@@ -189,6 +189,7 @@ public final class CampaignRunner
 				new ReportIntervalMetric("governmentEmergencyWinRate", ScenarioReport::governmentEmergencyWinRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
 				new ReportIntervalMetric("meritsFollowUpRate", ScenarioReport::meritsFollowUpRate, ScenarioReport::emergencyOrders, 0.0, 1.0),
 				new ReportIntervalMetric("meritsInvalidationRate", ScenarioReport::meritsInvalidationRate, ScenarioReport::meritsReviews, 0.0, 1.0),
+				new ReportIntervalMetric("statuteNullificationRate", ScenarioReport::statuteNullificationRate, ScenarioReport::statuteDispositions, 0.0, 1.0),
 				new ReportIntervalMetric("constitutionalConflict", ScenarioReport::constitutionalConflict, ScenarioReport::totalCases, 0.0, 1.0),
 				new ReportIntervalMetric("democraticResponsiveness", ScenarioReport::democraticResponsiveness, ScenarioReport::totalCases, 0.0, 1.0),
 				new ReportIntervalMetric("legislativeResponseCredibility", ScenarioReport::legislativeResponseCredibility, ScenarioReport::totalCases, 0.0, 1.0),
@@ -459,6 +460,7 @@ public final class CampaignRunner
 		Path compositionCsvPath = outputDir.resolve(basename + "-composition.csv");
 		Path calibrationCsvPath = outputDir.resolve(basename + "-calibration.csv");
 		Path caseCsvGzPath = outputDir.resolve(basename + "-cases.csv.gz");
+		Path objectCsvGzPath = outputDir.resolve(basename + "-objects.csv.gz");
 		Path intervalCsvPath = outputDir.resolve(basename + "-intervals.csv");
 		Path periodIntervalCsvPath = outputDir.resolve(basename + "-period-intervals.csv");
 		Path doctrineIntervalCsvPath = outputDir.resolve(basename + "-doctrine-intervals.csv");
@@ -475,8 +477,9 @@ public final class CampaignRunner
 		writeSegmentCsv(policyDomainCsvPath, rows, SegmentKind.POLICY_DOMAIN);
 		writeCompositionCsv(compositionCsvPath, rows);
 		List<CalibrationRow> calibrationRows = calibrationEvaluator.evaluate(rows);
-		writeCalibrationCsv(calibrationCsvPath, calibrationRows);
+		writeCalibrationCsv(calibrationCsvPath, calibrationRows, rows);
 		writeCaseCsv(caseCsvGzPath, rows);
+		writeObjectCsv(objectCsvGzPath, rows);
 		Map<CampaignRow, BootstrapSummary> bootstrapSummaries = bootstrapSummaries(rows);
 		writeCampaignIntervalCsv(intervalCsvPath, rows, bootstrapSummaries);
 		writeSegmentIntervalCsv(periodIntervalCsvPath, rows, SegmentKind.PERIOD, bootstrapSummaries);
@@ -484,7 +487,7 @@ public final class CampaignRunner
 		writeSegmentIntervalCsv(pipelineIntervalCsvPath, rows, SegmentKind.PIPELINE, bootstrapSummaries);
 		writeSegmentIntervalCsv(policyDomainIntervalCsvPath, rows, SegmentKind.POLICY_DOMAIN, bootstrapSummaries);
 		writeCompositionIntervalCsv(compositionIntervalCsvPath, rows);
-		writeCalibrationIntervalCsv(calibrationIntervalCsvPath, calibrationRows);
+		writeCalibrationIntervalCsv(calibrationIntervalCsvPath, calibrationRows, rows);
 		String inputDescription = inputDescription(campaignKey, importedSignals);
 		writeMarkdown(markdownPath, rows, runs, seed, inputDescription, reportName, calibrationRows);
 		ReportProvenance.write(
@@ -505,6 +508,7 @@ public final class CampaignRunner
 						compositionCsvPath,
 						calibrationCsvPath,
 						caseCsvGzPath,
+						objectCsvGzPath,
 						intervalCsvPath,
 						periodIntervalCsvPath,
 						doctrineIntervalCsvPath,
@@ -525,6 +529,7 @@ public final class CampaignRunner
 				compositionCsvPath,
 				calibrationCsvPath,
 				caseCsvGzPath,
+				objectCsvGzPath,
 				intervalCsvPath,
 				periodIntervalCsvPath,
 				doctrineIntervalCsvPath,
@@ -860,7 +865,7 @@ public final class CampaignRunner
 	
 	private void writeCsv(Path path, List<CampaignRow> rows) throws IOException {
 		StringBuilder builder = new StringBuilder();
-		builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,scenarioKind,reviewMechanism,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,legislativeResponseCredibility,caseSelectionAccess,governmentRepeatPlayerAdvantage,implementationCapacity,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,weakFormDeclarationRate,suspendedDeclarationRate,legislativeResponseRate,invalidationLegislativeResponseRate,averageLegislativeResponseDelay,timelyLegislativeResponseRate,rightsImpactStatementRate,ombudsmanTriggerRate,publicDefenderParticipationRate,preEnactmentReviewRate,abstractReviewRate,preliminaryReferenceRate,appealRouteRate,directActionRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,invalidationLegislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
+		builder.append("caseKey,caseName,caseDescription,scenarioKey,scenario,scenarioKind,reviewMechanism,totalCases,reviewedCases,invalidations,emergencyOrders,emergencyReliefs,meritsReviews,meritsInvalidations,overrides,intakeFilings,screenedFilings,directionalScore,reviewRate,intakeAcceptanceRate,emergencyReliefRate,meritsReviewRate,meritsInvalidationRate,emergencyReasonGivingRate,emergencyVoteDisclosureRate,emergencyPublicDisagreementRate,governmentEmergencyApplicantShare,governmentEmergencyWinRate,meritsFollowUpRate,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalRate,constitutionalConflict,democraticResponsiveness,legislativeResponseCredibility,caseSelectionAccess,governmentRepeatPlayerAdvantage,implementationCapacity,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,concurrenceFragmentation,dissentIntensity,recusalRate,enBancRate,crossCheckRate,councilScreenRate,overrideRate,weakFormDeclarationRate,suspendedDeclarationRate,legislativeResponseRate,invalidationLegislativeResponseRate,averageLegislativeResponseDelay,timelyLegislativeResponseRate,rightsImpactStatementRate,ombudsmanTriggerRate,publicDefenderParticipationRate,preEnactmentReviewRate,abstractReviewRate,preliminaryReferenceRate,appealRouteRate,directActionRate,lowerCourtConflict,averageTimeToReview,replacementRate,stateCaseShare,mixedJurisdictionShare,averageLowerCourtDepth,stateFederalTension,intercourtConflict,complianceRate,defianceRate,workaroundRate,repeatedLitigationRate,executiveImplementationRate,agencyNonacquiescenceRate,legislativeReenactmentRate,invalidationLegislativeReenactmentRate,localGovernmentComplianceRate,publicTrust,legislativeConflict,courtCurbingPressure,amendmentPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost,statuteDispositions,statuteNullifications,statuteNullificationRate\n");
 		for (CampaignRow row : rows) {
 			ScenarioReport report = row.report();
 			builder.append(csv(row.caseKey())).append(',')
@@ -958,7 +963,10 @@ public final class CampaignRunner
 			       .append(number(report.institutionalBudgetCost())).append(',')
 			       .append(number(report.institutionalDelayCost())).append(',')
 			       .append(number(report.implementationComplexity())).append(',')
-			       .append(number(report.totalInstitutionalCost()))
+			       .append(number(report.totalInstitutionalCost())).append(',')
+			       .append(report.statuteDispositions()).append(',')
+			       .append(report.statuteNullifications()).append(',')
+			       .append(number(report.statuteNullificationRate()))
 			       .append('\n');
 		}
 		Files.writeString(path, builder.toString());
@@ -1066,11 +1074,47 @@ public final class CampaignRunner
 		Files.writeString(path, builder.toString());
 	}
 	
-	private void writeCalibrationCsv(Path path, List<CalibrationRow> rows) throws IOException {
+	private Interval calibrationInterval(CalibrationRow row, List<CampaignRow> campaignRows) {
+		if (!row.target().key().equals("statute_nullification_rate")) {
+			return interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
+		}
+		// Keep every object from a case together and paired scenarios in the same run block.
+		List<CampaignRow> profileRows = calibrationEvaluator.profileRows(campaignRows, row.target().profileKey());
+		int runs = profileRows.stream().mapToInt(CampaignRow::runs).max().orElse(0);
+		if (runs <= 1 || row.sampleSize() == 0) return new Interval(Double.NaN, Double.NaN);
+		long[][] counts = new long[runs][2];
+		for (CampaignRow campaignRow : profileRows) {
+			List<List<CaseOutcome>> blocks = runBlocks(campaignRow);
+			for (int run = 0; run < blocks.size(); run++) {
+				for (CaseOutcome outcome : blocks.get(run)) {
+					counts[run][0] += outcome.statuteNullifications();
+					counts[run][1] += outcome.statuteDispositions();
+				}
+			}
+		}
+		Random random = new Random(0x53746174757465L ^ row.target().profileKey().hashCode());
+		List<Double> samples = new ArrayList<>();
+		for (int sample = 0; sample < BOOTSTRAP_SAMPLES; sample++) {
+			long numerator = 0, denominator = 0;
+			for (int run = 0; run < runs; run++) {
+				long[] block = counts[random.nextInt(runs)];
+				numerator += block[0];
+				denominator += block[1];
+			}
+			if (denominator > 0) samples.add((double) numerator / denominator);
+		}
+		return samples.isEmpty() ? new Interval(Double.NaN, Double.NaN) : percentileInterval(samples);
+	}
+
+	private String calibrationIntervalMethod(CalibrationRow row) {
+		return row.target().key().equals("statute_nullification_rate") ? BOOTSTRAP_METHOD : INTERVAL_METHOD;
+	}
+
+	private void writeCalibrationCsv(Path path, List<CalibrationRow> rows, List<CampaignRow> campaignRows) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		builder.append("profileKey,court,timePeriod,targetKey,label,sourceName,sourceUrl,observedValue,lowerBound,upperBound,unit,targetN,targetMethod,reliability,useForValidation,modelObservedValue,lower95,upper95,withinTarget,gap,n,method,note,targetFile\n");
 		for (CalibrationRow row : rows) {
-			Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
+			Interval interval = calibrationInterval(row, campaignRows);
 			builder.append(csv(row.target().profileKey())).append(',')
 			       .append(csv(row.target().court())).append(',')
 			       .append(csv(row.target().timePeriod())).append(',')
@@ -1092,7 +1136,7 @@ public final class CampaignRunner
 			       .append(row.withinTarget()).append(',')
 			       .append(number(row.gap())).append(',')
 			       .append(row.sampleSize()).append(',')
-			       .append(csv(INTERVAL_METHOD)).append(',')
+			       .append(csv(calibrationIntervalMethod(row))).append(',')
 			       .append(csv(row.target().note())).append(',')
 			       .append(csv(row.target().targetFile()))
 			       .append('\n');
@@ -1107,7 +1151,7 @@ public final class CampaignRunner
 						StandardCharsets.UTF_8
 				))
 		) {
-			writer.write("caseKey,caseName,caseDescription,scenarioKey,scenario,scenarioKind,reviewMechanism,runIndex,caseIndex,globalCaseIndex,caseId,source,reviewPeriod,caseType,doctrineArea,policyDomain,jurisdiction,lowerCourtPath,policyPosition,rightsThreat,publicSupport,legislativeMandate,urgency,legalAmbiguity,constitutionalSalience,lowerCourtConflict,lowerCourtPanelSkew,stateFederalTension,intercourtConflict,certiorariPressure,timeToReview,lowerCourtGovernmentWin,executivePressure,conflictOfInterestRisk,casePublicTrust,litigantCapacity,publicInterestSupport,governmentRepeatPlayerAdvantage,reviewed,emergencyOrder,emergencyReliefGranted,meritsReview,meritsInvalidated,invalidated,lawEffectiveAfterReview,intakeFilings,screenedFilings,intakeAcceptanceRate,reasonsGiven,voteDisclosed,publicDisagreement,emergencyApplicantType,governmentEmergencyApplicant,governmentEmergencyWin,meritsFollowUp,enBancReview,crossChecked,councilScreen,overrideUsed,weakFormDeclaration,suspendedDeclaration,legislativeResponse,legislativeResponseDelay,legislativeResponseDeadline,timelyLegislativeResponse,rightsImpactStatement,ombudsmanTriggered,publicDefenderParticipation,preEnactmentReview,abstractReview,supranationalRoute,preliminaryReferenceRoute,appealRoute,directActionRoute,recusedJustices,participatingJustices,strikeVoteShare,majorityShare,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalMagnitude,constitutionalConflict,democraticResponsiveness,legislativeResponseCredibility,caseSelectionAccess,implementationCapacity,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,complianceRate,complied,defied,workaround,repeatedLitigation,executiveImplementation,agencyNonacquiescence,legislativeReenactment,localGovernmentCompliance,publicTrustAfter,legislativeConflictAfter,courtCurbingPressure,amendmentPressure,concurrenceFragmentation,dissentIntensity,replacementPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost\n");
+			writer.write("caseKey,caseName,caseDescription,scenarioKey,scenario,scenarioKind,reviewMechanism,runIndex,caseIndex,globalCaseIndex,caseId,source,reviewPeriod,caseType,doctrineArea,policyDomain,jurisdiction,lowerCourtPath,policyPosition,rightsThreat,publicSupport,legislativeMandate,urgency,legalAmbiguity,constitutionalSalience,lowerCourtConflict,lowerCourtPanelSkew,stateFederalTension,intercourtConflict,certiorariPressure,timeToReview,lowerCourtGovernmentWin,executivePressure,conflictOfInterestRisk,casePublicTrust,litigantCapacity,publicInterestSupport,governmentRepeatPlayerAdvantage,reviewed,emergencyOrder,emergencyReliefGranted,meritsReview,meritsInvalidated,invalidated,lawEffectiveAfterReview,intakeFilings,screenedFilings,intakeAcceptanceRate,reasonsGiven,voteDisclosed,publicDisagreement,emergencyApplicantType,governmentEmergencyApplicant,governmentEmergencyWin,meritsFollowUp,enBancReview,crossChecked,councilScreen,overrideUsed,weakFormDeclaration,suspendedDeclaration,legislativeResponse,legislativeResponseDelay,legislativeResponseDeadline,timelyLegislativeResponse,rightsImpactStatement,ombudsmanTriggered,publicDefenderParticipation,preEnactmentReview,abstractReview,supranationalRoute,preliminaryReferenceRoute,appealRoute,directActionRoute,recusedJustices,participatingJustices,strikeVoteShare,majorityShare,legalStability,rightsProtection,partisanAlignment,shadowDocketAbuse,legitimacy,reversalMagnitude,constitutionalConflict,democraticResponsiveness,legislativeResponseCredibility,caseSelectionAccess,implementationCapacity,democraticConstitutionalism,vetoRelocationRisk,legalTransplantFeasibility,politicalCultureSensitivity,independenceAccountabilityBalance,complianceRate,complied,defied,workaround,repeatedLitigation,executiveImplementation,agencyNonacquiescence,legislativeReenactment,localGovernmentCompliance,publicTrustAfter,legislativeConflictAfter,courtCurbingPressure,amendmentPressure,concurrenceFragmentation,dissentIntensity,replacementPressure,administrativeLoad,directCourtCost,upstreamScreeningCost,capacityStrainCost,institutionalBudgetCost,institutionalDelayCost,implementationComplexity,totalInstitutionalCost,statuteDispositions,statuteNullifications\n");
 			for (CampaignRow row : rows) {
 				for (int outcomeIndex = 0; outcomeIndex < row.outcomes().size(); outcomeIndex++) {
 					CaseOutcome outcome = row.outcomes().get(outcomeIndex);
@@ -1232,7 +1276,9 @@ public final class CampaignRunner
 					                         number(outcome.institutionalBudgetCost()),
 					                         number(outcome.institutionalDelayCost()),
 					                         number(outcome.implementationComplexity()),
-					                         number(outcome.totalInstitutionalCost())
+					                         number(outcome.totalInstitutionalCost()),
+					                         Integer.toString(outcome.statuteDispositions()),
+					                         Integer.toString(outcome.statuteNullifications())
 					));
 					writer.write('\n');
 				}
@@ -1240,6 +1286,27 @@ public final class CampaignRunner
 		}
 	}
 	
+	private void writeObjectCsv(Path path, List<CampaignRow> rows) throws IOException {
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+				new GZIPOutputStream(Files.newOutputStream(path)), StandardCharsets.UTF_8))) {
+			writer.write("caseKey,scenarioKey,runIndex,caseIndex,caseId,objectId,objectKind,objectJurisdiction,vulnerability,disposition,suspended,statuteDisposition,statuteNullification\n");
+			for (CampaignRow row : rows) {
+				for (int i = 0; i < row.outcomes().size(); i++) {
+					CaseOutcome outcome = row.outcomes().get(i);
+					for (var disposition : outcome.objectDispositions()) {
+						var object = disposition.object();
+						writer.write(String.join(",", csv(row.caseKey()), csv(row.report().scenarioKey()),
+								Integer.toString(i / row.casesPerRun() + 1), Integer.toString(i % row.casesPerRun() + 1),
+								csv(outcome.caseFile().id()), csv(object.id()), object.kind().name(), object.jurisdiction().key(),
+								Double.toString(object.vulnerability()), disposition.result().name(), Boolean.toString(disposition.suspended()),
+								Boolean.toString(disposition.statuteDisposition()), Boolean.toString(disposition.statuteNullification())));
+						writer.write('\n');
+					}
+				}
+			}
+		}
+	}
+
 	private Map<CampaignRow, BootstrapSummary> bootstrapSummaries(List<CampaignRow> rows) {
 		Map<CampaignRow, BootstrapSummary> summaries = new LinkedHashMap<>();
 		for (CampaignRow row : rows) {
@@ -1285,7 +1352,8 @@ public final class CampaignRunner
 					row.report().reviewMechanism()
 			);
 			for (ReportIntervalMetric metric : reportIntervalMetrics()) {
-				reportSamples.get(metric.key()).add(metric.value().value(sampledReport));
+				double sampleValue = metric.value().value(sampledReport);
+				if (Double.isFinite(sampleValue)) reportSamples.get(metric.key()).add(sampleValue);
 			}
 			for (SegmentKind kind : SegmentKind.values()) {
 				Map<String, SegmentReport> sampledSegments = segmentMap(sampledReport, kind);
@@ -1304,7 +1372,7 @@ public final class CampaignRunner
 		
 		Map<String, Interval> reportIntervals = new LinkedHashMap<>();
 		for (Map.Entry<String, List<Double>> entry : reportSamples.entrySet()) {
-			reportIntervals.put(entry.getKey(), percentileInterval(entry.getValue()));
+			if (!entry.getValue().isEmpty()) reportIntervals.put(entry.getKey(), percentileInterval(entry.getValue()));
 		}
 		Map<SegmentBootstrapKey, Interval> segmentIntervals = new LinkedHashMap<>();
 		for (Map.Entry<SegmentBootstrapKey, List<Double>> entry : segmentSamples.entrySet()) {
@@ -1405,11 +1473,11 @@ public final class CampaignRunner
 		Files.writeString(path, builder.toString());
 	}
 	
-	private void writeCalibrationIntervalCsv(Path path, List<CalibrationRow> rows) throws IOException {
+	private void writeCalibrationIntervalCsv(Path path, List<CalibrationRow> rows, List<CampaignRow> campaignRows) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		builder.append("profileKey,court,timePeriod,targetKey,label,estimate,lower95,upper95,targetLower,targetUpper,targetObservedValue,targetN,unit,targetMethod,reliability,useForValidation,n,method,sourceName,sourceUrl\n");
 		for (CalibrationRow row : rows) {
-			Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
+			Interval interval = calibrationInterval(row, campaignRows);
 			builder.append(csv(row.target().profileKey())).append(',')
 			       .append(csv(row.target().court())).append(',')
 			       .append(csv(row.target().timePeriod())).append(',')
@@ -1427,7 +1495,7 @@ public final class CampaignRunner
 			       .append(csv(row.target().reliability())).append(',')
 			       .append(row.target().useForValidation()).append(',')
 			       .append(row.sampleSize()).append(',')
-			       .append(csv(INTERVAL_METHOD)).append(',')
+			       .append(csv(calibrationIntervalMethod(row))).append(',')
 			       .append(csv(row.target().sourceName())).append(',')
 			       .append(csv(row.target().sourceUrl()))
 			       .append('\n');
@@ -1449,6 +1517,16 @@ public final class CampaignRunner
 		builder.append("- runs per case: ").append(runs).append('\n');
 		builder.append("- seed: ").append(seed).append('\n');
 		builder.append("- input: ").append(inputDescription).append("\n\n");
+		builder.append("## Statute-disposition measurement\n\n");
+		builder.append("Objects are generated with explicit unestimated assumptions and relief is allocated conditionally on each case result. This diagnostic does not validate independent object voting or a historical docket. Rates count nullified statutes (including suspended nullifications) over merits statute dispositions, before any later override; regulations, conduct and emergency-only orders are excluded. See docs/object-measurement-contract.md.\n\n");
+		builder.append("| Case | Scenario | Statute dispositions | Nullifications | Rate |\n| --- | --- | ---: | ---: | ---: |\n");
+		for (CampaignRow row : rows) {
+			var report = row.report();
+			builder.append("| ").append(row.caseKey()).append(" | ").append(report.scenarioKey()).append(" | ")
+					.append(report.statuteDispositions()).append(" | ").append(report.statuteNullifications()).append(" | ")
+					.append(number(report.statuteNullificationRate())).append(" |\n");
+		}
+		builder.append('\n');
 		builder.append("## Top Directional Scores by Case\n\n");
 		for (String caseKey : rows.stream().map(CampaignRow::caseKey).distinct().toList()) {
 			List<CampaignRow> caseRows = rows.stream().filter(row -> row.caseKey().equals(caseKey)).toList();
@@ -1541,7 +1619,7 @@ public final class CampaignRunner
 		appendSegmentDiagnostics(builder, rows, "Policy Domain Diagnostics", SegmentKind.POLICY_DOMAIN);
 		appendCompositionDiagnostics(builder, rows);
 		appendUncertaintySummary(builder, rows);
-		appendCalibrationDiagnostics(builder, calibrationRows);
+		appendCalibrationDiagnostics(builder, calibrationRows, rows);
 		Files.writeString(path, builder.toString());
 	}
 	
@@ -1692,12 +1770,12 @@ public final class CampaignRunner
 		}
 	}
 	
-	private void appendCalibrationDiagnostics(StringBuilder builder, List<CalibrationRow> rows) {
+	private void appendCalibrationDiagnostics(StringBuilder builder, List<CalibrationRow> rows, List<CampaignRow> campaignRows) {
 		builder.append("\n## Calibration Diagnostics\n\n");
 		builder.append("| Profile | Target | Model | Empirical | 95% band | Range | Reliability | Validation | Gap | Status |\n");
 		builder.append("| --- | --- | ---: | ---: | ---: | ---: | --- | ---: | ---: | --- |\n");
 		for (CalibrationRow row : rows) {
-			Interval interval = interval(row.observedValue(), row.sampleSize(), 0.0, 1.0);
+			Interval interval = calibrationInterval(row, campaignRows);
 			builder.append("| ").append(row.target().profileKey()).append(" | ")
 			       .append(row.target().label()).append(" | ")
 			       .append(number(row.observedValue())).append(" | ")

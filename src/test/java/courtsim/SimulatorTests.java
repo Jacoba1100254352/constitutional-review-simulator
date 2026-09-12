@@ -32,6 +32,7 @@ public final class SimulatorTests
 		scenarioCatalogSelectsKnownKeys();
 		InstitutionModelTests.runAll();
 		DirectionalScoreModelTests.runAll();
+		ObjectMeasurementTests.runAll();
 		simulatorProducesReports();
 		scdbDoctrineResidualBucketKeepsSourceRangesVisible();
 		mechanismScenariosProduceDiagnostics();
@@ -286,6 +287,8 @@ public final class SimulatorTests
 		assertTrue(Files.exists(result.compositionCsvPath()), "expected composition CSV artifact");
 		assertTrue(Files.exists(result.calibrationCsvPath()), "expected calibration CSV artifact");
 		assertTrue(Files.exists(result.caseCsvGzPath()), "expected compressed case-level artifact");
+		assertTrue(Files.exists(result.objectCsvGzPath()), "expected compressed object-level artifact");
+		assertTrue(readGzipHeader(result.objectCsvGzPath()).contains("statuteDisposition"), "expected explicit object denominator flag");
 		String caseHeader = readGzipHeader(result.caseCsvGzPath());
 		assertTrue(caseHeader.contains("scenarioKey"), "expected case-level CSV header");
 		assertTrue(caseHeader.contains("reviewMechanism"), "expected mechanism case export");
@@ -547,7 +550,7 @@ public final class SimulatorTests
 			validationTargets.put(row[profileKey] + "/" + row[targetKey], true);
 		}
 		assertTrue(validationCounts.size() == 13, "expected verified source-specific validation target profiles");
-		assertTrue(validationCounts.getOrDefault("canada-charter-dialogue-1982-2007", 0) == 6, "expected six Canada Charter-dialogue validation targets");
+		assertTrue(validationCounts.getOrDefault("canada-charter-dialogue-1982-2007", 0) == 7, "expected seven Canada Charter-dialogue validation targets including statute dispositions");
 		assertTrue(validationCounts.getOrDefault("scdb-postwar-merits-1946-2024", 0) == 7, "expected seven postwar SCDB doctrine validation targets");
 		assertTrue(validationCounts.getOrDefault("scdb-modern-merits-2000-2024", 0) == 7, "expected seven modern SCDB doctrine validation targets");
 		assertTrue(validationCounts.getOrDefault("scotus-emergency-2024-2025", 0) == 4, "expected three emergency targets plus official certiorari-intake validation");

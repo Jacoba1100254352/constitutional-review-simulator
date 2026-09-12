@@ -430,18 +430,20 @@ public final class WorldGenerator
 	
 	public CourtWorld generate(WorldSpec spec, long seed, List<LegislativeSignal> importedSignals) {
 		Random random = new Random(seed);
+		// Separate stream keeps the existing docket, voting and reaction benchmarks unchanged.
+		Random objectRandom = new Random(seed ^ 0x6A09E667F3BCC909L);
 		List<CaseFile> docket = new ArrayList<>();
 		for (int i = 0; i < spec.caseCount(); i++) {
 			if (!importedSignals.isEmpty()) {
-				docket.add(fromLegislativeSignal(spec, importedSignals.get(i % importedSignals.size()), i, random));
+				docket.add(fromLegislativeSignal(spec, importedSignals.get(i % importedSignals.size()), i, random, objectRandom));
 			} else {
-				docket.add(syntheticCase(spec, i, random));
+				docket.add(syntheticCase(spec, i, random, objectRandom));
 			}
 		}
 		return new CourtWorld(spec, List.copyOf(docket));
 	}
 	
-	private CaseFile syntheticCase(WorldSpec spec, int index, Random random) {
+	private CaseFile syntheticCase(WorldSpec spec, int index, Random random, Random objectRandom) {
 		DoctrineArea doctrineArea = randomDoctrine(random, spec.doctrineDocketProfile());
 		PolicyDomain policyDomain = policyDomainFor(doctrineArea, random);
 		Jurisdiction jurisdiction = jurisdictionFor(doctrineArea, spec, random);
@@ -521,11 +523,12 @@ public final class WorldGenerator
 				litigantCapacity,
 				publicInterestSupport,
 				governmentRepeatPlayerAdvantage,
-				"synthetic"
+				"synthetic",
+				ChallengeObjectGenerator.generate("synthetic-" + (index + 1), jurisdiction, objectRandom)
 		);
 	}
 	
-	private CaseFile fromLegislativeSignal(WorldSpec spec, LegislativeSignal signal, int index, Random random) {
+	private CaseFile fromLegislativeSignal(WorldSpec spec, LegislativeSignal signal, int index, Random random, Random objectRandom) {
 		PolicyDomain policyDomain = signal.policyDomain();
 		DoctrineArea doctrineArea = importedDoctrine(signal, policyDomain, spec.doctrineDocketProfile(), random);
 		Jurisdiction jurisdiction = importedJurisdiction(signal, policyDomain, doctrineArea, spec, random);
@@ -679,7 +682,8 @@ public final class WorldGenerator
 				litigantCapacity,
 				publicInterestSupport,
 				governmentRepeatPlayerAdvantage,
-				signal.scenarioKey()
+				signal.scenarioKey(),
+				ChallengeObjectGenerator.generate("leg-" + (index + 1) + "-" + signal.scenarioKey(), jurisdiction, objectRandom)
 		);
 	}
 	

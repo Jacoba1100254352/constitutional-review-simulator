@@ -2,6 +2,7 @@ package courtsim.institution;
 
 
 import courtsim.model.CaseFile;
+import java.util.List;
 
 
 public record CaseOutcome(
@@ -86,7 +87,26 @@ public record CaseOutcome(
 		double vetoRelocationRisk,
 		double legalTransplantFeasibility,
 		double politicalCultureSensitivity,
-		double democraticConstitutionalism
+		double democraticConstitutionalism,
+		List<ObjectDisposition> objectDispositions
 )
 {
+	public CaseOutcome {
+		objectDispositions = List.copyOf(objectDispositions);
+		if (!objectDispositions.stream().map(ObjectDisposition::object).toList().equals(caseFile.challengeObjects())) {
+			throw new IllegalArgumentException("dispositions must cover each case object exactly once in order");
+		}
+	}
+
+	public int statuteDispositions() {
+		int count = 0;
+		for (var disposition : objectDispositions) if (disposition.statuteDisposition()) count++;
+		return count;
+	}
+
+	public int statuteNullifications() {
+		int count = 0;
+		for (var disposition : objectDispositions) if (disposition.statuteNullification()) count++;
+		return count;
+	}
 }

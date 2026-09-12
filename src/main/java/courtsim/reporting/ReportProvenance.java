@@ -38,9 +38,12 @@ public final class ReportProvenance
 		append(builder, "runs", runs, true);
 		append(builder, "casesPerRun", casesPerRun, true);
 		append(builder, "seed", seed, true);
+		append(builder, "worldSeedDerivation", courtsim.simulation.WorldSpec.SEED_DERIVATION, true);
 		append(builder, "campaignCaseCount", campaignCaseCount, true);
 		append(builder, "scenarioCount", scenarioCount, true);
 		append(builder, "inputDescription", inputDescription, true);
+		append(builder, "challengeObjectModel", courtsim.simulation.ChallengeObjectGenerator.MODEL, true);
+		append(builder, "objectDispositionModel", "conditional allocation: on case relief, objects within .20 of maximum vulnerability receive relief; no independent object voting; unestimated assumptions", true);
 		builder.append("  \"artifacts\": [\n");
 		for (int i = 0; i < artifacts.size(); i++) {
 			Path artifact = artifacts.get(i);
@@ -100,4 +103,3 @@ public final class ReportProvenance
 				.replace("\t", "\\t");
 	}
 }
-

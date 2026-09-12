@@ -23,6 +23,7 @@ public record MetricDefinition(
 			new MetricDefinition("reversalRate", "Reversal rate", MetricDirection.LOWER_IS_BETTER, "Share of cases in which a law or action is invalidated."),
 			new MetricDefinition("emergencyReliefRate", "Emergency relief rate", MetricDirection.LOWER_IS_BETTER, "Share of emergency orders granting interim relief."),
 			new MetricDefinition("meritsInvalidationRate", "Merits invalidation rate", MetricDirection.LOWER_IS_BETTER, "Share of merits reviews invalidating a law or action."),
+			new MetricDefinition("statuteNullificationRate", "Statute nullification rate", MetricDirection.DIAGNOSTIC, "Nullified statute objects divided by merits statute dispositions. Suspended nullifications count; weak-form declarations stay only in the denominator. Regulations, conduct and emergency-only relief are excluded. Conditional object allocation is unestimated."),
 			new MetricDefinition("intakeAcceptanceRate", "Intake acceptance rate", MetricDirection.DIAGNOSTIC, "Estimated accepted merits or emergency matters divided by upstream filings."),
 			new MetricDefinition("emergencyReasonGivingRate", "Emergency reason-giving", MetricDirection.HIGHER_IS_BETTER, "Share of emergency orders with public reasons or explanation."),
 			new MetricDefinition("emergencyVoteDisclosureRate", "Emergency vote disclosure", MetricDirection.HIGHER_IS_BETTER, "Share of emergency orders with votes or member positions disclosed."),

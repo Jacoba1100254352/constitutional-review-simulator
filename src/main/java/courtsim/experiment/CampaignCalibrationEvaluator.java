@@ -136,7 +136,7 @@ final class CampaignCalibrationEvaluator
 		return List.copyOf(calibrationRows);
 	}
 	
-	private List<CampaignRow> profileRows(List<CampaignRow> rows, String profileKey) {
+	List<CampaignRow> profileRows(List<CampaignRow> rows, String profileKey) {
 		String scenarioKey = CALIBRATION_PROFILE_SCENARIOS.get(profileKey);
 		if (scenarioKey == null) {
 			return rows;
@@ -167,6 +167,10 @@ final class CampaignCalibrationEvaluator
 		observed.put("review_rate", new CalibrationObservation(Values.ratio(reviewedCases, totalCases), totalCases));
 		observed.put("emergency_relief_rate", new CalibrationObservation(Values.ratio(emergencyReliefs, emergencyOrders), emergencyOrders));
 		observed.put("merits_invalidation_rate", new CalibrationObservation(Values.ratio(meritsInvalidations, meritsReviews), meritsReviews));
+		int statuteDispositions = rows.stream().mapToInt(row -> row.report().statuteDispositions()).sum();
+		int statuteNullifications = rows.stream().mapToInt(row -> row.report().statuteNullifications()).sum();
+		observed.put("statute_nullification_rate", new CalibrationObservation(
+				statuteDispositions == 0 ? Double.NaN : (double) statuteNullifications / statuteDispositions, statuteDispositions));
 		observed.put("intake_acceptance_rate", new CalibrationObservation(Values.ratio(reviewedCases, intakeFilings), intakeFilings));
 		observed.put("case_selection_access", new CalibrationObservation(weightedAverage(rows, ScenarioReport::caseSelectionAccess), totalCases));
 		observed.put("emergency_reason_giving_rate", new CalibrationObservation(weightedAverage(rows, ScenarioReport::emergencyReasonGivingRate), emergencyOrders));

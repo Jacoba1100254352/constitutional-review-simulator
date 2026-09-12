@@ -37,6 +37,7 @@ SUPPORTED_VALIDATION_KEYS = {
     "government_emergency_win_rate",
     "merits_follow_up_rate",
     "merits_invalidation_rate",
+    "statute_nullification_rate",
     "override_rate",
     "weak_form_declaration_rate",
     "suspended_declaration_rate",

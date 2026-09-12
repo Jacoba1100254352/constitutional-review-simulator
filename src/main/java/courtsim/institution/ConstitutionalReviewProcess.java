@@ -475,7 +475,9 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 				vetoRelocationRisk,
 				legalTransplantFeasibility,
 				politicalCultureSensitivity,
-				democraticConstitutionalism
+				democraticConstitutionalism,
+				ObjectDispositionModel.resolve(caseFile.challengeObjects(), meritsReview, meritsInvalidated,
+						weakFormDeclaration, suspendedDeclaration)
 		);
 	}
 	
@@ -804,7 +806,8 @@ public final class ConstitutionalReviewProcess implements ReviewProcess
 				vetoRelocationRisk,
 				legalTransplantFeasibility,
 				politicalCultureSensitivity,
-				democraticConstitutionalism
+				democraticConstitutionalism,
+				ObjectDispositionModel.resolve(caseFile.challengeObjects(), false, false, false, false)
 		);
 	}
 	

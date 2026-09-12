@@ -24,6 +24,8 @@ public final class MetricsAccumulator
 	private int emergencyReliefs;
 	private int meritsReviews;
 	private int meritsInvalidations;
+	private int statuteDispositions;
+	private int statuteNullifications;
 	private int overrides;
 	private int intakeFilings;
 	private int screenedFilings;
@@ -106,6 +108,8 @@ public final class MetricsAccumulator
 	
 	public void add(CaseOutcome outcome) {
 		totalCases++;
+		statuteDispositions += outcome.statuteDispositions();
+		statuteNullifications += outcome.statuteNullifications();
 		if (outcome.reviewed()) {
 			reviewedCases++;
 		}
@@ -390,7 +394,9 @@ public final class MetricsAccumulator
 				pipelineReports(),
 				policyDomainReports(),
 				compositionReports(),
-				average(administrativeLoadSum)
+				average(administrativeLoadSum),
+				statuteDispositions,
+				statuteNullifications
 		);
 	}
 	

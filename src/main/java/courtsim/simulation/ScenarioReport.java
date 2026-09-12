@@ -101,9 +101,15 @@ public record ScenarioReport(
 		List<SegmentReport> pipelineReports,
 		List<SegmentReport> policyDomainReports,
 		List<CompositionReport> compositionReports,
-		double administrativeLoad
+		double administrativeLoad,
+		int statuteDispositions,
+		int statuteNullifications
 )
 {
+	public double statuteNullificationRate() {
+		return statuteDispositions == 0 ? Double.NaN : (double) statuteNullifications / statuteDispositions;
+	}
+
 	public double directionalScore() {
 		return DirectionalScoreModel.score(this);
 	}

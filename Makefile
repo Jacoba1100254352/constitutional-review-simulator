@@ -8,21 +8,29 @@ PAPER_PDF := constitutional-review-design-stress-test.pdf
 
 .PHONY: build run campaign paired-campaign validation-check validation-miss-report research-data-check empirical-platform-report empirical-platform-check scdb-doctrine-audit scdb-doctrine-audit-check scdb-doctrine-apply-ready scdb-doctrine-apply-audited-values sensitivity-check calibration-build calibration-check promotion-check court-profile-build court-profile-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
+.PHONY: benchmark-preservation-check
+
 build:
 	mkdir -p out/main
 	javac --release $(JAVA_RELEASE) -d out/main $(MAIN_SOURCES)
+
+benchmark-preservation-check:
+	python3 scripts/check_benchmark_preservation.py
 
 run: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main $(ARGS)
 
 campaign: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign v0 --runs 120 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
+	python3 scripts/check_object_measurement.py reports/constitutional-review-campaign-v0
 
 paired-campaign: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign v1-paired --runs 120 --cases 80 --seed 20260501 --output-dir reports --legislative-input "$(LEGISLATIVE_INPUT)" $(ARGS)
+	python3 scripts/check_object_measurement.py reports/constitutional-review-paired-import-v1
 
 validation-check: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign validation --runs 120 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
+	python3 scripts/check_object_measurement.py reports/constitutional-review-validation-v1
 	python3 scripts/build_validation_miss_report.py
 	python3 scripts/build_court_profiles.py --write
 	python3 scripts/build_empirical_platform_report.py --write
@@ -54,6 +62,7 @@ scdb-doctrine-apply-audited-values:
 
 sensitivity-check: build
 	java $(JAVA_PROPS) -cp out/main courtsim.Main --campaign sensitivity --runs 80 --cases 80 --seed 20260501 --output-dir reports $(ARGS)
+	python3 scripts/check_object_measurement.py reports/constitutional-review-sensitivity-v1
 
 calibration-build:
 	python3 scripts/build_calibration_targets.py --write
@@ -118,8 +127,9 @@ test: build
 	mkdir -p out/test
 	javac --release $(JAVA_RELEASE) -cp out/main -d out/test $(TEST_SOURCES)
 	java $(JAVA_PROPS) -cp out/main:out/test courtsim.SimulatorTests
+	python3 -m unittest discover -s scripts -p 'test_*measurement*.py'
 
-ci: calibration-check research-data-check court-profile-check test campaign paired-campaign validation-check empirical-platform-check sensitivity-check paper supplement submission-bundle
+ci: calibration-check research-data-check court-profile-check test campaign paired-campaign validation-check benchmark-preservation-check empirical-platform-check sensitivity-check paper supplement submission-bundle
 
 clean:
 	rm -rf out

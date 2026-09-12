@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -28,6 +29,14 @@ READINESS_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-
 READINESS_MARKDOWN_REPORT = ROOT / "reports" / "constitutional-review-empirical-platform-v1-readiness.md"
 MARKDOWN_REPORT = REPORT_PREFIX.with_suffix(".md")
 RESEARCH_DIR = ROOT / "config" / "research"
+MEASUREMENT_REPORT = ROOT / "reports" / "constitutional-review-measurement-audit-v1.csv"
+MEASUREMENT_HEADER = [
+    "profileKey", "court", "period", "targetKey", "label", "numerator", "denominator",
+    "observedRate", "targetFamily", "evidenceStatus", "useForValidation", "sourceName", "sourceUrl", "note",
+]
+MEASUREMENT_AUDIT_PROFILES = {
+    "canada-charter-dialogue-1982-2007", "germany-bverfg-2024", "south-africa-constcourt-recent",
+}
 
 PROFILE_REPORT_HEADER = [
     "profileKey",
@@ -220,6 +229,13 @@ TARGET_FAMILY_ALIASES = {
     "caseSelectionAccess".lower(): "case-selection",
     "certiorari_pressure": "case-selection",
     "complaint_success_rate": "intake",
+    "legal_representation_share": "case-selection",
+    "emergency_application_share": "emergency",
+    "direct_instrument_challenge_share": "route-mix",
+    "leave_petition_share": "route-mix",
+    "direct_access_petition_share": "route-mix",
+    "dismissed_petition_snapshot_share": "intake",
+    "dismissal_reason_observed_share": "case-selection",
     "compliance_rate": "compliance",
     "direct_defiance_rate": "compliance",
     "doctrine_share_by_area": "doctrine-mix",
@@ -1266,7 +1282,13 @@ def readiness_rows(
                 f"{sum(1 for row in miss_rows if row['withinTarget'].lower() == 'true')} within range; "
                 f"{len(failures)} out of range"
             ),
-            "interpretation": "The current source-range surface clears documented benchmark ranges, but only for promoted rows.",
+            "interpretation": (
+                "Some promoted source-range checks remain outside their documented ranges; inspect the miss report without widening source bounds."
+                if failures else
+                "The promoted source-range checks are within their documented ranges; this is narrow calibration evidence, not independent validation."
+                if validation_rows else
+                "No promoted source-range checks are available; empirical fit has not been assessed."
+            ),
             "nextAction": "Run validation-check before publication and after every calibration-source or source-profile change.",
         },
         {
@@ -1286,7 +1308,7 @@ def readiness_rows(
                 f"{len(validation_families)}/{len(build_court_profiles.VALIDATION_ELIGIBLE_FAMILY_ORDER)} validation-eligible families have validation-counted rows; "
                 f"missing validation families: {', '.join(missing_validation_families) if missing_validation_families else 'none'}"
             ),
-            "interpretation": f"The platform now fits its narrow benchmark surface, but {missing_family_phrase} outside validation counts.",
+            "interpretation": f"Family coverage is distinct from source-range fit: {missing_family_phrase} outside validation counts. Inspect the separate fit gate for current misses.",
             "nextAction": "Use source-acquisition and source-promotion queue rows to expand family coverage with URLs, denominators, and direct analogues.",
         },
         {
@@ -1388,12 +1410,48 @@ def cards_next_step(
     return "no source row or candidate is currently registered for this profile-family"
 
 
+def measurement_audit_rows(source_rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Reconstruct the scoped source audit without counting unsupported measures as validation."""
+    counted = {(row["profileKey"], row["timePeriod"], row["targetKey"]) for row in source_rows if row["useForValidation"] == "true"}
+    path = RESEARCH_DIR / "comparative-calibration-source-candidates.csv"
+    with path.open(newline="", encoding="utf-8") as handle:
+        candidates = list(csv.DictReader(handle))
+    result = []
+    seen = set()
+    for row in candidates:
+        if row["profileKey"] not in MEASUREMENT_AUDIT_PROFILES or not row["sourceUrlStatus"].startswith("verified:https://"):
+            continue
+        if not row["numerator"] or not row["denominator"]:
+            continue
+        key = (row["profileKey"], row["period"], row["targetKey"])
+        numerator, denominator = int(row["numerator"]), int(row["denominator"])
+        if key in seen or not 0 <= numerator <= denominator or denominator <= 0:
+            raise ValueError(f"Invalid or duplicate source counts: {key}")
+        seen.add(key)
+        rate = numerator / denominator
+        if not math.isclose(rate, float(row["observedValue"]), abs_tol=0.00000051):
+            raise ValueError(f"Source rate does not reconcile with numerator/denominator: {key}")
+        promoted = row["calibrationAction"] == "promoted"
+        if promoted != (key in counted):
+            raise ValueError(f"Source audit and calibration promotion disagree: {key}")
+        if promoted and row["directAnalogue"] != "true":
+            raise ValueError(f"Non-direct source measure cannot count as validation: {key}")
+        result.append(dict(zip(MEASUREMENT_HEADER, [
+            row["profileKey"], row["courtOrSystem"], row["period"], row["targetKey"], row["label"],
+            str(numerator), str(denominator), f"{rate:.6f}", target_family(row["targetKey"]),
+            row["calibrationAction"], str(promoted).lower(), row["sourceTrail"],
+            row["sourceUrlStatus"].removeprefix("verified:"), row["notes"],
+        ])))
+    return sorted(result, key=lambda row: (row["profileKey"], row["targetFamily"], row["targetKey"]))
+
+
 def benchmark_cards(
         profile_rows: list[dict[str, str]],
         family_rows: list[dict[str, str]],
         queue_rows: list[dict[str, str]],
         source_rows: list[dict[str, str]],
         miss_rows: list[dict[str, str]],
+        measurements: list[dict[str, str]],
 ) -> str:
     family_by_key = family_row_index(family_rows)
     queue_by_profile = rows_by_profile(queue_rows)
@@ -1403,6 +1461,7 @@ def benchmark_cards(
     }
     source_by_profile = rows_by_profile(source_rows)
     miss_by_profile = rows_by_profile(miss_rows)
+    measurements_by_profile = rows_by_profile(measurements)
 
     lines = [
         "# Court Profile Benchmark Cards",
@@ -1520,6 +1579,17 @@ def benchmark_cards(
             )
         else:
             lines.append("No calibration source rows are currently registered for this profile.")
+
+        profile_measurements = measurements_by_profile.get(profile_key, [])
+        if profile_measurements:
+            lines.extend(["", "### Denominator-backed Measurement Audit", "",
+                          "Verified source counts are separate from model validation. Point rates below are descriptive source proportions, not fitted target ranges. See `reports/constitutional-review-measurement-audit-v1.csv` and `docs/measurement-evidence-audit.md`.", ""])
+            lines.extend(markdown_table(
+                ["Period", "Measure", "Numerator / denominator", "Rate", "Use", "Source and limitation"],
+                [[row["period"], row["label"], f"{row['numerator']} / {row['denominator']}", row["observedRate"],
+                  "narrow range check" if row["useForValidation"] == "true" else row["evidenceStatus"],
+                  f"[{row['sourceName']}]({row['sourceUrl']}). {row['note']}"] for row in profile_measurements],
+            ))
 
         lines.extend(["", "### Promotion Tasks", ""])
         if profile_queue:
@@ -1754,7 +1824,9 @@ def expected_outputs() -> dict[Path, str]:
     source_acquisitions = source_acquisition_rows(queue_rows, source_gaps, roadmap_detail)
     source_promotions = source_promotion_rows(queue_rows, source_gaps, source_detail)
     readiness = readiness_rows(profile_rows, family_rows, queue_rows, source_promotions, source_rows, miss_rows)
+    measurements = measurement_audit_rows(source_rows)
     return {
+        MEASUREMENT_REPORT: csv_text(measurements, MEASUREMENT_HEADER),
         PROFILE_REPORT: csv_text(profile_rows, PROFILE_REPORT_HEADER),
         FAMILY_REPORT: csv_text(family_rows, FAMILY_REPORT_HEADER),
         PROMOTION_QUEUE_REPORT: csv_text(queue_rows, PROMOTION_QUEUE_HEADER),
@@ -1765,7 +1837,7 @@ def expected_outputs() -> dict[Path, str]:
         READINESS_REPORT: csv_text(readiness, READINESS_HEADER),
         READINESS_MARKDOWN_REPORT: readiness_markdown(readiness),
         MARKDOWN_REPORT: markdown_report(profile_rows, family_rows, queue_rows, source_promotions, source_rows, miss_rows, readiness),
-        PROFILE_CARDS: benchmark_cards(profiles, family_rows, queue_rows, source_rows, miss_rows),
+        PROFILE_CARDS: benchmark_cards(profiles, family_rows, queue_rows, source_rows, miss_rows, measurements),
     }
 
 

@@ -36,6 +36,14 @@ needs direct source-text verification.
 
 ## Current Target Families
 
+- The Canadian statute-nullification target is 19/50 statute dispositions from
+  Morton, Russell, and Withey Table 7, with a Wilson interval. It is separate
+  from case-level merits invalidation. Synthetic object composition and
+  conditional relief allocation permit a matching output unit, not independent
+  validation of the historical decision process. The eight German and South
+  African observations in `docs/measurement-evidence-audit.md` remain verified
+  source evidence outside the validation matrix.
+
 - U.S. doctrine mix targets use Supreme Court Database issue-area and issue-code
   mappings. These are docket-composition checks, not substantive outcome
   validation.

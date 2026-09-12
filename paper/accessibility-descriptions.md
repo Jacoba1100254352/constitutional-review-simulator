@@ -133,6 +133,14 @@ source-range checks retained in the generated miss roadmap, or the generated
 no-current-miss statement when none remain. Columns show the target, model value
 versus source range, miss category, next action, and gap when rows exist.
 
+`tab:supp-measurement-audit`: Supplementary table of nine source proportions,
+showing court and period, measured quantity, numerator and denominator, rate,
+and permitted model use. Canada's statute-nullification row is the only counted
+range check. Four German and four South African observations remain source
+context or missing model measures. The accompanying note identifies distinct
+complaint universes, a one-petition route discrepancy, censored dismissals, and
+missing source orders.
+
 `tab:supp-research-roadmap`: Supplementary long table listing the empirical
 data-development files, row counts, and the purpose of each file. It
 distinguishes source-gathering tasks from calibration targets.

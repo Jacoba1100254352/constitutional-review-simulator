@@ -3,6 +3,7 @@ package courtsim.institution;
 
 import courtsim.model.*;
 import courtsim.simulation.WorldSpec;
+import java.util.List;
 
 
 public final class InstitutionModelTests
@@ -250,7 +251,8 @@ public final class InstitutionModelTests
 				0.72,
 				0.76,
 				0.30,
-				"test"
+				"test",
+				List.of(new ChallengeObject("rights/statute", ChallengeObject.Kind.STATUTE, Jurisdiction.FEDERAL, 0.8))
 		);
 	}
 
@@ -283,7 +285,8 @@ public final class InstitutionModelTests
 				0.58,
 				0.64,
 				0.74,
-				"test"
+				"test",
+				List.of(new ChallengeObject("emergency/statute", ChallengeObject.Kind.STATUTE, Jurisdiction.FEDERAL, 0.8))
 		);
 	}
 

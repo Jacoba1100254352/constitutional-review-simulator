@@ -15,6 +15,7 @@ public record CampaignResult(
 		Path compositionCsvPath,
 		Path calibrationCsvPath,
 		Path caseCsvGzPath,
+		Path objectCsvGzPath,
 		Path intervalCsvPath,
 		Path periodIntervalCsvPath,
 		Path doctrineIntervalCsvPath,
