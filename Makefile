@@ -1,4 +1,5 @@
 MAIN_SOURCES := $(shell find src/main/java -name '*.java')
+.DEFAULT_GOAL := build
 TEST_SOURCES := $(shell find src/test/java -name '*.java')
 JAVA_RELEASE ?= 21
 JAVA_PROPS ?= -Dcourtsim.javaRelease=$(JAVA_RELEASE)
@@ -9,6 +10,22 @@ PAPER_PDF := constitutional-review-design-stress-test.pdf
 .PHONY: build run campaign paired-campaign validation-check validation-miss-report research-data-check empirical-platform-report empirical-platform-check scdb-doctrine-audit scdb-doctrine-audit-check scdb-doctrine-apply-ready scdb-doctrine-apply-audited-values sensitivity-check calibration-build calibration-check promotion-check court-profile-build court-profile-check paper paper-artifacts paper-figures paper-tables paper-supplement-tables paper-check figure-placement-audit paper-clean paper-word-count paper-pdf-check supplement submission-bundle test ci clean
 
 .PHONY: benchmark-preservation-check
+.PHONY: historical-protocol-check historical-acquire-development historical-freeze-forecasts historical-forecast-check historical-acquire-test
+
+historical-protocol-check:
+	python3 scripts/historical_data.py check-protocol
+
+historical-acquire-development:
+	python3 scripts/historical_data.py acquire-development
+
+historical-freeze-forecasts:
+	python3 scripts/historical_data.py freeze-forecasts
+
+historical-forecast-check:
+	python3 scripts/historical_data.py check-forecasts
+
+historical-acquire-test:
+	python3 scripts/historical_data.py acquire-test
 
 build:
 	mkdir -p out/main

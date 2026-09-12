@@ -1,0 +1,8 @@
+{
+  "fittingCodeSha256": "a5226c3dfde01d63a547f60cb342ec97cf75e7fbc9a7a9889f0ecc3c0d801256",
+  "protocolId": "historical-benchmark-robustness-v1",
+  "sha256": {
+    "config/historical-benchmark/forecasts-2025.json": "04cee74145c770f4a71603692ee687d13369b19be9e1d758fc460aa564d6d356",
+    "data/historical/SCDB_2025_01-docket.csv": "82658880c8a6b1acd6c5be75714420d8b9527f078f12f709aafa465019d88f91"
+  }
+}

@@ -12,6 +12,8 @@ paper/*.synctex.gz
 *.class
 __pycache__/
 *.pyc
+# Public original datasets are pinned by hash and reacquired for full replication.
+data/historical/source-cache/
 .idea/
 *.iml
 
