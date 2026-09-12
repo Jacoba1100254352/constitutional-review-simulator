@@ -107,7 +107,12 @@ written last; interrupted promotion cannot pass its hash checks. Changing
 source/configuration during execution causes failure.
 
 `make historical-study-check` verifies retained outputs and provenance without
-large raw exports. `make historical-study-raw-check` also checks all raw hashes.
+large raw exports. `make historical-study-audit` checks raw hashes and
+independently reconstructs docket/object identities and the run measures from
+the raw cases, then writes an audit. `make historical-study-raw-check` repeats
+that audit and checks its saved bytes. Reconstruction uses explicit Python
+field/denominator definitions, not the Java accumulator or reflection. All
+twelve normative-weight metrics and the registered claim measures are covered.
 Native tests run a small grid twice, compare every export byte, reconcile raw
 counts, check all four sampling laws and compare exact base outcomes with the
 legacy Simulator. That test grid does not replace the research sample.

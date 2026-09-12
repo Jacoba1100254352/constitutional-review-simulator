@@ -51,6 +51,7 @@ EXCLUDED_PARTS = {
     "out",
     "submission",
     "__pycache__",
+    "source-cache",
 }
 
 EXCLUDED_NAMES = {
@@ -60,6 +61,8 @@ EXCLUDED_NAMES = {
 REVIEW_REPLICATION_EXCLUDED_REPORT_SUFFIXES = {
     "-cases.csv.gz",
     "-objects.csv.gz",
+    "-dockets.csv.gz",
+    "-segments.csv.gz",
     "-intervals.csv",
     "-period-intervals.csv",
     "-doctrine-intervals.csv",
@@ -114,6 +117,9 @@ def should_include(path: Path) -> bool:
     if any(part in EXCLUDED_PARTS for part in relative.parts):
         return False
     if relative.name in EXCLUDED_NAMES:
+        return False
+    if any(part == ".env" or part.startswith(".env.") or part in {".secrets", ".direnv", "credentials.local"}
+           for part in relative.parts):
         return False
     if (
             relative.parts
@@ -221,7 +227,7 @@ Files:
   review builds plus `TEMPLATE-SHIM-NOTICE.md`; it is not represented as the
   official Cambridge production template bundle.
 - `replication-package.zip`: Java source, configuration, calibration source observations, court-profile index and benchmark cards, empirical platform coverage/readiness/source-gap/candidate-verification/source-acquisition/source-promotion reports, compact aggregate reports, provenance manifests, and reproduction commands.
-- `excluded-large-artifacts.txt`: raw case-level, object-level, and interval outputs omitted from the review ZIP to keep the upload practical; regenerate with the listed `make` commands.
+- `excluded-large-artifacts.txt`: raw case-level, object-level, historical shared-docket/segment, and interval outputs omitted from the review ZIP to keep the upload practical; regenerate with the listed `make` commands.
 - `jlc-review-bundle.zip`: single upload bundle containing the PDFs and the two ZIP archives.
 
 The archive is intended for anonymous review. Repository metadata, IDE files, build directories, and local machine paths are excluded.
@@ -232,6 +238,20 @@ Extract `replication-package.zip` and run `make ci` from its root to regenerate
 the omitted raw and interval outputs before rebuilding manuscript tables and
 PDFs. Running `make paper` or `make paper-check` before regenerating campaign
 intervals will encounter intentionally omitted inputs.
+
+The historical benchmark retains its protocol, train-only forecasts, minimal
+source-hashed data derivatives and immutable first evaluation. The original
+download cache is excluded. `make historical-scores-check` verifies the frozen
+test offline. For the full original-field revision audit, run
+`make historical-sources historical-benchmark-check`; this reacquires only
+the pinned public releases and verifies their original hashes. Do not rerun
+the original acquisition or forecast-freeze commands after the test was opened.
+
+`make historical-study historical-study-audit` regenerates the registered
+institutional grid and independently audits its raw cases and objects.
+`make historical-study-check` verifies the retained aggregate/stream evidence
+without large raw exports. These simulations are not a substitute for the
+remaining claim and publication analyses while the milestone is in progress.
 
 For a lighter review build using the supplied tables and figures, change into
 `paper/` and run `latexmk -pdf -outdir=build constitutional-review-design-stress-test.tex`

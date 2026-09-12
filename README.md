@@ -9,7 +9,7 @@ The model is built for comparative institutional design stress testing. Given st
 This milestone is in progress. Its [frozen protocol](docs/historical-benchmark-protocol.md)
 and [execution record](docs/historical-benchmark-execution-log.md) distinguish
 development data, exposed historical backtests, a newly evaluated 2025 SCDB
-term, and a planned paired institutional robustness study.
+term, and a paired institutional robustness study.
 
 The [first empirical report](reports/constitutional-review-historical-benchmark-v1.md)
 retains the 66-dispute new-term test without refitting. The training-only docket
@@ -31,6 +31,13 @@ outputs and provenance; `make historical-study-raw-check` also checks large raw
 exports. See the [study data contract](docs/historical-robustness-data-contract.md)
 for keys, pairing, reproduction and known measurement limitations. The runner
 tests are not a substitute for the full study or final publication checks.
+
+The full registered simulation now contains 3,993,600 case outcomes and
+5,193,352 challenged-object outcomes. Its [independent raw audit](reports/constitutional-review-historical-robustness-v1-raw-audit.json)
+reconstructs 84 run measures and verifies all 6,240 shared case/object dockets.
+The paired uncertainty analysis, normative-weight comparisons and final claim
+assessment remain in progress; completed simulations alone do not establish
+robust institutional conclusions.
 
 ## Run
 

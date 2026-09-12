@@ -96,3 +96,48 @@ cannot support the procedure-delay claim; institutional delay cost is a
 different diagnostic and will not replace the registered endpoint.
 
 The full grid and subsequent analyses are not completed by the runner tests.
+
+## Full simulation and independent raw audit checkpoint
+
+Runner source was committed and pushed as `8381c12` before the full grid was
+executed. All four forecast profiles, thirteen contexts, eight designs, 120
+runs and 80 cases per run completed without reducing the registered sample.
+The simulation manifest records source/input/output hashes and the runtime:
+Java release-21 compilation on OpenJDK 25. The run contains:
+
+- 49,920 design-run observations and 3,993,600 case outcomes;
+- 5,193,352 challenged-object outcomes;
+- 6,240 shared dockets with 499,200 cases and 649,169 challenged objects;
+- 199,680 independently checked voting/response stream identities.
+
+An independent streaming Python audit reconstructed 84 run measures from
+the raw outcomes, covering all twelve normative-weight measures and the
+registered claim measurements. It independently rebuilt every complete
+ordered case/object hash and reconciled all output counts. This audit uses
+explicit field and denominator rules, not Java's aggregation/reflection code.
+The report is `reports/constitutional-review-historical-robustness-v1-raw-audit.json`.
+
+The audit also records 2,792 design-runs without emergency orders and 37,440
+without legislative responses. Existing conditional rates return zero for
+these empty denominators. In particular, response-off zero timeliness/delay
+must not be interpreted as a late or instantaneous legislative response.
+The fixed docket-defined average review-time contrast is zero in every pair.
+
+All 43 Python measurement tests pass, including cross-language reconstruction,
+deliberately corrupted raw exports, and anonymous-package inclusion/exclusion
+tests. Native Java runner tests, historical score/input checks, calibration,
+research-data, court-profile, empirical-platform and legacy-preservation checks
+also pass. Retained compressed evidence has been checked for local-path and
+credential markers. Large raw outputs and original source caches are excluded
+from review packages; the final rebuilt package still requires its full audit.
+
+The final staged secret scan raised one generic-key false positive on the
+manifest's SHA-256 for `CostProfileKey.java`. Independently hashing that public
+Java source reproduced the exact recorded value, confirming it is a source
+checksum, not a credential. No secret-scanner rule or allowlist was weakened.
+
+Remaining mandatory work: paired bootstrap contrasts, normative-weight
+sensitivity, claim-to-evidence matrix, updated empirical/institutional report,
+manuscript and supplement integration, complete native CI, rendered PDF checks,
+and an extracted anonymous replication check. No robustness result, winning
+institution or goal completion is claimed by this simulation checkpoint.
