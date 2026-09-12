@@ -3,6 +3,8 @@ paper/build/
 submission/
 reports/*-cases.csv.gz
 reports/*-objects.csv.gz
+reports/constitutional-review-historical-robustness-v1-dockets.csv.gz
+reports/constitutional-review-historical-robustness-v1-segments.csv.gz
 paper/*.aux
 paper/*.log
 paper/*.out

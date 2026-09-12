@@ -1,0 +1,14 @@
+context,field,value
+baseline,baseline,0
+emergencyPressure-low,emergencyPressure,0.1
+emergencyPressure-high,emergencyPressure,0.6
+rightsThreatRate-low,rightsThreatRate,0.2
+rightsThreatRate-high,rightsThreatRate,0.6
+appointmentPolarization-low,appointmentPolarization,0.25
+appointmentPolarization-high,appointmentPolarization,0.85
+legislativeConflict-low,legislativeConflict,0.15
+legislativeConflict-high,legislativeConflict,0.75
+implementationCapacity-low,implementationCapacity,0.25
+implementationCapacity-high,implementationCapacity,0.85
+partyFragmentation-low,partyFragmentation,0.2
+partyFragmentation-high,partyFragmentation,0.8

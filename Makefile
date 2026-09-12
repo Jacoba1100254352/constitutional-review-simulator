@@ -12,6 +12,22 @@ PAPER_PDF := constitutional-review-design-stress-test.pdf
 .PHONY: benchmark-preservation-check
 .PHONY: historical-protocol-check historical-acquire-development historical-freeze-forecasts historical-forecast-check historical-acquire-test
 .PHONY: historical-benchmark historical-benchmark-check historical-scores-check historical-sources
+.PHONY: historical-study-inputs historical-study-inputs-check historical-study historical-study-check historical-study-raw-check
+
+historical-study-inputs:
+	python3 scripts/historical_study.py prepare
+
+historical-study-inputs-check:
+	python3 scripts/historical_study.py check-inputs
+
+historical-study: build historical-study-inputs-check
+	python3 scripts/historical_study.py run
+
+historical-study-check:
+	python3 scripts/historical_study.py check
+
+historical-study-raw-check:
+	python3 scripts/historical_study.py check-raw
 
 historical-benchmark:
 	python3 scripts/build_historical_benchmark.py

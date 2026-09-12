@@ -78,3 +78,21 @@ all four docket profiles by thirteen context settings with the registered
 run/case counts; calculate paired contrasts, uncertainty and normative-weight
 sensitivity; build the claim matrix; integrate and validate publication and
 replication artifacts. No full-grid institutional result is claimed yet.
+
+## Streaming institutional runner checkpoint
+
+The eight-design runner and input generator now implement the registered grid.
+Regression tests verify exact base-outcome agreement with the legacy Simulator,
+only-field configuration ablations, independent response seeds, all four
+sampling laws, complete small-grid exports and byte-identical reruns. Native
+Java tests and 37 Python measurement tests passed before full-grid execution.
+The [data contract](historical-robustness-data-contract.md) records output keys,
+pairing, source provenance and reproduction commands.
+
+Code inspection before the full grid identified a measurement limitation:
+`averageTimeToReview` averages the shared case input, so paired design
+contrasts are necessarily zero. The definition is preserved. This component
+cannot support the procedure-delay claim; institutional delay cost is a
+different diagnostic and will not replace the registered endpoint.
+
+The full grid and subsequent analyses are not completed by the runner tests.

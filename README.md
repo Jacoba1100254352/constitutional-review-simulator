@@ -25,6 +25,13 @@ the full-field source revision audit. See [data instructions](data/historical/RE
 The institutional ablations, claim matrix, manuscript integration, and final
 replication/publication checks remain part of the active milestone.
 
+`make historical-study` runs the registered four-profile, thirteen-context,
+eight-design paired experiment. `make historical-study-check` checks retained
+outputs and provenance; `make historical-study-raw-check` also checks large raw
+exports. See the [study data contract](docs/historical-robustness-data-contract.md)
+for keys, pairing, reproduction and known measurement limitations. The runner
+tests are not a substitute for the full study or final publication checks.
+
 ## Run
 
 ```sh
