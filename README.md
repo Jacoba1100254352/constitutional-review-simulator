@@ -6,7 +6,9 @@ The model is built for comparative institutional design stress testing. Given st
 
 ## Historical Benchmark and Robustness v1
 
-This milestone is in progress. Its [frozen protocol](docs/historical-benchmark-protocol.md)
+This milestone is complete. Its [completion audit](docs/historical-benchmark-completion-audit.md)
+records the requirement-by-requirement evidence and fresh-package replication.
+The [frozen protocol](docs/historical-benchmark-protocol.md)
 and [execution record](docs/historical-benchmark-execution-log.md) distinguish
 development data, exposed historical backtests, a newly evaluated 2025 SCDB
 term, and a paired institutional robustness study.
@@ -23,8 +25,9 @@ of CI. `make historical-sources` verifies/reacquires the pinned originals;
 `make historical-benchmark-check` then checks all empirical reports, including
 the full-field source revision audit. See [data instructions](data/historical/README.md).
 The institutional analysis is reported separately and is integrated into the
-manuscript and supplement. Final replication/publication checks remain part
-of the active milestone.
+manuscript and supplement. Full native CI, rendered publication checks and
+fresh anonymous-package replication have passed. Completion establishes a
+reproducible bounded study, not empirical validation of institutional reforms.
 
 `make historical-study` runs the registered four-profile, thirteen-context,
 eight-design paired experiment. `make historical-study-check` checks retained

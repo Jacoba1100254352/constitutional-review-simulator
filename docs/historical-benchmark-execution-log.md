@@ -264,3 +264,40 @@ paths in every scanned file category, and missing required inputs. The source
 archive policy is unchanged; developer instructions are not added to review
 materials. No model, input, estimate or manuscript content changes as a result.
 The corrected package must pass a new extracted run before completion.
+
+## Final extracted replication and completion audit
+
+The corrected package at `9695ad1` passed in two fresh anonymous extractions
+on the recorded OpenJDK 25 / Python 3.14.7 runtime. One reacquired both pinned
+sources, verified all eight empirical reports and completed full `make ci`.
+The other ran `make historical-replication` and then the retained study,
+analysis, independent-validation and publication-projection checks. Both
+command chains exited successfully. No Git metadata, source caches, binaries,
+PDFs or large raw outputs were present in either initial extraction.
+
+The historical rerun regenerated all ten simulation output files, including
+the omitted raw exports, with exact hashes from the untouched original
+archive. Its simulation manifest and independent raw audit are byte-identical.
+All 307 retained members remain byte-identical after the raw audit and paired
+analysis regeneration, including the first result, forecasts, protocol,
+analysis, independent validation and publication tables. The full-CI tree
+also preserves all 307 retained members. All 38 original-campaign retained
+reports/manifests, eight regenerated raw files and 28 regenerated interval
+files match the original evidence.
+
+The full-CI PDFs and a separate source-only ZIP build each reproduce all
+55 reviewed page renders exactly, with identical extracted text and unchanged
+page counts. Final logs have no overfull or unresolved-reference/citation
+warnings; PDF author metadata is blank. The original first evaluation and
+frozen protocol/forecasts/scoring code remain unchanged from `b275d7e`.
+All pre-existing reports, calibration configuration and legislative inputs
+remain unchanged from the initial goal revision.
+
+The [completion audit](historical-benchmark-completion-audit.md) records all
+goal requirements, tested archive hashes, artifact fingerprints, reproduction
+commands and interpretation limits. Historical stage manifests retain their
+stage-specific wording; the completion audit and README provide the overall
+milestone status. The final documentation-only update does not alter any
+scientific result. No additional data, favorable result, institutional winner,
+journal upload or publisher-template replacement is needed to complete this
+bounded goal.
