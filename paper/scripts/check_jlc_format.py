@@ -12,6 +12,7 @@ from pathlib import Path
 
 from word_count import WORD_LIMIT, count_words
 from generate_tables import VALIDATION_PROFILES, latex_escape
+from generate_historical_tables import generate as check_historical_publication
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -244,6 +245,7 @@ def check_source_range_tables(validation_table: str, miss_table: str, rows: list
 
 
 def main() -> None:
+    check_historical_publication(check=True)
     tex = MAIN_TEX.read_text(encoding="utf-8")
     expanded = expanded_tex(MAIN_TEX)
     supplement_expanded = expanded_tex(SUPPLEMENT_TEX) if SUPPLEMENT_TEX.exists() else ""

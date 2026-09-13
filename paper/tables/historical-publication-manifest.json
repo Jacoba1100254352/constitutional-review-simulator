@@ -1,0 +1,53 @@
+{
+  "coverage": {
+    "ablationAndPersistenceComponents": 49,
+    "claimComponents": 22,
+    "empiricalPairedScores": 9,
+    "referenceCellIntervals": 71
+  },
+  "inputSha256": {
+    "config/historical-benchmark/claim-components.csv": "37ec15b368c7ebd5c03103f6fe45f6ee9c084302be2900cedd2539e6a9a22459",
+    "config/historical-benchmark/first-evaluation-lock.json": "c6b398d97779e29dce75e61aacdba145729917f84390c3c8cdbf6b2d5abe26d6",
+    "config/historical-benchmark/forecasts-2025.json": "04cee74145c770f4a71603692ee687d13369b19be9e1d758fc460aa564d6d356",
+    "config/historical-benchmark/protocol-v1.json": "64594a2a4d3976f85ecf3f1993f1d3a2096ef60c3063e2e06c912eb46f8c7022",
+    "docs/historical-robustness-analysis-contract.md": "8b8e1a645bf5a18e39cc2118126dfd9faef73d0590d88cc6a27be7b5ef01f0ea",
+    "paper/scripts/generate_historical_tables.py": "ab1284e73c709f11b17991cb07b80e26a6eb1b1cc815c1601fd4d5e9de4ac044",
+    "reports/constitutional-review-historical-benchmark-v1-first-evaluation.json": "4344593b9c6db932ce06ef7e5084d2f9577d838208f3f6df3be354142c7c08cb",
+    "reports/constitutional-review-historical-robustness-v1-analysis-manifest.json": "d0747a10d5bb5169b0b4cc6b4b9669f4cf2f8e3cac5659174dce31fbebac93eb",
+    "reports/constitutional-review-historical-robustness-v1-analysis-validation.json": "0a916c8141e7f835278a53eddf87379d4b10c4787e7d27b6345897b18163671c",
+    "reports/constitutional-review-historical-robustness-v1-cell-means.csv": "73729d44b1927606a626e69df3444a11457f4725e200183968e6de90e9e2a641",
+    "reports/constitutional-review-historical-robustness-v1-claim-matrix.csv": "cc23c93817088fc410cc89c7845e068907f9f35adc9149bf6f4e14c2dd75fc9e",
+    "reports/constitutional-review-historical-robustness-v1-component-patterns.csv": "48ff7868e796ebe592cb977a25bf1ddacf0f58997569238ceca32329b807a1ba",
+    "reports/constitutional-review-historical-robustness-v1-conditional-denominators.csv": "bc1244ee26efcfa2a5fbf004c51eefbbe2f0cf494d9050c8a9e8341986194ac2",
+    "reports/constitutional-review-historical-robustness-v1-contrasts.csv": "d4bfdad38ff0f55dd17c6ceb6aac80bef8bab9479307f673907ee72b46ee7211",
+    "reports/constitutional-review-historical-robustness-v1-cost-accounting.csv": "5312cebc75801c6a0fdf55bc93bf7b671009ea696c5daa0a69490629f47b361a",
+    "reports/constitutional-review-historical-robustness-v1-leadership.csv": "069d0e6f9cc0aa1f92cfe55da4e6b15168a0436fb79098c1e875b451dc392de9",
+    "reports/constitutional-review-historical-robustness-v1-manifest.json": "2e9c76e414042cacdcb0963b73419e03c256a48cb196d665d799e95db2cb0c60",
+    "reports/constitutional-review-historical-robustness-v1-preference-pairs.csv": "0c0ed0e2aead2ca7c0acab4e36fa623a4e84c7f42e87973db40e3d997a0cfd14",
+    "reports/constitutional-review-historical-robustness-v1-raw-audit.json": "5342653395c7cc79473e51b11201080c465d0198e28b57011ea674fb1a1db174",
+    "reports/constitutional-review-historical-robustness-v1-response-weight-effects.csv": "7c6c0856c27dda06f738e0a3dae570ee08292e1969c88f13106709b8d56c2525",
+    "reports/constitutional-review-historical-robustness-v1-runs.csv.gz": "2340eab169e4d13fa83a7efc192d0fa00ff04ed3b6d06398c4d8eb848baba5a0",
+    "reports/constitutional-review-historical-robustness-v1-weight-grid-reversals.csv": "450e752c0f7406185980f99921a03a64629017989365a6e6390289099fb99b0e",
+    "reports/constitutional-review-historical-robustness-v1-weight-vectors.csv": "9acd13199dfbb35c7505bea877c0612ae44eb8e2672e90caea2bcf5076b23f20",
+    "reports/constitutional-review-historical-robustness-v1.md": "fb6c2e0dd0768008c8002f3aafc8b059933cd4b2d375b5fbec30b1a2243e6d4e",
+    "scripts/check_historical_analysis.py": "ceda3bf9cf83b31e35cd69f70d972074bd1987afa6e69fe7584b2c781ba08b34",
+    "scripts/check_historical_study_raw.py": "cf88061ade5b415bfb9974bb0b1e28c3664dc5dd934e88f4dd09aec6cf4dac55",
+    "scripts/historical_robustness_analysis.py": "d54cd0149de23e4392c46dc95cc5367da43ed7b74a6ada8f82441cb11fec1f17"
+  },
+  "outputSha256": {
+    "historical_claims.tex": "4e94035a06cb4a768190417404669ad20f68e1722a7a0e9cb595c693b82a908d",
+    "historical_scores.tex": "5eb1ddd031e7b2b15ad71b0647dc94fc217f9d4b8c29079733555e333079ec80",
+    "supplement_historical_ablations.tex": "e427f639fca1b43dff9c9ef2bc9b4f38cd181e3e66c8d4e2690b9f8bfb458c68",
+    "supplement_historical_accounting.tex": "44af2811300d2cbe134f9d078f4aab0e0d3858fa661a208721065f3bc4dcb54c",
+    "supplement_historical_categories.tex": "4bbc69878846a450575da7edc1ff84785a4015b52e43e52421eda01ece3b5800",
+    "supplement_historical_claims.tex": "3200f45d5d210b945ad9d29d53edd2cc04115afa91bf0910c3648de1b2709733",
+    "supplement_historical_contexts.tex": "902447ea6ba59c2f59e008022d2876c97d0f4cfb1246efa6ce349716c45ecfc9",
+    "supplement_historical_denominators.tex": "bf7b43f0679362def3af453c3c6fb2eec754c7d288f91dd265b4510cddb60709",
+    "supplement_historical_forecasts.tex": "e9da89ebfab35b7dbd54abd4a55b45beab3634b7103f98c9f39ebc3ce9a5e643",
+    "supplement_historical_intervals.tex": "c8733d0c576373e943f43930c24bfd6c5195aa1591a5c2000920f6d1195452c7",
+    "supplement_historical_leadership.tex": "59227b2f8bdc39ec39cf3ddad749e617b6cea878fd648c2b62ea5ab349ce62eb",
+    "supplement_historical_scores.tex": "6c0506a304c12ef29bc14e120f2efee55e4dfb0cdf6717735fdbaa1ace5f9bdc",
+    "supplement_historical_weights.tex": "2f59a0bf9cde3f149f3bca6763b1847998e56245c579f3a08e8bd42453a26e3a"
+  },
+  "purpose": "publication projection of immutable empirical and source-hashed institutional evidence"
+}

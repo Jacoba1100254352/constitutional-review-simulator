@@ -121,3 +121,42 @@ Simulation is an intermediate checkpoint. Paired uncertainty, normative-weight
 analysis, claim matrix, manuscript/supplement integration, full native CI,
 rendered PDFs and extracted anonymous replication remain required for goal
 completion.
+
+## Paired analysis and publication projections
+
+The analysis contract specifies equal-run estimands, paired bootstrap seeds,
+strict practical thresholds, metric directions, normative weight identity,
+and post-estimate conditional-denominator diagnostics. Analysis CSVs retain
+the same profile/context identity as the run exports:
+
+| Suffix | Grain and contents |
+| --- | --- |
+| `-contrasts.csv` | Profile/context/contrast/metric; paired mean difference, interval, Monte Carlo SE, run and replicate counts |
+| `-component-patterns.csv` | Contrast/metric; range across 52 cells, practical signs and separate interval sign counts |
+| `-claim-matrix.csv` | Claim/metric; all 22 base components, numerical classification and evidence/measurement status |
+| `-cost-accounting.csv` | Profile/context; council-minus-current direct and full accounting, their paired contrast gap and practical sign flag |
+| `-weight-vectors.csv` | Weight draw; twelve normalized positive weights in fixed declared order |
+| `-leadership.csv` | Profile/context/response variant/design; fractional tie credit and leadership share |
+| `-preference-pairs.csv` | Profile/context/base-design pair; ordering changes across the same weights |
+| `-response-weight-effects.csv` | Profile/context/half-or-off versus full; weighted-score changes and preference, not MC, percentiles |
+| `-weight-grid-reversals.csv` | Base-design pair/weight draw; ordering across cells with preference identity fixed |
+| `-cell-means.csv` | Profile/context/design; equal-run means used in the preference exercise |
+| `-conditional-denominators.csv` | Profile/context/design; eligible event counts, empty-run counts, and diagnostic pooled rates |
+
+The analysis manifest binds inputs, implementation, raw audit, and every
+analysis output by hash. Independent analysis validation binds its own source
+and the analysis manifest. It verifies all point estimates and ranking rows,
+but independently checks only 93 bootstrap intervals; deterministic analysis
+re-execution checks all saved output bytes.
+
+`make paper-historical-tables` projects these verified artifacts into thirteen
+LaTeX tables and a publication manifest in `paper/tables` without refitting or
+re-estimating results. `make paper-historical-check` rejects stale projections
+or changed evidence. The ordinary manuscript format check also runs this gate.
+The main text contains the frozen score and three-claim summaries. The
+supplement preserves all 22 components, 49 intervention/persistence patterns,
+71 reference-cell intervals, nine empirical paired scores, forecast/category
+denominators, contexts, cost accounting, weights, and leadership ranges.
+Complete per-cell analyses remain in the CSVs rather than thousands of print
+table rows. Publication hashing proves correspondence to the retained evidence,
+not visual quality or correctness of empirical institutional claims.

@@ -193,3 +193,53 @@ remains unresolved and was not bypassed.
 Remaining mandatory work: integrate the findings into the manuscript and
 supplement; run complete native CI, rendered publication checks and an
 extracted anonymous replication audit. The goal remains active.
+
+## Manuscript and supplement integration checkpoint
+
+The paired analysis and independent checks were committed and pushed as
+`4f4e836`. The main manuscript now reports the frozen new-term test and the
+three qualified institutional claims. The supplement preserves all 22
+components, all 49 intervention/persistence patterns, all 71 reference-cell
+intervals, nine empirical paired scores, and the forecast, denominator,
+context, accounting and normative tables. Thirteen new tables plus a
+publication manifest are generated directly from verified evidence, with no
+refitting or replacement of the original evaluation. The manuscript explicitly
+discloses the timing of the signed analysis contract and post-estimate
+denominator diagnostic.
+
+Four new publication tests check table inclusion/coverage, unfiltered value
+projection, stale generated tables, and changed source evidence. Two additional
+anonymous-package tests verify decoded gzip inspection and detection across
+stream-read boundaries. All 63 Python measurement tests and the native Java
+suite pass at the full-CI test stage.
+
+The first integrated render has 22 main-text pages and 33 supplementary pages.
+Every page was rendered and inspected in a contact overview, with detailed
+inspection of the new score, claim, interval, denominator, accounting and
+leadership pages. No clipping or table overlap was found. Final LaTeX logs have
+no unresolved references/citations or overfull boxes. Native main-text float
+auditing reports zero severe findings and zero whitespace warnings. Bounding-box
+checks cover all 55 pages with no empty pages or off-page words; extracted text
+contains no unresolved-reference or private-path markers, and PDF author
+metadata is blank. Existing underfull-spacing notices in long references and
+legacy dense model tables are not overflow findings.
+
+The complete `make ci` subsequently passed: calibration, research data, court
+profiles, all tests, all four original campaigns and their raw object/case
+reconciliation, all 96 legacy aggregate fields across eight presets, empirical
+platform consistency, retained historical provenance, full bytewise analysis
+reproduction, independent analysis validation, manuscript/supplement builds,
+format and float checks, and anonymous source/replication/review packaging.
+All tracked original campaign results remain unchanged. France QPC merits
+invalidation and CJEU rule-of-law compliance remain the two reported misses.
+
+The final built PDFs are byte-identical to those visually inspected above:
+
+| PDF | SHA-256 |
+| --- | --- |
+| Main manuscript | `8796fc90d0faa91420915258df2bc93951f0ffbf57ef1f3712c55984ccb0370e` |
+| Supplement | `1a88038b17173eb0b762c860397c638f34a0533a70c94e43ace4f8f92e5217f6` |
+
+The staged integration secret scan reports no leaks. Extracted anonymous
+replication and the final requirement-by-requirement completion audit remain
+mandatory. This checkpoint is not overall goal completion.

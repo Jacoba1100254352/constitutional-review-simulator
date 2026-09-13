@@ -41,6 +41,12 @@ Use this checklist before uploading to Editorial Manager.
 
 ## Figures, Tables, And Accessibility
 
+- Historical score and claim summaries retain the first empirical evaluation,
+  unsupported duration measure, weak upstream displacement evidence, and partial
+  legislative-response dependence without substituting favorable endpoints.
+- `make paper-historical-check` verifies all thirteen historical publication
+  tables against the source-hashed analysis and frozen test evidence.
+
 - `paper/accessibility-descriptions.md` has one description for every figure
   and table label in `paper/constitutional-review-design-stress-test.tex`.
 - `paper/figure-placement-audit.md` shows no severe figure/table white-space
@@ -89,6 +95,14 @@ Use this checklist before uploading to Editorial Manager.
   supplied separately if requested.
 - Repository URLs, user paths, commit metadata, and author-identifying file
   names are removed or redacted in the anonymous submission package.
+- Retained compressed historical evidence is scanned after decompression, not
+  only as opaque gzip bytes.
+- An extracted review package passes `make ci`, then full historical
+  regeneration with `make historical-replication`; regenerated historical
+  output hashes are compared with the retained originals.
+- The original SCDB caches are excluded. Reacquisition uses pinned downloads,
+  and the protocol, forecasts and first evaluation are preserved without
+  rerunning their original freeze/acquisition commands.
 - Accepted replication materials are deposited in an appropriate public
   repository and cited in the final data availability statement.
 
@@ -102,9 +116,11 @@ make paper
 make figure-placement-audit
 make research-data-check
 make empirical-platform-check
+make paper-historical-check
 make supplement
 make paper-pdf-check
 make submission-bundle
 make test
 make ci
+make historical-replication
 ```

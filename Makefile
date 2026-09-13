@@ -15,6 +15,13 @@ PAPER_PDF := constitutional-review-design-stress-test.pdf
 .PHONY: historical-study-inputs historical-study-inputs-check historical-study historical-study-check historical-study-audit historical-study-raw-check
 .PHONY: historical-analysis historical-analysis-check historical-analysis-validate historical-analysis-validation-check
 .PHONY: historical-replication
+.PHONY: paper-historical-tables paper-historical-check
+
+paper-historical-tables:
+	python3 paper/scripts/generate_historical_tables.py
+
+paper-historical-check:
+	python3 paper/scripts/generate_historical_tables.py --check
 
 historical-replication:
 	$(MAKE) historical-study
@@ -159,7 +166,7 @@ paper-tables:
 paper-supplement-tables:
 	python3 paper/scripts/generate_supplement.py
 
-paper-artifacts: paper-figures paper-tables paper-supplement-tables
+paper-artifacts: paper-figures paper-tables paper-supplement-tables paper-historical-tables
 
 paper-check: paper-artifacts
 	python3 paper/scripts/check_jlc_format.py
@@ -183,6 +190,7 @@ paper-clean:
 
 supplement:
 	python3 paper/scripts/generate_supplement.py
+	python3 paper/scripts/generate_historical_tables.py
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build supplementary-appendix.tex
 	cp paper/build/supplementary-appendix.pdf paper/supplementary-appendix.pdf
 

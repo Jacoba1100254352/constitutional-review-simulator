@@ -6,8 +6,8 @@ This audit checks rendered pages, not just LaTeX source. It flags figure or tabl
 
 ## Summary
 
-- Pages audited: 20
-- Pages with figure/table captions: 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16
+- Pages audited: 22
+- Pages with figure/table captions: 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18
 - Severe figure/table whitespace findings: 0
 - Figure/table whitespace warnings: 0
 
@@ -15,7 +15,7 @@ This audit checks rendered pages, not just LaTeX source. It flags figure or tabl
 
 | Page | Figure/table material | Nearby references | Vertical used | Top blank | Bottom blank | Assessment |
 | --- | --- | --- | ---: | ---: | ---: | --- |
-| 2 | - | Table 1 | 76.9% | 4.8% | 18.3% | OK |
+| 2 | - | Table 1 | 85.5% | 4.8% | 9.7% | OK |
 | 3 | Table 1 | - | 86.3% | 4.8% | 8.9% | OK |
 | 4 | Figure 1 | Figure 1 | 86.4% | 4.7% | 8.9% | OK |
 | 5 | Table 2 | - | 86.0% | 4.8% | 9.2% | OK |
@@ -23,13 +23,14 @@ This audit checks rendered pages, not just LaTeX source. It flags figure or tabl
 | 7 | Table 3 | Table 4 | 86.6% | 4.7% | 8.6% | OK |
 | 9 | Table 4 | Table 5 | 85.3% | 4.8% | 9.9% | OK |
 | 10 | Table 5, Table 6 | Table 6, Table 7 | 86.6% | 4.8% | 8.5% | OK |
-| 11 | Table 7, Table 8 | Table 8 | 85.3% | 4.8% | 9.9% | OK |
-| 12 | Figure 3 | Figure 3, Figure 4 | 85.1% | 4.8% | 10.1% | OK |
-| 13 | Figure 4 | - | 85.3% | 4.8% | 9.9% | OK |
-| 14 | Table 9 | Table 7 | 85.9% | 4.7% | 9.4% | OK |
-| 15 | Table 10 | Table 10, Table 11 | 86.1% | 4.8% | 9.1% | OK |
-| 16 | Table 11 | - | 78.5% | 4.8% | 16.7% | OK |
-| 20 | - | - | 30.6% | 4.8% | 64.5% | OK: final references page, not figure-driven |
+| 11 | Table 7, Table 8 | Table 8 | 85.5% | 4.8% | 9.7% | OK |
+| 12 | Figure 3 | Figure 3, Figure 4 | 80.0% | 4.8% | 15.2% | OK |
+| 13 | Figure 4 | - | 86.2% | 4.8% | 9.0% | OK |
+| 14 | Table 9 | Table 9 | 86.7% | 4.7% | 8.5% | OK |
+| 15 | Table 10 | Table 10 | 85.0% | 4.8% | 10.2% | OK |
+| 16 | - | Table 7 | 85.5% | 4.8% | 9.7% | OK |
+| 17 | Table 11 | Table 12, Table 13 | 84.8% | 4.7% | 10.5% | OK |
+| 18 | Table 12, Table 13 | - | 85.3% | 4.8% | 9.9% | OK |
 
 ## Reading Notes
 

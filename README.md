@@ -22,8 +22,9 @@ separately and never substituted into the locked training source.
 of CI. `make historical-sources` verifies/reacquires the pinned originals;
 `make historical-benchmark-check` then checks all empirical reports, including
 the full-field source revision audit. See [data instructions](data/historical/README.md).
-The institutional analysis is reported separately; manuscript integration and
-final replication/publication checks remain part of the active milestone.
+The institutional analysis is reported separately and is integrated into the
+manuscript and supplement. Final replication/publication checks remain part
+of the active milestone.
 
 `make historical-study` runs the registered four-profile, thirteen-context,
 eight-design paired experiment. `make historical-study-check` checks retained
@@ -49,7 +50,20 @@ the retained analysis. `make historical-replication` regenerates the full
 historical institutional simulation, raw audit and analyses; it needs more
 time and disk space than the retained-output checks in `make ci`.
 
+The manuscript now includes the frozen score and three-claim summaries. The
+supplement includes complete component and intervention patterns, reference-cell
+intervals, forecast/denominator tables and normative sensitivity. These thirteen
+tables are projected from hash-verified evidence, with a separate publication
+manifest. `make paper-historical-check` rejects stale tables or changed evidence.
+
 ## Run
+
+Prerequisites: a JDK supporting `javac --release 21`, Python 3.11 or later
+(standard library only), and Make. Paper/CI builds also require `latexmk` with
+pdfLaTeX, Poppler (`pdfinfo`, `pdftotext`), and ImageMagick with PDF support.
+The verified historical run used OpenJDK 25 and Python 3.14.7; retain the
+recorded runtime when testing exact output-byte reproduction. Java release-21
+compilation is not a claim that a JDK 21 runtime was used for that run.
 
 ```sh
 make run

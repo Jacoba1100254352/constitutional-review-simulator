@@ -149,3 +149,52 @@ distinguishes source-gathering tasks from calibration targets.
 aggregate output artifacts and file sizes. A note explains that compressed
 case-level exports are reproducible from the simulation commands but omitted
 from the tracked size table because they are local large artifacts.
+
+`tab:historical-scores`: Four fixed forecasts evaluated on 66 new-term disputes.
+Columns show Brier score, log loss, and total variation, all lower-is-better.
+The note retains the primary difference and its interval spanning zero.
+
+`tab:historical-claims`: Three claim families, their paired difference ranges
+across 52 cells, and qualified conclusions. Duration is unsupported, upstream
+displacement is weak under the intervention, and response dependence is partial.
+
+`tab:supp-historical-categories`: All eight mutually exclusive test categories,
+including Other, with dispute counts and shares of the same 66-case denominator.
+
+`tab:supp-historical-forecasts`: Eight categories by four locked forecast
+probabilities. The table distinguishes fixed constants and training-only
+empirical forecasts from the observed test distribution.
+
+`tab:supp-historical-scores`: All nine frozen empirical paired-score comparisons
+with within-term intervals. Secondary findings do not replace the primary test.
+
+`tab:supp-historical-contexts`: Six world inputs with low and high values. Each
+is changed one at a time around baseline, yielding thirteen contexts.
+
+`tab:supp-historical-claims`: All 22 claim components, fixed-grid difference
+ranges, practical-sign classifications, and counts of intervals above/below
+zero. Additional diagnostics and conditional-denominator limitations are marked.
+
+`tab:supp-historical-ablations`: All 49 intervention and persistence components,
+with fixed-grid ranges and interval sign counts. Changed design is compared
+with its parent; half/off variants are also compared with current review.
+
+`tab:supp-historical-intervals`: All 71 component/contrast combinations in the
+fixed-generator baseline cell, with point estimates and paired-run intervals.
+The complete CSV includes all 3,692 comparisons without significance filtering.
+
+`tab:supp-historical-denominators`: Low-emergency counts by forecast and design,
+including orders, reasons, empty runs, and pooled rates. Sparse event counts
+explain an apparent run-mean reversal without replacing the original endpoint.
+
+`tab:supp-historical-accounting`: Council-minus-current differences under
+direct-only and full accounting and their contrast gap. Ranges are normalized
+index differences, not money, and no practical sign switches occur.
+
+`tab:supp-historical-weights`: Six higher-is-better and six lower-is-better
+measures in the new preference exercise. The shared time input cannot
+distinguish designs within a cell.
+
+`tab:supp-historical-leadership`: Twelve design/response-setting rows with
+minimum and maximum sampled leadership shares over 52 cells. These are finite
+preference sensitivities, not probabilities of institutional optimality.
