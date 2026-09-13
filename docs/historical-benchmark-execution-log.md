@@ -243,3 +243,24 @@ The final built PDFs are byte-identical to those visually inspected above:
 The staged integration secret scan reports no leaks. Extracted anonymous
 replication and the final requirement-by-requirement completion audit remain
 mandatory. This checkpoint is not overall goal completion.
+
+## Extracted-package failure and correction
+
+The first fresh anonymous extraction reacquired both pinned SCDB sources,
+verified all eight empirical reports, passed the native Java and 63 Python
+tests, regenerated/reconciled all four original campaigns, preserved all 96
+legacy fields across eight presets, and reproduced the retained historical
+analysis and its independent validation. It then failed the manuscript format
+gate because that gate unconditionally read `AGENTS.md`, a developer-only file
+intentionally excluded from the anonymous package. Consequently that command
+chain did not reach the full historical simulation or final publication build.
+This failed attempt is not counted as complete replication.
+
+The correction keeps developer instructions optional only for this privacy
+scan. Present instructions, required publication files and report manifests
+are still scanned, and missing required publication inputs fail explicitly.
+Three regression tests cover an anonymous tree without instructions, private
+paths in every scanned file category, and missing required inputs. The source
+archive policy is unchanged; developer instructions are not added to review
+materials. No model, input, estimate or manuscript content changes as a result.
+The corrected package must pass a new extracted run before completion.

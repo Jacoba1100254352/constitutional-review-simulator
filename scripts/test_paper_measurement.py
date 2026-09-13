@@ -1,6 +1,7 @@
 """Publication gates must preserve period-specific checks and display genuine misses."""
 
 import sys
+import tempfile
 from contextlib import redirect_stderr
 from io import StringIO
 import unittest
@@ -14,6 +15,42 @@ import generate_figures as figures
 
 
 class PaperMeasurementTests(unittest.TestCase):
+    def test_anonymous_checkout_does_not_require_developer_instructions(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            for name in ("Makefile", "README.md", "main.tex"):
+                (root / name).write_text("anonymous content", encoding="utf-8")
+            quality.check_local_paths(root, root / "main.tex")
+            self.assertFalse((root / "AGENTS.md").exists())
+
+    def test_optional_instructions_and_required_inputs_still_reject_private_paths(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / "reports").mkdir()
+            names = ("Makefile", "README.md", "main.tex", "AGENTS.md", "reports/run-manifest.json")
+            for name in names:
+                (root / name).write_text("anonymous content", encoding="utf-8")
+            for name in names:
+                with self.subTest(name=name):
+                    path = root / name
+                    path.write_text("/" + "Users/" + "example", encoding="utf-8")
+                    with self.assertRaises(SystemExit), redirect_stderr(StringIO()):
+                        quality.check_local_paths(root, root / "main.tex")
+                    path.write_text("anonymous content", encoding="utf-8")
+
+    def test_missing_required_publication_inputs_are_not_silently_skipped(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            for name in ("Makefile", "README.md", "main.tex"):
+                (root / name).write_text("anonymous content", encoding="utf-8")
+            for name in ("Makefile", "README.md", "main.tex"):
+                with self.subTest(name=name):
+                    path = root / name
+                    path.unlink()
+                    with self.assertRaises(SystemExit), redirect_stderr(StringIO()):
+                        quality.check_local_paths(root, root / "main.tex")
+                    path.write_text("anonymous content", encoding="utf-8")
+
     def test_scatter_bounds_include_current_baseline_and_reject_outside_points(self):
         rows = figures.read_rows(figures.BASELINE_CSV)
         rows = [row for row in rows if row["caseKey"] == "baseline" and row["scenarioKey"] in figures.BASELINE_SCATTER_SCENARIOS]

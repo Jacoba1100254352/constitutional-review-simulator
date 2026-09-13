@@ -67,6 +67,23 @@ def label_set(pattern: str, source: str) -> set[str]:
     return set(re.findall(pattern, source))
 
 
+def check_local_paths(root: Path, main_tex: Path) -> None:
+    required = [root / "Makefile", root / "README.md", main_tex]
+    missing = [path for path in required if not path.is_file()]
+    if missing:
+        fail("missing required publication input: " + ", ".join(str(path.relative_to(root)) for path in missing))
+    files = [*required, *sorted((root / "reports").glob("*manifest.json"))]
+    # Developer instructions are intentionally absent from anonymous archives.
+    # Continue checking them in a source checkout whenever they are present.
+    instructions = root / "AGENTS.md"
+    if instructions.exists():
+        files.append(instructions)
+    local_home_marker = "/" + "Users/"
+    leaking = [path for path in files if local_home_marker in path.read_text(encoding="utf-8")]
+    if leaking:
+        fail("local absolute path found in " + ", ".join(str(path.relative_to(root)) for path in leaking))
+
+
 def expanded_tex(path: Path, seen: set[Path] | None = None) -> str:
     seen = seen or set()
     if path in seen:
@@ -369,17 +386,7 @@ def main() -> None:
 
     validate_figure_point_labels()
 
-    leaked_path_files = [
-        ROOT / "Makefile",
-        ROOT / "README.md",
-        ROOT / "AGENTS.md",
-        *sorted((ROOT / "reports").glob("*manifest.json")),
-        MAIN_TEX,
-    ]
-    local_home_marker = "/" + "Users/"
-    leaking = [path for path in leaked_path_files if local_home_marker in path.read_text(encoding="utf-8")]
-    if leaking:
-        fail("local absolute path found in " + ", ".join(str(path.relative_to(ROOT)) for path in leaking))
+    check_local_paths(ROOT, MAIN_TEX)
 
     words = count_words(tex)
     if words > WORD_LIMIT:
